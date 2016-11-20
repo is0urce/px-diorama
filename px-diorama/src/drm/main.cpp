@@ -4,7 +4,7 @@
 // desc: entry point
 
 #define GLEW_STATIC
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #define GLM_FORCE_RADIANS
@@ -18,16 +18,19 @@
 #include <px/rgl/gl_program.hpp>
 #include <px/rgl/gl_vbo.hpp>
 #include <px/rgl/gl_vao.hpp>
+#include <px/rgl/gl_texture.hpp>
+#include <px/rgl/gl_framebuffer.hpp>
 
+#include <random>
 #include <stdexcept>
 #include <string>
 #include <sstream>
 
 static void error_callback(int error, const char* description)
 {
-	throw std::runtime_error(std::string("glfw error code = " + std::to_string(error) + " " + std::string(description)));
+	throw std::runtime_error(std::string("glfw error, code #" + std::to_string(error) + " message: " + std::string(description)));
 }
-static void key_callback(GLFWwindow* window, int key, int /* scancode */, int action, int /* mods */)
+static void key_callback(GLFWwindow* window, int key, int /* scancode */, int action, int /* mods */) noexcept
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -38,7 +41,7 @@ static void key_callback(GLFWwindow* window, int key, int /* scancode */, int ac
 class glfw_init
 {
 public:
-	glfw_init()
+	glfw_init() noexcept
 		: m_init(false)
 	{
 		glfwSetErrorCallback(&error_callback);
@@ -64,9 +67,9 @@ static struct vertex
 	glm::vec2 pos;
 	glm::vec3 color;
 } g_vertices[3] {
-	{ {-0.6f, -0.4f}, {1.f, 0.f, 0.f} },
-	{ {0.6f, -0.4f}, {0.f, 1.f, 0.f} },
-	{ {0.f,  0.6f}, {0.f, 0.f, 1.f} }
+	{ {-0.6f, -0.4f}, {1.f, 1.f, 1.f} },
+	{ {0.6f, -0.4f}, {1.f, 1.f, 1.f} },
+	{ {0.f,  0.6f}, {1.f, 1.f, 1.f} }
 };
 
 static struct camera
@@ -99,18 +102,31 @@ int main()
 			glfwSetKeyCallback(window, key_callback);
 			glfwMakeContextCurrent(window);
 			glewInit();	// initialize extensions wrangler (need context first)
+			glfwSwapInterval(1); // vsync on
 
+			glEnable(GL_TEXTURE_2D);
+			//glClampColor(GL_CLAMP_VERTEX_COLOR, GL_FALSE);
+			//glClampColor(GL_CLAMP_READ_COLOR, GL_FALSE);
+			//glClampColor(GL_CLAMP_FRAGMENT_COLOR, GL_FALSE);
+
+			px::gl_texture image(true);
+			px::gl_framebuffer offscreen(true);
 			px::gl_vbo vertices(true);
 			px::gl_vbo camera(true);
 			px::gl_vao geometry(true);
-			px::gl_program program(
-				px::gl_shader(GL_VERTEX_SHADER, read_file("data\\shaders\\strip.vert").c_str()),
-				px::gl_shader(GL_FRAGMENT_SHADER, read_file("data\\shaders\\strip.frag").c_str()));
+			px::gl_program batch({
+				{ GL_VERTEX_SHADER, read_file("data/shaders/strip.vert").c_str() },
+				{ GL_FRAGMENT_SHADER, read_file("data/shaders/strip.frag").c_str() } });
+			px::gl_program process({
+				{ GL_VERTEX_SHADER, read_file("data/shaders/process.vert").c_str() },
+				{ GL_FRAGMENT_SHADER, read_file("data/shaders/process.frag").c_str() } });
 
+			image.image2d(GL_RGBA32F, GL_RGBA, GL_FLOAT, 800, 600, 0, nullptr);
 			geometry.swizzle(vertices, sizeof(vertex), { GL_FLOAT, GL_FLOAT }, { 2, 3 }, { offsetof(vertex,pos), offsetof(vertex,color) });
-			program.uniform_block("Camera", 0);
+			batch.uniform_block("Camera", 0);
+			auto uniform = glGetUniformLocation(process, "img");
+			offscreen.texture(image, 0);
 
-			glfwSwapInterval(1); // vsync
 			// main loop
 			while (!glfwWindowShouldClose(window))
 			{
@@ -118,24 +134,34 @@ int main()
 				GLenum err = GL_NO_ERROR;
 				while ((err = glGetError()) != GL_NO_ERROR)
 				{
-					throw std::runtime_error("OpenGL error #" + std::to_string(err));
+					throw std::runtime_error("OpenGL error #" + std::to_string(err) + reinterpret_cast<char const*>(glewGetErrorString(err)));
 				}
 #endif
 				// prepare data
-				g_camera = { { 0.5f, 0.5f }, { 0.6f, 0.3f } };
+				g_camera = { { 1.2f, 1.2f }, { 0.0, 0.0 } };
 				vertices.load(GL_ARRAY_BUFFER, GL_STREAM_DRAW, sizeof(g_vertices), g_vertices);
 				camera.load(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, sizeof(g_camera), &g_camera);
 
 				// render
-				glClear(GL_COLOR_BUFFER_BIT);
 
-				glUseProgram(program);
+				// g-pass
+				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, offscreen);
+				glViewport(0, 0, 800, 600);
+				glUseProgram(batch);
 				glBindBufferBase(GL_UNIFORM_BUFFER, 0, camera);
-
 				glBindVertexArray(geometry);
 				glDrawArrays(GL_TRIANGLES, 0, 3);
 
-				// i/o
+				// process pass
+				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+				glViewport(0, 0, 800, 600);
+				glUseProgram(process);
+				glUniform1i(uniform, 0);
+				glActiveTexture(GL_TEXTURE0 + 0);
+				glBindTexture(GL_TEXTURE_2D, image);
+				glDrawArrays(GL_QUADS, 0, 4);
+
+				// process
 				glfwSwapBuffers(window);
 				glfwPollEvents();
 			}

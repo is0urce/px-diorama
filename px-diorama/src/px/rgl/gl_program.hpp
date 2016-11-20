@@ -60,6 +60,10 @@ namespace px
 			: gl_program(std::vector<GLuint>{ vetrex, fragment })
 		{
 		}
+		gl_program(gl_shader const& vetrex, gl_shader const& fragment) noexcept
+			: gl_program(std::vector<GLuint>{ vetrex, fragment })
+		{
+		}
 		gl_program(gl_program && program) : gl_program()
 		{
 			swap(program);

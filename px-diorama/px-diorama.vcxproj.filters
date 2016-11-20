@@ -30,6 +30,12 @@
     <ClInclude Include="src\px\rgl\gl_vao.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\px\rgl\gl_texture.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rgl\gl_framebuffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -39,5 +45,7 @@
   <ItemGroup>
     <None Include="data\shaders\strip.frag" />
     <None Include="data\shaders\strip.vert" />
+    <None Include="data\shaders\process.frag" />
+    <None Include="data\shaders\process.vert" />
   </ItemGroup>
 </Project>
