@@ -25,6 +25,14 @@ namespace px
 		{
 			return m_program;
 		}
+		void uniform_block(GLuint index, GLuint binding)
+		{
+			glUniformBlockBinding(m_program, index, binding);
+		}
+		void uniform_block(GLchar const* name, GLuint binding)
+		{
+			uniform_block(glGetUniformBlockIndex(m_program, name), binding);
+		}
 
 	public:
 		gl_program() noexcept

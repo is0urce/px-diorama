@@ -21,6 +21,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <sstream>
 
 static void error_callback(int error, const char* description)
 {
@@ -58,94 +59,103 @@ private:
 	bool m_init;
 };
 
-static const struct vertex
+static struct vertex
 {
 	glm::vec2 pos;
 	glm::vec3 color;
-} vertices[3] {
+} g_vertices[3] {
 	{ {-0.6f, -0.4f}, {1.f, 0.f, 0.f} },
 	{ {0.6f, -0.4f}, {0.f, 1.f, 0.f} },
 	{ {0.f,  0.6f}, {0.f, 0.f, 1.f} }
 };
 
+static struct camera
+{
+	glm::vec2 scale;
+	glm::vec2 offset;
+} g_camera;
+
+std::string read_file(std::string name)
+{
+	std::ifstream stream;
+	stream.open(name);
+
+	std::stringstream ss;
+	ss << stream.rdbuf();
+	return ss.str();
+}
+
 // application starts here
 int main()
 {
-	px::logger logger;
 	try
 	{
-		glfw_init init;
-
-		// create window and contest
-		auto *window = glfwCreateWindow(800, 600, "prss-x-drm", nullptr, nullptr);
-		glfwSetKeyCallback(window, key_callback);
-		glfwMakeContextCurrent(window);
-		glewInit();	// initialize extensions wrangler (need context first)
-
-		px::gl_program program({
-			px::gl_shader(GL_VERTEX_SHADER,
-				"#version 330\n"
-				"#extension GL_ARB_separate_shader_objects : enable\n"
-				"attribute layout(location = 0) in vec2 inPos;\n"
-				"attribute layout(location = 1) in vec3 inColor;\n"
-				"layout(location = 0) out vec3 outColor;\n"
-				"void main()\n"
-				"{\n"
-				"    gl_Position = vec4(inPos, 0.0, 1.0);\n"
-				"    outColor = inColor;\n"
-				"}\n"),
-			px::gl_shader(GL_FRAGMENT_SHADER,
-				"#version 330\n"
-				"#extension GL_ARB_separate_shader_objects : enable\n"
-				"layout(location = 0) in vec3 color;\n"
-				"layout(location = 0) out vec4 fragColor;\n"
-				"void main()\n"
-				"{\n"
-				"    fragColor = vec4(color, 1.0);\n"
-				"}\n") });
-
-
-		px::gl_vbo vbo(true);
-		px::gl_vao vao(true);
-		vao.swizzle(vbo, sizeof(vertex), { GL_FLOAT, GL_FLOAT }, { 2, 3 }, { offsetof(vertex,pos), offsetof(vertex,color) });
-
-		glfwSwapInterval(1); // vsync
-		// main loop
-		while (!glfwWindowShouldClose(window))
+		try
 		{
-#if _DEBUG
-			GLenum err = GL_NO_ERROR;
-			while ((err = glGetError()) != GL_NO_ERROR)
+			glfw_init init;
+
+			// create window and contest
+			auto *window = glfwCreateWindow(800, 600, "press-x-diorama", nullptr, nullptr);
+			glfwSetKeyCallback(window, key_callback);
+			glfwMakeContextCurrent(window);
+			glewInit();	// initialize extensions wrangler (need context first)
+
+			px::gl_vbo vertices(true);
+			px::gl_vbo camera(true);
+			px::gl_vao geometry(true);
+			px::gl_program program(
+				px::gl_shader(GL_VERTEX_SHADER, read_file("data\\shaders\\strip.vert").c_str()),
+				px::gl_shader(GL_FRAGMENT_SHADER, read_file("data\\shaders\\strip.frag").c_str()));
+
+			geometry.swizzle(vertices, sizeof(vertex), { GL_FLOAT, GL_FLOAT }, { 2, 3 }, { offsetof(vertex,pos), offsetof(vertex,color) });
+			program.uniform_block("Camera", 0);
+
+			glfwSwapInterval(1); // vsync
+			// main loop
+			while (!glfwWindowShouldClose(window))
 			{
-				throw std::runtime_error("renderer::render(..) - OpenGL error");
-			}
+#if _DEBUG
+				GLenum err = GL_NO_ERROR;
+				while ((err = glGetError()) != GL_NO_ERROR)
+				{
+					throw std::runtime_error("OpenGL error #" + std::to_string(err));
+				}
 #endif
-			// prepare data
-			vbo.load(GL_ARRAY_BUFFER, GL_STREAM_DRAW, sizeof(vertices), vertices);
+				// prepare data
+				g_camera = { { 0.5f, 0.5f }, { 0.6f, 0.3f } };
+				vertices.load(GL_ARRAY_BUFFER, GL_STREAM_DRAW, sizeof(g_vertices), g_vertices);
+				camera.load(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, sizeof(g_camera), &g_camera);
 
-			// render
-			glClear(GL_COLOR_BUFFER_BIT);
-			glUseProgram(program);
-			glBindVertexArray(vao);
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+				// render
+				glClear(GL_COLOR_BUFFER_BIT);
 
-			// i/o
-			glfwSwapBuffers(window);
-			glfwPollEvents();
+				glUseProgram(program);
+				glBindBufferBase(GL_UNIFORM_BUFFER, 0, camera);
+
+				glBindVertexArray(geometry);
+				glDrawArrays(GL_TRIANGLES, 0, 3);
+
+				// i/o
+				glfwSwapBuffers(window);
+				glfwPollEvents();
+			}
+
+			glfwDestroyWindow(window);
 		}
-
-		glfwDestroyWindow(window);
+		catch (std::runtime_error &exc)
+		{
+			throw std::move(exc);
+		}
+		catch (...)
+		{
+			throw std::runtime_error("unhandled exception");
+		}
 	}
 	catch (std::runtime_error &exc)
 	{
+		px::logger logger;
 		logger.write(exc.what());
 		return -1;
 	}
-	catch (...)
-	{
-		logger.write("unhandled system error");
-		return -1;
-	}
-
 	return 0;
 }
