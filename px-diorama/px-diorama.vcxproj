@@ -105,7 +105,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,6 +159,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\px\common\logger.hpp" />
+    <ClInclude Include="src\px\rgl\gl_program.hpp" />
+    <ClInclude Include="src\px\rgl\gl_shader.hpp" />
+    <ClInclude Include="src\px\rgl\gl_vao.hpp" />
+    <ClInclude Include="src\px\rgl\gl_vbo.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
