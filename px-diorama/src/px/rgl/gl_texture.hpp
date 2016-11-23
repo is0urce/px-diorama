@@ -54,7 +54,7 @@ namespace px
 				if (variant == GL_TEXTURE_2D)
 				{
 					filters(GL_LINEAR, GL_LINEAR);
-					wrap(GL_CLAMP);
+					wrap(GL_CLAMP_TO_EDGE);
 				}
 			}
 		}
