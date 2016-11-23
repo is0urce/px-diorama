@@ -29,10 +29,10 @@ namespace px
 		{
 			glDisableVertexArrayAttrib(m_vao, index);
 		}
-		void swizzle(gl_vbo const& vbo, GLsizei stride, std::vector<GLenum> const& types, std::vector<GLint> const& sizes, std::vector<size_t> offsets)
+		void swizzle(GLuint vertex_buffer, GLsizei stride, std::vector<GLenum> const& types, std::vector<GLint> const& sizes, std::vector<size_t> const& offsets)
 		{
 			glBindVertexArray(m_vao);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 			for (size_t i = 0, size = types.size(); i != size; ++i)
 			{
 				glEnableVertexAttribArray(static_cast<GLuint>(i));

@@ -24,9 +24,6 @@
     <ClInclude Include="src\px\rgl\gl_program.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rgl\gl_vbo.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\rgl\gl_vao.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -37,6 +34,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\renderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rgl\gl_buffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,5 +50,7 @@
     <None Include="data\shaders\strip.vert" />
     <None Include="data\shaders\process.frag" />
     <None Include="data\shaders\process.vert" />
+    <None Include="data\shaders\blur.vert" />
+    <None Include="data\shaders\blur.frag" />
   </ItemGroup>
 </Project>

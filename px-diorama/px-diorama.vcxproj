@@ -169,9 +169,11 @@
     <ClInclude Include="src\px\rgl\gl_shader.hpp" />
     <ClInclude Include="src\px\rgl\gl_texture.hpp" />
     <ClInclude Include="src\px\rgl\gl_vao.hpp" />
-    <ClInclude Include="src\px\rgl\gl_vbo.hpp" />
+    <ClInclude Include="src\px\rgl\gl_buffer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\shaders\blur.frag" />
+    <None Include="data\shaders\blur.vert" />
     <None Include="data\shaders\process.frag" />
     <None Include="data\shaders\process.vert" />
     <None Include="data\shaders\strip.frag">
