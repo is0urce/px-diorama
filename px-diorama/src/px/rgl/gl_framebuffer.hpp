@@ -39,6 +39,7 @@ namespace px
 		}
 		void texture(GLuint texture, int attach)
 		{
+			init();
 			glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attach, GL_TEXTURE_2D, texture, 0);

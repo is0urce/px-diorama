@@ -16,6 +16,7 @@
 #include <px/rgl/gl_vao.hpp>
 #include <px/rgl/gl_texture.hpp>
 #include <px/rgl/gl_framebuffer.hpp>
+#include <px/rgl/gl_pass.hpp>
 
 #include <array>
 #include <stdexcept>
@@ -63,31 +64,25 @@ namespace px
 			m_camera.block.load(GL_STREAM_DRAW, m_camera.data);
 
 			// g-pass
+			glUseProgram(m_batch);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_offscreen);
 			glViewport(0, 0, m_width, m_height);
-			glUseProgram(m_batch);
 			glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_camera.block);
 			glBindVertexArray(m_geometry);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 
+			// blur
+			glUseProgram(m_blur);
+			m_blur_a.pass.draw(GL_QUADS, 4);
+			m_blur_b.pass.draw(GL_QUADS, 4);
+			m_blur_c.pass.draw(GL_QUADS, 4);
+
 			// postprocess
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-			//glViewport(0, 0, m_width, m_height);
-			//glUseProgram(m_process);
-			//glActiveTexture(GL_TEXTURE0 + 0);
-			//glBindTexture(GL_TEXTURE_2D, m_colors);
-			//glDrawArrays(GL_QUADS, 0, 4);
-
-
-			m_blur_sampling.data.direction = { 1.0 / m_width, 1.0 / m_height };
-			m_blur_sampling.block.load(GL_STATIC_DRAW, m_blur_sampling.data);
-
+			glUseProgram(m_process);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 			glViewport(0, 0, m_width, m_height);
-			glUseProgram(m_blur);
-			glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_blur_sampling.block);
 			glActiveTexture(GL_TEXTURE0 + 0);
-			glBindTexture(GL_TEXTURE_2D, m_colors);
+			glBindTexture(GL_TEXTURE_2D, m_ping.texture);
 			glDrawArrays(GL_QUADS, 0, 4);
 		}
 		void resize(int width, int height)
@@ -97,43 +92,89 @@ namespace px
 		}
 
 	public:
-		renderer(int width, int height)
+		renderer(int width,	int height)
 			: m_width(width), m_height(height)
-			, m_offscreen{ true }
-			, m_vertices{ GL_ARRAY_BUFFER }
 			, m_geometry{ true }
-			, m_batch{ { GL_VERTEX_SHADER, read_file("data/shaders/strip.vert").c_str() }, { GL_FRAGMENT_SHADER, read_file("data/shaders/strip.frag").c_str() } }
-			, m_process{ { GL_VERTEX_SHADER, read_file("data/shaders/process.vert").c_str() }, { GL_FRAGMENT_SHADER, read_file("data/shaders/process.frag").c_str() } }
-			, m_blur{ { GL_VERTEX_SHADER, read_file("data/shaders/blur.vert").c_str() },{ GL_FRAGMENT_SHADER, read_file("data/shaders/blur.frag").c_str() } }
 		{
-			m_camera.block = gl_buffer{ GL_UNIFORM_BUFFER };
-			m_blur_sampling.block = gl_buffer{ GL_UNIFORM_BUFFER };
+			m_vertices = { GL_ARRAY_BUFFER };
+			m_camera.block = { GL_UNIFORM_BUFFER };
 
+			m_batch = { { GL_VERTEX_SHADER, read_file("data/shaders/strip.vert").c_str() },{ GL_FRAGMENT_SHADER, read_file("data/shaders/strip.frag").c_str() } };
 			m_batch.uniform_block("Camera", 0);
+
+			m_process = { { GL_VERTEX_SHADER, read_file("data/shaders/process.vert").c_str() },{ GL_FRAGMENT_SHADER, read_file("data/shaders/process.frag").c_str() } };
 			m_process.uniform("img", 0);
 
-			m_blur.uniform_block("BlurUniform", 0);
+			m_blur = { { GL_VERTEX_SHADER, read_file("data/shaders/blur.vert").c_str() },{ GL_FRAGMENT_SHADER, read_file("data/shaders/blur.frag").c_str() } };
+			m_blur.uniform_block("Blur", 0);
 			m_blur.uniform("img", 0);
 
-			m_colors.image2d(GL_RGBA32F, GL_RGBA, width, height);
+			m_albedo.image2d(GL_RGBA32F, GL_RGBA, width, height);
+			m_offscreen.texture(m_albedo, 0);
+
+			m_ping.texture.image2d(GL_RGBA32F, GL_RGBA, m_width, m_height);
+			m_ping.framebuffer.texture(m_ping.texture, 0);
+			m_pong.texture.image2d(GL_RGBA32F, GL_RGBA, m_width, m_height);
+			m_pong.framebuffer.texture(m_pong.texture, 0);
+
 			m_geometry.swizzle(m_vertices, sizeof(vertex), { GL_FLOAT, GL_FLOAT }, { 2, 3 }, { offsetof(vertex, pos), offsetof(vertex, color) });
-			m_offscreen.texture(m_colors, 0);
 
 			// static data
-			m_vertices.load(GL_STREAM_DRAW, sizeof(g_vertices), g_vertices);
+			m_vertices.load(GL_STATIC_DRAW, sizeof(g_vertices), g_vertices);
 
-			m_blur_sampling.data.multipliers[0].value0 = 1.0f / 16.0f;
-			m_blur_sampling.data.multipliers[1].value0 = 4.0f / 16.0f;
-			m_blur_sampling.data.multipliers[2].value0 = 6.0f / 16.0f;
-			m_blur_sampling.data.multipliers[3].value0 = 4.0f / 16.0f;
-			m_blur_sampling.data.multipliers[4].value0 = 1.0f / 16.0f;
+			// blur
+			auto dx = 1.0f / m_width;
+			auto dy = 1.0f / m_height;
+			m_blur_a.uniform.block = { GL_UNIFORM_BUFFER };
+			m_blur_b.uniform.block = { GL_UNIFORM_BUFFER };
+			m_blur_c.uniform.block = { GL_UNIFORM_BUFFER };
+			m_blur_a.uniform.data.bokeh = 0.5f;
+			m_blur_b.uniform.data.bokeh = 0.5f;
+			m_blur_c.uniform.data.bokeh = 0.5f;
+			m_blur_a.uniform.data.multipliers[0].value0 = 1.0f / 16.0f;
+			m_blur_a.uniform.data.multipliers[1].value0 = 4.0f / 16.0f;
+			m_blur_a.uniform.data.multipliers[2].value0 = 6.0f / 16.0f;
+			m_blur_a.uniform.data.multipliers[3].value0 = 4.0f / 16.0f;
+			m_blur_a.uniform.data.multipliers[4].value0 = 1.0f / 16.0f;
+			m_blur_b.uniform.data.multipliers[0].value0 = 1.0f / 16.0f;
+			m_blur_b.uniform.data.multipliers[1].value0 = 4.0f / 16.0f;
+			m_blur_b.uniform.data.multipliers[2].value0 = 6.0f / 16.0f;
+			m_blur_b.uniform.data.multipliers[3].value0 = 4.0f / 16.0f;
+			m_blur_b.uniform.data.multipliers[4].value0 = 1.0f / 16.0f;
+			m_blur_c.uniform.data.multipliers[0].value0 = 1.0f / 16.0f;
+			m_blur_c.uniform.data.multipliers[1].value0 = 4.0f / 16.0f;
+			m_blur_c.uniform.data.multipliers[2].value0 = 6.0f / 16.0f;
+			m_blur_c.uniform.data.multipliers[3].value0 = 4.0f / 16.0f;
+			m_blur_c.uniform.data.multipliers[4].value0 = 1.0f / 16.0f;
+
+			m_blur_a.uniform.data.direction = { dx * std::cos(0.000f), dy * std::sin(0.000f) };
+			m_blur_b.uniform.data.direction = { dx * std::cos(2.094f), dy * std::sin(2.094f) };
+			m_blur_c.uniform.data.direction = { dx * std::cos(4.188f), dy * std::sin(4.188f) };
+
+			m_blur_a.uniform.block.load(GL_STATIC_DRAW, m_blur_a.uniform.data);
+			m_blur_b.uniform.block.load(GL_STATIC_DRAW, m_blur_b.uniform.data);
+			m_blur_c.uniform.block.load(GL_STATIC_DRAW, m_blur_c.uniform.data);
+
+			m_blur_a.pass = gl_pass(m_ping.framebuffer, m_width, m_height);
+			m_blur_b.pass = gl_pass(m_pong.framebuffer, m_width, m_height);
+			m_blur_c.pass = gl_pass(m_ping.framebuffer, m_width, m_height);
+
+			m_blur_a.pass.uniform(m_blur_a.uniform.block);
+			m_blur_a.pass.texture(m_albedo);
+
+			m_blur_b.pass.uniform(m_blur_b.uniform.block);
+			m_blur_b.pass.texture(m_ping.texture);
+
+			m_blur_b.pass.uniform(m_blur_c.uniform.block);
+			m_blur_c.pass.texture(m_pong.texture);
 		}
 
 	private:
 		int m_width;
 		int m_height;
 
-		gl_texture m_colors;
+		gl_texture m_albedo;
+		gl_texture m_postprocess;
 		gl_framebuffer m_offscreen;
 
 		gl_buffer m_vertices;
@@ -154,19 +195,29 @@ namespace px
 
 		struct
 		{
-			gl_buffer block;
+			gl_framebuffer framebuffer;
+			gl_texture texture;
+		} m_ping, m_pong;
+
+		struct blur
+		{
+			gl_pass pass;
 			struct
 			{
-				struct entry
+				gl_buffer block;
+				struct uniform_layout
 				{
-					float value0;
-					glm::vec3 padding0; // std140 requires vec4 alignments
-				};
-				glm::vec2 direction;
-				glm::vec2 padding0;
-				std::array<entry, 5> multipliers;
-			} data;
-		} m_blur_sampling;
-
+					struct entry
+					{
+						glm::float32 value0;
+						glm::vec3 padding0; // std140 requires vec4 alignments
+					};
+					glm::vec2 direction;
+					glm::float32 bokeh;
+					glm::float32 padding0;
+					std::array<entry, 5> multipliers;
+				} data;
+			} uniform;
+		} m_blur_a, m_blur_b, m_blur_c;
 	};
 }

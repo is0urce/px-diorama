@@ -165,6 +165,7 @@
     <ClInclude Include="src\drm\renderer.hpp" />
     <ClInclude Include="src\px\common\logger.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
+    <ClInclude Include="src\px\rgl\gl_pass.hpp" />
     <ClInclude Include="src\px\rgl\gl_program.hpp" />
     <ClInclude Include="src\px\rgl\gl_shader.hpp" />
     <ClInclude Include="src\px\rgl\gl_texture.hpp" />
