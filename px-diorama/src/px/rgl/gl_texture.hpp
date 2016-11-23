@@ -15,30 +15,61 @@ namespace px
 		void swap(gl_texture & that) noexcept
 		{
 			std::swap(m_init, that.m_init);
+			std::swap(m_variant, that.m_variant);
 			std::swap(m_texture, that.m_texture);
 		}
 		operator GLuint() const noexcept
 		{
 			return m_texture;
 		}
-		void image2d(GLenum internal_format, GLenum format, GLenum data_type, GLsizei width, GLsizei height, int mipmap, void const* data)
+		void image2d(GLenum internal_format, GLenum format, GLsizei width, GLsizei height, int mipmap, GLenum data_type, void const* data)
 		{
-			init();
-			glBindTexture(GL_TEXTURE_2D, m_texture);
-			glTexImage2D(GL_TEXTURE_2D, mipmap, internal_format, width, height, 0, format, data_type, data);
+			init(GL_TEXTURE_2D);
+			glBindTexture(m_variant, m_texture);
+			glTexImage2D(m_variant, mipmap, internal_format, width, height, 0, format, data_type, data);
 		}
-		void init()
+		void image2d(GLenum internal_format, GLenum format, GLsizei width, GLsizei height, int mipmap)
 		{
+			image2d(internal_format, format, width, height, mipmap, GL_UNSIGNED_BYTE, nullptr);
+		}
+		void image2d(GLenum internal_format, GLenum format, GLsizei width, GLsizei height)
+		{
+			image2d(internal_format, format, width, height, 0);
+		}
+		void init(GLenum variant)
+		{
+			if (m_variant != variant)
+			{
+				release();
+			}
+
 			if (!m_init)
 			{
 				glGenTextures(1, &m_texture);
-				glBindTexture(GL_TEXTURE_2D, m_texture);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glBindTexture(variant, m_texture);
+
+				m_variant = variant;
 				m_init = true;
+
+				if (variant == GL_TEXTURE_2D)
+				{
+					filters(GL_LINEAR, GL_LINEAR);
+					wrap(GL_CLAMP);
+				}
 			}
+		}
+		void filters(GLenum mag, GLenum min)
+		{
+			glBindTexture(m_variant, m_texture);
+			glTexParameteri(m_variant, GL_TEXTURE_MAG_FILTER, mag);
+			glTexParameteri(m_variant, GL_TEXTURE_MIN_FILTER, min);
+		}
+		void wrap(GLenum wrap)
+		{
+			glBindTexture(m_variant, m_texture);
+			glTexParameteri(m_variant, GL_TEXTURE_WRAP_S, wrap);
+			glTexParameteri(m_variant, GL_TEXTURE_WRAP_T, wrap);
+
 		}
 		void release()
 		{
@@ -46,22 +77,22 @@ namespace px
 			{
 				glDeleteTextures(1, &m_texture);
 				m_init = false;
+				m_variant = GL_INVALID_ENUM;
+				m_texture = 0;
 			}
 		}
 
 	public:
 		gl_texture() noexcept
 			: m_texture(0)
+			, m_variant(GL_INVALID_ENUM)
 			, m_init(false)
 		{
 		}
-		gl_texture(bool create) noexcept
+		gl_texture(GLenum variant) noexcept
 			: gl_texture()
 		{
-			if (create)
-			{
-				init();
-			}
+			init(variant);
 		}
 		gl_texture(gl_texture && that) noexcept
 			: gl_texture()
@@ -82,6 +113,7 @@ namespace px
 
 	private:
 		bool m_init;
+		GLenum m_variant;
 		GLuint m_texture;
 	};
 }

@@ -162,6 +162,7 @@
     <ClCompile Include="src\drm\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\drm\renderer.hpp" />
     <ClInclude Include="src\px\common\logger.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
     <ClInclude Include="src\px\rgl\gl_program.hpp" />

@@ -15,46 +15,39 @@ namespace px
 	public:
 		operator GLuint() const noexcept
 		{
-			return m_vbo[0];
-		}
-		GLuint operator[](size_t index) const
-		{
-			return m_vbo[index];
+			return m_vbo;
 		}
 		void swap(gl_vbo & vbo)
 		{
-			std::swap(m_count, vbo.m_count);
+			std::swap(m_init, vbo.m_init);
 			std::swap(m_vbo, vbo.m_vbo);
 		}
 
-		void load(size_t index, GLenum target, GLenum usage, GLsizeiptr size, void const* memory)
-		{
-			glBindBuffer(target, m_vbo[index]);
-			glBufferData(target, size, memory, usage);
-		}
 		void load(GLenum target, GLenum usage, GLsizeiptr size, void const* memory)
 		{
-			load(0, target, usage, size, memory);
+			glBindBuffer(target, m_vbo);
+			glBufferData(target, size, memory, usage);
+		}
+
+		template <typename Structure>
+		void load(GLenum target, GLenum usage, Structure const& pod)
+		{
+			load(target, usage, sizeof(&pod), &pod);
 		}
 
 	public:
 		gl_vbo() noexcept
-			: m_count(0)
+			: m_init(false)
 		{
-		}
-		gl_vbo(GLsizei n)
-			: gl_vbo()
-		{
-			if (n != 0)
-			{
-				m_count = n;
-				m_vbo.assign(n, 0);
-				glCreateBuffers(n, m_vbo.data());
-			}
 		}
 		gl_vbo(bool create)
-			: gl_vbo(create ? 1 : 0)
+			: gl_vbo()
 		{
+			if (create)
+			{
+				glCreateBuffers(1, &m_vbo);
+				m_init = true;
+			}
 		}
 		gl_vbo(gl_vbo && vbo) noexcept
 			: gl_vbo()
@@ -70,14 +63,14 @@ namespace px
 		gl_vbo& operator=(gl_vbo const&) = delete;
 		~gl_vbo()
 		{
-			if (m_count != 0)
+			if (m_init)
 			{
-				glDeleteBuffers(m_count, m_vbo.data());
+				glDeleteBuffers(1, &m_vbo);
 			}
 		}
 
 	private:
-		GLsizei m_count;
-		std::vector<GLuint> m_vbo;
+		bool m_init;
+		GLuint m_vbo;
 	};
 }

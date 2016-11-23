@@ -33,6 +33,15 @@ namespace px
 		{
 			uniform_block(glGetUniformBlockIndex(m_program, name), binding);
 		}
+		void uniform(GLint location, GLint value0)
+		{
+			glUseProgram(m_program);
+			glUniform1i(location, value0);
+		}
+		void uniform(GLchar const* name, GLint value0)
+		{
+			uniform(glGetUniformLocation(m_program, name), value0);
+		}
 
 	public:
 		gl_program() noexcept

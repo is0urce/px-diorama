@@ -25,6 +25,7 @@ namespace px
 			return m_shader;
 		}
 
+	public:
 		gl_shader() noexcept
 			: m_shader(0)
 			, m_init(false)
@@ -51,7 +52,7 @@ namespace px
 				std::vector<GLchar> log(len + 1, 0);
 				glGetShaderInfoLog(m_shader, len, NULL, &log[0]);
 
-				throw std::runtime_error(std::string("shader error:\n") + log.data());
+				throw std::runtime_error(std::string("px::gl_shader::ctor() shader error:\n") + log.data());
 			}
 		}
 		gl_shader(gl_shader && shader) noexcept

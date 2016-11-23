@@ -31,8 +31,8 @@ vec2 translate(vec3 r) // r is for refraction
 
 void main()
 {
+    float r = seek(vec2(1.001, 1.001), vec2(-0.001, -0.001)).r;
     float g = seek(vec2(1.0, 1.0), vec2(0.001, 0.001)).g;
-    float r = seek(vec2(1.001, 1.001), vec2(-0.001, -0.001)).r; 
 	float b = seek(vec2(0.999, 0.999), vec2(0.001, 0.0)).b;
 
     fragColor = vec4(r, g, b, 1.0);
