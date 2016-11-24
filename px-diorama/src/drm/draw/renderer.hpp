@@ -4,13 +4,11 @@
 // desc: rendering procedures
 
 #define GLM_FORCE_RADIANS
-#pragma warning(push)	// disable for this header only & restore original warning level
-#pragma warning(disable:4201) // unnamed unions for rgba and xyzw in glm library
+#pragma warning(push)
+#pragma warning(disable:4201) // warning C4201: nonstandard extension used: nameless struct/union
 #include <glm/glm.hpp>
 #pragma warning(pop)
 
-#include <px/common/logger.hpp>
-#include <px/rgl/gl_shader.hpp>
 #include <px/rgl/gl_program.hpp>
 #include <px/rgl/gl_buffer.hpp>
 #include <px/rgl/gl_vao.hpp>
@@ -18,35 +16,26 @@
 #include <px/rgl/gl_framebuffer.hpp>
 #include <px/rgl/gl_pass.hpp>
 
+#include "program.hpp"
+#include "blur.hpp"
+
 #include <array>
 #include <stdexcept>
-#include <fstream>
 #include <string>
-#include <sstream>
 #include <vector>
+
+static const struct triangle // keep around fallback to "don't fear the darkness" mode
+{
+	glm::vec2 pos;
+	glm::vec3 color;
+} g_vertices[3]{
+	{ { -0.6f, -0.4f },{ 1.f, 1.f, 0.f } },
+	{ { 0.6f, -0.4f },{ 0.f, 1.f, 1.f } },
+	{ { 0.f,  0.6f },{ 1.f, 0.f, 1.f } }
+};
 
 namespace px
 {
-	inline std::string read_file(std::string name)
-	{
-		std::ifstream stream;
-		stream.open(name);
-
-		std::stringstream ss;
-		ss << stream.rdbuf();
-		return ss.str();
-	}
-
-	static const struct triangle
-	{
-		glm::vec2 pos;
-		glm::vec3 color;
-	} g_vertices[3]{
-		{ { -0.6f, -0.4f },{ 1.f, 1.f, 0.f } },
-		{ { 0.6f, -0.4f },{ 0.f, 1.f, 1.f } },
-		{ { 0.f,  0.6f },{ 1.f, 0.f, 1.f } }
-	};
-
 	struct vertex
 	{
 		glm::vec2 pos;
@@ -109,13 +98,13 @@ namespace px
 
 			// pipeline
 
-			m_batch = { { GL_VERTEX_SHADER, read_file("data/shaders/strip.vert").c_str() },{ GL_FRAGMENT_SHADER, read_file("data/shaders/strip.frag").c_str() } };
+			m_batch = compile_program("data/shaders/strip");
 			m_batch.uniform_block("Camera", 0);
 
-			m_process = { { GL_VERTEX_SHADER, read_file("data/shaders/process.vert").c_str() },{ GL_FRAGMENT_SHADER, read_file("data/shaders/process.frag").c_str() } };
+			m_process = compile_program("data/shaders/process");
 			m_process.uniform("img", 0);
 
-			m_blur = { { GL_VERTEX_SHADER, read_file("data/shaders/blur.vert").c_str() },{ GL_FRAGMENT_SHADER, read_file("data/shaders/blur.frag").c_str() } };
+			m_blur = compile_program("data/shaders/blur");
 			m_blur.uniform_block("Blur", 0);
 			m_blur.uniform("img", 0);
 
@@ -173,7 +162,7 @@ namespace px
 		}
 		void load_texture(unsigned int width, unsigned int height, void const* data)
 		{
-			if (!data) throw std::runtime_error("px::renderer::add_texture(...) - data is null");
+			if (!data) throw std::runtime_error("px::renderer::load_texture(...) - data is null");
 
 			m_batches.emplace_back();
 			auto & batch = m_batches.back();
@@ -199,7 +188,7 @@ namespace px
 		gl_texture m_albedo;
 		gl_framebuffer m_offscreen;
 
-		struct
+		struct offscreen
 		{
 			gl_framebuffer framebuffer;
 			gl_texture texture;
@@ -224,7 +213,7 @@ namespace px
 			} data;
 		} m_camera;
 
-		struct blur
+		struct blur_struct
 		{
 			gl_pass pass;
 			struct
@@ -246,5 +235,7 @@ namespace px
 		} m_blur_a, m_blur_b, m_blur_c;
 
 		gl_pass m_postprocess;
+
+		//blur 
 	};
 }

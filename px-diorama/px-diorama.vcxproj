@@ -163,9 +163,11 @@
     <ClCompile Include="src\drm\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\drm\draw\blur.hpp" />
+    <ClInclude Include="src\drm\draw\program.hpp" />
     <ClInclude Include="src\drm\glfw_instance.hpp" />
     <ClInclude Include="src\drm\lodepng.h" />
-    <ClInclude Include="src\drm\renderer.hpp" />
+    <ClInclude Include="src\drm\draw\renderer.hpp" />
     <ClInclude Include="src\px\common\logger.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
     <ClInclude Include="src\px\rgl\gl_pass.hpp" />

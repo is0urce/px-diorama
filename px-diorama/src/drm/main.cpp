@@ -10,7 +10,7 @@
 #include "lodepng.h"
 
 #include "glfw_instance.hpp"
-#include "renderer.hpp"
+#include "draw/renderer.hpp"
 #include <px/common/logger.hpp>
 
 #include <stdexcept>
