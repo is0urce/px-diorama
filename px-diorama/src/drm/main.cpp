@@ -47,7 +47,7 @@ int main() // application starts here
 				unsigned int width, height;
 				unsigned int error = lodepng::decode(image, width, height, "data/img/dtc.png");
 				if (error) throw std::runtime_error(std::string("decoder error ") + std::to_string(error) + std::string(": ") + std::string(lodepng_error_text(error)));
-				graphics.load_texture(32, 23, image.data());
+				graphics.load_texture(width, height, image.data());
 			}
 
 			glfwSetKeyCallback(window, key_callback);

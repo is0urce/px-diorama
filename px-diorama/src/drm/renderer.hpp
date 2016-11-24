@@ -27,7 +27,7 @@
 
 namespace px
 {
-	std::string read_file(std::string name)
+	inline std::string read_file(std::string name)
 	{
 		std::ifstream stream;
 		stream.open(name);
@@ -37,7 +37,7 @@ namespace px
 		return ss.str();
 	}
 
-	static const struct vertex
+	static const struct triangle
 	{
 		glm::vec2 pos;
 		glm::vec3 color;
@@ -47,6 +47,12 @@ namespace px
 		{ { 0.f,  0.6f },{ 1.f, 0.f, 1.f } }
 	};
 
+	struct vertex
+	{
+		glm::vec2 pos;
+		glm::vec2 texture;
+	};
+
 	class renderer
 	{
 	public:
@@ -54,10 +60,7 @@ namespace px
 		{
 #if _DEBUG
 			GLenum err = GL_NO_ERROR;
-			while ((err = glGetError()) != GL_NO_ERROR)
-			{
-				throw std::runtime_error("OpenGL error #" + std::to_string(err) + reinterpret_cast<char const*>(glewGetErrorString(err)));
-			}
+			while ((err = glGetError()) != GL_NO_ERROR)	throw std::runtime_error("OpenGL error #" + std::to_string(err) + reinterpret_cast<char const*>(glewGetErrorString(err)));
 #endif
 			// prepare data
 			m_camera.data = { { 1.2f, 1.2f },{ 0.0, 0.0 } };
@@ -90,8 +93,21 @@ namespace px
 			: m_width(width), m_height(height)
 			, m_geometry{ true }
 		{
-			m_vertices = { GL_ARRAY_BUFFER };
+			m_trices = { GL_ARRAY_BUFFER };
 			m_camera.block = { GL_UNIFORM_BUFFER };
+
+			m_albedo.image2d(GL_RGBA32F, GL_RGBA, width, height);
+			m_offscreen.texture(m_albedo, 0);
+
+			m_ping.texture.image2d(GL_RGBA32F, GL_RGBA, m_width, m_height);
+			m_ping.framebuffer.texture(m_ping.texture, 0);
+			m_pong.texture.image2d(GL_RGBA32F, GL_RGBA, m_width, m_height);
+			m_pong.framebuffer.texture(m_pong.texture, 0);
+
+			m_trices.load(GL_STATIC_DRAW, sizeof(g_vertices), g_vertices);
+			m_geometry.swizzle(m_trices, sizeof(triangle), { GL_FLOAT, GL_FLOAT }, { 2, 3 }, { offsetof(triangle, pos), offsetof(triangle, color) });
+
+			// pipeline
 
 			m_batch = { { GL_VERTEX_SHADER, read_file("data/shaders/strip.vert").c_str() },{ GL_FRAGMENT_SHADER, read_file("data/shaders/strip.frag").c_str() } };
 			m_batch.uniform_block("Camera", 0);
@@ -102,19 +118,6 @@ namespace px
 			m_blur = { { GL_VERTEX_SHADER, read_file("data/shaders/blur.vert").c_str() },{ GL_FRAGMENT_SHADER, read_file("data/shaders/blur.frag").c_str() } };
 			m_blur.uniform_block("Blur", 0);
 			m_blur.uniform("img", 0);
-
-			m_albedo.image2d(GL_RGBA32F, GL_RGBA, width, height);
-			m_offscreen.texture(m_albedo, 0);
-
-			m_ping.texture.image2d(GL_RGBA32F, GL_RGBA, m_width, m_height);
-			m_ping.framebuffer.texture(m_ping.texture, 0);
-			m_pong.texture.image2d(GL_RGBA32F, GL_RGBA, m_width, m_height);
-			m_pong.framebuffer.texture(m_pong.texture, 0);
-
-			// geometry
-
-			m_vertices.load(GL_STATIC_DRAW, sizeof(g_vertices), g_vertices);
-			m_geometry.swizzle(m_vertices, sizeof(vertex), { GL_FLOAT, GL_FLOAT }, { 2, 3 }, { offsetof(vertex, pos), offsetof(vertex, color) });
 
 			// blur pass
 
@@ -168,27 +171,48 @@ namespace px
 			m_postprocess.viewport(m_width, m_height);
 			m_postprocess.bind_texture(m_ping.texture);
 		}
-		void load_texture(int width, int height, void const* data)
+		void load_texture(unsigned int width, unsigned int height, void const* data)
 		{
 			if (!data) throw std::runtime_error("px::renderer::add_texture(...) - data is null");
 
-			m_textures.emplace_back(GL_TEXTURE_2D);
-			m_textures.back().image2d(GL_RGBA, GL_RGBA, width, height, 0, GL_UNSIGNED_BYTE, data);
+			m_batches.emplace_back();
+			auto & batch = m_batches.back();
+			batch.pass = { m_offscreen, m_width, m_height };
+			batch.vertices = { GL_ARRAY_BUFFER };
+			batch.geometry = { true };
+			batch.geometry.swizzle(batch.vertices, sizeof(vertex), { GL_FLOAT, GL_FLOAT }, { 2, 2 }, { offsetof(vertex, pos), offsetof(vertex, texture) });
+			batch.texture.image2d(GL_RGBA, GL_RGBA, width, height, 0, GL_UNSIGNED_BYTE, data); // actual loading
+			batch.pass.bind_texture(batch.texture);
 		}
 
 	private:
 		int m_width;
 		int m_height;
 
-		gl_buffer m_vertices;
+		gl_program m_batch;
+		gl_program m_blur;
+		gl_program m_process;
+
+		gl_buffer m_trices;
 		gl_vao m_geometry;
 
 		gl_texture m_albedo;
 		gl_framebuffer m_offscreen;
 
-		gl_program m_batch;
-		gl_program m_blur;
-		gl_program m_process;
+		struct
+		{
+			gl_framebuffer framebuffer;
+			gl_texture texture;
+		} m_ping, m_pong;
+
+		struct batch
+		{
+			gl_buffer vertices;
+			gl_vao geometry;
+			gl_texture texture;
+			gl_pass pass;
+		};
+		std::vector<batch> m_batches;
 
 		struct
 		{
@@ -199,12 +223,6 @@ namespace px
 				glm::vec2 offset;
 			} data;
 		} m_camera;
-
-		struct
-		{
-			gl_framebuffer framebuffer;
-			gl_texture texture;
-		} m_ping, m_pong;
 
 		struct blur
 		{
@@ -228,7 +246,5 @@ namespace px
 		} m_blur_a, m_blur_b, m_blur_c;
 
 		gl_pass m_postprocess;
-
-		std::vector<gl_texture> m_textures;
 	};
 }
