@@ -71,19 +71,13 @@ namespace px
 			glBindVertexArray(m_geometry);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 
-			// blur
 			glUseProgram(m_blur);
-			m_blur_a.pass.draw(GL_QUADS, 4);
-			m_blur_b.pass.draw(GL_QUADS, 4);
-			m_blur_c.pass.draw(GL_QUADS, 4);
+			m_blur_a.pass.draw_arrays(GL_QUADS, 4);
+			m_blur_b.pass.draw_arrays(GL_QUADS, 4);
+			m_blur_c.pass.draw_arrays(GL_QUADS, 4);
 
-			// postprocess
 			glUseProgram(m_process);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-			glViewport(0, 0, m_width, m_height);
-			glActiveTexture(GL_TEXTURE0 + 0);
-			glBindTexture(GL_TEXTURE_2D, m_ping.texture);
-			glDrawArrays(GL_QUADS, 0, 4);
+			m_postprocess.draw_arrays(GL_QUADS, 4);
 		}
 		void resize(int width, int height)
 		{
@@ -117,14 +111,13 @@ namespace px
 			m_pong.texture.image2d(GL_RGBA32F, GL_RGBA, m_width, m_height);
 			m_pong.framebuffer.texture(m_pong.texture, 0);
 
+			// geometry
+
+			m_vertices.load(GL_STATIC_DRAW, sizeof(g_vertices), g_vertices);
 			m_geometry.swizzle(m_vertices, sizeof(vertex), { GL_FLOAT, GL_FLOAT }, { 2, 3 }, { offsetof(vertex, pos), offsetof(vertex, color) });
 
-			// static data
-			m_vertices.load(GL_STATIC_DRAW, sizeof(g_vertices), g_vertices);
+			// blur pass
 
-			// blur
-			auto dx = 1.0f / m_width;
-			auto dy = 1.0f / m_height;
 			m_blur_a.uniform.block = { GL_UNIFORM_BUFFER };
 			m_blur_b.uniform.block = { GL_UNIFORM_BUFFER };
 			m_blur_c.uniform.block = { GL_UNIFORM_BUFFER };
@@ -147,9 +140,11 @@ namespace px
 			m_blur_c.uniform.data.multipliers[3].value0 = 4.0f / 16.0f;
 			m_blur_c.uniform.data.multipliers[4].value0 = 1.0f / 16.0f;
 
-			m_blur_a.uniform.data.direction = { dx * std::cos(0.000f), dy * std::sin(0.000f) };
-			m_blur_b.uniform.data.direction = { dx * std::cos(2.094f), dy * std::sin(2.094f) };
-			m_blur_c.uniform.data.direction = { dx * std::cos(4.188f), dy * std::sin(4.188f) };
+			auto dx = 1.0f / m_width; // one pixel
+			auto dy = 1.0f / m_height;
+			m_blur_a.uniform.data.direction = { dx * std::cos(0.000f), dy * std::sin(0.000f) }; // 0 degs
+			m_blur_b.uniform.data.direction = { dx * std::cos(2.094f), dy * std::sin(2.094f) }; // 120
+			m_blur_c.uniform.data.direction = { dx * std::cos(4.188f), dy * std::sin(4.188f) }; // 240
 
 			m_blur_a.uniform.block.load(GL_STATIC_DRAW, m_blur_a.uniform.data);
 			m_blur_b.uniform.block.load(GL_STATIC_DRAW, m_blur_b.uniform.data);
@@ -159,29 +154,41 @@ namespace px
 			m_blur_b.pass = gl_pass(m_pong.framebuffer, m_width, m_height);
 			m_blur_c.pass = gl_pass(m_ping.framebuffer, m_width, m_height);
 
-			m_blur_a.pass.uniform(m_blur_a.uniform.block);
-			m_blur_a.pass.texture(m_albedo);
+			m_blur_a.pass.bind_uniform(m_blur_a.uniform.block);
+			m_blur_a.pass.bind_texture(m_albedo);
 
-			m_blur_b.pass.uniform(m_blur_b.uniform.block);
-			m_blur_b.pass.texture(m_ping.texture);
+			m_blur_b.pass.bind_uniform(m_blur_b.uniform.block);
+			m_blur_b.pass.bind_texture(m_ping.texture);
 
-			m_blur_b.pass.uniform(m_blur_c.uniform.block);
-			m_blur_c.pass.texture(m_pong.texture);
+			m_blur_b.pass.bind_uniform(m_blur_c.uniform.block);
+			m_blur_c.pass.bind_texture(m_pong.texture);
+
+			// postprocess pass
+
+			m_postprocess.viewport(m_width, m_height);
+			m_postprocess.bind_texture(m_ping.texture);
+		}
+		void load_texture(int width, int height, void const* data)
+		{
+			if (!data) throw std::runtime_error("px::renderer::add_texture(...) - data is null");
+
+			m_textures.emplace_back(GL_TEXTURE_2D);
+			m_textures.back().image2d(GL_RGBA, GL_RGBA, width, height, 0, GL_UNSIGNED_BYTE, data);
 		}
 
 	private:
 		int m_width;
 		int m_height;
 
-		gl_texture m_albedo;
-		gl_texture m_postprocess;
-		gl_framebuffer m_offscreen;
-
 		gl_buffer m_vertices;
 		gl_vao m_geometry;
+
+		gl_texture m_albedo;
+		gl_framebuffer m_offscreen;
+
 		gl_program m_batch;
-		gl_program m_process;
 		gl_program m_blur;
+		gl_program m_process;
 
 		struct
 		{
@@ -219,5 +226,9 @@ namespace px
 				} data;
 			} uniform;
 		} m_blur_a, m_blur_b, m_blur_c;
+
+		gl_pass m_postprocess;
+
+		std::vector<gl_texture> m_textures;
 	};
 }

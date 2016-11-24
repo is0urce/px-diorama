@@ -7,6 +7,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "lodepng.h"
+
 #include <px/common/logger.hpp>
 
 #include "renderer.hpp"
@@ -68,6 +70,11 @@ int main()
 			glfwSwapInterval(1); // vsync on
 
 			px::renderer graphics(800, 600);
+			std::vector<unsigned char> image;
+			unsigned int width, height;
+			unsigned int error = lodepng::decode(image, width, height, "data/img/dtc.png");
+			if (error) throw std::runtime_error(std::string("decoder error ") + std::to_string(error) + std::string(": ") + std::string(lodepng_error_text(error)));
+			graphics.load_texture(32, 23, image.data());
 
 			// main loop
 			while (!glfwWindowShouldClose(window))

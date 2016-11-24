@@ -8,7 +8,8 @@ uniform sampler2D img;
 layout(std140) uniform Blur
 {
 	vec2 direction;
-	vec2 bokeh;
+	float bokeh;
+	float reserve;
 	float multipliers[5];
 } blur;
 
@@ -31,5 +32,5 @@ void main()
 		maximum = max(maximum, color);
 	}
 
-    fragColor = mix(sum, maximum, blur.bokeh.x);
+    fragColor = mix(sum, maximum, blur.bokeh);
 }

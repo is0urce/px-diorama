@@ -159,9 +159,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\drm\lodepng.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\drm\lodepng.h" />
     <ClInclude Include="src\drm\renderer.hpp" />
     <ClInclude Include="src\px\common\logger.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />

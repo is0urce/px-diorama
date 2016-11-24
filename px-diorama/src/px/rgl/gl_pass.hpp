@@ -35,19 +35,19 @@ namespace px
 			m_width = width;
 			m_height = height;
 		}
-		void texture(GLuint texture, GLuint index)
+		void bind_texture(GLuint texture, GLuint index)
 		{
 			m_textures.push_back({ index, texture });
 		}
-		void texture(GLuint texture)
+		void bind_texture(GLuint texture)
 		{
 			m_textures.push_back({ 0, texture });
 		}
-		void uniform(GLuint ubo, GLuint index)
+		void bind_uniform(GLuint ubo, GLuint index)
 		{
 			m_uniforms.push_back({ index, ubo });
 		}
-		void uniform(GLuint ubo)
+		void bind_uniform(GLuint ubo)
 		{
 			m_uniforms.push_back({ 0, ubo });
 		}
@@ -67,14 +67,14 @@ namespace px
 				glBindTexture(GL_TEXTURE_2D, m_textures[i].element);
 			}
 		}
-		void draw(GLenum mode, GLsizei count, GLint first)
+		void draw_arrays(GLenum mode, GLsizei count, GLint first)
 		{
 			bind();
 			glDrawArrays(mode, first, count);
 		}
-		void draw(GLenum mode, GLsizei count)
+		void draw_arrays(GLenum mode, GLsizei count)
 		{
-			draw(mode, count, 0);
+			draw_arrays(mode, count, 0);
 		}
 
 	public:
@@ -93,6 +93,10 @@ namespace px
 		}
 		gl_pass(GLuint framebuffer) noexcept
 			: gl_pass(framebuffer, 0, 0)
+		{
+		}
+		gl_pass(GLsizei width, GLsizei height) noexcept
+			: gl_pass(0, width, height)
 		{
 		}
 		gl_pass(gl_pass const&) = delete;
