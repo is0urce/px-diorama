@@ -45,6 +45,9 @@
     <ClInclude Include="src\drm\lodepng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\glfw_instance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -61,5 +64,6 @@
     <None Include="data\shaders\process.vert" />
     <None Include="data\shaders\blur.vert" />
     <None Include="data\shaders\blur.frag" />
+    <None Include="data\config.json" />
   </ItemGroup>
 </Project>

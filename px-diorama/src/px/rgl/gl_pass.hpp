@@ -57,14 +57,14 @@ namespace px
 		{
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_framebuffer);
 			glViewport(0, 0, m_width, m_height);
-			for (size_t i = 0, size = m_uniforms.size(); i != size; ++i)
+			for (auto const& uniform : m_uniforms)
 			{
-				glBindBufferBase(GL_UNIFORM_BUFFER, m_uniforms[i].binding, m_uniforms[i].element);
+				glBindBufferBase(GL_UNIFORM_BUFFER, uniform.binding, uniform.element);
 			}
-			for (size_t i = 0, size = m_textures.size(); i != size; ++i)
+			for (auto const& texture : m_textures)
 			{
-				glActiveTexture(GL_TEXTURE0 + m_textures[i].binding);
-				glBindTexture(GL_TEXTURE_2D, m_textures[i].element);
+				glActiveTexture(GL_TEXTURE0 + texture.binding);
+				glBindTexture(GL_TEXTURE_2D, texture.element);
 			}
 		}
 		void draw_arrays(GLenum mode, GLsizei count, GLint first)
