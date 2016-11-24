@@ -64,9 +64,7 @@ namespace px
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 
 			glUseProgram(m_blur);
-			m_blur_a.pass.draw_arrays(GL_QUADS, 4);
-			m_blur_b.pass.draw_arrays(GL_QUADS, 4);
-			m_blur_c.pass.draw_arrays(GL_QUADS, 4);
+			m_blur_passes.draw_arrays(GL_QUADS, 4);
 
 			glUseProgram(m_process);
 			m_postprocess.draw_arrays(GL_QUADS, 4);
@@ -108,57 +106,12 @@ namespace px
 			m_blur.uniform_block("Blur", 0);
 			m_blur.uniform("img", 0);
 
-			// blur pass
+			// passes
 
-			m_blur_a.uniform.block = { GL_UNIFORM_BUFFER };
-			m_blur_b.uniform.block = { GL_UNIFORM_BUFFER };
-			m_blur_c.uniform.block = { GL_UNIFORM_BUFFER };
-			m_blur_a.uniform.data.bokeh = 0.5f;
-			m_blur_b.uniform.data.bokeh = 0.5f;
-			m_blur_c.uniform.data.bokeh = 0.5f;
-			m_blur_a.uniform.data.multipliers[0].value0 = 1.0f / 16.0f;
-			m_blur_a.uniform.data.multipliers[1].value0 = 4.0f / 16.0f;
-			m_blur_a.uniform.data.multipliers[2].value0 = 6.0f / 16.0f;
-			m_blur_a.uniform.data.multipliers[3].value0 = 4.0f / 16.0f;
-			m_blur_a.uniform.data.multipliers[4].value0 = 1.0f / 16.0f;
-			m_blur_b.uniform.data.multipliers[0].value0 = 1.0f / 16.0f;
-			m_blur_b.uniform.data.multipliers[1].value0 = 4.0f / 16.0f;
-			m_blur_b.uniform.data.multipliers[2].value0 = 6.0f / 16.0f;
-			m_blur_b.uniform.data.multipliers[3].value0 = 4.0f / 16.0f;
-			m_blur_b.uniform.data.multipliers[4].value0 = 1.0f / 16.0f;
-			m_blur_c.uniform.data.multipliers[0].value0 = 1.0f / 16.0f;
-			m_blur_c.uniform.data.multipliers[1].value0 = 4.0f / 16.0f;
-			m_blur_c.uniform.data.multipliers[2].value0 = 6.0f / 16.0f;
-			m_blur_c.uniform.data.multipliers[3].value0 = 4.0f / 16.0f;
-			m_blur_c.uniform.data.multipliers[4].value0 = 1.0f / 16.0f;
+			m_blur_passes = { m_albedo, m_ping.framebuffer, m_ping.texture, m_pong.framebuffer, m_pong.texture, m_width, m_height, 0.5f, { 0.0f, 2.0f, 4.0f } };
 
-			auto dx = 1.0f / m_width; // one pixel
-			auto dy = 1.0f / m_height;
-			m_blur_a.uniform.data.direction = { dx * std::cos(0.000f), dy * std::sin(0.000f) }; // 0 degs
-			m_blur_b.uniform.data.direction = { dx * std::cos(2.094f), dy * std::sin(2.094f) }; // 120
-			m_blur_c.uniform.data.direction = { dx * std::cos(4.188f), dy * std::sin(4.188f) }; // 240
-
-			m_blur_a.uniform.block.load(GL_STATIC_DRAW, m_blur_a.uniform.data);
-			m_blur_b.uniform.block.load(GL_STATIC_DRAW, m_blur_b.uniform.data);
-			m_blur_c.uniform.block.load(GL_STATIC_DRAW, m_blur_c.uniform.data);
-
-			m_blur_a.pass = gl_pass(m_ping.framebuffer, m_width, m_height);
-			m_blur_b.pass = gl_pass(m_pong.framebuffer, m_width, m_height);
-			m_blur_c.pass = gl_pass(m_ping.framebuffer, m_width, m_height);
-
-			m_blur_a.pass.bind_uniform(m_blur_a.uniform.block);
-			m_blur_a.pass.bind_texture(m_albedo);
-
-			m_blur_b.pass.bind_uniform(m_blur_b.uniform.block);
-			m_blur_b.pass.bind_texture(m_ping.texture);
-
-			m_blur_b.pass.bind_uniform(m_blur_c.uniform.block);
-			m_blur_c.pass.bind_texture(m_pong.texture);
-
-			// postprocess pass
-
-			m_postprocess.viewport(m_width, m_height);
-			m_postprocess.bind_texture(m_ping.texture);
+			m_postprocess = { 0, m_width, m_height };
+			m_postprocess.bind_texture(m_blur_passes.result());
 		}
 		void load_texture(unsigned int width, unsigned int height, void const* data)
 		{
@@ -213,29 +166,7 @@ namespace px
 			} data;
 		} m_camera;
 
-		struct blur_struct
-		{
-			gl_pass pass;
-			struct
-			{
-				gl_buffer block;
-				struct uniform_layout
-				{
-					struct entry
-					{
-						glm::float32 value0;
-						glm::vec3 padding0; // std140 requires vec4 alignments
-					};
-					glm::vec2 direction;
-					glm::float32 bokeh;
-					glm::float32 padding0;
-					std::array<entry, 5> multipliers;
-				} data;
-			} uniform;
-		} m_blur_a, m_blur_b, m_blur_c;
-
+		blur<3, 2> m_blur_passes;
 		gl_pass m_postprocess;
-
-		//blur 
 	};
 }
