@@ -12,8 +12,7 @@
 #include <px/rgl/gl_framebuffer.hpp>
 #include <px/rgl/gl_pass.hpp>
 
-#include <algorithm>
-#include <numeric>
+#include <cmath>
 #include <array>
 #include <vector>
 
@@ -75,13 +74,13 @@ namespace px
 				m_stages[i].block.load(GL_STATIC_DRAW, m_stages[i].data);
 
 				// pass
-				m_stages[i].pass = gl_pass(i % 2 == 0 ? framebuffer0 : framebuffer1, m_width, m_height);
+				m_stages[i].pass = gl_pass(i % 2 == 0 ? framebuffer0 : framebuffer1, 0, m_width, m_height);
 
 				m_stages[i].pass.bind_uniform(m_stages[i].block);
 				m_stages[i].pass.bind_texture(i == 0 ? texture_start : ((i % 2 == 0) ? albedo1 : albedo0)); // alternating ping-pong
 			}
 
-			m_result = Stages % 2 == 0 ? albedo0 : albedo1;
+			m_result = Stages % 2 == 0 ? albedo1 : albedo0;
 		}
 
 	private:
@@ -106,10 +105,10 @@ namespace px
 				}
 			}
 
-			unsigned int total = 1 << (2 * SampleRange + 1);
+			auto total = std::pow(2.0f, 2 * SampleRange);
 			for (size_t i = 0; i <= SampleRange; ++i)
 			{
-				multipliers[i].value0 = static_cast<float>(first[i]) / static_cast<float>(total);
+				multipliers[i].value0 = first[i] / static_cast<float>(total);
 			}
 		}
 

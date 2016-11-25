@@ -35,15 +35,15 @@ void main()
 	float b = seek(vec2(0.999, 0.999), vec2(0.001, 0.0)).b;
 	
 	const float inverted_gamma = 1 / 2.2;
-	const float exposure = 11111110.0001;
+	const float exposure = 1.0;
 
     vec3 chroma = vec3(r, g, b);
 
     // tone map
-    //vec3 result = vec3(1.0) - exp(-chroma * exposure);
+    vec3 result = vec3(1.0) - exp(-chroma * exposure);
 
     // gamma
-    //result = pow(result, vec3(inverted_gamma));
+    result = pow(result, vec3(inverted_gamma));
 
     fragColor = vec4(r, g, b, 1.0);
 }

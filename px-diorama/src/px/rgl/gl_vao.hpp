@@ -31,6 +31,7 @@ namespace px
 		}
 		void swizzle(GLuint vertex_buffer, GLsizei stride, std::vector<GLenum> const& types, std::vector<GLint> const& sizes, std::vector<size_t> const& offsets)
 		{
+			init();
 			glBindVertexArray(m_vao);
 			glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 			for (size_t i = 0, size = types.size(); i != size; ++i)
@@ -39,10 +40,28 @@ namespace px
 				glVertexAttribPointer(static_cast<GLuint>(i), sizes[i], types[i], GL_FALSE, stride, reinterpret_cast<char const*>(0) + offsets[i]);
 			}
 		}
+		void init()
+		{
+			if (!m_init)
+			{
+				glGenVertexArrays(1, &m_vao);
+				m_init = true;
+			}
+		}
+		void release()
+		{
+			if (m_init)
+			{
+				glDeleteVertexArrays(1, &m_vao);
+				m_vao = 0;
+				m_init = false;
+			}
+		}
 
 	public:
 		gl_vao() noexcept
 			: m_init(false)
+			, m_vao(0)
 		{
 		}
 		gl_vao(bool create)
@@ -50,7 +69,7 @@ namespace px
 		{
 			if (create)
 			{
-				glGenVertexArrays(1, &m_vao);
+				init();
 			}
 		}
 		gl_vao(gl_vao && vao) noexcept
@@ -67,10 +86,7 @@ namespace px
 		gl_vao& operator=(gl_vao const&) = delete;
 		~gl_vao()
 		{
-			if (m_init)
-			{
-				glDeleteVertexArrays(1, &m_vao);
-			}
+			release();
 		}
 
 	private:

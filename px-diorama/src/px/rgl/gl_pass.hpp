@@ -25,6 +25,7 @@ namespace px
 		{
 			std::swap(m_init, that.m_init);
 			std::swap(m_framebuffer, that.m_framebuffer);
+			std::swap(m_vao, that.m_vao);
 			std::swap(m_width, that.m_width);
 			std::swap(m_height, that.m_height);
 			std::swap(m_textures, that.m_textures);
@@ -66,6 +67,7 @@ namespace px
 				glActiveTexture(GL_TEXTURE0 + texture.binding);
 				glBindTexture(GL_TEXTURE_2D, texture.element);
 			}
+			glBindVertexArray(m_vao);
 		}
 		void draw_arrays(GLenum mode, GLsizei count, GLint first)
 		{
@@ -80,24 +82,19 @@ namespace px
 	public:
 		gl_pass() noexcept
 			: m_framebuffer(0)
+			, m_vao(0)
 			, m_init(false)
 			, m_width(0)
 			, m_height(0)
 		{
 		}
-		gl_pass(GLuint framebuffer, GLsizei width, GLsizei height) noexcept
-			: m_framebuffer(framebuffer)
-			, m_init(true)
+		gl_pass(GLuint framebuffer, GLuint vao, GLsizei width, GLsizei height) noexcept
+			: gl_pass()
 		{
+			m_framebuffer = framebuffer;
+			m_vao = vao;
+			m_init = true;
 			viewport(width, height);
-		}
-		gl_pass(GLuint framebuffer) noexcept
-			: gl_pass(framebuffer, 0, 0)
-		{
-		}
-		gl_pass(GLsizei width, GLsizei height) noexcept
-			: gl_pass(0, width, height)
-		{
 		}
 		gl_pass(gl_pass const&) = delete;
 		gl_pass& operator=(gl_pass const&) = delete;
@@ -118,6 +115,7 @@ namespace px
 	private:
 		bool m_init;
 		GLuint m_framebuffer;
+		GLuint m_vao;
 		GLsizei m_width;
 		GLsizei m_height;
 		std::vector<attachment> m_textures;

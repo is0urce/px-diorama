@@ -23,15 +23,15 @@ namespace px
 		return ss.str();
 	}
 
-	inline gl_program compile_program(std::string vertex, std::string fragment)
+	inline gl_program compile_program(std::string vertex_name, std::string fragment_name)
 	{
 		try
 		{
-			return{ { GL_VERTEX_SHADER, read_file(vertex + ".vert").c_str() },{ GL_FRAGMENT_SHADER, read_file(fragment + ".frag").c_str() } };
+			return{ { GL_VERTEX_SHADER, read_file(vertex_name + ".vert").c_str() },{ GL_FRAGMENT_SHADER, read_file(fragment_name + ".frag").c_str() } };
 		}
 		catch (std::runtime_error & exc)
 		{
-			throw std::runtime_error("px::compile_program(name) in '" + vertex + " / " + fragment + "' error=" + exc.what());
+			throw std::runtime_error("px::compile_program(name) in '" + vertex_name + ".vert' / '" + fragment_name + ".frag' error=" + exc.what());
 		}
 	}
 	inline gl_program compile_program(std::string name)

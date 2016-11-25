@@ -12,6 +12,8 @@
 #include "glfw_instance.hpp"
 #include "draw/renderer.hpp"
 #include <px/common/logger.hpp>
+#include <px/common/timer.hpp>
+#include <px/common/fps_counter.hpp>
 
 #include <stdexcept>
 #include <string>
@@ -26,6 +28,14 @@ static void key_callback(GLFWwindow* window, int key, int /* scancode */, int ac
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+struct time_query
+{
+	double operator()() const
+	{
+		return glfwGetTime();
+	}
+};
+
 int main() // application starts here
 {
 	try
@@ -35,27 +45,38 @@ int main() // application starts here
 			glfwSetErrorCallback(&error_callback);
 			glfw_instance instance;
 
+			unsigned int screen_width = 800;
+			unsigned int screen_height = 600;
+
 			// create window and contest
-			auto *window = glfwCreateWindow(800, 600, "press-x-diorama", nullptr, nullptr);
+			auto *window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", nullptr, nullptr);
 			glfwMakeContextCurrent(window);
 			glewInit();	// initialize extensions wrangler (need context first)
 
-			px::renderer graphics(800, 600);
+			px::renderer graphics(screen_width, screen_height);
 			for (int i = 0; i < 10; ++i)
 			{
 				std::vector<unsigned char> image;
-				unsigned int width, height;
-				unsigned int error = lodepng::decode(image, width, height, "data/img/dtc.png");
+				unsigned int w, h;
+				unsigned int error = lodepng::decode(image, w, h, "data/img/px_pug.png");
 				if (error) throw std::runtime_error(std::string("decoder error ") + std::to_string(error) + std::string(": ") + std::string(lodepng_error_text(error)));
-				graphics.load_texture(width, height, image.data());
+				graphics.load_texture(w, h, image.data());
 			}
 
 			glfwSetKeyCallback(window, key_callback);
 			glfwSwapInterval(1); // vsync on
 
+			auto time = []() { return glfwGetTime(); };
+			px::timer<time_query> timer;
+			px::timer<decltype(time)> timer2(time);
+
+			px::fps_counter<decltype(timer)> fps(&timer);
+
 			// main loop
 			while (!glfwWindowShouldClose(window))
 			{
+				fps.frame();
+				auto x = fps();
 				graphics.render();
 
 				// io

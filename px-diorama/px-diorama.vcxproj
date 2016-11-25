@@ -168,7 +168,22 @@
     <ClInclude Include="src\drm\glfw_instance.hpp" />
     <ClInclude Include="src\drm\lodepng.h" />
     <ClInclude Include="src\drm\draw\renderer.hpp" />
+    <ClInclude Include="src\px\common\assert.hpp" />
+    <ClInclude Include="src\px\common\color.hpp" />
+    <ClInclude Include="src\px\common\coordinate.hpp" />
+    <ClInclude Include="src\px\common\fps_counter.hpp" />
     <ClInclude Include="src\px\common\logger.hpp" />
+    <ClInclude Include="src\px\common\matrix.hpp" />
+    <ClInclude Include="src\px\common\point.hpp" />
+    <ClInclude Include="src\px\common\pool.hpp" />
+    <ClInclude Include="src\px\common\pool_chain.hpp" />
+    <ClInclude Include="src\px\common\qtree.hpp" />
+    <ClInclude Include="src\px\common\rectangle.hpp" />
+    <ClInclude Include="src\px\common\string.hpp" />
+    <ClInclude Include="src\px\common\string_ext.hpp" />
+    <ClInclude Include="src\px\common\timer.hpp" />
+    <ClInclude Include="src\px\common\toggle.hpp" />
+    <ClInclude Include="src\px\common\vector.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
     <ClInclude Include="src\px\rgl\gl_pass.hpp" />
     <ClInclude Include="src\px\rgl\gl_program.hpp" />
@@ -179,6 +194,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />
+    <None Include="data\shaders\batch.frag" />
+    <None Include="data\shaders\batch.vert" />
     <None Include="data\shaders\blur.frag" />
     <None Include="data\shaders\blur.vert" />
     <None Include="data\shaders\process.frag" />
