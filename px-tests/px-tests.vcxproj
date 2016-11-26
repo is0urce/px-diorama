@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F64DABBF-9A49-4A68-B7AD-FC5B73D6B054}</ProjectGuid>
+    <ProjectGuid>{2998B567-753F-4211-B083-4E47424C843C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>pxdiorama</RootNamespace>
+    <RootNamespace>pxtests</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -88,19 +88,12 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>include;../px-diorama/include/;../px-diorama/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -109,19 +102,12 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>include;../px-diorama/include/;../px-diorama/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -132,21 +118,17 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>include;../px-diorama/include/;../px-diorama/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>$(OutDir)$(TargetName)$(TargetExt)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -157,71 +139,26 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>include;../px-diorama/include/;../px-diorama/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>$(OutDir)$(TargetName)$(TargetExt)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\drm\lodepng.cpp" />
-    <ClCompile Include="src\drm\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\drm\draw\blur.hpp" />
-    <ClInclude Include="src\drm\draw\program.hpp" />
-    <ClInclude Include="src\drm\glfw_instance.hpp" />
-    <ClInclude Include="src\drm\lodepng.h" />
-    <ClInclude Include="src\drm\draw\renderer.hpp" />
-    <ClInclude Include="src\px\common\assert.hpp" />
-    <ClInclude Include="src\px\common\color.hpp" />
-    <ClInclude Include="src\px\common\coordinate.hpp" />
-    <ClInclude Include="src\px\common\fps_counter.hpp" />
-    <ClInclude Include="src\px\common\logger.hpp" />
-    <ClInclude Include="src\px\common\matrix.hpp" />
-    <ClInclude Include="src\px\common\point.hpp" />
-    <ClInclude Include="src\px\common\pool.hpp" />
-    <ClInclude Include="src\px\common\pool_chain.hpp" />
-    <ClInclude Include="src\px\common\qtree.hpp" />
-    <ClInclude Include="src\px\common\rectangle.hpp" />
-    <ClInclude Include="src\px\common\string.hpp" />
-    <ClInclude Include="src\px\common\string_ext.hpp" />
-    <ClInclude Include="src\px\common\timer.hpp" />
-    <ClInclude Include="src\px\common\toggle.hpp" />
-    <ClInclude Include="src\px\common\vector.hpp" />
-    <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
-    <ClInclude Include="src\px\rgl\gl_pass.hpp" />
-    <ClInclude Include="src\px\rgl\gl_program.hpp" />
-    <ClInclude Include="src\px\rgl\gl_shader.hpp" />
-    <ClInclude Include="src\px\rgl\gl_texture.hpp" />
-    <ClInclude Include="src\px\rgl\gl_vao.hpp" />
-    <ClInclude Include="src\px\rgl\gl_buffer.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\config.json" />
-    <None Include="data\shaders\batch.frag" />
-    <None Include="data\shaders\batch.vert" />
-    <None Include="data\shaders\blur.frag" />
-    <None Include="data\shaders\blur.vert" />
-    <None Include="data\shaders\process.frag" />
-    <None Include="data\shaders\process.vert" />
-    <None Include="data\shaders\strip.frag">
-      <FileType>CppCode</FileType>
-    </None>
-    <None Include="data\shaders\strip.vert">
-      <FileType>CppCode</FileType>
-    </None>
+    <ClCompile Include="src\common\coordinate_test.cpp" />
+    <ClCompile Include="src\common\matrix_test.cpp" />
+    <ClCompile Include="src\common\pool_chain_tests.cpp" />
+    <ClCompile Include="src\common\pool_tests.cpp" />
+    <ClCompile Include="src\common\qtree_tests.cpp" />
+    <ClCompile Include="src\common\rectangle_test.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

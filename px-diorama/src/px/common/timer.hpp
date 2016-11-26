@@ -19,7 +19,7 @@ namespace px
 		precision_type m_start;
 
 	public:
-		timer(QueryOperator query = QueryOperator{})
+		timer(QueryOperator const& query = QueryOperator{})
 			: m_query(query)
 		{
 			restart();

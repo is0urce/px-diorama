@@ -22,7 +22,7 @@ namespace px
 		{
 			return m_texture;
 		}
-		void image2d(GLenum internal_format, GLenum format, GLsizei width, GLsizei height, int mipmap, GLenum data_type, void const* data)
+		void image2d(GLenum internal_format, GLenum format, GLsizei width, GLsizei height, GLint mipmap, GLenum data_type, void const* data)
 		{
 			init(GL_TEXTURE_2D);
 			glBindTexture(m_variant, m_texture);

@@ -12,8 +12,7 @@ namespace px
 	class fps_counter
 	{
 	public:
-		typedef typename timer::precision_type precision_type;
-		const float interval = 2.2f;
+		const float interval = 0.2f;
 
 	public:
 		fps_counter(timer * timer)

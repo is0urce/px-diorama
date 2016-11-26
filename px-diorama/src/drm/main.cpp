@@ -28,14 +28,6 @@ static void key_callback(GLFWwindow* window, int key, int /* scancode */, int ac
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-struct time_query
-{
-	double operator()() const
-	{
-		return glfwGetTime();
-	}
-};
-
 int main() // application starts here
 {
 	try
@@ -54,7 +46,7 @@ int main() // application starts here
 			glewInit();	// initialize extensions wrangler (need context first)
 
 			px::renderer graphics(screen_width, screen_height);
-			for (int i = 0; i < 10; ++i)
+			for (int i = 0; i < 5; ++i)
 			{
 				std::vector<unsigned char> image;
 				unsigned int w, h;
@@ -67,16 +59,13 @@ int main() // application starts here
 			glfwSwapInterval(1); // vsync on
 
 			auto time = []() { return glfwGetTime(); };
-			px::timer<time_query> timer;
-			px::timer<decltype(time)> timer2(time);
-
+			px::timer<decltype(time)> timer(time);
 			px::fps_counter<decltype(timer)> fps(&timer);
 
 			// main loop
 			while (!glfwWindowShouldClose(window))
 			{
 				fps.frame();
-				auto x = fps();
 				graphics.render();
 
 				// io
