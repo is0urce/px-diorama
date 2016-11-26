@@ -3,5 +3,12 @@
 // auth: is0urce
 // desc: entry point generated there
 
-#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
-#include "catch.hpp"
+#define CATCH_CONFIG_RUNNER // providing own main
+#include <catch.hpp>
+
+//int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char const* const argv[])
+{
+	Catch::Session().run(argc, argv);
+	return 0;
+}
