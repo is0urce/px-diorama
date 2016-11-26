@@ -10,6 +10,8 @@ TEST_CASE("qtree", "[qtree]")
 
 
 	px::qtree<int> tree(range);
+	std::vector<int> found;
+	auto fn = [&](int /* x */, int /* y */, auto e) { found.push_back(e); };
 
 	SECTION("range") {
 		REQUIRE_FALSE(tree.covers(0, 64));
@@ -37,9 +39,6 @@ TEST_CASE("qtree", "[qtree]")
 	}
 
 	SECTION("enumerate") {
-		std::vector<int> found;
-		auto fn = [&](int /* x */, int /* y */, auto e) { found.push_back(e); return true; };
-
 		tree.find(0, 0, 100, fn);
 		tree.find(0, 0, fn);
 

@@ -19,9 +19,9 @@ namespace px
 	class string
 	{
 	public:
-		// CallbackOperator should provide void operator()(unsigned int)
-		template<typename CallbackOperator>
-		static void enum_utf8(std::string const& text, CallbackOperator fn)
+		// Operator should provide void operator()(unsigned int)
+		template<typename Operator>
+		static void enumerate_utf8(std::string const& text, Operator fn)
 		{
 			std::string::size_type i{};
 			auto len = text.length();

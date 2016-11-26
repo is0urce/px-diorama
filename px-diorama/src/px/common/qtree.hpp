@@ -20,11 +20,11 @@
 
 namespace px
 {
-	template<typename Element>
+	template<typename T>
 	class qtree
 	{
 	public:
-		typedef Element element_type;
+		typedef T element_type;
 
 	private:
 		typedef std::unique_ptr<qtree> ptr;
@@ -288,9 +288,9 @@ namespace px
 			erase(x, y, e);
 		}
 
-		// CallbackOperator sould support bool operator()(int, int, Element)
-		template <typename CallbackOperator>
-		void find(int x, int y, unsigned int radius, CallbackOperator &fn) const
+		// Operator sould support bool operator()(int, int, T)
+		template <typename Operator>
+		void find(int x, int y, unsigned int radius, Operator & fn) const
 		{
 			if (m_bucket)
 			{
@@ -305,20 +305,14 @@ namespace px
 				bool e = x + (int)radius >= m_center_x;
 				bool n = y + (int)radius >= m_center_y;
 				bool s = y - (int)radius <= m_center_y;
-				if (n)
-				{
-					if (w && nw) nw->find(x, y, radius, fn);
-					if (e && ne) ne->find(x, y, radius, fn);
-				}
-				if (s)
-				{
-					if (w && sw) sw->find(x, y, radius, fn);
-					if (e && se) se->find(x, y, radius, fn);
-				}
+				if (n && w && nw) nw->find(x, y, radius, fn);
+				if (n && e && ne) ne->find(x, y, radius, fn);
+				if (s && w && sw) sw->find(x, y, radius, fn);
+				if (s && e && se) se->find(x, y, radius, fn);
 			}
 		}
-		template <typename CallbackOperator>
-		void find(int x, int y, CallbackOperator &fn) const
+		template <typename Operator>
+		void find(int x, int y, Operator & fn) const
 		{
 			if (m_bucket && m_bucket->match(x, y))
 			{

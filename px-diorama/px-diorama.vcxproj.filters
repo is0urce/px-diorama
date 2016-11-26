@@ -99,6 +99,18 @@
     <ClInclude Include="src\px\common\assert.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\px\es\link.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\es\component.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\es\component_collection.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\common\intrusive_ptr.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">

@@ -1,4 +1,4 @@
-// name: matrix_test.cpp
+// name: rectangle_test.cpp
 
 #include "catch.hpp"
 

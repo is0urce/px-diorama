@@ -5,6 +5,7 @@
 #include <ostream>
 #include <fstream>
 #include <mutex>
+#include <string>
 
 namespace px
 {

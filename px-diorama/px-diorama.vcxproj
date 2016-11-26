@@ -188,6 +188,7 @@
     <ClInclude Include="src\px\common\color.hpp" />
     <ClInclude Include="src\px\common\coordinate.hpp" />
     <ClInclude Include="src\px\common\fps_counter.hpp" />
+    <ClInclude Include="src\px\common\intrusive_ptr.hpp" />
     <ClInclude Include="src\px\common\logger.hpp" />
     <ClInclude Include="src\px\common\matrix.hpp" />
     <ClInclude Include="src\px\common\point.hpp" />
@@ -200,6 +201,9 @@
     <ClInclude Include="src\px\common\timer.hpp" />
     <ClInclude Include="src\px\common\toggle.hpp" />
     <ClInclude Include="src\px\common\vector.hpp" />
+    <ClInclude Include="src\px\es\component.hpp" />
+    <ClInclude Include="src\px\es\component_collection.hpp" />
+    <ClInclude Include="src\px\es\link.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
     <ClInclude Include="src\px\rgl\gl_pass.hpp" />
     <ClInclude Include="src\px\rgl\gl_program.hpp" />

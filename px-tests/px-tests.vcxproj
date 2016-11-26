@@ -153,11 +153,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\common\coordinate_test.cpp" />
+    <ClCompile Include="src\common\intrusive_test.cpp" />
     <ClCompile Include="src\common\matrix_test.cpp" />
     <ClCompile Include="src\common\pool_chain_tests.cpp" />
     <ClCompile Include="src\common\pool_tests.cpp" />
     <ClCompile Include="src\common\qtree_tests.cpp" />
     <ClCompile Include="src\common\rectangle_test.cpp" />
+    <ClCompile Include="src\es\collection_test.cpp" />
+    <ClCompile Include="src\es\link_test.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
