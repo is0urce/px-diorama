@@ -37,6 +37,15 @@ namespace px
 			: m_counter(0)
 		{
 		}
+		base_ctrl_block(base_ctrl_block const& that)
+			: m_counter(that.m_counter.load())
+		{
+		}
+		base_ctrl_block& operator=(base_ctrl_block const& that)
+		{
+			m_counter = that.m_counter.load();
+			return *this;
+		}
 		virtual ~base_ctrl_block()
 		{
 		}
@@ -162,6 +171,7 @@ namespace px
 		{
 		}
 		shared_ptr(shared_ptr && rhs) noexcept
+			: shared_ptr()
 		{
 			swap(rhs);
 		}
@@ -175,7 +185,7 @@ namespace px
 			shared_ptr(rhs).swap(*this);
 			return *this;
 		}
-		shared_ptr & operator=(T * rhs)
+		shared_ptr & operator=(T * rhs) noexcept
 		{
 			shared_ptr(rhs).swap(*this);
 			return *this;

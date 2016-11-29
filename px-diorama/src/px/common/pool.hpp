@@ -13,6 +13,8 @@
 #include <array>
 #include <memory>
 
+#include "shared_ptr.hpp"
+
 namespace px
 {
 	template <typename T, size_t Size>
@@ -26,7 +28,7 @@ namespace px
 		typedef T element;
 		typedef T* pointer;
 		typedef std::unique_ptr<T, smart_deleter> unique_ptr;
-		typedef std::shared_ptr<T> shared_ptr;
+		typedef px::shared_ptr<T> shared_ptr;
 
 	public:
 		// returns nullptr if all object in pool were requested, full() returns true
@@ -100,7 +102,9 @@ namespace px
 		template <typename... Args>
 		shared_ptr make_shared(Args... args)
 		{
-			return{ request(std::forward<Args>(args)...), smart_deleter(this) };
+			T * ptr = request(std::forward<Args>(args)...);
+			auto index = ptr - reinterpret_cast<T*>(&m_pool[0]);
+			return{ ptr, &m_links[index].ctrl };
 		}
 		template <typename... Args>
 		unique_ptr make_unique(Args... args)
@@ -186,6 +190,8 @@ namespace px
 				m_links[i].prev_live = i == 0 ? nullptr : &m_links[i - 1];
 				m_links[i].next_live = nullptr;
 				m_links[i].live = false;
+
+				m_links[i].ctrl = ctrl_block<T, smart_deleter>(smart_deleter(this));
 			}
 		}
 		template <typename... Args>
@@ -198,29 +204,16 @@ namespace px
 			item.~T();
 		}
 
-	private:
-		std::array<char, sizeof(T) * Size> m_pool;
-		std::array<links, Size> m_links;
-		size_t m_current; // cashed number of living objest for fast size queries
-		links* m_free; // first free node (root)
-		links* m_live; // first living node (root)
-
 	public:
-		struct links
-		{
-			links* next_free;
-			links* next_live;
-			links* prev_live;
-			bool live; // auxiliary state to avoid double released
-		};
 		struct smart_deleter
 		{
 		public:
-			void operator()(T* ptr) // lambda
+			void operator()(T * ptr) // lambda
 			{
 				m_current->release(ptr);
 			}
-			smart_deleter(pool* current) noexcept
+		public:
+			smart_deleter(pool * current) noexcept
 				: m_current(current)
 			{
 			}
@@ -228,8 +221,28 @@ namespace px
 				: smart_deleter(nullptr)
 			{
 			}
+			smart_deleter(smart_deleter const& that) noexcept
+				: smart_deleter(that.m_current)
+			{
+			}
 		private:
 			pool* m_current;
 		};
+		struct links
+		{
+			links* next_free;
+			links* next_live;
+			links* prev_live;
+			bool live; // auxiliary state to avoid double released
+			ctrl_block<T, smart_deleter> ctrl; // for smart ptrs
+		};
+
+	private:
+		std::array<char, sizeof(T) * Size> m_pool;
+		std::array<links, Size> m_links;
+		size_t m_current; // cashed number of living objest for fast size queries
+		links* m_free; // first free node (root)
+		links* m_live; // first living node (root)
+		smart_deleter m_deleter;
 	};
 }

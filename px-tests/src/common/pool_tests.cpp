@@ -144,7 +144,7 @@ TEST_CASE("pools are open", "[pool]")
 		REQUIRE(p.size() == g_counter);
 
 		// shared
-		std::list<std::shared_ptr<element>> list;
+		std::list<px::shared_ptr<element>> list;
 		for (int i = 0; i < maximum; ++i)
 		{
 			list.push_back(p.make_shared("with arguments"));
