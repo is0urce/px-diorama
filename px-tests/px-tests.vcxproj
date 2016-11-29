@@ -159,6 +159,7 @@
     <ClCompile Include="src\common\pool_tests.cpp" />
     <ClCompile Include="src\common\qtree_tests.cpp" />
     <ClCompile Include="src\common\rectangle_test.cpp" />
+    <ClCompile Include="src\common\shared_test.cpp" />
     <ClCompile Include="src\es\collection_test.cpp" />
     <ClCompile Include="src\es\link_test.cpp" />
     <ClCompile Include="src\main.cpp" />

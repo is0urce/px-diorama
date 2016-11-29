@@ -30,6 +30,12 @@ namespace px
 			{
 				m_components.erase(std::remove(std::begin(m_components), std::end(m_components), c));
 			}
+			// remove component by type (O=n)
+			template<typename C>
+			void remove()
+			{
+				m_components.erase(std::remove_if(std::begin(m_components), std::end(m_components), [&](auto const& c) { return dynamic_cast<C*>(c.get()); }));
+			}
 			// remove all components
 			void clear()
 			{
@@ -73,29 +79,12 @@ namespace px
 			std::shared_ptr<T> component() const
 			{
 				std::shared_ptr<T> cast;
-				for (auto & component : m_components)
+				for (auto & c : m_components)
 				{
-					cast = std::dynamic_pointer_cast<T>(component);
+					cast = std::dynamic_pointer_cast<T>(c);
 					if (cast) break;
 				}
-				if (!cast) throw std::runtime_error("px::es::component_collection::component<T>() - we're not serving subclasses here");
 				return cast;
-			}
-
-			// remove component by type
-			template<typename C>
-			bool remove()
-			{
-				for (auto it = m_components.begin(), last = m_components.end(); it != last; ++it)
-				{
-					auto cast = std::dynamic_pointer_cast<C>(*it);
-					if (cast)
-					{
-						m_components.erase(it);
-						return true;
-					}
-				}
-				return false;
 			}
 
 		private:

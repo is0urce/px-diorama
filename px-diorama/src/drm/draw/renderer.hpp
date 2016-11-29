@@ -3,6 +3,8 @@
 // auth: is0urce
 // desc: rendering procedures
 
+#pragma once
+
 #define GLM_FORCE_RADIANS
 #pragma warning(push)
 #pragma warning(disable:4201) // warning C4201: nonstandard extension used: nameless struct/union
@@ -16,6 +18,7 @@
 #include <px/rgl/gl_framebuffer.hpp>
 #include <px/rgl/gl_pass.hpp>
 
+#include "perception.hpp"
 #include "program.hpp"
 #include "blur.hpp"
 
@@ -36,16 +39,10 @@ static const struct triangle // keep around fallback to "don't fear the darkness
 
 namespace px
 {
-	struct vertex
-	{
-		glm::vec2 pos;
-		glm::vec2 texture;
-	};
-
 	class renderer
 	{
 	public:
-		void render()
+		void render(perception const& data)
 		{
 #if _DEBUG
 			GLenum err = GL_NO_ERROR;
@@ -56,32 +53,23 @@ namespace px
 			m_camera.block.load(GL_STREAM_DRAW, m_camera.data);
 
 			// don't-fear-the-darkness pass
-			glUseProgram(m_strip);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_offscreen);
-			glViewport(0, 0, m_width, m_height);
-			glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_camera.block);
-			glBindVertexArray(m_geometry);
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+			//glUseProgram(m_strip);
+			//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_offscreen);
+			//glViewport(0, 0, m_width, m_height);
+			//glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_camera.block);
+			//glBindVertexArray(m_geometry);
+			//glDrawArrays(GL_TRIANGLES, 0, 3);
 
 			// g-pass
 			glUseProgram(m_batch);
-			for (auto & i : m_batches)
+			for (size_t i = 0, size = m_batches.size(); i != size; ++i)
 			{
-				std::vector<vertex> vertices(4);
-				vertices[0].pos = { -1.0f, 1.0f };
-				vertices[0].texture = { 0.0f, 0.0f };
-
-				vertices[1].pos = { -1.0f, -1.0f };
-				vertices[1].texture = { 0.0f, 1.0f };
-
-				vertices[2].pos = { 1.0f,  -1.0f };
-				vertices[2].texture = { 1.0f, 1.0f };
-
-				vertices[3].pos = { 1.0f,  1.0f };
-				vertices[3].texture = { 1.0f,  0.0f };
-
-				i.vertices.load(GL_STREAM_DRAW, sizeof(vertex) * vertices.size(), vertices.data());
-				i.pass.draw_arrays(GL_QUADS, 4);
+				auto const& vertices = data.batch(i);
+				if (!vertices.empty())
+				{
+					m_batches[i].vertices.load(GL_STREAM_DRAW, sizeof(vertices[0]) * vertices.size(), vertices.data());
+					m_batches[i].pass.draw_arrays(GL_QUADS, 4);
+				}
 			}
 
 			glUseProgram(m_blur);

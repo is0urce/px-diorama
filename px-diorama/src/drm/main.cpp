@@ -10,7 +10,10 @@
 #include "lodepng.h"
 
 #include "glfw_instance.hpp"
+
+#include "draw/perception.hpp"
 #include "draw/renderer.hpp"
+
 #include <px/common/logger.hpp>
 #include <px/common/timer.hpp>
 #include <px/common/fps_counter.hpp>
@@ -45,6 +48,7 @@ int main() // application starts here
 			glfwMakeContextCurrent(window);
 			glewInit();	// initialize extensions wrangler (need context first)
 
+			px::perception data;
 			px::renderer graphics(screen_width, screen_height);
 			for (int i = 0; i < 5; ++i)
 			{
@@ -52,7 +56,9 @@ int main() // application starts here
 				unsigned int w, h;
 				unsigned int error = lodepng::decode(image, w, h, "data/img/px_pug.png");
 				if (error) throw std::runtime_error(std::string("decoder error ") + std::to_string(error) + std::string(": ") + std::string(lodepng_error_text(error)));
+
 				graphics.load_texture(w, h, image.data());
+				data.add_texture();
 			}
 
 			glfwSetKeyCallback(window, key_callback);
@@ -66,7 +72,7 @@ int main() // application starts here
 			while (!glfwWindowShouldClose(window))
 			{
 				fps.frame();
-				graphics.render();
+				graphics.render(data);
 
 				// io
 				glfwSwapBuffers(window);
