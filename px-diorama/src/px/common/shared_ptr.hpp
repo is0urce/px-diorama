@@ -12,18 +12,18 @@
 namespace px
 {
 	template<typename T>
-	class base_ctrl_block
+	class base_control_block
 	{
 	public:
 		void increment() noexcept
 		{
 			++m_counter;
 		}
-		unsigned int decrement() noexcept
+		size_t decrement() noexcept
 		{
 			return --m_counter;
 		}
-		unsigned int counter() const noexcept
+		size_t counter() const noexcept
 		{
 			return m_counter;
 		}
@@ -33,44 +33,44 @@ namespace px
 		}
 
 	public:
-		base_ctrl_block()
+		base_control_block() noexcept
 			: m_counter(0)
 		{
 		}
-		virtual ~base_ctrl_block()
+		virtual ~base_control_block()
 		{
 		}
 	protected:
 		virtual void release_pointer(T * /*ptr*/) = 0;
 
 	private:
-		std::atomic<unsigned int> m_counter;
+		std::atomic<size_t> m_counter;
 	};
 
 	template<typename T, typename Deleter = std::default_delete<T>>
-	class ctrl_block
-		: public base_ctrl_block<T>
+	class control_block
+		: public base_control_block<T>
 	{
 	public:
-		ctrl_block()
+		control_block()
 			: m_deleter(Deleter{})
 		{
 		}
-		ctrl_block(Deleter d)
+		control_block(Deleter d)
 			: m_deleter(d)
 		{
 		}
-		ctrl_block(ctrl_block && that)
+		control_block(control_block && that)
 			: ctrl_block()
 		{
 			std::swap(m_deleter, that.m_deleter);
 		}
-		ctrl_block& operator=(ctrl_block && that)
+		control_block& operator=(control_block && that)
 		{
 			std::swap(m_deleter, that.m_deleter);
 			return *this;
 		}
-		virtual ~ctrl_block()
+		virtual ~control_block()
 		{
 		}
 
@@ -82,22 +82,36 @@ namespace px
 
 	private:
 		Deleter m_deleter;
+
+	public:
+		struct join_pack
+		{
+		public:
+			T value;
+			control_block block;
+		public:
+			template <typename... Args>
+			join_pack(Args... args)
+				: value(std::forward<Args>(args)...)
+			{
+			}
+		};
 	};
 
 	template<typename T, typename Deleter = std::default_delete<T>>
-	class heap_ctrl_block
-		: public base_ctrl_block<T>
+	class dissolve_control_block
+		: public base_control_block<T>
 	{
 	public:
-		heap_ctrl_block()
+		dissolve_control_block()
 			: m_deleter(Deleter{})
 		{
 		}
-		heap_ctrl_block(Deleter d)
+		dissolve_control_block(Deleter d)
 			: m_deleter(d)
 		{
 		}
-		virtual ~heap_ctrl_block()
+		virtual ~dissolve_control_block()
 		{
 		}
 
@@ -112,7 +126,7 @@ namespace px
 		Deleter m_deleter;
 	};
 
-	template <typename T>
+	template<typename T>
 	class shared_ptr
 	{
 	public:
@@ -134,7 +148,7 @@ namespace px
 		{
 			shared_ptr(ptr).swap(*this);
 		}
-		void reset(T * ptr, base_ctrl_block<T> * ctrl)
+		void reset(T * ptr, base_control_block<T> * ctrl)
 		{
 			shared_ptr(ptr, ctrl).swap(*this);
 		}
@@ -151,7 +165,7 @@ namespace px
 		{
 			return m_pointer != nullptr;
 		}
-		base_ctrl_block<T> * block() const noexcept
+		base_control_block<T> * block() const noexcept
 		{
 			return m_ctrl;
 		}
@@ -165,14 +179,14 @@ namespace px
 			: m_pointer(nullptr)
 		{
 		}
-		shared_ptr(T * ptr, base_ctrl_block<T> * ctrl) noexcept
+		shared_ptr(T * ptr, base_control_block<T> * ctrl) noexcept
 			: m_pointer(ptr)
 			, m_ctrl(ctrl)
 		{
 			if (m_pointer) m_ctrl->increment();
 		}
 		shared_ptr(T * ptr)
-			: shared_ptr(ptr, new heap_ctrl_block<T>())
+			: shared_ptr(ptr, new dissolve_control_block<T>())
 		{
 		}
 		shared_ptr(shared_ptr const& rhs) noexcept
@@ -203,7 +217,7 @@ namespace px
 		// downcast
 		template <typename Sub>
 		shared_ptr(shared_ptr<Sub> const& rhs) noexcept
-			: shared_ptr(rhs.get(), reinterpret_cast<base_ctrl_block<T>*>(rhs.block()))
+			: shared_ptr(rhs.get(), reinterpret_cast<base_control_block<T>*>(rhs.block()))
 		{
 		}
 		template <typename Sub>
@@ -223,7 +237,7 @@ namespace px
 
 	private:
 		T * m_pointer;
-		base_ctrl_block<T> * m_ctrl;
+		base_control_block<T> * m_ctrl;
 	};
 
 	template<typename T, typename U> inline bool operator==(shared_ptr<T> const& a, shared_ptr<U> const& b) { return a.get() == b.get(); }
@@ -233,7 +247,7 @@ namespace px
 	template<typename T, typename U> inline bool operator==(T * a, shared_ptr<U> const& b) { return a == b.get(); }
 	template<typename T, typename U> inline bool operator!=(T * a, shared_ptr<U> const& b) { return a != b.get(); }
 
-	template<typename T> inline bool operator<(shared_ptr<T> const & a, shared_ptr<T> const & b)
+	template<typename T> inline bool operator<(shared_ptr<T> const& a, shared_ptr<T> const& b)
 	{
 		return std::less<T*>()(a.get(), b.get());
 	}
@@ -242,28 +256,15 @@ namespace px
 		lhs.swap(rhs);
 	}
 	template<typename T, typename Super>
-	shared_ptr<T> dynamic_pointer_cast(shared_ptr<Super> const & r)
+	shared_ptr<T> dynamic_pointer_cast(shared_ptr<Super> const& r)
 	{
-		return shared_ptr<T>(dynamic_cast<T*>(r.get()), reinterpret_cast<base_ctrl_block<T>*>(r.block()));
+		return shared_ptr<T>(dynamic_cast<T*>(r.get()), reinterpret_cast<base_control_block<T>*>(r.block()));
 	}
 
-	template<typename T, typename Join>
-	struct ctrl_block_pack
-	{
-	public:
-		T value;
-		Join block;
-	public:
-		template<typename... Args>
-		ctrl_block_pack(Args... args)
-			: value(std::forward<Args>(args)...)
-		{
-		}
-	};
 	template<typename T, typename... Args>
 	shared_ptr<T> make_shared(Args&&... args)
 	{
-		auto * ptr = new ctrl_block_pack<T, ctrl_block<T>>(std::forward<Args>(args)...);
-		return{ &ptr->value, &ptr->block };
+		auto * pack = new control_block<T>::join_pack(std::forward<Args>(args)...);
+		return{ &pack->value, &pack->block };
 	}
 }

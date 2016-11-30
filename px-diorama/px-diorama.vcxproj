@@ -183,9 +183,13 @@
     <ClInclude Include="src\drm\draw\perception.hpp" />
     <ClInclude Include="src\drm\draw\program.hpp" />
     <ClInclude Include="src\drm\glfw_instance.hpp" />
+    <ClInclude Include="src\drm\glfw_window.hpp" />
+    <ClInclude Include="src\drm\key.hpp" />
     <ClInclude Include="src\drm\lodepng.h" />
     <ClInclude Include="src\drm\draw\renderer.hpp" />
+    <ClInclude Include="src\drm\shell.hpp" />
     <ClInclude Include="src\px\common\assert.hpp" />
+    <ClInclude Include="src\px\common\bindings.hpp" />
     <ClInclude Include="src\px\common\color.hpp" />
     <ClInclude Include="src\px\common\coordinate.hpp" />
     <ClInclude Include="src\px\common\fps_counter.hpp" />

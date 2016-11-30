@@ -103,7 +103,7 @@ namespace px
 		shared_ptr make_shared(Args... args)
 		{
 			T * ptr = request(std::forward<Args>(args)...);
-			auto index = ptr - reinterpret_cast<T*>(&m_pool[0]);
+			size_t index = ptr - reinterpret_cast<T*>(&m_pool[0]);
 			return{ ptr, &m_links[index].ctrl };
 		}
 		template <typename... Args>
@@ -233,7 +233,7 @@ namespace px
 			links* next_live;
 			links* prev_live;
 			bool live; // auxiliary state to avoid double released
-			ctrl_block<T, smart_deleter> ctrl; // for smart ptrs
+			control_block<T, smart_deleter> ctrl; // for smart ptrs
 		};
 
 	private:

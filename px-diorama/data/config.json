@@ -3,8 +3,18 @@
     "width": 800,
     "height": 600,
     "fullscreen": false,
-    "border": true
+    "border": true,
+    "vsync" : 1
   },
-  "textures": [ "data/img/dtc.png" ]
-  }
+  "textures": [ "data/img/dtc.png" ],
+  "bindings": [
+    {
+      "action": 1,
+      "keys": [ 49 ]
+    },
+    {
+      "action": 2,
+      "keys": [ 50 ]
+    }
+  ]
 }

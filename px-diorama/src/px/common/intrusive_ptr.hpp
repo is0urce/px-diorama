@@ -46,7 +46,7 @@ namespace px
 		}
 		operator bool() const noexcept
 		{
-			return m_pointer != 0;
+			return m_pointer != nullptr;
 		}
 
 	public:
@@ -69,7 +69,7 @@ namespace px
 		intrusive_ptr(intrusive_ptr && rhs) noexcept
 			: m_pointer(rhs.m_pointer)
 		{
-			rhs.m_pointer = 0;
+			rhs.m_pointer = nullptr;
 		}
 		intrusive_ptr & operator=(intrusive_ptr && rhs) noexcept
 		{

@@ -8,28 +8,33 @@
 #include <GLFW/glfw3.h>
 
 #include "lodepng.h"
+#include <json.hpp>
 
 #include "glfw_instance.hpp"
+#include "glfw_window.hpp"
 
+#include "shell.hpp"
+#include "key.hpp"
 #include "draw/perception.hpp"
 #include "draw/renderer.hpp"
 
 #include <px/common/logger.hpp>
 #include <px/common/timer.hpp>
 #include <px/common/fps_counter.hpp>
+#include <px/common/bindings.hpp>
 
+#include <algorithm>
 #include <stdexcept>
 #include <string>
 
-static void error_callback(int error, const char* description)
-{
-	throw std::runtime_error(std::string("glfw error, code #" + std::to_string(error) + " message: " + std::string(description)));
-}
-static void key_callback(GLFWwindow* window, int key, int /* scancode */, int action, int /* mods */) noexcept
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
+void error_callback(int error, const char* description);
+void key_callback(GLFWwindow * window, int key, int /* scancode */, int action, int /* mods */);
+void text_callback(GLFWwindow * window, unsigned int codepoint);
+void click_callback(GLFWwindow * window, int button, int action, int /* mods */);
+void hover_callback(GLFWwindow * window, double x, double y);
+void scroll_callback(GLFWwindow * window, double x, double y);
+
+px::bindings<int, px::key> g_bindings;
 
 int main() // application starts here
 {
@@ -37,49 +42,64 @@ int main() // application starts here
 	{
 		try
 		{
+			// load config
+			std::ifstream fconfig("data/config.json");
+			auto doc = nlohmann::json::parse(fconfig);
+
+			unsigned int screen_width = doc["window"]["width"];
+			unsigned int screen_height = doc["window"]["height"];
+			unsigned int vsync = doc["window"]["vsync"];
+
+			// create window and context
 			glfwSetErrorCallback(&error_callback);
 			glfw_instance instance;
-
-			unsigned int screen_width = 800;
-			unsigned int screen_height = 600;
-
-			// create window and contest
-			auto *window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", nullptr, nullptr);
+			glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", nullptr, nullptr);
 			glfwMakeContextCurrent(window);
+			glfwSwapInterval(vsync);
 			glewInit();	// initialize extensions wrangler (need context first)
 
-			px::perception data;
+			// create and populate internal states
+			px::shell game;
 			px::renderer graphics(screen_width, screen_height);
-			for (int i = 0; i < 5; ++i)
+			px::perception data;
+
+			for (auto const& binding : doc["bindings"])
+			{
+				std::underlying_type<px::key>::type action_index = binding["action"];
+				for (auto const& key : binding["keys"])
+				{
+					g_bindings.bind(key, static_cast<px::key>(action_index));
+				}
+			}
+			for (std::string const& texture : doc["textures"])
 			{
 				std::vector<unsigned char> image;
 				unsigned int w, h;
-				unsigned int error = lodepng::decode(image, w, h, "data/img/px_pug.png");
-				if (error) throw std::runtime_error(std::string("decoder error ") + std::to_string(error) + std::string(": ") + std::string(lodepng_error_text(error)));
+				auto error = lodepng::decode(image, w, h, texture);
+				if (error) throw std::runtime_error(std::string("png decoder error in'") + std::to_string(error) + std::string("': message=") + std::string(lodepng_error_text(error)));
 
 				graphics.load_texture(w, h, image.data());
 				data.add_texture();
 			}
 
-			glfwSetKeyCallback(window, key_callback);
-			glfwSwapInterval(1); // vsync on
-
 			auto time = []() { return glfwGetTime(); };
 			px::timer<decltype(time)> timer(time);
-			px::fps_counter<decltype(timer)> fps(&timer);
+
+			glfwSetWindowUserPointer(window, &game);
+			glfwSetKeyCallback(window, key_callback);
+			glfwSetCharCallback(window, text_callback);
+			glfwSetMouseButtonCallback(window, click_callback);
+			glfwSetCursorPosCallback(window, hover_callback);
+			glfwSetScrollCallback(window, scroll_callback);
 
 			// main loop
-			while (!glfwWindowShouldClose(window))
+			while (window)
 			{
-				fps.frame();
+				game.frame(timer.measure());
 				graphics.render(data);
 
-				// io
-				glfwSwapBuffers(window);
-				glfwPollEvents();
+				window.process();
 			}
-
-			glfwDestroyWindow(window);
 		}
 		catch (std::runtime_error &exc)
 		{
@@ -97,4 +117,35 @@ int main() // application starts here
 		return -1;
 	}
 	return 0;
+}
+
+void error_callback(int error, const char* description)
+{
+	throw std::runtime_error(std::string("glfw error, code #" + std::to_string(error) + " message: " + std::string(description)));
+}
+void key_callback(GLFWwindow * window, int key, int /* scancode */, int action, int /* mods */)
+{
+	if (action == GLFW_PRESS)
+	{
+		reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->press(g_bindings.select(key, px::key::not_valid));
+	}
+}
+void text_callback(GLFWwindow * window, unsigned int codepoint)
+{
+	reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->text(codepoint);
+}
+void click_callback(GLFWwindow * window, int button, int action, int /* mods */)
+{
+	if (action == GLFW_PRESS)
+	{
+		reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->click(button);
+	}
+}
+void hover_callback(GLFWwindow * window, double x, double y)
+{
+	reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->hover(static_cast<int>(x), static_cast<int>(y));
+}
+void scroll_callback(GLFWwindow * window, double x, double y)
+{
+	reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->scroll(y, x);
 }

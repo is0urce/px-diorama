@@ -63,8 +63,8 @@ namespace shared_test {
 
 	TEST_CASE("shared_ptr", "[shared_ptr]")
 	{
-		px::ctrl_block<foo, deleter> fb;
-		px::ctrl_block<bar> bb;
+		px::control_block<foo, deleter> fb;
+		px::control_block<bar> bb;
 
 		SECTION("starts with nullptr") {
 			px::shared_ptr<foo> f;
@@ -91,8 +91,8 @@ namespace shared_test {
 		REQUIRE(t_counter == 0);
 		SECTION("release") {
 
-			px::ctrl_block<obj> block1;
-			px::ctrl_block<obj> block2;
+			px::control_block<obj> block1;
+			px::control_block<obj> block2;
 
 			px::shared_ptr<obj> f1(new obj, &block1);
 			px::shared_ptr<obj> f2(new obj, &block2);
@@ -103,7 +103,7 @@ namespace shared_test {
 
 		SECTION("clone") {
 
-			px::ctrl_block<obj> block1;
+			px::control_block<obj> block1;
 
 			px::shared_ptr<obj> f1(new obj, &block1);
 			REQUIRE(f1.unique() == true);
@@ -117,8 +117,8 @@ namespace shared_test {
 		}
 
 		SECTION("move") {
-			px::ctrl_block<obj> block1;
-			px::ctrl_block<obj> block2;
+			px::control_block<obj> block1;
+			px::control_block<obj> block2;
 
 			px::shared_ptr<obj> f1;
 
