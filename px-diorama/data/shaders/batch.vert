@@ -15,7 +15,7 @@ layout(location = 1) out vec2 outTexture;
 
 void main()
 {
-    gl_Position = vec4(inPos, 0.0, 1.0); //vec4(camera.scale * inPos + camera.offset, 0.0, 1.0);
+    gl_Position = vec4(camera.scale * inPos + camera.offset, 0.0, 1.0);
     outColor = vec4(1.0);
 	outTexture = inTexture;
 }

@@ -218,6 +218,7 @@
     <ClInclude Include="src\px\es\component_collection.hpp" />
     <ClInclude Include="src\px\es\link.hpp" />
     <ClInclude Include="src\px\es\link_dispatcher.hpp" />
+    <ClInclude Include="src\px\rgl\gl_assert.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
     <ClInclude Include="src\px\rgl\gl_pass.hpp" />
     <ClInclude Include="src\px\rgl\gl_program.hpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="src\px\rgl\gl_texture.hpp" />
     <ClInclude Include="src\px\rgl\gl_vao.hpp" />
     <ClInclude Include="src\px\rgl\gl_buffer.hpp" />
+    <ClInclude Include="src\px\rgl\rgl.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />

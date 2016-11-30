@@ -27,25 +27,18 @@ namespace px
 		void add_texture()
 		{
 			m_batches.emplace_back();
-			auto & batch = m_batches.back();
-
-			batch.assign(4, {});
-
-			batch[0].pos = { -1.0f, 1.0f };
-			batch[0].texture = { 0.0f, 0.0f };
-
-			batch[1].pos = { -1.0f, -1.0f };
-			batch[1].texture = { 0.0f, 1.0f };
-
-			batch[2].pos = { 1.0f,  -1.0f };
-			batch[2].texture = { 1.0f, 1.0f };
-
-			batch[3].pos = { 1.0f,  1.0f };
-			batch[3].texture = { 1.0f,  0.0f };
+		}
+		std::vector<vertex> & batch(size_t n) noexcept
+		{
+			return m_batches[n];
 		}
 		std::vector<vertex> const& batch(size_t n) const noexcept
 		{
 			return m_batches[n];
+		}
+		size_t batches() const noexcept
+		{
+			return m_batches.size();
 		}
 
 	public:

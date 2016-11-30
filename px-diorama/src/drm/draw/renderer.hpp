@@ -11,12 +11,7 @@
 #include <glm/glm.hpp>
 #pragma warning(pop)
 
-#include <px/rgl/gl_program.hpp>
-#include <px/rgl/gl_buffer.hpp>
-#include <px/rgl/gl_vao.hpp>
-#include <px/rgl/gl_texture.hpp>
-#include <px/rgl/gl_framebuffer.hpp>
-#include <px/rgl/gl_pass.hpp>
+#include <px/rgl/rgl.hpp>
 
 #include "perception.hpp"
 #include "program.hpp"
@@ -44,13 +39,18 @@ namespace px
 	public:
 		void render(perception const& data)
 		{
-#if _DEBUG
-			GLenum err = GL_NO_ERROR;
-			while ((err = glGetError()) != GL_NO_ERROR)	throw std::runtime_error("OpenGL error #" + std::to_string(err) + reinterpret_cast<char const*>(glewGetErrorString(err)));
-#endif
 			// prepare data
-			m_camera.data = { { 1.0f, 1.0f },{ 0.0, 0.0 } };
+			m_camera.data = { { 0.50f, 0.50f },{ 0.0, 0.0 } };
 			m_camera.block.load(GL_STREAM_DRAW, m_camera.data);
+
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+			glClear(GL_COLOR_BUFFER_BIT);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_offscreen);
+			glClear(GL_COLOR_BUFFER_BIT);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_ping.framebuffer);
+			glClear(GL_COLOR_BUFFER_BIT);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_pong.framebuffer);
+			glClear(GL_COLOR_BUFFER_BIT);
 
 			// don't-fear-the-darkness pass
 			//glUseProgram(m_strip);
@@ -62,13 +62,13 @@ namespace px
 
 			// g-pass
 			glUseProgram(m_batch);
-			for (size_t i = 0, size = m_batches.size(); i != size; ++i)
+			for (size_t i = 0, size = data.batches(); i != size; ++i)
 			{
 				auto const& vertices = data.batch(i);
 				if (!vertices.empty())
 				{
 					m_batches[i].vertices.load(GL_STREAM_DRAW, sizeof(vertices[0]) * vertices.size(), vertices.data());
-					m_batches[i].pass.draw_arrays(GL_QUADS, 4);
+					m_batches[i].pass.draw_arrays(GL_QUADS, static_cast<GLsizei>(vertices.size()));
 				}
 			}
 
@@ -77,6 +77,8 @@ namespace px
 
 			glUseProgram(m_process);
 			m_postprocess.draw_arrays(GL_QUADS, 4);
+
+			gl_assert();
 		}
 		void resize(int width, int height)
 		{

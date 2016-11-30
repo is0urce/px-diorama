@@ -7,8 +7,8 @@
 
 #include "key.hpp"
 #include "perception.hpp"
-#include "es/sprite_system.hpp"
 #include "es/transform_system.hpp"
+#include "es/sprite_system.hpp"
 
 #include <px/es/component_collection.hpp>
 
@@ -17,9 +17,12 @@ namespace px
 	class shell final
 	{
 	public:
-		void press(key /*action*/)
+		void press(key action)
 		{
-
+			if (action == key::move_south)
+			{
+				m_transform->current.move_axis<1>(-1);
+			}
 		}
 		void text(unsigned int /*codepoint*/)
 		{
@@ -40,7 +43,10 @@ namespace px
 		}
 		void frame(double /*time*/)
 		{
-
+			for (size_t i = 0, size = m_perception.batches(); i != size; ++i)
+			{
+				m_sprites.update(m_perception.batch(i));
+			}
 		}
 
 		template <typename Document>
@@ -54,22 +60,28 @@ namespace px
 		{
 			return m_perception;
 		}
-	public:
-		shell()
+		void start()
 		{
 			auto sprite = m_sprites.make_shared("@");
 			auto transform = m_transforms.make_shared({ 0, 0 });
 
-			sprite->assign(transform.get());
+			m_transform = transform.get();
+			sprite->assign(m_transform);
 
 			m_player.add(sprite);
 			m_player.add(transform);
+			m_player.activate();
+		}
+	public:
+		shell()
+		{
 		}
 
 	private:
 		perception m_perception;
 		sprite_system m_sprites;
 		transform_system m_transforms;
+		transform_component* m_transform;
 		es::component_collection m_player;
 		int hover_x;
 		int hover_y;

@@ -81,6 +81,7 @@ int main() // application starts here
 				graphics.load_texture(w, h, image.data());
 				game.load_texture(texture["meta"]);
 			}
+			game.start();
 
 			glfwSetWindowUserPointer(window, &game);
 			glfwSetKeyCallback(window, key_callback);
