@@ -180,9 +180,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\drm\draw\blur.hpp" />
-    <ClInclude Include="src\drm\draw\perception.hpp" />
+    <ClInclude Include="src\drm\perception.hpp" />
     <ClInclude Include="src\drm\draw\program.hpp" />
     <ClInclude Include="src\drm\glfw_instance.hpp" />
+    <ClInclude Include="src\drm\glfw_time.hpp" />
     <ClInclude Include="src\drm\glfw_window.hpp" />
     <ClInclude Include="src\drm\key.hpp" />
     <ClInclude Include="src\drm\lodepng.h" />

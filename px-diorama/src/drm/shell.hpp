@@ -6,10 +6,11 @@
 #pragma once
 
 #include "key.hpp"
+#include "perception.hpp"
 
 namespace px
 {
-	class shell
+	class shell final
 	{
 	public:
 		void press(key /*action*/)
@@ -37,8 +38,18 @@ namespace px
 		{
 
 		}
+		void load_texture()
+		{
+			m_perception.add_texture();
+		}
+
+		perception const& view() const noexcept
+		{
+			return m_perception;
+		}
 
 	private:
+		perception m_perception;
 		int hover_x;
 		int hover_y;
 	};

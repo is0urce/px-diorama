@@ -11,11 +11,12 @@
 #include <json.hpp>
 
 #include "glfw_instance.hpp"
+#include "glfw_time.hpp"
 #include "glfw_window.hpp"
 
 #include "shell.hpp"
 #include "key.hpp"
-#include "draw/perception.hpp"
+#include "perception.hpp"
 #include "draw/renderer.hpp"
 
 #include <px/common/logger.hpp>
@@ -43,8 +44,7 @@ int main() // application starts here
 		try
 		{
 			// load config
-			std::ifstream fconfig("data/config.json");
-			auto doc = nlohmann::json::parse(fconfig);
+			auto doc = nlohmann::json::parse(std::ifstream("data/config.json"));
 
 			unsigned int screen_width = doc["window"]["width"];
 			unsigned int screen_height = doc["window"]["height"];
@@ -59,9 +59,8 @@ int main() // application starts here
 			glewInit();	// initialize extensions wrangler (need context first)
 
 			// create and populate internal states
-			px::shell game;
 			px::renderer graphics(screen_width, screen_height);
-			px::perception data;
+			px::shell game;
 
 			for (auto const& binding : doc["bindings"])
 			{
@@ -79,11 +78,8 @@ int main() // application starts here
 				if (error) throw std::runtime_error(std::string("png decoder error in'") + std::to_string(error) + std::string("': message=") + std::string(lodepng_error_text(error)));
 
 				graphics.load_texture(w, h, image.data());
-				data.add_texture();
+				game.load_texture();
 			}
-
-			auto time = []() { return glfwGetTime(); };
-			px::timer<decltype(time)> timer(time);
 
 			glfwSetWindowUserPointer(window, &game);
 			glfwSetKeyCallback(window, key_callback);
@@ -92,11 +88,13 @@ int main() // application starts here
 			glfwSetCursorPosCallback(window, hover_callback);
 			glfwSetScrollCallback(window, scroll_callback);
 
+			px::timer<glfw_time> time;
+
 			// main loop
 			while (window)
 			{
-				game.frame(timer.measure());
-				graphics.render(data);
+				game.frame(time);
+				graphics.render(game.view());
 
 				window.process();
 			}

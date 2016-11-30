@@ -19,11 +19,11 @@ namespace px
 		{
 			++m_counter;
 		}
-		size_t decrement() noexcept
+		unsigned int decrement() noexcept
 		{
 			return --m_counter;
 		}
-		size_t counter() const noexcept
+		unsigned int counter() const noexcept
 		{
 			return m_counter;
 		}
@@ -44,7 +44,7 @@ namespace px
 		virtual void release_pointer(T * /*ptr*/) = 0;
 
 	private:
-		std::atomic<size_t> m_counter;
+		std::atomic<unsigned int> m_counter;
 	};
 
 	template<typename T, typename Deleter = std::default_delete<T>>
@@ -127,7 +127,7 @@ namespace px
 	};
 
 	template<typename T>
-	class shared_ptr
+	class shared_ptr final
 	{
 	public:
 		void swap(shared_ptr & rhs)

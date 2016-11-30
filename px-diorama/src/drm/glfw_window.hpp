@@ -9,7 +9,7 @@
 
 #include <GLFW/glfw3.h>
 
-class glfw_window
+class glfw_window final
 {
 public:
 	operator bool() const

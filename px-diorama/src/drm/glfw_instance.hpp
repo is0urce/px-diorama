@@ -9,7 +9,7 @@
 
 #include <GLFW/glfw3.h>
 
-class glfw_instance
+class glfw_instance final
 {
 public:
 	bool success() const noexcept

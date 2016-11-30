@@ -14,12 +14,18 @@ namespace px
 	private:
 		QueryOperator m_query;
 	public:
+		typedef QueryOperator query_type;
 		typedef decltype(m_query()) precision_type;
 	private:
 		precision_type m_start;
 
 	public:
-		timer(QueryOperator const& query = QueryOperator{})
+		timer()
+			: m_query(QueryOperator{})
+		{
+			restart();
+		}
+		timer(QueryOperator const& query)
 			: m_query(query)
 		{
 			restart();
@@ -49,6 +55,10 @@ namespace px
 			return measure();
 		}
 		auto operator()()
+		{
+			return measure();
+		}
+		operator typename timer::precision_type () const
 		{
 			return measure();
 		}
