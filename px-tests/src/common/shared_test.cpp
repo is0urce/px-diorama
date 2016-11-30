@@ -106,11 +106,14 @@ namespace shared_test {
 			px::ctrl_block<obj> block1;
 
 			px::shared_ptr<obj> f1(new obj, &block1);
+			REQUIRE(f1.unique() == true);
+
 			px::shared_ptr<obj> f2(f1);
 			px::shared_ptr<obj> f3 = f2;
 
 			REQUIRE(t_counter == 1);
 			REQUIRE(block1.counter() == 3);
+			REQUIRE(f1.unique() == false);
 		}
 
 		SECTION("move") {

@@ -20,9 +20,9 @@ namespace component_collection_test {
 	{
 		px::es::component_collection cc;
 
-		auto h = std::make_shared<head>();
+		auto h = px::make_shared<head>();
 
-		cc.add(std::make_shared<leg>());
+		cc.add(px::make_shared<leg>());
 		cc.add(h);
 
 		SECTION("query")

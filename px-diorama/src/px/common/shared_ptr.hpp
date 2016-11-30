@@ -37,15 +37,6 @@ namespace px
 			: m_counter(0)
 		{
 		}
-		base_ctrl_block(base_ctrl_block const& that)
-			: m_counter(that.m_counter.load())
-		{
-		}
-		base_ctrl_block& operator=(base_ctrl_block const& that)
-		{
-			m_counter = that.m_counter.load();
-			return *this;
-		}
 		virtual ~base_ctrl_block()
 		{
 		}
@@ -68,6 +59,16 @@ namespace px
 		ctrl_block(Deleter d)
 			: m_deleter(d)
 		{
+		}
+		ctrl_block(ctrl_block && that)
+			: ctrl_block()
+		{
+			std::swap(m_deleter, that.m_deleter);
+		}
+		ctrl_block& operator=(ctrl_block && that)
+		{
+			std::swap(m_deleter, that.m_deleter);
+			return *this;
 		}
 		virtual ~ctrl_block()
 		{
@@ -150,6 +151,14 @@ namespace px
 		{
 			return m_pointer != nullptr;
 		}
+		base_ctrl_block<T> * block() const noexcept
+		{
+			return m_ctrl;
+		}
+		bool unique() const noexcept
+		{
+			return m_pointer && m_ctrl->counter() == 1;
+		}
 
 	public:
 		shared_ptr() noexcept
@@ -167,7 +176,7 @@ namespace px
 		{
 		}
 		shared_ptr(shared_ptr const& rhs) noexcept
-			: shared_ptr(rhs.m_pointer, rhs.m_ctrl)
+			: shared_ptr(rhs.get(), rhs.m_ctrl)
 		{
 		}
 		shared_ptr(shared_ptr && rhs) noexcept
@@ -186,6 +195,19 @@ namespace px
 			return *this;
 		}
 		shared_ptr & operator=(T * rhs) noexcept
+		{
+			shared_ptr(rhs).swap(*this);
+			return *this;
+		}
+
+		// downcast
+		template <typename Sub>
+		shared_ptr(shared_ptr<Sub> const& rhs) noexcept
+			: shared_ptr(rhs.get(), reinterpret_cast<base_ctrl_block<T>*>(rhs.block()))
+		{
+		}
+		template <typename Sub>
+		shared_ptr & operator=(shared_ptr<Sub> const& rhs) noexcept
 		{
 			shared_ptr(rhs).swap(*this);
 			return *this;
@@ -219,16 +241,21 @@ namespace px
 	{
 		lhs.swap(rhs);
 	}
+	template<typename T, typename Super>
+	shared_ptr<T> dynamic_pointer_cast(shared_ptr<Super> const & r)
+	{
+		return shared_ptr<T>(dynamic_cast<T*>(r.get()), reinterpret_cast<base_ctrl_block<T>*>(r.block()));
+	}
 
-	template<typename T>
-	struct ctrl_block_joint
+	template<typename T, typename Join>
+	struct ctrl_block_pack
 	{
 	public:
 		T value;
-		ctrl_block<T> block;
+		Join block;
 	public:
 		template<typename... Args>
-		ctrl_block_joint(Args... args)
+		ctrl_block_pack(Args... args)
 			: value(std::forward<Args>(args)...)
 		{
 		}
@@ -236,7 +263,7 @@ namespace px
 	template<typename T, typename... Args>
 	shared_ptr<T> make_shared(Args&&... args)
 	{
-		auto * ptr = new ctrl_block_joint<T>(std::forward<Args>(args)...);
+		auto * ptr = new ctrl_block_pack<T, ctrl_block<T>>(std::forward<Args>(args)...);
 		return{ &ptr->value, &ptr->block };
 	}
 }

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "component.hpp"
+#include <px/common/shared_ptr.hpp>
 
 #include <algorithm>
 #include <memory>
@@ -18,7 +19,7 @@ namespace px
 		class component_collection
 		{
 		public:
-			typedef std::shared_ptr<component> component_ptr;
+			typedef px::shared_ptr<component> component_ptr;
 
 		public:
 			void add(component_ptr c)
@@ -76,12 +77,12 @@ namespace px
 
 			// querry component by type
 			template<typename T>
-			std::shared_ptr<T> component() const
+			px::shared_ptr<T> component() const
 			{
-				std::shared_ptr<T> cast;
+				px::shared_ptr<T> cast;
 				for (auto & c : m_components)
 				{
-					cast = std::dynamic_pointer_cast<T>(c);
+					cast = dynamic_pointer_cast<T>(c);
 					if (cast) break;
 				}
 				return cast;

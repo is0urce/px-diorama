@@ -190,8 +190,7 @@ namespace px
 				m_links[i].prev_live = i == 0 ? nullptr : &m_links[i - 1];
 				m_links[i].next_live = nullptr;
 				m_links[i].live = false;
-
-				m_links[i].ctrl = ctrl_block<T, smart_deleter>(smart_deleter(this));
+				m_links[i].ctrl = smart_deleter(this);
 			}
 		}
 		template <typename... Args>
