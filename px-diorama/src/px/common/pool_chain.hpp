@@ -27,16 +27,21 @@ namespace px
 		typedef T element;
 		typedef T* pointer;
 		typedef std::unique_ptr<T, smart_deleter> unique_ptr;
-		typedef std::shared_ptr<T> shared_ptr;
+		typedef shared_ptr<T> shared_ptr;
 
 	public:
 		size_t size() const noexcept
 		{
-			return m_count;
+			size_t result = 0;
+			for (node const* i = &m_root; i != nullptr; i = i->next.get())
+			{
+				result += i->chunk.size();
+			}
+			return result;
 		}
 		bool empty() const noexcept
 		{
-			return m_count == 0;
+			return size() == 0;
 		}
 		// exposed for debug / performance queries, always has at least 1
 		size_t chunks() const noexcept
@@ -57,20 +62,19 @@ namespace px
 		template <typename... Args>
 		T* request(Args... args)
 		{
-			++m_count;
+			//++m_count;
 			return aquire_free_pool().request(std::forward<Args>(args)...);
 		}
 		template <typename... Args>
-		shared_ptr make_shared(Args... args)
+		auto make_shared(Args... args)
 		{
-			++m_count;
-			auto &chunk = aquire_free_pool();
-			return{ chunk.request(std::forward<Args>(args)...) , smart_deleter(this, &chunk) };
+			//++m_count;
+			return aquire_free_pool().make_shared(std::forward<Args>(args)...);
 		}
 		template <typename... Args>
 		unique_ptr make_unique(Args... args)
 		{
-			++m_count;
+			//++m_count;
 			auto &chunk = aquire_free_pool();
 			return{ chunk.request(std::forward<Args>(args)...) , { this, &chunk } };
 		}
@@ -84,7 +88,7 @@ namespace px
 				{
 					if (i->chunk.release(ptr))
 					{
-						--m_count;
+//						--m_count;
 					}
 					return;
 				}
@@ -112,7 +116,7 @@ namespace px
 		{
 			m_root.chunk.clear();
 			m_root.next.reset();
-			m_count = 0;
+//			m_count = 0;
 			m_chunks = 1;
 		}
 
@@ -134,8 +138,8 @@ namespace px
 
 	public:
 		pool_chain() noexcept
-			: m_count(0)
-			, m_chunks(1)
+			: m_chunks(1)
+//			, m_count(0)
 		{
 		}
 		pool_chain(pool_chain const&) = delete;
@@ -161,7 +165,7 @@ namespace px
 
 	private:
 		node m_root;
-		size_t m_count; // cashed for fast size query
+		//size_t m_count; // cashed for fast size query
 		size_t m_chunks; // current chunks
 
 	public:
@@ -176,7 +180,7 @@ namespace px
 			void operator()(T* ptr) // lambda
 			{
 				m_chunk->release(ptr);
-				--m_chain->m_count;
+//				--m_chain->m_count;
 			}
 			smart_deleter(pool_chain* current, pool_type* chunk) noexcept
 				: m_chain(current), m_chunk(chunk)

@@ -4,9 +4,22 @@
     "height": 600,
     "fullscreen": false,
     "border": true,
-    "vsync" : 1
+    "vsync": 1
   },
-  "textures": [ "data/img/dtc.png" ],
+  "textures": [
+    {
+      "name": "data/img/dtc.png",
+      "meta": [
+        {
+          "name": "@",
+          "sx": 0,
+          "sy": 0,
+          "dx": 1,
+          "dy": 1
+        }
+      ]
+    }
+  ],
   "bindings": [
     {
       "action": 1,

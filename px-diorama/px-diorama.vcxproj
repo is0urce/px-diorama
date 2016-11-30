@@ -180,6 +180,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\drm\draw\blur.hpp" />
+    <ClInclude Include="src\drm\es\sprite.hpp" />
+    <ClInclude Include="src\drm\es\sprite_component.hpp" />
+    <ClInclude Include="src\drm\es\sprite_system.hpp" />
+    <ClInclude Include="src\drm\es\transform.hpp" />
+    <ClInclude Include="src\drm\es\transform_component.hpp" />
+    <ClInclude Include="src\drm\es\transform_system.hpp" />
     <ClInclude Include="src\drm\perception.hpp" />
     <ClInclude Include="src\drm\draw\program.hpp" />
     <ClInclude Include="src\drm\glfw_instance.hpp" />
@@ -211,6 +217,7 @@
     <ClInclude Include="src\px\es\component.hpp" />
     <ClInclude Include="src\px\es\component_collection.hpp" />
     <ClInclude Include="src\px\es\link.hpp" />
+    <ClInclude Include="src\px\es\link_dispatcher.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
     <ClInclude Include="src\px\rgl\gl_pass.hpp" />
     <ClInclude Include="src\px\rgl\gl_program.hpp" />

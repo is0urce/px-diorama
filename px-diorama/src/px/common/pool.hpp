@@ -201,6 +201,7 @@ namespace px
 		void destroy(T& item)
 		{
 			item.~T();
+			item; // 'item': unreferenced formal parameter if there is no constructor -> referencing
 		}
 
 	public:
@@ -242,6 +243,5 @@ namespace px
 		size_t m_current; // cashed number of living objest for fast size queries
 		links* m_free; // first free node (root)
 		links* m_live; // first living node (root)
-		smart_deleter m_deleter;
 	};
 }

@@ -96,13 +96,18 @@ TEST_CASE("pool_chain", "[pool_chain]")
 		REQUIRE(p.empty() == true);
 
 		// shared
-		std::list<std::shared_ptr<element>> list;
+		std::list<px::shared_ptr<element>> list;
 		for (int i = 0; i < maximum; ++i)
 		{
 			list.push_back(p.make_shared());
 		}
 		REQUIRE(p.size() == maximum);
 		REQUIRE(count(p) == maximum);
+
+		list.push_back(p.make_shared());
+		REQUIRE(p.size() == maximum + 1);
+		REQUIRE(count(p) == maximum + 1);
+
 
 		list.clear();
 		REQUIRE(p.size() == 0);

@@ -70,15 +70,16 @@ int main() // application starts here
 					g_bindings.bind(key, static_cast<px::key>(action_index));
 				}
 			}
-			for (std::string const& texture : doc["textures"])
+			for (auto const& texture : doc["textures"])
 			{
 				std::vector<unsigned char> image;
 				unsigned int w, h;
-				auto error = lodepng::decode(image, w, h, texture);
-				if (error) throw std::runtime_error(std::string("png decoder error in'") + std::to_string(error) + std::string("': message=") + std::string(lodepng_error_text(error)));
+				std::string name = texture["name"];
+				auto error = lodepng::decode(image, w, h, name);
+				if (error) throw std::runtime_error(std::string("png decoder error in'") + name + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 
 				graphics.load_texture(w, h, image.data());
-				game.load_texture();
+				game.load_texture(texture["meta"]);
 			}
 
 			glfwSetWindowUserPointer(window, &game);
