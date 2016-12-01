@@ -29,15 +29,9 @@ namespace px
 		}
 
 		template <typename T>
-		T const* linked() const noexcept
+		T * linked() const noexcept
 		{
 			link<T> const * l = static_cast<C const*>(this);
-			return l->get_link();
-		}
-		template <typename T>
-		T* linked() noexcept
-		{
-			link<T> * l = static_cast<C*>(this);
 			return l->get_link();
 		}
 	};

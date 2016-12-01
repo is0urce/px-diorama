@@ -22,15 +22,11 @@ namespace px
 		{}
 
 	public:
-		T * get_link() noexcept
+		T * get_link() const noexcept
 		{
 			return m_link;
 		}
-		T const* get_link() const noexcept
-		{
-			return m_link;
-		}
-		void set_link(T* element) noexcept
+		void set_link(T * element) noexcept
 		{
 			m_link = element;
 		}
@@ -38,11 +34,7 @@ namespace px
 		{
 			m_link = nullptr;
 		}
-		operator T const*() const noexcept
-		{
-			return m_link;
-		}
-		operator T*() noexcept
+		operator T *() const noexcept
 		{
 			return m_link;
 		}

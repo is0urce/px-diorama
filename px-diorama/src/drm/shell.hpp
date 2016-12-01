@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "key.hpp"
+#include "key_translator.hpp"
 #include "perception.hpp"
 #include "es/transform_system.hpp"
 #include "es/sprite_system.hpp"
@@ -14,23 +14,16 @@
 
 namespace px
 {
-	class shell final
+	class shell : public key_translator<shell>
 	{
 	public:
-		void press(key action)
-		{
-			if (action == key::move_south)
-			{
-				m_transform->current.move_axis<1>(-1);
-			}
-		}
 		void text(unsigned int /*codepoint*/)
 		{
 
 		}
 		void click(int /*button*/)
 		{
-
+			activate(0);
 		}
 		void hover(int x, int y)
 		{
@@ -41,12 +34,26 @@ namespace px
 		{
 
 		}
+
 		void frame(double /*time*/)
 		{
 			for (size_t i = 0, size = m_perception.batches(); i != size; ++i)
 			{
 				m_sprites.update(m_perception.batch(i));
 			}
+		}
+
+		void step(point2 const& direction)
+		{
+			m_player.component<transform>()->move(direction);
+		}
+		void use(unsigned int /*index*/)
+		{
+
+		}
+		void activate(unsigned int /*mod*/)
+		{
+
 		}
 
 		template <typename Document>
@@ -65,8 +72,7 @@ namespace px
 			auto sprite = m_sprites.make_shared("@");
 			auto transform = m_transforms.make_shared({ 0, 0 });
 
-			m_transform = transform.get();
-			sprite->assign(m_transform);
+			sprite->assign(transform.get());
 
 			m_player.add(sprite);
 			m_player.add(transform);
@@ -79,9 +85,10 @@ namespace px
 
 	private:
 		perception m_perception;
+
 		sprite_system m_sprites;
 		transform_system m_transforms;
-		transform_component* m_transform;
+
 		es::component_collection m_player;
 		int hover_x;
 		int hover_y;

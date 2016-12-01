@@ -33,6 +33,7 @@ namespace px {
 			auto result = m_pool.make_shared();
 
 			static_cast<image&>(*result) = img;
+			result->tint = color::white();
 
 			return result;
 		}
@@ -40,30 +41,30 @@ namespace px {
 		{
 			vertices.resize(m_pool.size() * 4);
 			size_t i = 0;
-			m_pool.enumerate([&](sprite_component const& sprite) {
+			m_pool.enumerate([&](auto const& sprite) {
 				auto* transform = sprite.linked<transform_component>();
 
-				vertices[i * 4 + 0].pos.x = static_cast<float>(transform->current.x() - 1);
-				vertices[i * 4 + 0].pos.y = static_cast<float>(transform->current.y() + 1);
+				vertices[i * 4 + 0].pos.x = static_cast<float>(transform->x() - 1);
+				vertices[i * 4 + 0].pos.y = static_cast<float>(transform->y() + 1);
 				vertices[i * 4 + 0].texture.x = sprite.sx;
 				vertices[i * 4 + 0].texture.y = sprite.dy;
 
-				vertices[i * 4 + 1].pos.x = static_cast<float>(transform->current.x() - 1);
-				vertices[i * 4 + 1].pos.y = static_cast<float>(transform->current.y() - 1);
+				vertices[i * 4 + 1].pos.x = static_cast<float>(transform->x() - 1);
+				vertices[i * 4 + 1].pos.y = static_cast<float>(transform->y() - 1);
 				vertices[i * 4 + 1].texture.x = sprite.sx;
 				vertices[i * 4 + 1].texture.y = sprite.sy;
 
-				vertices[i * 4 + 2].pos.x = static_cast<float>(transform->current.x() + 1);
-				vertices[i * 4 + 2].pos.y = static_cast<float>(transform->current.y() - 1);
+				vertices[i * 4 + 2].pos.x = static_cast<float>(transform->x() + 1);
+				vertices[i * 4 + 2].pos.y = static_cast<float>(transform->y() - 1);
 				vertices[i * 4 + 2].texture.x = sprite.dx;
 				vertices[i * 4 + 2].texture.y = sprite.sy;
 			
-				vertices[i * 4 + 3].pos.x = static_cast<float>(transform->current.x() + 1);
-				vertices[i * 4 + 3].pos.y = static_cast<float>(transform->current.y() + 1);
+				vertices[i * 4 + 3].pos.x = static_cast<float>(transform->x() + 1);
+				vertices[i * 4 + 3].pos.y = static_cast<float>(transform->y() + 1);
 				vertices[i * 4 + 3].texture.x = sprite.dx;
 				vertices[i * 4 + 3].texture.y = sprite.dy;
 
-				i += 4;;
+				i += 4;
 			});
 		}
 

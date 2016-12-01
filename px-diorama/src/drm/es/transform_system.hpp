@@ -12,7 +12,7 @@ namespace px {
 		auto make_shared(point2 position)
 		{
 			auto result = m_pool.make_shared();
-			result->current = position;
+			result->place(position);
 			return result;
 		}
 

@@ -201,7 +201,7 @@ namespace px
 		void destroy(T& item)
 		{
 			item.~T();
-			item; // 'item': unreferenced formal parameter if there is no constructor -> referencing
+			//item; // 'item': unreferenced formal parameter if there is no destructor -> referencing
 		}
 
 	public:

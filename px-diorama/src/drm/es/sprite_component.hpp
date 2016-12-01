@@ -12,12 +12,16 @@
 
 namespace px {
 	class transform_component;
-	class sprite_component
+
+	class sprite_component final
 		: public sprite
 		, public es::component
 		, public link_dispatcher<sprite_component>
 		, public link<transform_component>
 	{
-
+	public:
+		virtual ~sprite_component()
+		{
+		}
 	};
 }
