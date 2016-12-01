@@ -12,11 +12,19 @@ namespace px {
 		auto make_shared(point2 position)
 		{
 			auto result = m_pool.make_shared();
-			result->place(position);
+			result->move(position);
+			result->incarnate(&m_space);
 			return result;
+		}
+
+	public:
+		transform_system()
+			: m_space(64)
+		{
 		}
 
 	private:
 		pool_chain<transform_component, 1000> m_pool;
+		transform::space_type m_space;
 	};
 }

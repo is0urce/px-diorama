@@ -96,7 +96,7 @@ namespace px
 		}
 
 		// empty or not-created leaf
-		bool static is_empty(const ptr& tree)
+		bool static is_empty(ptr const& tree) noexcept
 		{
 			return !tree || tree && tree->m_bucket && tree->m_bucket->empty();
 		}

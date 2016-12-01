@@ -1,34 +1,38 @@
+// transform.hpp
+
 #pragma once
 
 #include <px/common/point.hpp>
+#include <px/common/qtree.hpp>
 
 namespace px
 {
 	struct transform
 	{
 	public:
-		void move(point2 const& movement) noexcept
-		{
-			current += movement;
-		}
-		void place(point2 position) noexcept
-		{
-			current = position;
-		}
+		typedef qtree<transform*> space_type;
+
+	public:
 		auto const& position() const noexcept
 		{
-			return current;
+			return m_current;
 		}
 		auto x() const noexcept
 		{
-			return current.x();
+			return m_current.x();
 		}
 		auto y() const noexcept
 		{
-			return current.y();
+			return m_current.y();
+		}
+	public:
+		transform()
+			: m_space(nullptr)
+		{
 		}
 
-	private:
-		point2 current;
+	protected:
+		point2 m_current;
+		qtree<transform*> * m_space;
 	};
 }

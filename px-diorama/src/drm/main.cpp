@@ -125,7 +125,7 @@ void error_callback(int error, const char* description)
 }
 void key_callback(GLFWwindow * window, int key, int /* scancode */, int action, int /* mods */)
 {
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
 		reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->press(g_bindings.select(key, px::key::not_valid));
 	}

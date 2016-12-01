@@ -14,7 +14,8 @@
 
 namespace px
 {
-	class shell : public key_translator<shell>
+	class shell
+		: public key_translator<shell>
 	{
 	public:
 		void text(unsigned int /*codepoint*/)
@@ -27,25 +28,15 @@ namespace px
 		}
 		void hover(int x, int y)
 		{
-			hover_x = x;
-			hover_y = y;
+			m_hover = { x, y };
 		}
-		void scroll(double /*vertical*/, double /*horisontal*/)
+		void scroll(double vertical, double horisontal)
 		{
-
+			m_perception.scale(static_cast<float>(vertical + horisontal));
 		}
-
-		void frame(double /*time*/)
-		{
-			for (size_t i = 0, size = m_perception.batches(); i != size; ++i)
-			{
-				m_sprites.update(m_perception.batch(i));
-			}
-		}
-
 		void step(point2 const& direction)
 		{
-			m_player.component<transform>()->move(direction);
+			m_player.component<transform_component>()->move(direction);
 		}
 		void use(unsigned int /*index*/)
 		{
@@ -78,6 +69,13 @@ namespace px
 			m_player.add(transform);
 			m_player.activate();
 		}
+		void frame(double /*time*/)
+		{
+			for (size_t i = 0, size = m_perception.batches(); i != size; ++i)
+			{
+				m_sprites.update(m_perception.batch(i));
+			}
+		}
 	public:
 		shell()
 		{
@@ -90,7 +88,6 @@ namespace px
 		transform_system m_transforms;
 
 		es::component_collection m_player;
-		int hover_x;
-		int hover_y;
+		point2 m_hover;
 	};
 }

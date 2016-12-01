@@ -40,7 +40,7 @@ namespace px
 		void render(perception const& data)
 		{
 			// prepare data
-			m_camera.data = { { 0.50f, 0.50f },{ 0.0, 0.0 } };
+			m_camera.data = { { data.scale(), data.scale() * m_width / m_height },{ 0.0, 0.0 } };
 			m_camera.block.load(GL_STREAM_DRAW, m_camera.data);
 
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

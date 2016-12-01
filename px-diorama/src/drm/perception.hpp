@@ -40,13 +40,24 @@ namespace px
 		{
 			return m_batches.size();
 		}
+		float scale() const noexcept
+		{
+			return m_scale;
+		}
+		void scale(float factor)
+		{
+			m_scale *= factor * 0.1f + 1.0f;
+			m_scale = std::min(100.0f, std::max(m_scale, 0.1f)); // clamp
+		}
 
 	public:
 		perception()
+			: m_scale(1.0)
 		{
 		}
 
 	private:
 		std::vector<std::vector<vertex>> m_batches;
+		float m_scale;
 	};
 }
