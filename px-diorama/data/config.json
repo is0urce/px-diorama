@@ -1,6 +1,6 @@
 {
   "window": {
-    "width": 800,
+    "width": 1200,
     "height": 600,
     "fullscreen": false,
     "border": true,
@@ -11,7 +11,31 @@
       "name": "data/img/dtc.png",
       "meta": [
         {
+          "name": "#",
+          "sx": 0,
+          "sy": 0,
+          "dx": 1,
+          "dy": 1
+        }
+      ]
+    },
+    {
+      "name": "data/img/px_pug.png",
+      "meta": [
+        {
           "name": "@",
+          "sx": 0,
+          "sy": 0,
+          "dx": 1,
+          "dy": 1
+        }
+      ]
+    }, 
+    {
+      "name": "data/img/px_world25.png",
+      "meta": [
+        {
+          "name": ".",
           "sx": 0,
           "sy": 0,
           "dx": 1,

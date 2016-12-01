@@ -51,7 +51,7 @@ namespace px
 		void load_texture(Document const& doc)
 		{
 			m_perception.add_texture();
-			m_sprites.add_texture(doc, 0);
+			m_sprites.add_texture(doc, true);
 		}
 
 		perception const& view() const noexcept
@@ -60,7 +60,7 @@ namespace px
 		}
 		void start()
 		{
-			auto sprite = m_sprites.make_shared("@");
+			auto sprite = m_sprites.make_shared("#");
 			auto transform = m_transforms.make_shared({ 0, 0 });
 
 			sprite->assign(transform.get());
@@ -71,9 +71,9 @@ namespace px
 		}
 		void frame(double /*time*/)
 		{
-			for (size_t i = 0, size = m_perception.batches(); i != size; ++i)
+			for (size_t i = 0, size = m_perception.textures(); i != size; ++i)
 			{
-				m_sprites.update(m_perception.batch(i));
+				m_sprites.update(m_perception.batches(), m_perception.sizes());
 			}
 		}
 	public:

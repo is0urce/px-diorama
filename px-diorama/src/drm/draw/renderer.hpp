@@ -62,13 +62,14 @@ namespace px
 
 			// g-pass
 			glUseProgram(m_batch);
-			for (size_t i = 0, size = data.batches(); i != size; ++i)
+			for (size_t i = 0, textures = data.textures(); i != textures; ++i)
 			{
 				auto const& vertices = data.batch(i);
-				if (!vertices.empty())
+				auto size = data.size(i);
+				if (size != 0)
 				{
-					m_batches[i].vertices.load(GL_STREAM_DRAW, sizeof(vertices[0]) * vertices.size(), vertices.data());
-					m_batches[i].pass.draw_arrays(GL_QUADS, static_cast<GLsizei>(vertices.size()));
+					m_batches[i].vertices.load(GL_STREAM_DRAW, sizeof(vertices[0]) * size, vertices.data());
+					m_batches[i].pass.draw_arrays(GL_QUADS, static_cast<GLsizei>(size));
 				}
 			}
 

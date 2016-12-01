@@ -12,7 +12,7 @@ namespace px {
 		typedef pool_chain<sprite_component, 100> pool_type;
 	public:
 		template <typename Document>
-		void add_texture(Document const& doc, unsigned int n)
+		void add_texture(Document const& doc, float reverse_y)
 		{
 			for (auto const& meta : doc)
 			{
@@ -21,11 +21,17 @@ namespace px {
 				float sy = meta["sy"];
 				float dx = meta["dx"];
 				float dy = meta["dy"];
-				img = { sx, 1.0f - sy, dx, 1.0f - dy };
+				if (reverse_y)
+				{
+					sy = 1.0f - sy;
+					dy = 1.0f - dy;
+				}
+				img = { sx, sy, dx, dy };
 				img.layer = 0;
-				img.texture = n;
+				img.texture = m_textures;
 				img.glyph = '?';
 			}
+			++m_textures;
 		}
 		auto make_shared(std::string const& name)
 		{
@@ -37,13 +43,21 @@ namespace px {
 
 			return result;
 		}
-		void update(std::vector<vertex> & vertices)
+		void update(std::vector<std::vector<vertex>> & vertice_arrays, std::vector<size_t> & sizes)
 		{
-			vertices.resize(m_pool.size() * 4);
-			size_t i = 0;
-			m_pool.enumerate([&](auto const& sprite) {
-				auto* transform = sprite.linked<transform_component>();
+			if (vertice_arrays.size() != m_textures) throw std::runtime_error("px::sprite_system::update() - vertices array texture size not match with internal counter");
 
+			for (auto & vertice_array : vertice_arrays)
+			{
+				vertice_array.resize(m_pool.size() * 4);
+			}
+
+			sizes.assign(m_textures, 0);
+			m_pool.enumerate([&](auto const& sprite) {
+				auto & vertices = vertice_arrays[sprite.texture];
+				size_t i = sizes[sprite.texture];
+
+				auto* transform = sprite.linked<transform_component>();
 				vertices[i * 4 + 0].pos.x = static_cast<float>(transform->x() - 1);
 				vertices[i * 4 + 0].pos.y = static_cast<float>(transform->y() + 1);
 				vertices[i * 4 + 0].texture.x = sprite.sx;
@@ -58,18 +72,25 @@ namespace px {
 				vertices[i * 4 + 2].pos.y = static_cast<float>(transform->y() - 1);
 				vertices[i * 4 + 2].texture.x = sprite.dx;
 				vertices[i * 4 + 2].texture.y = sprite.sy;
-			
+
 				vertices[i * 4 + 3].pos.x = static_cast<float>(transform->x() + 1);
 				vertices[i * 4 + 3].pos.y = static_cast<float>(transform->y() + 1);
 				vertices[i * 4 + 3].texture.x = sprite.dx;
 				vertices[i * 4 + 3].texture.y = sprite.dy;
 
-				i += 4;
+				sizes[sprite.texture] += 4;
 			});
+		}
+
+	public:
+		sprite_system()
+			: m_textures(0)
+		{
 		}
 
 	private:
 		std::map<std::string, image> m_meta;
 		pool_type m_pool;
+		unsigned int m_textures;
 	};
 }
