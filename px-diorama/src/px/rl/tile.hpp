@@ -13,11 +13,12 @@ namespace px
 	namespace rl
 	{
 		template <typename Image>
-		class tile : public mass<static_cast<size_t>(traverse::max_value)>
+		struct tile
+			: public mass<traverse>
 		{
 		public:
 			typedef Image appearance_type;
-			typedef mass<static_cast<size_t>(traverse::max_value)> mass_type;
+			typedef mass<traverse> mass_type;
 
 		public:
 			const appearance_type& appearance() const noexcept

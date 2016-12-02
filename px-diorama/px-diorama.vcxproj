@@ -257,9 +257,13 @@
     <ClInclude Include="src\px\rl\skill_set.hpp" />
     <ClInclude Include="src\px\rl\tile.hpp" />
     <ClInclude Include="src\px\rl\traverse.hpp" />
+    <ClInclude Include="src\px\rl\traverse_options.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />
+    <None Include="data\img\dirt32.json" />
+    <None Include="data\img\gnome32.json" />
+    <None Include="data\img\wall32.json" />
     <None Include="data\shaders\batch.frag" />
     <None Include="data\shaders\batch.vert" />
     <None Include="data\shaders\blur.frag" />

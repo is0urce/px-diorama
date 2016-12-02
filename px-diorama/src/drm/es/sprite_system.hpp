@@ -9,7 +9,7 @@ namespace px {
 	class sprite_system final
 	{
 	public:
-		typedef pool_chain<sprite_component, 100> pool_type;
+		typedef pool_chain<sprite_component, 200> pool_type;
 	public:
 		template <typename Document>
 		void add_texture(Document const& doc, float reverse_y)
@@ -43,44 +43,26 @@ namespace px {
 
 			return result;
 		}
-		void update(std::vector<std::vector<vertex>> & vertice_arrays, std::vector<size_t> & sizes)
+		void write(std::vector<std::vector<vertex>> & vertice_arrays)
 		{
-			if (vertice_arrays.size() != m_textures) throw std::runtime_error("px::sprite_system::update() - vertices array texture size not match with internal counter");
+			if (vertice_arrays.size() < m_textures) throw std::runtime_error("px::sprite_system::write() - vertices array texture size not match with internal counter");
 
-			for (auto & vertice_array : vertice_arrays)
-			{
-				vertice_array.resize(m_pool.size() * 4);
-			}
-
-			sizes.assign(m_textures, 0);
 			m_pool.enumerate([&](auto const& sprite) {
+				if (!sprite.active()) return; // continue
 				auto* transform = sprite.linked<transform_component>();
-				if (!transform) return; // continue
+				if (!transform) return; 
+
+				float sx = static_cast<float>(transform->x());
+				float sy = static_cast<float>(transform->y());
+				float dx = sx + 1;
+				float dy = sy + 1;
 
 				auto & vertices = vertice_arrays[sprite.texture];
-				size_t i = sizes[sprite.texture];
 
-				vertices[i * 4 + 0].pos.x = static_cast<float>(transform->x() - 1);
-				vertices[i * 4 + 0].pos.y = static_cast<float>(transform->y() + 1);
-				vertices[i * 4 + 0].texture.x = sprite.sx;
-				vertices[i * 4 + 0].texture.y = sprite.dy;
-
-				vertices[i * 4 + 1].pos.x = static_cast<float>(transform->x() - 1);
-				vertices[i * 4 + 1].pos.y = static_cast<float>(transform->y() - 1);
-				vertices[i * 4 + 1].texture.x = sprite.sx;
-				vertices[i * 4 + 1].texture.y = sprite.sy;
-
-				vertices[i * 4 + 2].pos.x = static_cast<float>(transform->x() + 1);
-				vertices[i * 4 + 2].pos.y = static_cast<float>(transform->y() - 1);
-				vertices[i * 4 + 2].texture.x = sprite.dx;
-				vertices[i * 4 + 2].texture.y = sprite.sy;
-
-				vertices[i * 4 + 3].pos.x = static_cast<float>(transform->x() + 1);
-				vertices[i * 4 + 3].pos.y = static_cast<float>(transform->y() + 1);
-				vertices[i * 4 + 3].texture.x = sprite.dx;
-				vertices[i * 4 + 3].texture.y = sprite.dy;
-
-				sizes[sprite.texture] += 4;
+				vertices.push_back({ { sx, dy }, { sprite.sx, sprite.dy } });
+				vertices.push_back({ { sx, sy }, { sprite.sx, sprite.sy } });
+				vertices.push_back({ { dx, sy }, { sprite.dx, sprite.sy } });
+				vertices.push_back({ { dx, dy }, { sprite.dx, sprite.dy } });
 			});
 		}
 

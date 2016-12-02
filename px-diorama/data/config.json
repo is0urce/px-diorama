@@ -8,40 +8,16 @@
   },
   "textures": [
     {
-      "name": "data/img/dtc.png",
-      "meta": [
-        {
-          "name": "#",
-          "sx": 0,
-          "sy": 0,
-          "dx": 1,
-          "dy": 1
-        }
-      ]
+      "path": "data/img/dirt32.png",
+      "meta": "data/img/dirt32.json"
     },
     {
-      "name": "data/img/px_pug.png",
-      "meta": [
-        {
-          "name": "@",
-          "sx": 0,
-          "sy": 0,
-          "dx": 1,
-          "dy": 1
-        }
-      ]
-    }, 
+      "path": "data/img/wall32.png",
+      "meta" : "data/img/wall32.json"
+    },
     {
-      "name": "data/img/px_world25.png",
-      "meta": [
-        {
-          "name": ".",
-          "sx": 0,
-          "sy": 0,
-          "dx": 1,
-          "dy": 1
-        }
-      ]
+      "path": "data/img/gnome32.png",
+      "meta" : "data/img/gnome32.json"
     }
   ],
   "bindings": [

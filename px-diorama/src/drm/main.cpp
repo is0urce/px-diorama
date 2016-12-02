@@ -74,12 +74,15 @@ int main() // application starts here
 			{
 				std::vector<unsigned char> image;
 				unsigned int w, h;
-				std::string name = texture["name"];
+				std::string name = texture["path"];
 				auto error = lodepng::decode(image, w, h, name);
 				if (error) throw std::runtime_error(std::string("png decoder error in'") + name + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 
+				std::string metafile = texture["meta"];
+				auto meta = nlohmann::json::parse(std::ifstream(metafile));
+
 				graphics.load_texture(w, h, image.data());
-				game.load_texture(texture["meta"]);
+				game.load_texture(meta["meta"]);
 			}
 			game.start();
 

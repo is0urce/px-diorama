@@ -65,7 +65,7 @@ namespace px
 			for (size_t i = 0, textures = data.textures(); i != textures; ++i)
 			{
 				auto const& vertices = data.batch(i);
-				auto size = data.size(i);
+				auto size = vertices.size();
 				if (size != 0)
 				{
 					m_batches[i].vertices.load(GL_STREAM_DRAW, sizeof(vertices[0]) * size, vertices.data());

@@ -10,10 +10,20 @@
 #include "es/transform_system.hpp"
 #include "es/sprite_system.hpp"
 
+#include <px/common/matrix.hpp>
 #include <px/es/component_collection.hpp>
+#include <px/rl/mass.hpp>
+#include <px/rl/traverse.hpp>
 
 namespace px
 {
+	struct tile
+	{
+		shared_ptr<transform_component> transform;
+		shared_ptr<sprite_component> sprite;
+		rl::mass<rl::traverse> mass;
+	};
+
 	class shell
 		: public key_translator<shell>
 	{
@@ -60,7 +70,7 @@ namespace px
 		}
 		void start()
 		{
-			auto sprite = m_sprites.make_shared("#");
+			auto sprite = m_sprites.make_shared("@");
 			auto transform = m_transforms.make_shared({ 0, 0 });
 
 			sprite->assign(transform.get());
@@ -68,13 +78,24 @@ namespace px
 			m_player.add(sprite);
 			m_player.add(transform);
 			m_player.activate();
+
+			m_map.resize({ 5, 5 });
+			m_map.enumerate([this](auto const& point, auto & tile) {
+				tile.transform = m_transforms.make_shared(point);
+				tile.sprite = m_sprites.make_shared("#");
+
+				tile.sprite->assign<transform_component>(tile.transform.get());
+
+				tile.transform->activate();
+				tile.sprite->activate();
+
+				tile.mass.make_ground();
+			});
 		}
 		void frame(double /*time*/)
 		{
-			for (size_t i = 0, size = m_perception.textures(); i != size; ++i)
-			{
-				m_sprites.update(m_perception.batches(), m_perception.sizes());
-			}
+			m_perception.clear();
+			m_sprites.write(m_perception.batches());
 		}
 	public:
 		shell()
@@ -88,6 +109,8 @@ namespace px
 		transform_system m_transforms;
 
 		es::component_collection m_player;
+		matrix2<tile> m_map;
+
 		point2 m_hover;
 	};
 }

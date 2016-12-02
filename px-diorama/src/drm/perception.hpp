@@ -27,7 +27,6 @@ namespace px
 		void add_texture()
 		{
 			m_batches.emplace_back();
-			m_sizes.emplace_back(0);
 		}
 		float scale() const noexcept
 		{
@@ -43,10 +42,6 @@ namespace px
 		{
 			return m_batches;
 		}
-		std::vector<size_t> & sizes() noexcept
-		{
-			return m_sizes;
-		}
 		std::vector<vertex> const& batch(size_t n) const noexcept
 		{
 			return m_batches[n];
@@ -55,9 +50,12 @@ namespace px
 		{
 			return m_batches.size();
 		}
-		size_t size(size_t n) const noexcept
+		void clear()
 		{
-			return m_sizes[n];
+			for (auto & b : m_batches)
+			{
+				b.resize(0);
+			}
 		}
 
 	public:
@@ -68,7 +66,6 @@ namespace px
 
 	private:
 		std::vector<std::vector<vertex>> m_batches;
-		std::vector<size_t> m_sizes;
 		float m_scale;
 	};
 }
