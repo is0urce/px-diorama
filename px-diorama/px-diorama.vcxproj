@@ -228,6 +228,35 @@
     <ClInclude Include="src\px\rgl\gl_vao.hpp" />
     <ClInclude Include="src\px\rgl\gl_buffer.hpp" />
     <ClInclude Include="src\px\rgl\rgl.hpp" />
+    <ClInclude Include="src\px\rl\actor.hpp" />
+    <ClInclude Include="src\px\rl\astar.hpp" />
+    <ClInclude Include="src\px\rl\bar.hpp" />
+    <ClInclude Include="src\px\rl\body.hpp" />
+    <ClInclude Include="src\px\rl\buff.hpp" />
+    <ClInclude Include="src\px\rl\character.hpp" />
+    <ClInclude Include="src\px\rl\damage_type.hpp" />
+    <ClInclude Include="src\px\rl\dialogue.hpp" />
+    <ClInclude Include="src\px\rl\dialogue_evaluator.hpp" />
+    <ClInclude Include="src\px\rl\dialogue_reply.hpp" />
+    <ClInclude Include="src\px\rl\dialogue_state.hpp" />
+    <ClInclude Include="src\px\rl\effect.hpp" />
+    <ClInclude Include="src\px\rl\enhancement.hpp" />
+    <ClInclude Include="src\px\rl\enhancement_collection.hpp" />
+    <ClInclude Include="src\px\rl\entity.hpp" />
+    <ClInclude Include="src\px\rl\equipment_slot.hpp" />
+    <ClInclude Include="src\px\rl\faction_relation.hpp" />
+    <ClInclude Include="src\px\rl\inventory.hpp" />
+    <ClInclude Include="src\px\rl\item.hpp" />
+    <ClInclude Include="src\px\rl\i_ability.hpp" />
+    <ClInclude Include="src\px\rl\map_stream.hpp" />
+    <ClInclude Include="src\px\rl\mass.hpp" />
+    <ClInclude Include="src\px\rl\shadowcasting.hpp" />
+    <ClInclude Include="src\px\rl\skill.hpp" />
+    <ClInclude Include="src\px\rl\skill_base.hpp" />
+    <ClInclude Include="src\px\rl\skill_book.hpp" />
+    <ClInclude Include="src\px\rl\skill_set.hpp" />
+    <ClInclude Include="src\px\rl\tile.hpp" />
+    <ClInclude Include="src\px\rl\traverse.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />

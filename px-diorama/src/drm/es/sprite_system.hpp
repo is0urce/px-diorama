@@ -54,10 +54,12 @@ namespace px {
 
 			sizes.assign(m_textures, 0);
 			m_pool.enumerate([&](auto const& sprite) {
+				auto* transform = sprite.linked<transform_component>();
+				if (!transform) return; // continue
+
 				auto & vertices = vertice_arrays[sprite.texture];
 				size_t i = sizes[sprite.texture];
 
-				auto* transform = sprite.linked<transform_component>();
 				vertices[i * 4 + 0].pos.x = static_cast<float>(transform->x() - 1);
 				vertices[i * 4 + 0].pos.y = static_cast<float>(transform->y() + 1);
 				vertices[i * 4 + 0].texture.x = sprite.sx;
