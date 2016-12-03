@@ -34,8 +34,8 @@ namespace px
 		}
 		void scale(float factor)
 		{
-			m_scale *= factor * 0.1f + 1.0f;
-			m_scale = std::min(100.0f, std::max(m_scale, 0.1f)); // clamp
+			m_scale *= factor + 1.0f;
+			m_scale = std::min(10000.0f, std::max(m_scale, 0.0001f)); // clamp
 		}
 
 		std::vector<std::vector<vertex>> & batches() noexcept

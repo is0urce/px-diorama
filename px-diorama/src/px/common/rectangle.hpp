@@ -21,9 +21,21 @@ namespace px
 		point2 m_corner;
 
 	public:
-		rectangle() noexcept : m_start{}, m_range{}, m_corner{} {}
-		constexpr rectangle(point2 range) noexcept : m_start(0, 0), m_range(range), m_corner(range) {}
-		rectangle(point2 start, point2 range) noexcept : m_start(start), m_range(range), m_corner(start + range) {}
+		rectangle() noexcept
+			: m_start{}
+			, m_range{}
+			, m_corner{}
+		{}
+		constexpr rectangle(point2 range) noexcept
+			: m_start(0, 0)
+			, m_range(range)
+			, m_corner(range)
+		{}
+		rectangle(point2 start, point2 range) noexcept
+			: m_start(start)
+			, m_range(range)
+			, m_corner(start + range)
+		{}
 
 	public:
 		constexpr point2::component width() const noexcept

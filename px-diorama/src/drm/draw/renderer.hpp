@@ -91,6 +91,9 @@ namespace px
 		renderer(int width,	int height)
 			: m_width(width), m_height(height)
 		{
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glEnable(GL_BLEND);
+
 			m_trices = { GL_ARRAY_BUFFER };
 			m_camera.block = { GL_UNIFORM_BUFFER };
 
@@ -126,7 +129,8 @@ namespace px
 			m_blur_passes = { m_albedo, m_ping.framebuffer, m_ping.texture, m_pong.framebuffer, m_pong.texture, m_width, m_height, 0.5f, { 3.14f * 2 / 16, 3.14f * 2 / 16 * 3, 3.14f * 2 / 16 * 5, 3.14f * 2 / 16 * 7 } };
 
 			m_postprocess = { 0, 0, m_width, m_height };
-			m_postprocess.bind_texture(m_blur_passes.result());
+			//m_postprocess.bind_texture(m_blur_passes.result());
+			m_postprocess.bind_texture(m_albedo);
 		}
 		void load_texture(unsigned int width, unsigned int height, void const* data)
 		{

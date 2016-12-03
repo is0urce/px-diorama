@@ -252,6 +252,12 @@
     <ClInclude Include="src\px\rl\traverse_options.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\px\fn\bsp.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\fn\perlin.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -274,5 +280,6 @@
     <None Include="data\img\dirt32.json" />
     <None Include="data\img\gnome32.json" />
     <None Include="data\img\wall32.json" />
+    <None Include="data\scripts\q.lua" />
   </ItemGroup>
 </Project>

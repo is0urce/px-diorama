@@ -4,12 +4,14 @@
 #include "sprite_component.hpp"
 
 #include <map>
+#include <memory>
 
 namespace px {
 	class sprite_system final
 	{
 	public:
-		typedef pool_chain<sprite_component, 200> pool_type;
+		typedef pool_chain<sprite_component, 100000> pool_type;
+
 	public:
 		template <typename Document>
 		void add_texture(Document const& doc, float reverse_y)
@@ -36,24 +38,24 @@ namespace px {
 		auto make_shared(std::string const& name)
 		{
 			image const& img = m_meta[name];
-			auto result = m_pool.make_shared();
+			auto result = m_pool->make_shared();
 
 			static_cast<image&>(*result) = img;
 			result->tint = color::white();
 
 			return result;
 		}
-		void write(std::vector<std::vector<vertex>> & vertice_arrays)
+		void write(std::vector<std::vector<vertex>> & vertice_arrays, float x_offset, float y_offset)
 		{
 			if (vertice_arrays.size() < m_textures) throw std::runtime_error("px::sprite_system::write() - vertices array texture size not match with internal counter");
 
-			m_pool.enumerate([&](auto const& sprite) {
+			m_pool->enumerate([&](auto const& sprite) {
 				if (!sprite.active()) return; // continue
 				auto* transform = sprite.linked<transform_component>();
 				if (!transform) return; 
 
-				float sx = static_cast<float>(transform->x());
-				float sy = static_cast<float>(transform->y());
+				float sx = x_offset + static_cast<float>(transform->x());
+				float sy = y_offset + static_cast<float>(transform->y());
 				float dx = sx + 1;
 				float dy = sy + 1;
 
@@ -69,12 +71,13 @@ namespace px {
 	public:
 		sprite_system()
 			: m_textures(0)
+			, m_pool(std::make_unique<pool_type>())
 		{
 		}
 
 	private:
 		std::map<std::string, image> m_meta;
-		pool_type m_pool;
+		std::unique_ptr<pool_type> m_pool; // this thing is heavy for a stack
 		unsigned int m_textures;
 	};
 }

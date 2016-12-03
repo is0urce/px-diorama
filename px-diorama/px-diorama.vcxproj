@@ -219,6 +219,8 @@
     <ClInclude Include="src\px\es\component_collection.hpp" />
     <ClInclude Include="src\px\es\link.hpp" />
     <ClInclude Include="src\px\es\link_dispatcher.hpp" />
+    <ClInclude Include="src\px\fn\bsp.hpp" />
+    <ClInclude Include="src\px\fn\perlin.hpp" />
     <ClInclude Include="src\px\rgl\gl_assert.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
     <ClInclude Include="src\px\rgl\gl_pass.hpp" />
@@ -264,6 +266,7 @@
     <None Include="data\img\dirt32.json" />
     <None Include="data\img\gnome32.json" />
     <None Include="data\img\wall32.json" />
+    <None Include="data\scripts\q.lua" />
     <None Include="data\shaders\batch.frag" />
     <None Include="data\shaders\batch.vert" />
     <None Include="data\shaders\blur.frag" />

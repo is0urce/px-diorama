@@ -72,17 +72,17 @@ int main() // application starts here
 			}
 			for (auto const& texture : doc["textures"])
 			{
+				std::string path = texture["path"];
+				std::string metapath = texture["meta"];
+
 				std::vector<unsigned char> image;
 				unsigned int w, h;
-				std::string name = texture["path"];
-				auto error = lodepng::decode(image, w, h, name);
-				if (error) throw std::runtime_error(std::string("png decoder error in'") + name + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
-
-				std::string metafile = texture["meta"];
-				auto meta = nlohmann::json::parse(std::ifstream(metafile));
-
+				auto error = lodepng::decode(image, w, h, path);
+				if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 				graphics.load_texture(w, h, image.data());
-				game.load_texture(meta["meta"]);
+
+				auto metadoc = nlohmann::json::parse(std::ifstream(metapath));
+				game.load_texture(metadoc["meta"]);
 			}
 			game.start();
 

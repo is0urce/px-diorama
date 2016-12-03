@@ -14,6 +14,7 @@
 #include <px/es/component_collection.hpp>
 #include <px/rl/mass.hpp>
 #include <px/rl/traverse.hpp>
+#include <px/fn/bsp.hpp>
 
 namespace px
 {
@@ -42,11 +43,11 @@ namespace px
 		}
 		void scroll(double vertical, double horisontal)
 		{
-			m_perception.scale(static_cast<float>(vertical + horisontal));
+			m_perception.scale(static_cast<float>(vertical + horisontal) * 0.1f);
 		}
 		void step(point2 const& direction)
 		{
-			m_player.component<transform_component>()->move(direction);
+			m_transform->move(direction);
 		}
 		void use(unsigned int /*index*/)
 		{
@@ -72,6 +73,7 @@ namespace px
 		{
 			auto sprite = m_sprites.make_shared("@");
 			auto transform = m_transforms.make_shared({ 0, 0 });
+			m_transform = transform.get();
 
 			sprite->assign(transform.get());
 
@@ -79,7 +81,7 @@ namespace px
 			m_player.add(transform);
 			m_player.activate();
 
-			m_map.resize({ 5, 5 });
+			m_map.resize({ 100, 100 });
 			m_map.enumerate([this](auto const& point, auto & tile) {
 				tile.transform = m_transforms.make_shared(point);
 				tile.sprite = m_sprites.make_shared("#");
@@ -91,15 +93,30 @@ namespace px
 
 				tile.mass.make_ground();
 			});
+
+			std::mt19937 rng;
+			fn::bsp<>::create<>(rng, { { 0,0 },{ 100, 100 } }, 5, 1).enumerate_bounds([&](auto const& room) {
+				room.enumerate([&](auto const& point) {
+					auto & tile = m_map[point];
+
+					tile.sprite = m_sprites.make_shared(".");
+					tile.sprite->assign<transform_component>(tile.transform.get());
+					tile.sprite->activate();
+				});
+			});
 		}
 		void frame(double /*time*/)
 		{
 			m_perception.clear();
-			m_sprites.write(m_perception.batches());
+
+			float x_offset = -static_cast<float>(m_transform->x());
+			float y_offset = -static_cast<float>(m_transform->y());
+			m_sprites.write(m_perception.batches(), x_offset, y_offset);
 		}
 	public:
 		shell()
 		{
+			m_perception.scale(-0.95f);
 		}
 
 	private:
@@ -109,6 +126,7 @@ namespace px
 		transform_system m_transforms;
 
 		es::component_collection m_player;
+		transform_component * m_transform;
 		matrix2<tile> m_map;
 
 		point2 m_hover;

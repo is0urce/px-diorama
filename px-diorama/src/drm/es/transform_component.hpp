@@ -34,6 +34,10 @@ namespace px {
 				m_space = space;
 			}
 		}
+		void reincarnate()
+		{
+			incarnate(nullptr);
+		}
 		void move(point2 const& direction)
 		{
 			place(m_current + direction);
@@ -50,6 +54,7 @@ namespace px {
 	public:
 		virtual ~transform_component()
 		{
+			reincarnate();
 		}
 
 	protected:

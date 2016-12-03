@@ -28,14 +28,22 @@ vec2 translate(vec3 r) // r is for refraction
 	return vec2(s, t);
 }
 
+const vec2 r_m = vec2(1.001, 1.001);
+const vec2 g_m = vec2(1.0, 1.0);
+const vec2 b_m = vec2(0.999, 0.999);
+
+const vec2 r_o = vec2(-0.0005, -0.0005);
+const vec2 g_o = vec2(0.0005, 0.0005);
+const vec2 b_o = vec2(0.0005, 0.0);
+
+const float inverted_gamma = 1 / 2.2;
+const float exposure = 1.0;
+
 void main()
 {
-    float r = seek(vec2(1.001, 1.001), vec2(-0.001, -0.001)).r;
-    float g = seek(vec2(1.0, 1.0), vec2(0.001, 0.001)).g;
-	float b = seek(vec2(0.999, 0.999), vec2(0.001, 0.0)).b;
-	
-	const float inverted_gamma = 1 / 2.2;
-	const float exposure = 1.0;
+    float r = seek(r_m, r_o).r;
+    float g = seek(g_m, g_o).g;
+	float b = seek(b_m, b_o).b;
 
     vec3 chroma = vec3(r, g, b);
 
