@@ -135,6 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -175,7 +176,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\drm\lodepng.cpp" />
+    <ClCompile Include="include\lodepng.cpp" />
+    <ClCompile Include="include\msdf\ext\import-font.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -193,7 +195,6 @@
     <ClInclude Include="src\drm\glfw_time.hpp" />
     <ClInclude Include="src\drm\glfw_window.hpp" />
     <ClInclude Include="src\drm\key.hpp" />
-    <ClInclude Include="src\drm\lodepng.h" />
     <ClInclude Include="src\drm\draw\renderer.hpp" />
     <ClInclude Include="src\drm\shell.hpp" />
     <ClInclude Include="src\px\common\assert.hpp" />
