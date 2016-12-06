@@ -30,24 +30,24 @@ namespace component_collection_test {
 			REQUIRE(cc.component<head>() == h);
 		}
 
-		cc.activate();
+		cc.enable();
 		REQUIRE(h->active() == true);
 
 		SECTION("deactivate")
 		{
-			cc.deactivate();
+			cc.disable();
 			REQUIRE(h->active() == false);
 		}
 		SECTION("remove by value")
 		{
 			cc.remove(h);
-			cc.deactivate();
+			cc.disable();
 			REQUIRE(h->active() == true);
 		}
 		SECTION("remove by type")
 		{
 			cc.remove<head>();
-			cc.deactivate();
+			cc.disable();
 			REQUIRE(h->active() == true);
 		}
 		SECTION("remove all")

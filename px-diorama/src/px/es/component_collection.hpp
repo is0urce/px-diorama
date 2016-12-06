@@ -60,14 +60,14 @@ namespace px
 				}
 			}
 
-			void activate()
+			void enable()
 			{
 				for (auto & component : m_components)
 				{
 					component->activate();
 				}
 			}
-			void deactivate()
+			void disable()
 			{
 				for (auto & component : m_components)
 				{

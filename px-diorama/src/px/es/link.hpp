@@ -9,37 +9,41 @@
 
 namespace px
 {
-	template <typename T>
-	class link
+	namespace es
 	{
-	public:
-		link()
-			: m_link(nullptr)
+		template <typename T>
+		class link
 		{
-		}
-		link(T * element)
-			: m_link(element)
-		{}
+		public:
+			link()
+				: m_link(nullptr)
+			{
+			}
+			link(T * element)
+				: m_link(element)
+			{
+			}
 
-	public:
-		T * get_link() const noexcept
-		{
-			return m_link;
-		}
-		void set_link(T * element) noexcept
-		{
-			m_link = element;
-		}
-		void break_link() noexcept
-		{
-			m_link = nullptr;
-		}
-		operator T *() const noexcept
-		{
-			return m_link;
-		}
+		public:
+			T * get_link() const noexcept
+			{
+				return m_link;
+			}
+			void set_link(T * element) noexcept
+			{
+				m_link = element;
+			}
+			void break_link() noexcept
+			{
+				m_link = nullptr;
+			}
+			operator T * () const noexcept
+			{
+				return m_link;
+			}
 
-	private:
-		T* m_link;
-	};
+		private:
+			T* m_link;
+		};
+	}
 }

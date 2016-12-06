@@ -7,7 +7,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "lodepng.h"
+#include <lodepng.h>
 #include <json.hpp>
 
 #include "glfw_instance.hpp"
@@ -15,8 +15,6 @@
 #include "glfw_window.hpp"
 
 #include "shell.hpp"
-#include "key.hpp"
-#include "perception.hpp"
 #include "draw/renderer.hpp"
 
 #include <px/common/logger.hpp>
@@ -24,12 +22,8 @@
 #include <px/common/fps_counter.hpp>
 #include <px/common/bindings.hpp>
 
-#include <algorithm>
 #include <stdexcept>
 #include <string>
-
-#include <msdf/msdfgen.h>
-#include <msdf/msdfgen-ext.h>
 
 void error_callback(int error, const char* description);
 void key_callback(GLFWwindow * window, int key, int /* scancode */, int action, int /* mods */);
@@ -42,21 +36,6 @@ px::bindings<int, px::key> g_bindings;
 
 int main() // application starts here
 {
-	//auto ft = msdfgen::initializeFreetype();
-	//if (ft) {
-	//	auto * font = msdfgen::loadFont(ft, "c:/Windows/Fonts/arialbd.ttf");
-	//	if (font) {
-	//		msdfgen::Shape shape;
-	//		if (msdfgen::loadGlyph(shape, font, 'A')) {
-	//			shape.normalize();
-	//			edgeColoringSimple(shape, 3.0);
-	//			msdfgen::Bitmap<msdfgen::FloatRGB> bmp(32, 32);
-	//			generateMSDF(bmp, shape, 4.0, 1.0, msdfgen::Vector2(4.0, 4.0));
-	//		}
-	//		msdfgen::destroyFont(font);
-	//	}
-	//	msdfgen::deinitializeFreetype(ft);
-	//}
 	try
 	{
 		try

@@ -64,7 +64,7 @@ namespace px
 
 		// pointer must be in correct range and alignment of pool
 		// it's safe to release already released objects - it's an nop
-		bool release(T* ptr)
+		bool release(T * ptr)
 		{
 			bool flag = false;
 			auto index = ptr - reinterpret_cast<T*>(&m_pool[0]);

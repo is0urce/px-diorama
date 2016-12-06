@@ -11,28 +11,31 @@
 
 namespace px
 {
-	template <typename C>
-	class link_dispatcher
+	namespace es
 	{
-	public:
-		template <typename T>
-		void assign(T * x) noexcept
+		template <typename C>
+		class link_dispatcher
 		{
-			link<T> * l = static_cast<C*>(this);
-			l->set_link(x);
-		}
-		template <typename T>
-		void retract() noexcept
-		{
-			link<T> * l = static_cast<C*>(this);
-			l->break_link();
-		}
+		public:
+			template <typename T>
+			void connect(T * x) noexcept
+			{
+				link<T> * l = static_cast<C*>(this);
+				l->set_link(x);
+			}
+			template <typename T>
+			void disconnect() noexcept
+			{
+				link<T> * l = static_cast<C*>(this);
+				l->break_link();
+			}
 
-		template <typename T>
-		T * linked() const noexcept
-		{
-			link<T> const * l = static_cast<C const*>(this);
-			return l->get_link();
-		}
-	};
+			template <typename T>
+			T * linked() const noexcept
+			{
+				link<T> const * l = static_cast<C const*>(this);
+				return l->get_link();
+			}
+		};
+	}
 }

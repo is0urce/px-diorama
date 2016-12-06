@@ -177,17 +177,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="include\lodepng.cpp" />
-    <ClCompile Include="include\msdf\ext\import-font.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\drm\draw\blur.hpp" />
+    <ClInclude Include="src\drm\draw\font.hpp" />
     <ClInclude Include="src\drm\es\sprite.hpp" />
     <ClInclude Include="src\drm\es\sprite_component.hpp" />
     <ClInclude Include="src\drm\es\sprite_system.hpp" />
-    <ClInclude Include="src\drm\es\transform.hpp" />
+    <ClInclude Include="src\px\es\transform.hpp" />
     <ClInclude Include="src\drm\es\transform_component.hpp" />
     <ClInclude Include="src\drm\es\transform_system.hpp" />
+    <ClInclude Include="src\drm\es\unit.hpp" />
     <ClInclude Include="src\drm\key_translator.hpp" />
     <ClInclude Include="src\drm\perception.hpp" />
     <ClInclude Include="src\drm\draw\program.hpp" />
@@ -280,6 +281,9 @@
     <None Include="data\shaders\strip.vert">
       <FileType>CppCode</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\dlg\food.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

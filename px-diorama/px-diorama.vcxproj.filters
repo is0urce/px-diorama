@@ -147,9 +147,6 @@
     <ClInclude Include="src\px\es\link_dispatcher.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\es\transform.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\rgl\gl_assert.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -255,12 +252,18 @@
     <ClInclude Include="src\px\fn\perlin.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\draw\font.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\es\unit.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\es\transform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\msdf\ext\import-font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\lodepng.cpp">
@@ -281,5 +284,8 @@
     <None Include="data\img\gnome32.json" />
     <None Include="data\img\wall32.json" />
     <None Include="data\scripts\q.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\dlg\food.txt" />
   </ItemGroup>
 </Project>

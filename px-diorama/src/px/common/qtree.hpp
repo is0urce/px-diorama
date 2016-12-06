@@ -290,7 +290,7 @@ namespace px
 
 		// Operator sould support bool operator()(int, int, T)
 		template <typename Operator>
-		void find(int x, int y, unsigned int radius, Operator & fn) const
+		void find(int x, int y, unsigned int radius, Operator && fn) const
 		{
 			if (m_bucket)
 			{
@@ -311,8 +311,10 @@ namespace px
 				if (s && e && se) se->find(x, y, radius, fn);
 			}
 		}
+
+		// Operator sould support bool operator()(int, int, T)
 		template <typename Operator>
-		void find(int x, int y, Operator & fn) const
+		void find(int x, int y, Operator && fn) const
 		{
 			if (m_bucket && m_bucket->match(x, y))
 			{
@@ -321,7 +323,7 @@ namespace px
 			else
 			{
 				auto const& branch = select(x, y);
-				if (branch) branch->find(x, y, fn);
+				if (branch) branch->find(x, y, std::forward<Operator>(fn));
 			}
 		}
 		bool exists(int x, int y) const
@@ -341,15 +343,15 @@ namespace px
 			move_hint(sx, sy, e, dx, dy)->add(dx, dy, e);
 		}
 
-		//void move(point2 from, element_type e, point2 destination)
+		//void move(point2 const& from, element_type e, point2 const& destination)
 		//{
 		//	move(from.x(), from.y(), e, destination.x(), destination.y());
 		//}
-		//void add(point2 position, element_type e)
+		//void add(point2 const& position, element_type e)
 		//{
 		//	add(position.x(), position.y(), e);
 		//}
-		//void remove(point2 position, element_type e)
+		//void remove(point2 const& position, element_type e)
 		//{
 		//	remove(position.x(), position.y(), e);
 		//}
@@ -377,7 +379,7 @@ namespace px
 		{
 		public:
 			template <typename CallbackOperator>
-			void enumerate(CallbackOperator&& fn)
+			void enumerate(CallbackOperator && fn)
 			{
 				for (auto & e : m_elements)
 				{
@@ -385,7 +387,7 @@ namespace px
 				}
 			}
 			template <typename CallbackOperator>
-			void enumerate_while(CallbackOperator&& fn)
+			void enumerate_while(CallbackOperator && fn)
 			{
 				for (auto it = std::begin(m_elements), last = std::end(m_elements); it != last; ++it)
 				{

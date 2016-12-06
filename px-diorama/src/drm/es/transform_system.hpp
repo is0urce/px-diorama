@@ -21,7 +21,7 @@ namespace px {
 		auto make_shared(point2 position)
 		{
 			auto result = m_pool->make_shared();
-			result->move(position);
+			result->place(position);
 			result->incarnate(&m_space);
 			return result;
 		}
@@ -35,6 +35,6 @@ namespace px {
 
 	private:
 		std::unique_ptr<pool_type> m_pool;
-		transform::space_type m_space;
+		transform_component::space_type m_space;
 	};
 }

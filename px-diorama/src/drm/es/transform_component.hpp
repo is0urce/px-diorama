@@ -5,72 +5,39 @@
 
 #pragma once
 
-#include "transform.hpp"
+// both transform and hierarchy
+
+#include <px/es/transform.hpp>
+
 #include <px/es/component.hpp>
-#include <px/es/link.hpp>
+#include <px/es/link_dispatcher.hpp>
+#include <px/es/component_collection.hpp>
 
 namespace px {
 	class transform_component final
-		: public transform
+		: public es::transform<transform_component>
 		, public es::component
-		, link_dispatcher<transform_component>
+		, public es::link_dispatcher<transform_component>
+		, public es::component_collection
 	{
 	public:
-		void incarnate(space_type * space)
+		transform_component()
 		{
-			if (m_space != space)
-			{
-				if (active())
-				{
-					if (m_space)
-					{
-						m_space->remove(x(), y(), this);
-					}
-					if (space)
-					{
-						space->add(x(), y(), this);
-					}
-				}
-				m_space = space;
-			}
 		}
-		void reincarnate()
-		{
-			incarnate(nullptr);
-		}
-		void move(point2 const& direction)
-		{
-			place(m_current + direction);
-		}
-		void place(point2 destination)
-		{
-			if (m_space && active())
-			{
-				m_space->move(x(), y(), this, destination.x(), destination.y());
-			}
-			m_current = destination;
-		}
-
-	public:
 		virtual ~transform_component()
 		{
+			retract();
 			reincarnate();
 		}
 
 	protected:
 		virtual void activate_component() override
 		{
-			if (m_space)
-			{
-				m_space->add(x(), y(), this);
-			}
+			insert();
 		}
 		virtual void deactivate_component() override
 		{
-			if (m_space)
-			{
-				m_space->remove(x(), y(), this);
-			}
+			retract();
 		}
 	};
 }
