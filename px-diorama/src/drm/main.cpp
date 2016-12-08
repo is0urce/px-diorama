@@ -5,7 +5,6 @@
 
 #define GLEW_STATIC
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <px/rglfw/rglfw.hpp>
 
 #include <lodepng.h>
@@ -22,15 +21,7 @@
 #include <stdexcept>
 #include <string>
 
-void error_callback(int error, const char* description);
-void key_callback(GLFWwindow * window, int key, int /* scancode */, int action, int /* mods */);
-void text_callback(GLFWwindow * window, unsigned int codepoint);
-void click_callback(GLFWwindow * window, int button, int action, int /* mods */);
-void hover_callback(GLFWwindow * window, double x, double y);
-void scroll_callback(GLFWwindow * window, double x, double y);
-void resize_callback(GLFWwindow * window, int width, int height);
-
-px::bindings<int, px::key> g_bindings;
+static void error_callback(int error, const char* description);
 
 int main() // application starts here
 {
@@ -51,18 +42,20 @@ int main() // application starts here
 			px::glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", nullptr, nullptr);
 			glfwMakeContextCurrent(window);
 			glfwSwapInterval(vsync);
-			glewInit();	// initialize extensions wrangler (need context first)
+			glewInit();	// initialize extensions loader (need context first)
 
-			// create and populate internal states
+			// create logic structure
 			px::renderer graphics(screen_width, screen_height);
 			px::shell game;
+			px::bindings<int, px::key> bindings;
 
+			// populate internal states
 			for (auto const& binding : doc["bindings"])
 			{
 				std::underlying_type<px::key>::type action_index = binding["action"];
 				for (auto const& key : binding["keys"])
 				{
-					g_bindings.bind(key, static_cast<px::key>(action_index));
+					bindings.bind(key, static_cast<px::key>(action_index));
 				}
 			}
 			for (auto const& texture : doc["textures"])
@@ -79,24 +72,37 @@ int main() // application starts here
 				auto metadoc = nlohmann::json::parse(std::ifstream(metapath));
 				game.load_texture(metadoc["meta"]);
 			}
+
+			// setup callbacks
+			px::glfw_callback callback(window);
+			callback.on_resize([&](auto * /* window */, int widht, int height) {
+				graphics.resize(widht, height);
+			});
+			callback.on_key([&](auto * /* window */, int key, int /* scancode */, int action, int /* mods */) {
+				if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(bindings.select(key, px::key::not_valid));
+			});
+			callback.on_text([&](auto * /* window */, unsigned int codepoint) {
+				game.text(codepoint);
+			});
+			callback.on_click([&](auto * /* window */, int button, int action, int /* mods */) {
+				if (action == GLFW_PRESS) game.click(button);
+			});
+			callback.on_hover([&](auto * /* window */, double x, double y) {
+				game.hover(static_cast<int>(x), static_cast<int>(y));
+			});
+			callback.on_scroll([&](auto * /* window */, double horisontal, double vertical) {
+				game.scroll(vertical, horisontal);
+			});
+
+			// start
 			game.start();
 
-			glfwSetWindowUserPointer(window, &game);
-			glfwSetKeyCallback(window, key_callback);
-			glfwSetCharCallback(window, text_callback);
-			glfwSetMouseButtonCallback(window, click_callback);
-			glfwSetCursorPosCallback(window, hover_callback);
-			glfwSetScrollCallback(window, scroll_callback);
-
-			px::timer<px::glfw_time> time;
-
 			// main loop
-			while (window)
+			px::timer<px::glfw_time> time;
+			while (window.process())
 			{
 				game.frame(time);
 				graphics.render(game.view());
-
-				window.process();
 			}
 		}
 		catch (std::runtime_error &exc)
@@ -117,38 +123,7 @@ int main() // application starts here
 	return 0;
 }
 
-void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description)
 {
 	throw std::runtime_error(std::string("glfw error, code #" + std::to_string(error) + " message: " + std::string(description)));
-}
-void key_callback(GLFWwindow * window, int key, int /* scancode */, int action, int /* mods */)
-{
-	if (action == GLFW_PRESS || action == GLFW_REPEAT)
-	{
-		reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->press(g_bindings.select(key, px::key::not_valid));
-	}
-}
-void text_callback(GLFWwindow * window, unsigned int codepoint)
-{
-	reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->text(codepoint);
-}
-void click_callback(GLFWwindow * window, int button, int action, int /* mods */)
-{
-	if (action == GLFW_PRESS)
-	{
-		reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->click(button);
-	}
-}
-void hover_callback(GLFWwindow * window, double x, double y)
-{
-	reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->hover(static_cast<int>(x), static_cast<int>(y));
-}
-void scroll_callback(GLFWwindow * window, double x, double y)
-{
-	reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->scroll(y, x);
-}
-
-void resize_callback(GLFWwindow * /*window*/, int /*width*/, int /*height*/)
-{
-
 }

@@ -8,6 +8,7 @@
 // RAII glfw window
 
 #include <GLFW/glfw3.h>
+
 namespace px
 {
 	class glfw_window final
@@ -20,6 +21,10 @@ namespace px
 		operator GLFWwindow * () const noexcept
 		{
 			return m_window;
+		}
+		void make_current()
+		{
+			glfwMakeContextCurrent(m_window);
 		}
 		bool process()
 		{

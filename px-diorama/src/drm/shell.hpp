@@ -52,6 +52,8 @@ namespace px
 		void step(point2 const& direction)
 		{
 			auto * transform = m_player.transform();
+			if (!transform) return;
+
 			point2 destination = transform->position() + direction;
 
 			transform_component * blocking = nullptr;
