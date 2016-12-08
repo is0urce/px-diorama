@@ -9,11 +9,14 @@
 
 #include <GLFW/glfw3.h>
 
-class glfw_time final
+namespace px
 {
-public:
-	double operator()() const
+	class glfw_time final
 	{
-		return glfwGetTime();
-	}
-};
+	public:
+		double operator()() const
+		{
+			return glfwGetTime();
+		}
+	};
+}

@@ -5,20 +5,15 @@
 
 #pragma once
 
-// both transform and hierarchy
-
 #include <px/es/transform.hpp>
-
 #include <px/es/component.hpp>
 #include <px/es/link_dispatcher.hpp>
-#include <px/es/component_collection.hpp>
 
 namespace px {
 	class transform_component final
 		: public es::transform<transform_component>
 		, public es::component
 		, public es::link_dispatcher<transform_component>
-		, public es::component_collection
 	{
 	public:
 		transform_component()

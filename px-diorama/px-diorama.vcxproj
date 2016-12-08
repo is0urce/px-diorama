@@ -192,9 +192,10 @@
     <ClInclude Include="src\drm\key_translator.hpp" />
     <ClInclude Include="src\drm\perception.hpp" />
     <ClInclude Include="src\drm\draw\program.hpp" />
-    <ClInclude Include="src\drm\glfw_instance.hpp" />
-    <ClInclude Include="src\drm\glfw_time.hpp" />
-    <ClInclude Include="src\drm\glfw_window.hpp" />
+    <ClInclude Include="src\px\rglfw\glfw_callback.hpp" />
+    <ClInclude Include="src\px\rglfw\glfw_instance.hpp" />
+    <ClInclude Include="src\px\rglfw\glfw_time.hpp" />
+    <ClInclude Include="src\px\rglfw\glfw_window.hpp" />
     <ClInclude Include="src\drm\key.hpp" />
     <ClInclude Include="src\drm\draw\renderer.hpp" />
     <ClInclude Include="src\drm\shell.hpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="src\px\es\link_dispatcher.hpp" />
     <ClInclude Include="src\px\fn\bsp.hpp" />
     <ClInclude Include="src\px\fn\perlin.hpp" />
+    <ClInclude Include="src\px\rglfw\rglfw.hpp" />
     <ClInclude Include="src\px\rgl\gl_assert.hpp" />
     <ClInclude Include="src\px\rgl\gl_framebuffer.hpp" />
     <ClInclude Include="src\px\rgl\gl_pass.hpp" />

@@ -54,8 +54,8 @@ namespace px
 			auto * transform = m_player.transform();
 			point2 destination = transform->position() + direction;
 
-			transform_component* blocking = nullptr;
-			transform->world()->find(destination.x(), destination.y(), [&](int /*x*/, int /*y*/, transform_component* target) {
+			transform_component * blocking = nullptr;
+			transform->world()->find(destination.x(), destination.y(), [&](int /*x*/, int /*y*/, auto * target) {
 				blocking = target;
 			});
 
@@ -146,9 +146,6 @@ namespace px
 		shell()
 		{
 			m_perception.scale(-0.95f);
-		}
-		~shell()
-		{
 		}
 
 	private:

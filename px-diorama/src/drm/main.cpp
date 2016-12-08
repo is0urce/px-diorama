@@ -6,13 +6,10 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <px/rglfw/rglfw.hpp>
 
 #include <lodepng.h>
 #include <json.hpp>
-
-#include "glfw_instance.hpp"
-#include "glfw_time.hpp"
-#include "glfw_window.hpp"
 
 #include "shell.hpp"
 #include "draw/renderer.hpp"
@@ -31,6 +28,7 @@ void text_callback(GLFWwindow * window, unsigned int codepoint);
 void click_callback(GLFWwindow * window, int button, int action, int /* mods */);
 void hover_callback(GLFWwindow * window, double x, double y);
 void scroll_callback(GLFWwindow * window, double x, double y);
+void resize_callback(GLFWwindow * window, int width, int height);
 
 px::bindings<int, px::key> g_bindings;
 
@@ -49,8 +47,8 @@ int main() // application starts here
 
 			// create window and context
 			glfwSetErrorCallback(&error_callback);
-			glfw_instance instance;
-			glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", nullptr, nullptr);
+			px::glfw_instance instance;
+			px::glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", nullptr, nullptr);
 			glfwMakeContextCurrent(window);
 			glfwSwapInterval(vsync);
 			glewInit();	// initialize extensions wrangler (need context first)
@@ -90,7 +88,7 @@ int main() // application starts here
 			glfwSetCursorPosCallback(window, hover_callback);
 			glfwSetScrollCallback(window, scroll_callback);
 
-			px::timer<glfw_time> time;
+			px::timer<px::glfw_time> time;
 
 			// main loop
 			while (window)
@@ -148,4 +146,9 @@ void hover_callback(GLFWwindow * window, double x, double y)
 void scroll_callback(GLFWwindow * window, double x, double y)
 {
 	reinterpret_cast<px::shell*>(glfwGetWindowUserPointer(window))->scroll(y, x);
+}
+
+void resize_callback(GLFWwindow * /*window*/, int /*width*/, int /*height*/)
+{
+
 }

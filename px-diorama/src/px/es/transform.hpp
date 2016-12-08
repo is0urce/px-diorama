@@ -28,10 +28,6 @@ namespace px
 			{
 				return m_current.y();
 			}
-			space_type * world() const noexcept
-			{
-				return m_space;
-			}
 			void move(point2 const& direction)
 			{
 				place(m_current + direction);
@@ -71,6 +67,21 @@ namespace px
 			{
 				if (m_inside) do_retract();
 				m_inside = false;
+			}
+
+			space_type * world() const noexcept
+			{
+				return m_space;
+			}
+			template <typename Operator>
+			void nearest(Operator && fn) const
+			{
+				m_space->find(m_current.x(), m_current.y(), [&](int /*x*/, int /*y*/, Sub * e) { std::forward<Operator>(fn)(e); });
+			}
+			template <typename Operator>
+			void nearest(unsigned int radius, Operator && fn) const
+			{
+				m_space->find(m_current.x(), m_current.y(), radius, [&](int x, int y, Sub * e) { std::forward<Operator>(fn)(e, point2{ x, y }); });
 			}
 
 		public:
