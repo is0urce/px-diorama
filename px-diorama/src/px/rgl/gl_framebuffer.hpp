@@ -37,12 +37,16 @@ namespace px
 				m_init = false;
 			}
 		}
-		void texture(GLuint texture, int attach)
+		void texture(GLuint texture_id, int attach)
 		{
 			init();
 			glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attach, GL_TEXTURE_2D, texture, 0);
+			glBindTexture(GL_TEXTURE_2D, texture_id);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attach, GL_TEXTURE_2D, texture_id, 0);
+		}
+		void texture(GLuint texture_id)
+		{
+			texture(texture_id, 0);
 		}
 
 	public:

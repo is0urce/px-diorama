@@ -185,6 +185,7 @@
     <ClInclude Include="src\drm\es\sprite.hpp" />
     <ClInclude Include="src\drm\es\sprite_component.hpp" />
     <ClInclude Include="src\drm\es\sprite_system.hpp" />
+    <ClInclude Include="src\drm\vertex.hpp" />
     <ClInclude Include="src\px\es\transform.hpp" />
     <ClInclude Include="src\drm\es\transform_component.hpp" />
     <ClInclude Include="src\drm\es\transform_system.hpp" />
