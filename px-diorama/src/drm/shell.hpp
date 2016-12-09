@@ -12,23 +12,16 @@
 #include "es/sprite_system.hpp"
 #include "es/unit.hpp"
 
-#include <px/common/matrix.hpp>
+#include "rl/map_chunk.hpp"
+#include "fn/generator.hpp"
+
 #include <px/es/component_collection.hpp>
-#include <px/rl/mass.hpp>
-#include <px/rl/traverse.hpp>
 #include <px/fn/bsp.hpp>
 
 #include <list>
 
 namespace px
 {
-	struct tile
-	{
-		shared_ptr<transform_component> transform;
-		shared_ptr<sprite_component> sprite;
-		rl::mass<rl::traverse> mass;
-	};
-
 	class shell
 		: public key_translator<shell>
 	{
@@ -56,6 +49,8 @@ namespace px
 
 			point2 destination = transform->position() + direction;
 
+			if (!m_map.traversable(destination)) return;
+
 			transform_component * blocking = nullptr;
 			transform->world()->find(destination.x(), destination.y(), [&](int /*x*/, int /*y*/, auto * target) {
 				blocking = target;
@@ -76,10 +71,10 @@ namespace px
 		}
 
 		template <typename Document>
-		void load_texture(Document const& doc)
+		void load_texture(Document && doc)
 		{
 			m_perception.add_texture();
-			m_sprites.add_texture(doc, true);
+			m_sprites.add_texture(std::forward<Document>(doc), true);
 		}
 
 		perception const& view() const noexcept
@@ -88,7 +83,7 @@ namespace px
 		}
 		void start()
 		{
-			m_player = spawn("@", { 1, 1 });
+			m_player = spawn("@", { 50, 50 });
 			m_player.enable();
 
 			for (int i = 0; i != 10; ++i)
@@ -106,20 +101,35 @@ namespace px
 				tile.sprite->connect(tile.transform.get());
 				tile.sprite->activate();
 
-				tile.mass.make_wall();
+				tile.make_wall();
 			});
 
 			std::mt19937 rng;
-			fn::bsp<>::create<>(rng, { { 0,0 },{ 100, 100 } }, 5, 1).enumerate_bounds([&](auto const& room) {
-				room.enumerate([&](auto const& point) {
-					auto & tile = m_map[point];
+			//fn::bsp<>::create<>(rng, { { 0,0 },{ 100, 100 } }, 5, 1).enumerate_bounds([&](auto const& room) {
+			//	room.enumerate([&](auto const& point) {
+			//		auto & tile = m_map[point];
 
-					tile.sprite = m_sprites.make_shared(".");
-					tile.sprite->connect(tile.transform.get());
-					tile.sprite->activate();
+			//		tile.sprite = m_sprites.make_shared(".");
+			//		tile.sprite->connect(tile.transform.get());
+			//		tile.sprite->activate();
 
-					tile.mass.make_ground();
-				});
+			//		tile.make_ground();
+			//	});
+			//});
+
+			fn::dig_generator dig(100, 100);
+			dig.generate(rng, 2, 2, 1, 15);
+			matrix2<unsigned char> map(100, 100);
+			dig.rasterize(map);
+			map.enumerate([&](auto const& point, unsigned char t) {
+				if (t == 0) return;
+				auto & tile = m_map[point];
+
+				tile.sprite = m_sprites.make_shared(".");
+				tile.sprite->connect(tile.transform.get());
+				tile.sprite->activate();
+
+				tile.make_ground();
 			});
 		}
 		void frame(double /*time*/)
@@ -161,6 +171,6 @@ namespace px
 		unit m_player;
 		std::list<unit> m_units;
 
-		matrix2<tile> m_map;
+		map_chunk<tile> m_map;
 	};
 }

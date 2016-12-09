@@ -67,10 +67,9 @@ int main() // application starts here
 				unsigned int w, h;
 				auto error = lodepng::decode(image, w, h, path);
 				if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
-				graphics.load_texture(w, h, image.data());
 
-				auto metadoc = nlohmann::json::parse(std::ifstream(metapath));
-				game.load_texture(metadoc["meta"]);
+				graphics.load_texture(w, h, image.data());
+				game.load_texture(nlohmann::json::parse(std::ifstream(metapath))["meta"]);
 			}
 
 			// setup callbacks

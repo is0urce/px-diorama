@@ -1,3 +1,5 @@
+// name: sprite.hpp
+
 #pragma once
 
 #include <px/common/color.hpp>

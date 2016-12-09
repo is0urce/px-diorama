@@ -207,26 +207,33 @@ namespace px
 		size_t m_height;
 
 	public:
-		matrix2() : m_width(0), m_height(0)
+		matrix2()
+			: m_width(0), m_height(0)
 		{
 		}
-		matrix2(const matrix2&) = delete;
-		matrix2(matrix2&& that) : matrix2()
+		matrix2(matrix2 const&) = delete;
+		matrix2& operator=(matrix2 const&) = delete;
+
+		matrix2(matrix2&& that)
+			: matrix2()
 		{
 			swap(that);
 		}
-		matrix2(size_t w, size_t h) : m_width(w), m_height(h)
+		matrix2(size_t w, size_t h)
+			: m_width(w), m_height(h)
 		{
 			m_data.resize(w * h);
 		}
-		matrix2(size_t w, size_t h, const element &initial) : m_width(w), m_height(h)
+		matrix2(size_t w, size_t h, element const& initial)
+			: m_width(w), m_height(h)
 		{
 			m_data.assign(w * h, initial);
 		}
-		template <typename Generator>
-		matrix2(size_t w, size_t h, Generator op) : matrix2(w, h)
+		template <typename Generator, typename = typename std::enable_if<!std::is_same<Generator, element>::value>::type>
+		matrix2(size_t w, size_t h, Generator op)
+			: matrix2(w, h)
 		{
-			fill(op);
+			generate(std::forward<Generator>(op));
 		}
 		void resize(size_t w, size_t h)
 		{
@@ -279,7 +286,7 @@ namespace px
 			return x >= 0 && x < m_width && y >= 0 && y < m_height;
 		}
 
-		void fill(const element &e)
+		void fill(element const& e)
 		{
 			size_t len = size();
 			for (size_t i = 0; i < len; ++i)
@@ -288,20 +295,20 @@ namespace px
 			}
 		}
 		template <typename Generator>
-		void fill(Generator op)
+		void generate(Generator && op)
 		{
 			size_t index = 0;
 			for (size_t j = 0; j < m_height; ++j)
 			{
 				for (size_t i = 0; i < m_width; ++i)
 				{
-					m_data[index] = op(i, j);
+					m_data[index] = std::forward<Generator>(op)(i, j);
 					++index;
 				}
 			}
 		}
 		template <typename Operator>
-		void enumerate(Operator &&op)
+		void enumerate(Operator && op)
 		{
 			size_t index = 0;
 			for (size_t j = 0; j < m_height; ++j)

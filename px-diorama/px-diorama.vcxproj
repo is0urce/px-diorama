@@ -185,6 +185,8 @@
     <ClInclude Include="src\drm\es\sprite.hpp" />
     <ClInclude Include="src\drm\es\sprite_component.hpp" />
     <ClInclude Include="src\drm\es\sprite_system.hpp" />
+    <ClInclude Include="src\drm\fn\generator.hpp" />
+    <ClInclude Include="src\drm\rl\map_chunk.hpp" />
     <ClInclude Include="src\drm\vertex.hpp" />
     <ClInclude Include="src\px\es\transform.hpp" />
     <ClInclude Include="src\drm\es\transform_component.hpp" />
@@ -193,6 +195,8 @@
     <ClInclude Include="src\drm\key_translator.hpp" />
     <ClInclude Include="src\drm\perception.hpp" />
     <ClInclude Include="src\drm\draw\program.hpp" />
+    <ClInclude Include="src\px\fn\random_aux.hpp" />
+    <ClInclude Include="src\px\fn\room_aux.hpp" />
     <ClInclude Include="src\px\rglfw\glfw_callback.hpp" />
     <ClInclude Include="src\px\rglfw\glfw_instance.hpp" />
     <ClInclude Include="src\px\rglfw\glfw_time.hpp" />
@@ -278,12 +282,6 @@
     <None Include="data\shaders\blur.vert" />
     <None Include="data\shaders\process.frag" />
     <None Include="data\shaders\process.vert" />
-    <None Include="data\shaders\strip.frag">
-      <FileType>CppCode</FileType>
-    </None>
-    <None Include="data\shaders\strip.vert">
-      <FileType>CppCode</FileType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\dlg\food.txt" />

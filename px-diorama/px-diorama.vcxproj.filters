@@ -270,6 +270,18 @@
     <ClInclude Include="src\drm\vertex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\rl\map_chunk.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\fn\generator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\fn\room_aux.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\fn\random_aux.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -280,8 +292,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\shaders\strip.frag" />
-    <None Include="data\shaders\strip.vert" />
     <None Include="data\shaders\process.frag" />
     <None Include="data\shaders\process.vert" />
     <None Include="data\shaders\blur.vert" />

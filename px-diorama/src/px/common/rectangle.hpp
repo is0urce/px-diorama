@@ -166,6 +166,10 @@ namespace px
 			auto corner_y = (std::min)(m_corner.y(), with.m_corner.y());
 			return rectangle({ start_x, start_y }, { corner_x - start_x, corner_y - start_y });
 		}
+		bool intersects(rectangle const& with) const noexcept
+		{
+			return !intersection(with).empty();
+		}
 
 		void inflate(int size) noexcept
 		{

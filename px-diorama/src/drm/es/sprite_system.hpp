@@ -1,3 +1,5 @@
+// name: sprite_system.hpp
+
 #pragma once
 
 #include <px/common/pool_chain.hpp>
@@ -14,24 +16,24 @@ namespace px {
 
 	public:
 		template <typename Document>
-		void add_texture(Document const& doc, float reverse_y)
+		void add_texture(Document && metadoc, bool reverse_y)
 		{
-			for (auto const& meta : doc)
+			for (auto const& frame : metadoc)
 			{
-				auto & img = m_meta[meta["name"]];
-				float sx = meta["sx"];
-				float sy = meta["sy"];
-				float dx = meta["dx"];
-				float dy = meta["dy"];
-				if (reverse_y)
-				{
-					sy = 1.0f - sy;
-					dy = 1.0f - dy;
-				}
-				img = { sx, sy, dx, dy };
+				auto & img = m_meta[frame["name"]];
+				img.sx = frame["sx"];
+				img.sy = frame["sy"];
+				img.dx = frame["dx"];
+				img.dy = frame["dy"];
 				img.layer = 0;
 				img.texture = m_textures;
 				img.glyph = '?';
+
+				if (reverse_y)
+				{
+					img.sy = 1.0f - img.sy;
+					img.dy = 1.0f - img.dy;
+				}
 			}
 			++m_textures;
 		}
@@ -54,10 +56,13 @@ namespace px {
 				auto* transform = sprite.linked<transform_component>();
 				if (!transform) return; 
 
-				float sx = x_offset + static_cast<float>(transform->x());
-				float sy = y_offset + static_cast<float>(transform->y());
-				float dx = sx + 1;
-				float dy = sy + 1;
+				int x = transform->x();
+				int y = transform->y();
+
+				float sx = x_offset + static_cast<float>(x);
+				float sy = y_offset + static_cast<float>(y);
+				float dx = x_offset + static_cast<float>(x + 1);
+				float dy = y_offset + static_cast<float>(y + 1);
 
 				auto & vertices = vertice_arrays[sprite.texture];
 

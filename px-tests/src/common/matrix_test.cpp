@@ -67,6 +67,6 @@ TEST_CASE("matrix", "[matrix]")
 
 	a.fill(element + 4);
 	REQUIRE((a[{0, 0}]) == element + 4);
-	a.fill([=](auto /*i*/, auto /* j */) -> int { return element + 5; });
+	a.generate([=](auto /*i*/, auto /* j */) -> int { return element + 5; });
 	REQUIRE((a[{0, 0}]) == element + 5);
 }
