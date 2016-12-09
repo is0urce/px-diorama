@@ -38,6 +38,13 @@ namespace px
 		{}
 
 	public:
+		static rectangle from_corners(point2 a, point2 b)
+		{
+			point2 from(std::min(a.x(), b.x()), std::min(a.y(), b.y()));
+			point2 corner(std::max(a.x(), b.x()), std::max(a.y(), b.y()));
+			return rectangle(from, corner - from);
+		}
+
 		constexpr point2::component width() const noexcept
 		{
 			return m_range.x();
@@ -216,6 +223,14 @@ namespace px
 			rectangle result = *this;
 			result.deflate(size);
 			return result;
+		}
+		rectangle inflated() const noexcept
+		{
+			return inflated(1);
+		}
+		rectangle deflated() const noexcept
+		{
+			return deflated(1);
 		}
 
 		template <size_t Axis>

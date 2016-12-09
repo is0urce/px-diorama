@@ -13,10 +13,11 @@ namespace px { namespace fn {
 		class dig_generator
 		{
 		public:
+			enum class tile : unsigned char { room, corridor };
 			struct room
 			{
 				rectangle bounds;
-				unsigned int data;
+				tile data;
 			};
 
 		public:
@@ -29,7 +30,7 @@ namespace px { namespace fn {
 						if (!map.contains(point)) return;
 
 						auto & tile = map[point];
-						tile |= room.data;
+						tile = 1;
 					});
 				}
 			}
@@ -45,7 +46,7 @@ namespace px { namespace fn {
 				point2 range = random_range(rng, { min, min }, { max, max });
 
 				rectangle start(center - range / 2, range);
-				m_rooms.push_back(room{ start, 1 });
+				m_rooms.push_back(room{ start, tile::room });
 
 				while (rooms > 0)
 				{
@@ -56,40 +57,67 @@ namespace px { namespace fn {
 			template <typename Random>
 			bool generate_room(Random & rng, int min, int max, int border)
 			{
-				auto & start = random_item(rng, m_rooms);
+				// select room
+				auto start = random_item_filtered(rng, m_rooms, [](auto const& room) { return room.data == tile::room; });
 
-				point2 current = random_point(rng, start.bounds);
+				// random point in room
+				point2 from = random_point(rng, start.bounds);
 				point2 direction = random_block_direction(rng);
+				point2 normal(-direction.y(), direction.x());
 
+				point2 current = from;
+				int steps = 0;
 				bool dig;
 				
-				// pre-dig
+				// move to wall
 				dig = true;
 				while (dig)
 				{
 					current.move(direction);
+					++steps;
 					dig &= start.bounds.contains(current);
 				}
 
+				// exit wall range
+				current.move(direction * border);
+
+				// dig to max range
 				dig = true;
-				border += max;
+				int move = max;
 				while (dig)
 				{
 					current.move(direction);
-					--border;
-					dig &= border > 0;
+					++steps;
+					--move;
+					dig &= !intersect_existing(rectangle(current, { 0, 0 }).inflated(border));
+					dig &= move > 0;
 				}
 
-				// create room
+				// room params
 
 				point2 range = random_range(rng, { min, min }, { max, max });
-				rectangle bounds(current - range / 2, range);
+				point2 anchor = current - range / 2;
 
-				if (std::any_of(std::begin(m_rooms), std::end(m_rooms), [inflated = bounds.inflated(border)](auto const& room) { return room.bounds.intersects(inflated); })) return false;
+				rectangle candidate{ anchor, range };
+				if (intersect_existing(candidate.inflated(border))) return false; // can't fit in any case
 
-				m_rooms.push_back(room{ bounds, 1 });
+				// clamp to wall
+				int shift = 0;
+				while (!intersect_existing(candidate.inflated(border)))
+				{
+					++shift;
+					candidate = { anchor - direction * shift, range };
+				} 
+				--shift;
+				candidate = { anchor - direction * shift, range };
 
-				// actual corridor dig
+				// corridor
+				point2 end = current - direction * shift;
+				rectangle corridor = rectangle::from_corners(from, end + normal);
+
+				// add
+				m_rooms.push_back(room{ candidate, tile::room });
+				m_rooms.push_back(room{ corridor, tile::corridor });
 
 				return true;
 			}
@@ -102,6 +130,12 @@ namespace px { namespace fn {
 			dig_generator(unsigned int width, unsigned int height)
 				: map_bounds({ 0, 0 }, { static_cast<int>(width), static_cast<int>(height) })
 			{
+			}
+
+		private:
+			bool intersect_existing(rectangle bounds) const
+			{
+				return std::any_of(std::begin(m_rooms), std::end(m_rooms), [&](auto const& room) { return room.bounds.intersects(bounds); });
 			}
 
 		private:

@@ -105,20 +105,8 @@ namespace px
 			});
 
 			std::mt19937 rng;
-			//fn::bsp<>::create<>(rng, { { 0,0 },{ 100, 100 } }, 5, 1).enumerate_bounds([&](auto const& room) {
-			//	room.enumerate([&](auto const& point) {
-			//		auto & tile = m_map[point];
-
-			//		tile.sprite = m_sprites.make_shared(".");
-			//		tile.sprite->connect(tile.transform.get());
-			//		tile.sprite->activate();
-
-			//		tile.make_ground();
-			//	});
-			//});
-
 			fn::dig_generator dig(100, 100);
-			dig.generate(rng, 2, 2, 1, 15);
+			dig.generate(rng, 5, 12, 1, 15);
 			matrix2<unsigned char> map(100, 100);
 			dig.rasterize(map);
 			map.enumerate([&](auto const& point, unsigned char t) {
