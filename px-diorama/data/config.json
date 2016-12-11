@@ -17,7 +17,12 @@
     },
     {
       "path": "data/img/gnome32.png",
-      "meta" : "data/img/gnome32.json"
+      "meta": "data/img/gnome32.json"
+    }
+    ,
+    {
+      "path": "data/img/taurus32.png",
+      "meta" : "data/img/taurus32.json"
     }
   ],
   "bindings": [

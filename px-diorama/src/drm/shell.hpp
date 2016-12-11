@@ -86,6 +86,10 @@ namespace px
 			m_player = spawn("@", { 50, 50 });
 			m_player.enable();
 
+			auto t = spawn("m", { 51, 50 });
+			t.enable();
+			m_units.push_back(t);
+
 			for (int i = 0; i != 10; ++i)
 			{
 				auto mob = spawn("@", { 1 + i, 1 + i });
