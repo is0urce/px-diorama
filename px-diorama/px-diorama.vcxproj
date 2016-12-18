@@ -176,10 +176,11 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\lodepng.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
+    <ClCompile Include="src\drm\main_extras.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\drm\draw\batch.hpp" />
     <ClInclude Include="src\drm\draw\blur.hpp" />
     <ClInclude Include="src\drm\draw\font.hpp" />
     <ClInclude Include="src\drm\es\sprite.hpp" />
@@ -274,6 +275,7 @@
     <None Include="data\config.json" />
     <None Include="data\img\dirt32.json" />
     <None Include="data\img\gnome32.json" />
+    <None Include="data\img\taurus32.json" />
     <None Include="data\img\wall32.json" />
     <None Include="data\scripts\q.lua" />
     <None Include="data\shaders\batch.frag" />

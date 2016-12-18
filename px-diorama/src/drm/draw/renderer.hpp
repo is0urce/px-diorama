@@ -40,8 +40,7 @@ namespace px
 				auto size = vertices.size();
 				if (size != 0)
 				{
-					m_batches[i].vertices.load(GL_STREAM_DRAW, sizeof(vertices[0]) * size, vertices.data());
-					m_batches[i].pass.draw_arrays(GL_QUADS, static_cast<GLsizei>(size));
+					m_batches[i].draw_arrays(GL_STREAM_DRAW, GL_QUADS, size, vertices.data());
 				}
 			}
 
@@ -138,29 +137,26 @@ namespace px
 		}
 
 	private:
-		int m_width;
-		int m_height;
-
-		gl_program m_batch;
-		gl_program m_blur;
-		gl_program m_process;
-
 		struct offscreen
 		{
 			gl_framebuffer framebuffer;
 			gl_texture texture;
-		} m_primary, m_ping, m_pong;
-
+		};
 		struct batch
 		{
 			gl_buffer vertices;
 			gl_vao geometry;
 			gl_texture texture;
 			gl_pass pass;
-		};
-		std::vector<batch> m_batches;
 
-		struct
+			template <typename T>
+			void draw_arrays(GLenum usage, GLenum mode, size_t size, T const* data)
+			{
+				vertices.load(usage, sizeof(T) * size, data);
+				pass.draw_arrays(mode, static_cast<GLsizei>(size));
+			}
+		};
+		struct camera
 		{
 			gl_buffer block;
 			struct
@@ -168,7 +164,23 @@ namespace px
 				glm::vec2 scale;
 				glm::vec2 offset;
 			} data;
-		} m_camera;
+		};
+
+	private:
+		int m_width;
+		int m_height;
+
+		gl_program m_batch;
+		gl_program m_blur;
+		gl_program m_process;
+
+		offscreen m_primary;
+		offscreen m_ping;
+		offscreen m_pong;
+
+		std::vector<batch> m_batches;
+
+		camera m_camera;
 
 		blur<4, 2> m_blur_passes;
 		gl_pass m_postprocess;
