@@ -13,7 +13,7 @@
 
 namespace px
 {
-	inline std::string read_file(std::string name)
+	inline std::string read_file(std::string const& name)
 	{
 		std::ifstream stream;
 		stream.open(name);
@@ -23,19 +23,30 @@ namespace px
 		return ss.str();
 	}
 
-	inline gl_program compile_program(std::string vertex_name, std::string fragment_name)
+	inline gl_program compile_program(std::string const& vertex_name, std::string const& fragment_name)
 	{
+		gl_shader vertex;
+		gl_shader fragment;
 		try
 		{
-			return{ { GL_VERTEX_SHADER, read_file(vertex_name + ".vert").c_str() },{ GL_FRAGMENT_SHADER, read_file(fragment_name + ".frag").c_str() } };
+			vertex = gl_shader(GL_VERTEX_SHADER, read_file(vertex_name).c_str());
 		}
-		catch (std::runtime_error & exc)
+		catch (std::runtime_error const& exc)
 		{
-			throw std::runtime_error("px::compile_program(name) in '" + vertex_name + ".vert' / '" + fragment_name + ".frag' error=" + exc.what());
+			throw std::runtime_error("px::compile_program(name) in '" + vertex_name + "' error=" + exc.what());
 		}
+		try
+		{
+			fragment = gl_shader(GL_FRAGMENT_SHADER, read_file(fragment_name).c_str());
+		}
+		catch (std::runtime_error const& exc)
+		{
+			throw std::runtime_error("px::compile_program(name) in '" + fragment_name + "' error=" + exc.what());
+		}
+		return gl_program(vertex, fragment);
 	}
-	inline gl_program compile_program(std::string name)
+	inline gl_program compile_program(std::string const& name)
 	{
-		return compile_program(name, name);
+		return compile_program(name + ".vert", name + ".frag");
 	}
 }

@@ -283,6 +283,8 @@
     <None Include="data\shaders\blur.vert" />
     <None Include="data\shaders\process.frag" />
     <None Include="data\shaders\process.vert" />
+    <None Include="data\shaders\text.frag" />
+    <None Include="data\shaders\text.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\dlg\food.txt" />

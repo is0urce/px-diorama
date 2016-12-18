@@ -111,6 +111,8 @@ namespace px
 			m_blur.uniform_block("Blur", 0);
 			m_blur.uniform("img", 0);
 
+			m_text = compile_program("data/shaders/text");
+			m_text.uniform("img", 0);
 		}
 		void create_framebuffers()
 		{
@@ -177,6 +179,7 @@ namespace px
 		gl_program m_batch;
 		gl_program m_blur;
 		gl_program m_process;
+		gl_program m_text;
 
 		offscreen m_primary;
 		offscreen m_ping;

@@ -25,7 +25,7 @@ namespace px
 
 			shape.normalize();
 			msdfgen::Bitmap<float> lum(m_resolution, m_resolution);
-			msdfgen::generateSDF(lum, shape, 4.0, 1.0, { 4.0, 4.0 });
+			msdfgen::generateSDF(lum, shape, 4.0f, 1.0f, { 4.0f, 4.0f });
 
 			auto & g = m_map[codepoint];
 			g.codepoint = codepoint;
