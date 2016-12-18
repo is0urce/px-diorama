@@ -16,6 +16,7 @@
 #include "perception.hpp"
 #include "program.hpp"
 #include "blur.hpp"
+#include "font.hpp"
 
 #include <stdexcept>
 #include <string>
@@ -52,7 +53,7 @@ namespace px
 
 			gl_assert();
 		}
-		void load_texture(unsigned int width, unsigned int height, void const* data)
+		void add_texture(unsigned int width, unsigned int height, void const* data)
 		{
 			if (!data) throw std::runtime_error("px::renderer::load_texture(...) - data is null");
 
@@ -80,9 +81,12 @@ namespace px
 	public:
 		renderer(int width,	int height)
 			: m_width(width), m_height(height)
+			, m_grid("data/fonts/DejaVuSansMono.ttf", 5, 8)
 		{
 			create_pipeline();
 			create_framebuffers();
+
+			m_grid.load('@');
 		}
 
 	private:
@@ -184,5 +188,7 @@ namespace px
 
 		blur<4, 2> m_blur_passes;
 		gl_pass m_postprocess;
+
+		font m_grid;
 	};
 }

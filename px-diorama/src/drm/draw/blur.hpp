@@ -19,7 +19,7 @@
 namespace px
 {
 	template <size_t Stages, size_t SampleRange>
-	class blur
+	class blur final
 	{
 	private:
 		struct stage;

@@ -15,13 +15,15 @@
 
 #include <px/common/logger.hpp>
 #include <px/common/timer.hpp>
-#include <px/common/fps_counter.hpp>
 #include <px/common/bindings.hpp>
 
 #include <stdexcept>
 #include <string>
 
-static void error_callback(int error, const char* description);
+static void error_callback(int error, const char* description)
+{
+	throw std::runtime_error(std::string("glfw error, code #" + std::to_string(error) + " message: " + std::string(description)));
+}
 
 int main() // application starts here
 {
@@ -37,8 +39,7 @@ int main() // application starts here
 			unsigned int vsync = doc["window"]["vsync"];
 
 			// create window and context
-			glfwSetErrorCallback(&error_callback);
-			px::glfw_instance instance;
+			px::glfw_instance instance(&error_callback);
 			px::glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", nullptr, nullptr);
 			glfwMakeContextCurrent(window);
 			glfwSwapInterval(vsync);
@@ -68,8 +69,8 @@ int main() // application starts here
 				auto error = lodepng::decode(image, w, h, path);
 				if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 
-				graphics.load_texture(w, h, image.data());
-				game.load_texture(nlohmann::json::parse(std::ifstream(metapath))["meta"]);
+				graphics.add_texture(w, h, image.data());
+				game.add_atlas(nlohmann::json::parse(std::ifstream(metapath))["meta"]);
 			}
 
 			// setup callbacks
@@ -122,7 +123,3 @@ int main() // application starts here
 	return 0;
 }
 
-static void error_callback(int error, const char* description)
-{
-	throw std::runtime_error(std::string("glfw error, code #" + std::to_string(error) + " message: " + std::string(description)));
-}

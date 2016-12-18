@@ -180,7 +180,6 @@
     <ClCompile Include="src\drm\main_extras.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\drm\draw\batch.hpp" />
     <ClInclude Include="src\drm\draw\blur.hpp" />
     <ClInclude Include="src\drm\draw\font.hpp" />
     <ClInclude Include="src\drm\es\sprite.hpp" />

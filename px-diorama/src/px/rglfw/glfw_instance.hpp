@@ -26,6 +26,12 @@ namespace px
 		{
 			m_init = glfwInit() != 0;
 		}
+		glfw_instance(GLFWerrorfun error_callback)
+			: m_init(false)
+		{
+			glfwSetErrorCallback(error_callback);
+			m_init = glfwInit() != 0;
+		}
 		~glfw_instance()
 		{
 			if (m_init)

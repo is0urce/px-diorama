@@ -71,7 +71,7 @@ namespace px
 		}
 
 		template <typename Document>
-		void load_texture(Document && doc)
+		void add_atlas(Document && doc)
 		{
 			m_perception.add_texture();
 			m_sprites.add_texture(std::forward<Document>(doc), true);

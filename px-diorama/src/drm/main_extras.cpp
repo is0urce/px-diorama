@@ -2,7 +2,8 @@
 
 // for those who can't into headers
 
-#define _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES // M_PI in cmath before it's included by anyone else
+#include <cmath>
 
 #include <lodepng.cpp>
 
@@ -19,5 +20,4 @@
 #include <msdf/core/shape-description.cpp>
 #include <msdf/core/SignedDistance.cpp>
 #include <msdf/core/Vector2.cpp>
-
 #include <msdf/ext/import-font.cpp>
