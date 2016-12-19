@@ -30,11 +30,11 @@ namespace px
 			m_scale = std::min(10000.0f, std::max(m_scale, 0.0001f)); // clamp
 		}
 
-		std::vector<std::vector<vertex>> & batches() noexcept
+		std::vector<std::vector<mesh_vertex>> & batches() noexcept
 		{
 			return m_batches;
 		}
-		std::vector<vertex> const& batch(size_t n) const noexcept
+		std::vector<mesh_vertex> const& batch(size_t n) const noexcept
 		{
 			return m_batches[n];
 		}
@@ -61,7 +61,7 @@ namespace px
 		}
 
 	private:
-		std::vector<std::vector<vertex>> m_batches;
+		std::vector<std::vector<mesh_vertex>> m_batches;
 		ui::canvas m_canvas;
 		float m_scale;
 	};

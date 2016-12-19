@@ -49,10 +49,11 @@ namespace px
 			}
 
 			m_pen_x += m_resolution;
+			m_max_y = m_resolution;
 			if (m_pen_x >= m_width)
 			{
 				m_pen_x = 0;
-				m_pen_y += m_resolution;
+				m_pen_y += m_max_y;
 			}
 			if (m_pen_y >= m_height)
 			{
@@ -149,5 +150,6 @@ namespace px
 		bool m_dirty;
 		unsigned int m_pen_x;
 		unsigned int m_pen_y;
+		unsigned int m_max_y;
 	};
 }

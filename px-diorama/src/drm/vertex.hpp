@@ -6,8 +6,21 @@
 #include <glm/glm.hpp>
 #pragma warning(pop)
 
-struct vertex
+struct mesh_vertex
 {
 	glm::vec2 pos;
 	glm::vec2 texture;
+};
+
+struct grid_vertex
+{
+	glm::vec2 pos;
+	glm::vec4 color;
+};
+
+struct glyph_vertex
+{
+	glm::vec2 pos;
+	glm::vec2 texture;
+	glm::vec4 color;
 };

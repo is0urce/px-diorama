@@ -71,7 +71,7 @@ namespace px
 			i.texture.filters(GL_NEAREST, GL_NEAREST);
 
 			i.vertices = { GL_ARRAY_BUFFER };
-			i.geometry.swizzle(i.vertices, sizeof(vertex), { GL_FLOAT, GL_FLOAT }, { 2, 2 }, { offsetof(vertex, pos), offsetof(vertex, texture) });
+			i.geometry.swizzle(i.vertices, sizeof(mesh_vertex), { GL_FLOAT, GL_FLOAT }, { 2, 2 }, { offsetof(mesh_vertex, pos), offsetof(mesh_vertex, texture) });
 
 			i.pass = { m_primary.framebuffer, i.geometry, m_width, m_height };
 			i.pass.bind_texture(i.texture);

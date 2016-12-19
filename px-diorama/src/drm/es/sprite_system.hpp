@@ -47,7 +47,7 @@ namespace px {
 
 			return result;
 		}
-		void write(std::vector<std::vector<vertex>> & vertice_arrays, float x_offset, float y_offset)
+		void write(std::vector<std::vector<mesh_vertex>> & vertice_arrays, float x_offset, float y_offset)
 		{
 			if (vertice_arrays.size() < m_textures) throw std::runtime_error("px::sprite_system::write() - vertices array texture size not match with internal counter");
 
