@@ -13,7 +13,8 @@ namespace px
 	struct glyph
 	{
 		unsigned int codepoint;
-		float sx, sy, dx, dy;
+		double sx, sy, dx, dy;
+		double left, right, bottom, top;
 	};
 	class font final
 	{
@@ -22,13 +23,22 @@ namespace px
 		{
 			msdfgen::Shape shape;
 			if (!msdfgen::loadGlyph(shape, m_font, codepoint)) throw std::runtime_error("px::font::load - can't load glyph #" + std::to_string(codepoint));
-
 			shape.normalize();
-			msdfgen::Bitmap<float> lum(m_resolution, m_resolution);
-			msdfgen::generateSDF(lum, shape, 4.0f, 1.0f, { 4.0f, 4.0f });
 
 			auto & g = m_map[codepoint];
 			g.codepoint = codepoint;
+
+			msdfgen::Bitmap<float> lum(m_resolution, m_resolution);
+
+			float scale = m_resolution / 64.0f;
+			float translate = m_resolution / 4.0f;
+
+			msdfgen::generateSDF(lum, shape, 4.0f, scale, translate);
+
+			g.sx = m_pen_x / static_cast<double>(m_width);
+			g.sy = m_pen_y / static_cast<double>(m_height);
+			g.dx = (m_pen_x + m_resolution) / static_cast<double>(m_width);
+			g.dy = (m_pen_y + m_resolution) / static_cast<double>(m_height);
 
 			for (int j = 0, h = lum.height(); j != h; ++j)
 			{
@@ -36,6 +46,18 @@ namespace px
 				{
 					m_atlas[(m_pen_y + j) * m_width + (m_pen_x + i)] = lum(i, j);
 				}
+			}
+
+			m_pen_x += m_resolution;
+			if (m_pen_x >= m_width)
+			{
+				m_pen_x = 0;
+				m_pen_y += m_resolution;
+			}
+			if (m_pen_y >= m_height)
+			{
+				quadruple();
+				load(codepoint);
 			}
 
 			m_dirty = true;
@@ -51,12 +73,26 @@ namespace px
 		{
 			return m_dirty;
 		}
-		const float* update(int & width, int & height) noexcept
+		const float* update(unsigned int & width, unsigned int & height) noexcept
 		{
 			width = m_width;
 			height = m_height;
 			m_dirty = false;
 			return m_atlas.data();
+		}
+		unsigned int width() const noexcept
+		{
+			return m_width;
+		}
+		unsigned int height() const noexcept
+		{
+			return m_height;
+		}
+		double kerning(unsigned int a, unsigned int b)
+		{
+			double result = 0;
+			msdfgen::getKerning(result, m_font, a, b);
+			return result;
 		}
 
 	private:
@@ -65,7 +101,8 @@ namespace px
 			m_power = power;
 			m_width = 1 << power;
 			m_height = 1 << power;
-			m_atlas.resize(m_width * m_height);
+			//m_atlas.resize(m_width * m_height);
+			m_atlas.assign(m_width * m_height, {});
 			m_dirty = true;
 		}
 		void quadruple()
@@ -78,8 +115,7 @@ namespace px
 
 	public:
 		font(std::string const& path, unsigned int resolution_power, unsigned int bitmap_power)
-			: m_power(bitmap_power)
-			, m_resolution(1 << resolution_power)
+			: m_resolution(1 << resolution_power)
 		{
 			resize(bitmap_power);
 

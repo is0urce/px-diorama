@@ -51,6 +51,13 @@ namespace px
 			glUseProgram(m_process);
 			m_postprocess.draw_arrays(GL_QUADS, 4);
 
+			glUseProgram(m_text);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+			glViewport(0, 0, m_width, m_height);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, m_font_texture);
+			glDrawArrays(GL_QUADS, 0, 4);
+
 			gl_assert();
 		}
 		void add_texture(unsigned int width, unsigned int height, void const* data)
@@ -81,12 +88,22 @@ namespace px
 	public:
 		renderer(int width,	int height)
 			: m_width(width), m_height(height)
-			, m_grid("data/fonts/DejaVuSansMono.ttf", 5, 8)
+			, m_font("data/fonts/DejaVuSansMono.ttf", 6, 11)
 		{
 			create_pipeline();
 			create_framebuffers();
 
-			m_grid.load('@');
+			//m_font.load('@');
+			//m_font.load('#');
+			for (int i = 32; i != 128; ++i)
+			{
+				m_font.load(i);
+			}
+
+			unsigned int w, h;
+			float const* data = m_font.update(w, h);
+			m_font_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_FLOAT, data);
+			m_font_texture.filters(GL_LINEAR, GL_LINEAR);
 		}
 
 	private:
@@ -162,7 +179,7 @@ namespace px
 				pass.draw_arrays(mode, static_cast<GLsizei>(size));
 			}
 		};
-		struct camera
+		struct camera // uniform
 		{
 			gl_buffer block;
 			struct
@@ -192,6 +209,7 @@ namespace px
 		blur<4, 2> m_blur_passes;
 		gl_pass m_postprocess;
 
-		font m_grid;
+		font m_font;
+		gl_texture m_font_texture;
 	};
 }

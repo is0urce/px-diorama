@@ -6,6 +6,8 @@
 #pragma once
 
 #include "vertex.hpp"
+#include <px/ui/canvas.hpp>
+#include <px/ui/display.hpp>
 
 #include <vector>
 
@@ -52,10 +54,15 @@ namespace px
 		perception()
 			: m_scale(1.0)
 		{
+			m_canvas.cls();
+			m_canvas.paint({ { 1, 1 }, { 5, 5} }, 0xffff00);
+			m_canvas.pset({ 0, 0 }, 0xffffff);
+			m_canvas.print({ 2, 1 }, 0x0000ff, "Hello");
 		}
 
 	private:
 		std::vector<std::vector<vertex>> m_batches;
+		ui::canvas m_canvas;
 		float m_scale;
 	};
 }

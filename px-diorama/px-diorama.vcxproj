@@ -269,6 +269,8 @@
     <ClInclude Include="src\px\rl\tile.hpp" />
     <ClInclude Include="src\px\rl\traverse.hpp" />
     <ClInclude Include="src\px\rl\traverse_options.hpp" />
+    <ClInclude Include="src\px\ui\canvas.hpp" />
+    <ClInclude Include="src\px\ui\display.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />
