@@ -312,6 +312,10 @@
     <None Include="data\img\taurus32.json" />
     <None Include="data\shaders\text.vert" />
     <None Include="data\shaders\text.frag" />
+    <None Include="data\shaders\uisolid.frag" />
+    <None Include="data\shaders\uisolid.vert" />
+    <None Include="data\shaders\uitext.frag" />
+    <None Include="data\shaders\uitext.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\dlg\food.txt" />
