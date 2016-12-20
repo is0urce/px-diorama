@@ -49,13 +49,17 @@ namespace px
 				b.resize(0);
 			}
 		}
+		ui::canvas const& canvas() const noexcept
+		{
+			return m_canvas;
+		}
 
 	public:
 		perception()
 			: m_scale(1.0)
 		{
 			m_canvas.cls();
-			m_canvas.paint({ { 1, 1 }, { 5, 5} }, 0xffff00);
+			m_canvas.paint({ { 1, 1 },{ 5, 5 } }, 0xffff00);
 			m_canvas.pset({ 0, 0 }, 0xffffff);
 			m_canvas.print({ 2, 1 }, 0x0000ff, "Hello");
 		}

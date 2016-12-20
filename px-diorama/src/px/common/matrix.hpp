@@ -320,6 +320,19 @@ namespace px
 				}
 			}
 		}
+		template <typename Operator>
+		void enumerate(Operator && op) const
+		{
+			size_t index = 0;
+			for (size_t j = 0; j < m_height; ++j)
+			{
+				for (size_t i = 0; i < m_width; ++i)
+				{
+					std::forward<Operator>(op)(point2(static_cast<point2::component>(i), static_cast<point2::component>(j)), m_data[index]);
+					++index;
+				}
+			}
+		}
 
 		// querry functions: operator[] not throws, at() throws, select returns default (outer) if out of range
 		// specialized point2 acessors for easy querry with bracket-initialized points

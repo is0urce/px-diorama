@@ -17,6 +17,7 @@ namespace px
 	{
 		std::ifstream stream;
 		stream.open(name);
+		if (!stream.is_open()) throw std::runtime_error("px::read_file(" + name + ") fails");
 
 		std::stringstream ss;
 		ss << stream.rdbuf();
@@ -48,5 +49,18 @@ namespace px
 	inline gl_program compile_program(std::string const& name)
 	{
 		return compile_program(name + ".vert", name + ".frag");
+	}
+	inline gl_program compile_program(std::string const& name, std::vector<std::string> uniforms, std::vector<std::string> textures)
+	{
+		auto program = compile_program(name);
+		for (size_t i = 0, size = uniforms.size(); i != size; ++i)
+		{
+			program.uniform_block(uniforms[i].c_str(), static_cast<GLuint>(i));
+		}
+		for (size_t i = 0, size = textures.size(); i != size; ++i)
+		{
+			program.uniform(textures[i].c_str(), static_cast<GLuint>(i));
+		}
+		return program;
 	}
 }

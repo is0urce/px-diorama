@@ -81,6 +81,18 @@ namespace px
 				});
 				return max;
 			}
+			matrix2<code_type> const& codes() const noexcept
+			{
+				return m_codes;
+			}
+			matrix2<color> const& colors() const noexcept
+			{
+				return m_front;
+			}
+			matrix2<color> const& background() const noexcept
+			{
+				return m_back;
+			}
 
 		public:
 			canvas()

@@ -51,12 +51,28 @@ namespace px
 			glUseProgram(m_process);
 			m_postprocess.draw_arrays(GL_QUADS, 4);
 
-			glUseProgram(m_text);
+			glUseProgram(m_console);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 			glViewport(0, 0, m_width, m_height);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, m_font_texture);
-			glDrawArrays(GL_QUADS, 0, 4);
+			auto const& bg = data.canvas().background();
+			size_t size = bg.size();
+			std::vector<grid_vertex> grid;
+			grid.reserve(size * 4);
+			bg.enumerate([&](auto const& point, color const& color) {
+				grid.push_back({ { point.x(), point.y() }, { color.R, color.G, color.B, color.A } });
+				grid.push_back({ { point.x(), point.y() + 1},{ color.R, color.G, color.B, color.A } });
+				grid.push_back({ { point.x() + 1, point.y() + 1},{ color.R, color.G, color.B, color.A } });
+				grid.push_back({ { point.x() + 1, point.y() },{ color.R, color.G, color.B, color.A } });
+			});
+			//m_console_buffer.load(GL_STREAM_DRAW, size * 4 * sizeof(grid_vertex), grid.data());
+			glDrawArrays(GL_QUADS, 0, 4 * static_cast<GLsizei>(size));
+
+			//glUseProgram(m_text);
+			//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+			//glViewport(0, 0, m_width, m_height);
+			//glActiveTexture(GL_TEXTURE0);
+			//glBindTexture(GL_TEXTURE_2D, m_font_texture);
+			//glDrawArrays(GL_QUADS, 0, 4);
 
 			gl_assert();
 		}
@@ -86,24 +102,22 @@ namespace px
 		}
 
 	public:
-		renderer(int width,	int height)
+		renderer(int width, int height)
 			: m_width(width), m_height(height)
-			, m_font("data/fonts/DejaVuSansMono.ttf", 6, 11)
+//			, m_font("data/fonts/DejaVuSansMono.ttf", 6, 11)
 		{
 			create_pipeline();
 			create_framebuffers();
 
-			//m_font.load('@');
-			//m_font.load('#');
 			for (int i = 32; i != 128; ++i)
 			{
-				m_font.load(i);
+//				m_font.load(i);
 			}
 
-			unsigned int w, h;
-			float const* data = m_font.update(w, h);
-			m_font_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_FLOAT, data);
-			m_font_texture.filters(GL_LINEAR, GL_LINEAR);
+//			unsigned int w, h;
+//			float const* data = m_font.update(w, h);
+//			m_font_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_FLOAT, data);
+//			m_font_texture.filters(GL_LINEAR, GL_LINEAR);
 		}
 
 	private:
@@ -117,19 +131,11 @@ namespace px
 			m_camera.block = { GL_UNIFORM_BUFFER };
 
 			// shaders
-			m_batch = compile_program("data/shaders/batch");
-			m_batch.uniform_block("Camera", 0);
-			m_batch.uniform("img", 0);
-
-			m_process = compile_program("data/shaders/process");
-			m_process.uniform("img", 0);
-
-			m_blur = compile_program("data/shaders/blur");
-			m_blur.uniform_block("Blur", 0);
-			m_blur.uniform("img", 0);
-
-			m_text = compile_program("data/shaders/text");
-			m_text.uniform("img", 0);
+			m_batch = compile_program("data/shaders/batch", { "Camera" }, { "img" });
+			m_process = compile_program("data/shaders/process", {}, { "img" });
+			m_blur = compile_program("data/shaders/blur", { "Blur" }, { "img" });
+			m_console = compile_program("data/shaders/uisolid", {}, {});
+			m_text = compile_program("data/shaders/text", {}, { "img" });
 		}
 		void create_framebuffers()
 		{
@@ -188,6 +194,15 @@ namespace px
 				glm::vec2 offset;
 			} data;
 		};
+		struct ui // uniform
+		{
+			gl_buffer block;
+			struct
+			{
+				glm::vec2 scale;
+				glm::vec2 offset;
+			} data;
+		};
 
 	private:
 		int m_width;
@@ -196,7 +211,10 @@ namespace px
 		gl_program m_batch;
 		gl_program m_blur;
 		gl_program m_process;
+		gl_program m_console;
 		gl_program m_text;
+		gl_buffer m_console_buffer;
+		ui m_ui; // uniform
 
 		offscreen m_primary;
 		offscreen m_ping;
@@ -204,12 +222,12 @@ namespace px
 
 		std::vector<batch> m_batches;
 
-		camera m_camera;
+		camera m_camera; // uniform
 
 		blur<4, 2> m_blur_passes;
 		gl_pass m_postprocess;
 
-		font m_font;
+		//font m_font;
 		gl_texture m_font_texture;
 	};
 }
