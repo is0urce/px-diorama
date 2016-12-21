@@ -243,9 +243,6 @@
     <ClInclude Include="src\px\fn\perlin.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\draw\font.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\drm\es\unit.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -286,6 +283,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\ui\display.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\draw\distance_font.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rgl\gl_uniform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

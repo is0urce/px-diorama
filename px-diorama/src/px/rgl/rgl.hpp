@@ -10,5 +10,7 @@
 #include "gl_buffer.hpp"
 #include "gl_vao.hpp"
 #include "gl_texture.hpp"
+
 #include "gl_framebuffer.hpp"
 #include "gl_pass.hpp"
+#include "gl_uniform.hpp"

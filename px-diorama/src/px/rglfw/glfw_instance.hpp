@@ -10,6 +10,9 @@
 
 #include <GLFW/glfw3.h>
 
+#include <stdexcept>
+#include <string>
+
 namespace px
 {
 	class glfw_instance final
@@ -21,16 +24,18 @@ namespace px
 		}
 
 	public:
-		glfw_instance()
-			: m_init(false)
-		{
-			m_init = glfwInit() != 0;
-		}
 		glfw_instance(GLFWerrorfun error_callback)
 			: m_init(false)
 		{
-			glfwSetErrorCallback(error_callback);
+			if (error_callback)
+			{
+				glfwSetErrorCallback(error_callback);
+			}
 			m_init = glfwInit() != 0;
+		}
+		glfw_instance()
+			: glfw_instance(&error_callback)
+		{
 		}
 		~glfw_instance()
 		{
@@ -39,6 +44,13 @@ namespace px
 				glfwTerminate();
 			}
 		}
+
+	private:
+		static void error_callback(int error, const char* description)
+		{
+			throw std::runtime_error(std::string("glfw error, code #" + std::to_string(error) + " message: " + std::string(description)));
+		}
+
 	private:
 		bool m_init;
 	};

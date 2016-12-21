@@ -20,10 +20,24 @@ namespace px
 		std::unordered_map<SK, VK> m_bindings;
 
 	public:
-		bindings() {}
+		bindings()
+		{
+		}
+		template <typename Document>
+		bindings(Document && doc)
+		{
+			for (auto const& binding : std::forward<Document>(doc))
+			{
+				int action_index = binding["action"];
+				for (int key : binding["keys"])
+				{
+					bind(static_cast<SK>(key), static_cast<VK>(action_index));
+				}
+			}
+		}
 
 	public:
-		void bind(SK key, v_key vkey)
+		void bind(SK key, VK vkey)
 		{
 			m_bindings[key] = vkey;
 		}
@@ -42,9 +56,9 @@ namespace px
 			find(key, or_else);
 			return or_else;
 		}
-		VK operator[](SK key) const
+		VK operator[](SK key) const noexcept
 		{
-			return m_bindings.at(key);
+			return m_bindings[key];
 		}
 
 

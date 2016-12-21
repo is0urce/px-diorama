@@ -58,6 +58,7 @@ namespace px
 		{
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_framebuffer);
 			glViewport(0, 0, m_width, m_height);
+			glBindVertexArray(m_vao);
 			for (auto const& uniform : m_uniforms)
 			{
 				glBindBufferBase(GL_UNIFORM_BUFFER, uniform.binding, uniform.element);
@@ -67,7 +68,6 @@ namespace px
 				glActiveTexture(GL_TEXTURE0 + texture.binding);
 				glBindTexture(GL_TEXTURE_2D, texture.element);
 			}
-			glBindVertexArray(m_vao);
 		}
 		void draw_arrays(GLenum mode, GLsizei count, GLint first)
 		{

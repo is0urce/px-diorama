@@ -17,7 +17,7 @@ namespace px
 		{
 			return m_vbo;
 		}
-		void swap(gl_buffer & that)
+		void swap(gl_buffer & that) noexcept
 		{
 			std::swap(m_init, that.m_init);
 			std::swap(m_variant, that.m_variant);
@@ -35,6 +35,26 @@ namespace px
 		{
 			load(usage, sizeof(pod), &pod);
 		}
+	private:
+		void init(GLenum variant)
+		{
+			if (m_variant != variant)
+			{
+				release();
+				glCreateBuffers(1, &m_vbo);
+				m_variant = variant;
+				m_init = true;
+			}
+		}
+		void release()
+		{
+			if (m_init)
+			{
+				glDeleteBuffers(1, &m_vbo);
+				m_init = false;
+				m_variant = GL_INVALID_ENUM;
+			}
+		}
 
 	public:
 		gl_buffer() noexcept
@@ -46,9 +66,7 @@ namespace px
 		gl_buffer(GLenum variant)
 			: gl_buffer()
 		{
-			glCreateBuffers(1, &m_vbo);
-			m_variant = variant;
-			m_init = true;
+			init(variant);
 		}
 		gl_buffer(gl_buffer && that) noexcept
 			: gl_buffer()
@@ -64,10 +82,7 @@ namespace px
 		gl_buffer& operator=(gl_buffer const&) = delete;
 		~gl_buffer()
 		{
-			if (m_init)
-			{
-				glDeleteBuffers(1, &m_vbo);
-			}
+			release();
 		}
 
 	private:

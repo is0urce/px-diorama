@@ -16,7 +16,7 @@ namespace px
 		double sx, sy, dx, dy;
 		double left, right, bottom, top;
 	};
-	class font final
+	class distance_font final
 	{
 	public:
 		void load(unsigned int codepoint)
@@ -115,7 +115,7 @@ namespace px
 		}
 
 	public:
-		font(std::string const& path, unsigned int resolution_power, unsigned int bitmap_power)
+		distance_font(std::string const& path, unsigned int resolution_power, unsigned int bitmap_power)
 			: m_resolution(1 << resolution_power)
 		{
 			resize(bitmap_power);
@@ -125,7 +125,7 @@ namespace px
 			m_font = msdfgen::loadFont(m_library, path.c_str());
 			if (!m_font) throw std::runtime_error("px::font - font '" + path + "' load fails");
 		}
-		~font()
+		~distance_font()
 		{
 			if (m_font)
 			{

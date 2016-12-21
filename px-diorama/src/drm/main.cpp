@@ -20,11 +20,6 @@
 #include <stdexcept>
 #include <string>
 
-static void error_callback(int error, const char* description)
-{
-	throw std::runtime_error(std::string("glfw error, code #" + std::to_string(error) + " message: " + std::string(description)));
-}
-
 int main() // application starts here
 {
 	try
@@ -39,7 +34,7 @@ int main() // application starts here
 			unsigned int vsync = doc["window"]["vsync"];
 
 			// create window and context
-			px::glfw_instance instance(&error_callback);
+			px::glfw_instance instance;
 			px::glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", nullptr, nullptr);
 			glfwMakeContextCurrent(window);
 			glfwSwapInterval(vsync);
@@ -48,17 +43,9 @@ int main() // application starts here
 			// create logic structure
 			px::renderer graphics(screen_width, screen_height);
 			px::shell game;
-			px::bindings<int, px::key> bindings;
+			px::bindings<int, px::key> bindings(doc["bindings"]);
 
-			// populate internal states
-			for (auto const& binding : doc["bindings"])
-			{
-				std::underlying_type<px::key>::type action_index = binding["action"];
-				for (auto const& key : binding["keys"])
-				{
-					bindings.bind(key, static_cast<px::key>(action_index));
-				}
-			}
+			// load data
 			for (auto const& texture : doc["textures"])
 			{
 				std::string path = texture["path"];
