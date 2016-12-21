@@ -49,7 +49,7 @@ int main() // application starts here
 			for (auto const& texture : doc["textures"])
 			{
 				std::string path = texture["path"];
-				std::string metapath = texture["meta"];
+				std::string meta = texture["meta"];
 
 				std::vector<unsigned char> image;
 				unsigned int w, h;
@@ -57,7 +57,7 @@ int main() // application starts here
 				if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 
 				graphics.add_texture(w, h, image.data());
-				game.add_atlas(nlohmann::json::parse(std::ifstream(metapath))["meta"]);
+				game.add_atlas(nlohmann::json::parse(std::ifstream(meta))["meta"]);
 			}
 
 			// setup callbacks
@@ -92,7 +92,7 @@ int main() // application starts here
 				graphics.render(game.view());
 			}
 		}
-		catch (std::runtime_error &exc)
+		catch (std::runtime_error & exc)
 		{
 			throw std::move(exc);
 		}

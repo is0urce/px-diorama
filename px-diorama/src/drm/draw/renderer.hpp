@@ -13,6 +13,8 @@
 
 #include <px/rgl/rgl.hpp>
 
+#include <px/rft/ft_library.hpp>
+
 #include "perception.hpp"
 #include "program.hpp"
 #include "blur.hpp"

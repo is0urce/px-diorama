@@ -197,6 +197,10 @@
     <ClInclude Include="src\drm\draw\program.hpp" />
     <ClInclude Include="src\px\fn\random_aux.hpp" />
     <ClInclude Include="src\px\fn\room_aux.hpp" />
+    <ClInclude Include="src\px\rft\ft_face.hpp" />
+    <ClInclude Include="src\px\rft\ft_font.hpp" />
+    <ClInclude Include="src\px\rft\ft_library.hpp" />
+    <ClInclude Include="src\px\rft\glyph.hpp" />
     <ClInclude Include="src\px\rglfw\glfw_callback.hpp" />
     <ClInclude Include="src\px\rglfw\glfw_instance.hpp" />
     <ClInclude Include="src\px\rglfw\glfw_time.hpp" />
