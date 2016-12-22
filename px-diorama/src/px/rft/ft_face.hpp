@@ -19,6 +19,10 @@ namespace px
 		{
 			return m_face;
 		}
+		FT_Face operator->() const noexcept
+		{
+			return m_face;
+		}
 
 	public:
 		//void point_size(unsigned int points, unsigned int dpi)
@@ -55,7 +59,7 @@ namespace px
 		ft_face(FT_Library library, const char* path, unsigned int index)
 		{
 			auto error = FT_New_Face(library, path, index, &m_face);
-			if (error) throw std::runtime_error("px::rft::ft_face::ctor() - in " + std::string(path));
+			if (error) throw std::runtime_error("px::rft::ft_face::ctor() - error #" + std::to_string(error) + " path=" + std::string(path) + " index=" + std::to_string(index));
 		}
 		ft_face(FT_Library library, const char* path)
 			: ft_face(library, path, 0)

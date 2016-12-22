@@ -38,6 +38,7 @@ namespace px
 		}
 		void bind_texture(GLuint texture, GLuint index)
 		{
+			if (texture == 0) throw std::runtime_error("px::gl_pass::bind_texture(..) - texture is 0");
 			m_textures.push_back({ index, texture });
 		}
 		void bind_texture(GLuint texture)
@@ -58,7 +59,10 @@ namespace px
 		{
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_framebuffer);
 			glViewport(0, 0, m_width, m_height);
-			glBindVertexArray(m_vao);
+			if (m_vao != 0)
+			{
+				glBindVertexArray(m_vao);
+			}
 			for (auto const& uniform : m_uniforms)
 			{
 				glBindBufferBase(GL_UNIFORM_BUFFER, uniform.binding, uniform.element);

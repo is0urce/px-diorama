@@ -1,4 +1,11 @@
+// name: vertex.hpp
+// type: c++ header
+// auth: is0urce
+// desc: structures
+
 #pragma once
+
+// vertex data structures
 
 #define GLM_FORCE_RADIANS
 #pragma warning(push)
@@ -22,5 +29,5 @@ struct glyph_vertex
 {
 	glm::vec2 pos;
 	glm::vec2 texture;
-	glm::vec4 color;
+	glm::vec4 tint;
 };

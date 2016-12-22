@@ -77,6 +77,11 @@ namespace px
 			m_sprites.add_texture(std::forward<Document>(doc), true);
 		}
 
+		void resize_ui(unsigned int width, unsigned int height)
+		{
+			m_perception.canvas().resize(width, height);
+		}
+
 		perception const& view() const noexcept
 		{
 			return m_perception;

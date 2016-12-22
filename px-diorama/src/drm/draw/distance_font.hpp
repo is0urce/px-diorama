@@ -10,14 +10,15 @@
 
 namespace px
 {
-	struct glyph
-	{
-		unsigned int codepoint;
-		double sx, sy, dx, dy;
-		double left, right, bottom, top;
-	};
 	class distance_font final
 	{
+	private:
+		struct glyph
+		{
+			unsigned int codepoint;
+			double sx, sy, dx, dy;
+			double left, right, bottom, top;
+		};
 	public:
 		void load(unsigned int codepoint)
 		{

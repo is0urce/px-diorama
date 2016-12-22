@@ -297,9 +297,6 @@
     <ClInclude Include="src\px\rft\ft_face.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rft\glyph.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\rft\ft_font.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

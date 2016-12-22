@@ -18,7 +18,7 @@
 #include "perception.hpp"
 #include "program.hpp"
 #include "blur.hpp"
-#include "distance_font.hpp"
+#include <px/rft/ft_font.hpp>
 
 #include <stdexcept>
 #include <string>
@@ -31,19 +31,21 @@ namespace px
 	public:
 		void render(perception const& data)
 		{
-			// prepare uniform data
+			// load data
+			prepare_console(data);
+
+			// prepare uniforms
 			m_camera.load<camera_uniform>(GL_STREAM_DRAW, { { data.scale(), data.scale() * m_width / m_height },{ 0.0, 0.0 } });
-			m_ui_uniform.load<ui_uniform>(GL_STREAM_DRAW, { { 0.1f, 0.1f }, { -1.0f, 1.0f } });
+			m_ui_uniform.load<ui_uniform>(GL_STREAM_DRAW, { { 100.0f / m_width, 100.0f / m_height }, { -1.0f, 1.0f } });
 
 			// g-pass
 			glUseProgram(m_batch);
 			for (size_t i = 0, total = data.textures(); i != total; ++i)
 			{
 				auto const& vertices = data.batch(i);
-				auto size = vertices.size();
-				if (size != 0)
+				if (vertices.size() != 0)
 				{
-					m_batches[i].draw_arrays(GL_STREAM_DRAW, GL_QUADS, size, vertices.data());
+					m_batches[i].draw_arrays(GL_STREAM_DRAW, GL_QUADS, vertices.size(), vertices.data());
 				}
 			}
 
@@ -54,25 +56,15 @@ namespace px
 			m_postprocess.draw_arrays(GL_QUADS, 4);
 
 			glUseProgram(m_console);
-			auto const& bg = data.canvas().background();
-			size_t size = bg.size();
-			std::vector<grid_vertex> grid;
-			grid.reserve(size * 4);
-			bg.enumerate([&](auto const& point, color const& color) {
-				grid.push_back({ { point.x(), -point.y() - 1},{ color.R, color.G, color.B, color.A } });
-				grid.push_back({ { point.x(), -point.y() },{ color.R, color.G, color.B, color.A } });
-				grid.push_back({ { point.x() + 1, -point.y() },{ color.R, color.G, color.B, color.A } });
-				grid.push_back({ { point.x() + 1, -point.y() - 1},{ color.R, color.G, color.B, color.A } });
-			});
-			m_console_buffer.load(GL_STREAM_DRAW, size * 4 * sizeof(grid_vertex), grid.data());
-			m_ui_solid_pass.draw_arrays(GL_QUADS, 4 * static_cast<GLsizei>(size));
+			m_ui_solid_pass.draw_arrays(GL_QUADS, m_console_buffer.size());
 
-			glUseProgram(m_text);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-			glViewport(0, 0, m_width, m_height);
-			glActiveTexture(GL_TEXTURE0);
+			glUseProgram(m_glyph);
+			unsigned int w, h;
+			void const* d = m_ui_font.download(w, h);
+			m_font_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_UNSIGNED_BYTE, d);
+			m_font_texture.filters(GL_NEAREST, GL_NEAREST);
 			glBindTexture(GL_TEXTURE_2D, m_font_texture);
-			glDrawArrays(GL_QUADS, 0, 4);
+			m_ui_text_pass.draw_arrays(GL_QUADS, m_ui_text_buffer.size());
 
 			gl_assert();
 		}
@@ -104,16 +96,16 @@ namespace px
 	public:
 		renderer(int width, int height)
 			: m_width(width), m_height(height)
-			, m_font("data/fonts/DejaVuSansMono.ttf", 6, 11)
+			, m_ui_font("data/fonts/PragmataPro.ttf", 18, 512)
 		{
+			for (int i = 32; i != 256; ++i) m_ui_font.rasterize(i);
+			unsigned int w, h;
+			void const* data = m_ui_font.download(w, h);
+			m_font_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_UNSIGNED_BYTE, data);
+			m_font_texture.filters(GL_NEAREST, GL_NEAREST);
+
 			create_pipeline();
 			create_framebuffers();
-
-			for (int i = 32; i != 128; ++i) m_font.load(i);
-			unsigned int w, h;
-			float const* data = m_font.update(w, h);
-			m_font_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_FLOAT, data);
-			m_font_texture.filters(GL_LINEAR, GL_LINEAR);
 		}
 
 	private:
@@ -127,11 +119,14 @@ namespace px
 			m_batch = compile_program("data/shaders/batch", { "Camera" }, { "img" });
 			m_process = compile_program("data/shaders/process", {}, { "img" });
 			m_blur = compile_program("data/shaders/blur", { "Blur" }, { "img" });
+
 			m_console = compile_program("data/shaders/uisolid", { "Camera" }, {});
-			m_text = compile_program("data/shaders/text", {}, { "img" });
+			m_glyph = compile_program("data/shaders/uitext", { "Camera" }, { "img" });
 
 			m_console_buffer = { GL_ARRAY_BUFFER };
+			m_ui_text_buffer = { GL_ARRAY_BUFFER };
 			m_ui_solid_geometry.swizzle(m_console_buffer, sizeof(grid_vertex), { GL_FLOAT, GL_FLOAT }, { 2, 4 }, { offsetof(grid_vertex, pos), offsetof(grid_vertex, color) });
+			m_ui_text_geometry.swizzle(m_ui_text_buffer, sizeof(glyph_vertex), { GL_FLOAT, GL_FLOAT, GL_FLOAT }, { 2, 2, 4 }, { offsetof(glyph_vertex, pos), offsetof(glyph_vertex, texture), offsetof(glyph_vertex, tint) });
 		}
 		void create_framebuffers()
 		{
@@ -161,6 +156,59 @@ namespace px
 
 			m_ui_solid_pass = { 0, m_ui_solid_geometry, m_width, m_height };
 			m_ui_solid_pass.bind_uniform(m_ui_uniform);
+
+			m_ui_text_pass = { 0, m_ui_text_geometry, m_width, m_height };
+			m_ui_text_pass.bind_uniform(m_ui_uniform);
+			m_ui_text_pass.bind_texture(m_font_texture);
+		}
+		void prepare_console(perception const& data)
+		{
+			auto const& canvas = data.canvas();
+			auto const& bg = canvas.background();
+			auto const& text = canvas.codes();
+			auto const& colors = canvas.colors();
+			size_t grid_size = bg.size();
+
+			std::vector<grid_vertex> grid;
+			std::vector<glyph_vertex> glyphs;
+			grid.reserve(grid_size * 4);
+			glyphs.reserve(grid_size * 4);
+
+			bg.enumerate([&](auto const& point, color const& color) {
+				glm::vec4 back(color.R, color.G, color.B, color.A);
+				grid.push_back({ { point.x(), -point.y() - 1 }, back });
+				grid.push_back({ { point.x(), -point.y() }, back });
+				grid.push_back({ { point.x() + 1, -point.y() }, back });
+				grid.push_back({ { point.x() + 1, -point.y() - 1 }, back });
+			});
+
+			text.enumerate([&](auto const& point, auto code) {
+				glm::vec4 front(colors[point].R, colors[point].G, colors[point].B, colors[point].A);
+				auto const& glyph = m_ui_font[code];
+				float sx = static_cast<float>(glyph.sx);
+				float sy = static_cast<float>(glyph.sy);
+				float dx = static_cast<float>(glyph.dx);
+				float dy = static_cast<float>(glyph.dy);
+				glyphs.push_back({
+					{ point.x(), -point.y() - 1 },
+					{ sx, sy },
+					front });
+				glyphs.push_back({
+					{ point.x(), -point.y() },
+					{ sx, dy },
+					front });
+				glyphs.push_back({
+					{ point.x() + 1, -point.y() },
+					{ dx, dy },
+					front });
+				glyphs.push_back({
+					{ point.x() + 1, -point.y() - 1 },
+					{ dx, sy },
+					front });
+			});
+
+			m_console_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(grid_vertex), grid.data());
+			m_ui_text_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(glyph_vertex), glyphs.data());
 		}
 
 	private:
@@ -202,14 +250,17 @@ namespace px
 		gl_program m_blur;
 		gl_program m_process;
 		gl_program m_console;
-		gl_program m_text;
+		gl_program m_glyph;
 
 		gl_uniform m_camera;
 		gl_uniform m_ui_uniform;
 
 		gl_buffer m_console_buffer;
+		gl_buffer m_ui_text_buffer;
 		gl_vao m_ui_solid_geometry;
+		gl_vao m_ui_text_geometry;
 		gl_pass m_ui_solid_pass;
+		gl_pass m_ui_text_pass;
 
 		offscreen m_primary;
 		offscreen m_ping;
@@ -220,7 +271,8 @@ namespace px
 		blur<4, 2> m_blur_passes;
 		gl_pass m_postprocess;
 
-		distance_font m_font;
+		//distance_font m_font;
+		ft_font m_ui_font;
 		gl_texture m_font_texture;
 	};
 }

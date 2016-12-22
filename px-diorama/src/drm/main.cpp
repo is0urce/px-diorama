@@ -20,6 +20,9 @@
 #include <stdexcept>
 #include <string>
 
+static const unsigned int gui_cell_width = 50;
+static const unsigned int gui_cell_height = 50;
+
 int main() // application starts here
 {
 	try
@@ -63,6 +66,7 @@ int main() // application starts here
 			// setup callbacks
 			px::glfw_callback callback(window);
 			callback.on_resize([&](auto * /* window */, int widht, int height) {
+				game.resize_ui(widht / gui_cell_width, height / gui_cell_height);
 				graphics.resize(widht, height);
 			});
 			callback.on_key([&](auto * /* window */, int key, int /* scancode */, int action, int /* mods */) {
@@ -82,6 +86,7 @@ int main() // application starts here
 			});
 
 			// start
+			game.resize_ui(screen_width / gui_cell_width, screen_height / gui_cell_height);
 			game.start();
 
 			// main loop

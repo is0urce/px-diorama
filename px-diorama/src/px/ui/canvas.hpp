@@ -14,7 +14,7 @@ namespace px
 {
 	namespace ui
 	{
-		class canvas  final
+		class canvas final
 		{
 		public:
 			typedef unsigned int code_type;

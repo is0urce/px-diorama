@@ -23,9 +23,14 @@ namespace px
 			std::swap(m_variant, that.m_variant);
 			std::swap(m_vbo, that.m_vbo);
 		}
+		GLsizei size() const noexcept
+		{
+			return m_size;
+		}
 
 		void load(GLenum usage, GLsizeiptr size, void const* memory)
 		{
+			m_size = static_cast<GLsizei>(size);
 			glBindBuffer(m_variant, m_vbo);
 			glBufferData(m_variant, size, memory, usage);
 		}
@@ -61,6 +66,7 @@ namespace px
 			: m_init(false)
 			, m_variant(GL_INVALID_ENUM)
 			, m_vbo(0)
+			, m_size(0)
 		{
 		}
 		gl_buffer(GLenum variant)
@@ -89,5 +95,6 @@ namespace px
 		bool m_init;
 		GLenum m_variant;
 		GLuint m_vbo;
+		GLsizei m_size;
 	};
 }
