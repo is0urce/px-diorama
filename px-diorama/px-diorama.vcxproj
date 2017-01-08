@@ -281,8 +281,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />
+    <None Include="data\img\bookshelf.json" />
     <None Include="data\img\dirt32.json" />
     <None Include="data\img\gnome32.json" />
+    <None Include="data\img\rabling_harvester.json" />
     <None Include="data\img\taurus32.json" />
     <None Include="data\img\wall32.json" />
     <None Include="data\scripts\q.lua" />

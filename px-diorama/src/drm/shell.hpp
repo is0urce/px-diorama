@@ -46,7 +46,7 @@ namespace px
 		}
 		void step(point2 const& direction)
 		{
-			auto * transform = m_player.transform();
+			auto * transform = m_player->transform();
 			if (!transform) return;
 
 			point2 destination = transform->position() + direction;
@@ -85,12 +85,14 @@ namespace px
 		}
 		void start()
 		{
-			m_player = spawn("@", { 50, 50 });
-			m_player.enable();
+			m_player = &spawn("@", { 54, 46 });
+			m_player->enable();
 
-			auto t = spawn("m", { 51, 50 });
-			t.enable();
-			m_units.push_back(t);
+			spawn("m", { 55, 46 }).enable();
+
+			spawn("|", { 55, 47 }).enable();
+
+			spawn("x", { 53, 47 }).enable();
 
 			m_map.resize({ 100, 100 });
 			m_map.enumerate([this](auto const& point, auto & tile) {
@@ -123,15 +125,17 @@ namespace px
 		{
 			m_perception.clear();
 
-			float x_offset = -static_cast<float>(m_player.transform()->x());
-			float y_offset = -static_cast<float>(m_player.transform()->y());
+			auto * transform = m_player->transform();
+
+			float x_offset = -static_cast<float>(transform->x());
+			float y_offset = -static_cast<float>(transform->y());
 			m_sprites.write(m_perception.batches(), x_offset, y_offset);
 
 			m_canvas.cls();
 			m_ui.layout(rectangle(point2(0, 0), m_canvas.range()));
 			m_ui.draw(m_canvas);
 		}
-		unit spawn(std::string const& name, point2 location)
+		unit & spawn(std::string const& name, point2 location)
 		{
 			unit result;
 
@@ -143,7 +147,9 @@ namespace px
 			result.add(sprite);
 			result.add(transform);
 
-			return result;
+			m_units.push_back(result);
+
+			return m_units.back();
 		}
 
 		ui::canvas & canvas()
@@ -167,7 +173,7 @@ namespace px
 
 		perception m_perception;
 
-		unit m_player;
+		unit * m_player;
 		std::list<unit> m_units;
 
 		map_chunk<tile> m_map;

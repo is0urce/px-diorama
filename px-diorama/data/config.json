@@ -13,7 +13,7 @@
     },
     {
       "path": "data/img/wall32.png",
-      "meta" : "data/img/wall32.json"
+      "meta": "data/img/wall32.json"
     },
     {
       "path": "data/img/gnome32.png",
@@ -22,7 +22,17 @@
     ,
     {
       "path": "data/img/taurus32.png",
-      "meta" : "data/img/taurus32.json"
+      "meta": "data/img/taurus32.json"
+    }
+    ,
+    {
+      "path": "data/img/bookshelf.png",
+      "meta": "data/img/bookshelf.json"
+    }
+    ,
+    {
+      "path": "data/img/rabling_harvester.png",
+      "meta": "data/img/rabling_harvester.json"
     }
   ],
   "bindings": [
