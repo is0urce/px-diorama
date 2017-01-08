@@ -95,7 +95,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -116,7 +116,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -142,7 +142,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -168,7 +168,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -273,8 +273,10 @@
     <ClInclude Include="src\px\rl\tile.hpp" />
     <ClInclude Include="src\px\rl\traverse.hpp" />
     <ClInclude Include="src\px\rl\traverse_options.hpp" />
+    <ClInclude Include="src\px\ui\alignment.hpp" />
     <ClInclude Include="src\px\ui\canvas.hpp" />
     <ClInclude Include="src\px\ui\display.hpp" />
+    <ClInclude Include="src\px\ui\panel.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />

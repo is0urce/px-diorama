@@ -38,11 +38,8 @@ namespace px
 		void pixel_size(unsigned int pixels)
 		{
 			m_size = pixels;
-			auto error = FT_Set_Pixel_Sizes(
-				m_face,   /* handle to face object */
-				0,      /* pixel_width           */
-				pixels);   /* pixel_height          */
-			if (error) throw std::runtime_error("px::rft::ft_face::pixel_size()");
+			auto error = FT_Set_Pixel_Sizes(m_face,	0, pixels);
+			if (error) throw std::runtime_error("px::rft::ft_face::pixel_size() - FT_Set_Pixel_Sizes error");
 		}
 		unsigned int size() const noexcept
 		{

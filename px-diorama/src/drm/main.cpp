@@ -45,10 +45,13 @@ int main() // application starts here
 
 			// create logic structure
 			px::renderer graphics(screen_width, screen_height);
-			px::shell game;
 			px::bindings<int, px::key> bindings(doc["bindings"]);
+			px::shell game;
 
-			// load data
+			// setup - ui canvas
+			game.canvas().resize(screen_width / gui_cell_width, screen_height / gui_cell_height);
+
+			// setup - load data
 			for (auto const& texture : doc["textures"])
 			{
 				std::string path = texture["path"];
@@ -63,11 +66,14 @@ int main() // application starts here
 				game.add_atlas(nlohmann::json::parse(std::ifstream(meta))["meta"]);
 			}
 
-			// setup callbacks
+			// setup - callbacks
 			px::glfw_callback callback(window);
 			callback.on_resize([&](auto * /* window */, int widht, int height) {
-				game.resize_ui(widht / gui_cell_width, height / gui_cell_height);
+				screen_width = widht;
+				screen_height = height;
 				graphics.resize(widht, height);
+
+				game.canvas().resize(screen_width / gui_cell_width, screen_height / gui_cell_height);
 			});
 			callback.on_key([&](auto * /* window */, int key, int /* scancode */, int action, int /* mods */) {
 				if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(bindings.select(key, px::key::not_valid));
@@ -86,7 +92,6 @@ int main() // application starts here
 			});
 
 			// start
-			game.resize_ui(screen_width / gui_cell_width, screen_height / gui_cell_height);
 			game.start();
 
 			// main loop
@@ -94,7 +99,7 @@ int main() // application starts here
 			while (window.process())
 			{
 				game.frame(time);
-				graphics.render(game.view());
+				graphics.render(game.view(), game.canvas());
 			}
 		}
 		catch (std::runtime_error & exc)

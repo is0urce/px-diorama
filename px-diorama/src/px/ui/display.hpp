@@ -16,9 +16,21 @@ namespace px
 		class display final
 		{
 		public:
-			void reframe(rectangle frame)
+			void reframe(rectangle frame) noexcept
 			{
 				m_bounds = frame;
+			}
+			void assign(canvas * cnv) noexcept
+			{
+				m_canvas = cnv;
+			}
+			point2 start() const noexcept
+			{
+				return m_bounds.start();
+			}
+			rectangle const& bounds() const noexcept
+			{
+				return m_bounds;
 			}
 
 			// drawing
@@ -79,6 +91,10 @@ namespace px
 				, m_bounds(frame)
 			{
 
+			}
+			display()
+				: display(nullptr, {})
+			{
 			}
 
 		private:

@@ -17,6 +17,8 @@
 
 #include <px/es/component_collection.hpp>
 #include <px/fn/bsp.hpp>
+#include <px/ui/canvas.hpp>
+#include <px/ui/panel.hpp>
 
 #include <list>
 
@@ -77,11 +79,6 @@ namespace px
 			m_sprites.add_texture(std::forward<Document>(doc), true);
 		}
 
-		void resize_ui(unsigned int width, unsigned int height)
-		{
-			m_perception.canvas().resize(width, height);
-		}
-
 		perception const& view() const noexcept
 		{
 			return m_perception;
@@ -136,6 +133,10 @@ namespace px
 			float x_offset = -static_cast<float>(m_player.transform()->x());
 			float y_offset = -static_cast<float>(m_player.transform()->y());
 			m_sprites.write(m_perception.batches(), x_offset, y_offset);
+
+			m_canvas.cls();
+			m_ui.layout(rectangle(point2(0, 0), m_canvas.range()));
+			m_ui.draw(m_canvas);
 		}
 		unit spawn(std::string const& name, point2 location)
 		{
@@ -151,10 +152,18 @@ namespace px
 
 			return result;
 		}
+
+		ui::canvas & canvas()
+		{
+			return m_canvas;
+		}
+
 	public:
 		shell()
 		{
 			m_perception.scale(-0.95f);
+
+			m_ui.make<ui::panel>({ { 0.5, 0.5}, {0, 0}, {0, 0}, {0.5, 0.5} });
 		}
 
 	private:
@@ -169,5 +178,8 @@ namespace px
 		std::list<unit> m_units;
 
 		map_chunk<tile> m_map;
+
+		ui::canvas m_canvas;
+		ui::panel m_ui;
 	};
 }

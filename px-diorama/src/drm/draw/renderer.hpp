@@ -19,6 +19,7 @@
 #include "program.hpp"
 #include "blur.hpp"
 #include <px/rft/ft_font.hpp>
+#include <px/ui/canvas.hpp>
 
 #include <stdexcept>
 #include <string>
@@ -29,10 +30,10 @@ namespace px
 	class renderer
 	{
 	public:
-		void render(perception const& data)
+		void render(perception const& data, ui::canvas const& canvas)
 		{
 			// load data
-			prepare_console(data);
+			prepare_console(canvas);
 
 			// prepare uniforms
 			m_camera.load<camera_uniform>(GL_STREAM_DRAW, { { data.scale(), data.scale() * m_width / m_height },{ 0.0, 0.0 } });
@@ -161,9 +162,8 @@ namespace px
 			m_ui_text_pass.bind_uniform(m_ui_uniform);
 			m_ui_text_pass.bind_texture(m_font_texture);
 		}
-		void prepare_console(perception const& data)
+		void prepare_console(ui::canvas const& canvas)
 		{
-			auto const& canvas = data.canvas();
 			auto const& bg = canvas.background();
 			auto const& text = canvas.codes();
 			auto const& colors = canvas.colors();

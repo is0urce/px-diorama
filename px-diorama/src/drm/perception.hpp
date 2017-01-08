@@ -6,8 +6,6 @@
 #pragma once
 
 #include "vertex.hpp"
-#include <px/ui/canvas.hpp>
-#include <px/ui/display.hpp>
 
 #include <vector>
 
@@ -48,19 +46,6 @@ namespace px
 			{
 				b.resize(0);
 			}
-			m_canvas.cls();
-			m_canvas.paint({ { 1, 1 },{ 5, 5 } }, 0xffff00);
-			m_canvas.pset({ 0, 0 }, 0x00ffff);
-			m_canvas.print({ 2, 1 }, 0x0000ff, "Hello");
-			m_canvas.print({ 0, 0 }, 0x000000, "Hi");
-		}
-		ui::canvas const& canvas() const noexcept
-		{
-			return m_canvas;
-		}
-		ui::canvas & canvas() noexcept
-		{
-			return m_canvas;
 		}
 
 	public:
@@ -71,7 +56,6 @@ namespace px
 
 	private:
 		std::vector<std::vector<mesh_vertex>> m_batches;
-		ui::canvas m_canvas;
 		float m_scale;
 	};
 }

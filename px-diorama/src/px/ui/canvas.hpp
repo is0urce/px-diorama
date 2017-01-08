@@ -26,6 +26,10 @@ namespace px
 				m_front.resize(width, height);
 				m_back.resize(width, height);
 			}
+			point2 range() const noexcept
+			{
+				return m_codes.range();
+			}
 
 			// writing
 			void cls()
