@@ -44,17 +44,24 @@ namespace px
 			{
 				return m_bounds;
 			}
+			point2 range() const noexcept
+			{
+				return m_bounds.range();
+			}
 
 			// creation
 			void add(name_type name, alignment align, std::shared_ptr<panel> p)
 			{
 				p->m_name = name;
 				p->m_align = align;
+				p->m_bounds = align.calculate(m_bounds);
 				m_stack[name] = p;
 			}
 			void add(alignment align, std::shared_ptr<panel> p)
 			{
+				p->m_name = "";
 				p->m_align = align;
+				p->m_bounds = align.calculate(m_bounds);
 				m_unnamed.push_back(p);
 			}
 			template <typename SubPanel, typename ...Args>
@@ -93,9 +100,8 @@ namespace px
 			}
 
 		protected:
-			virtual void draw_panel(display & window) const
+			virtual void draw_panel(display & /*window*/) const
 			{
-				window.print({ 0, 0 }, 0xffffff, "hey");
 			}
 			virtual void press_panel(unsigned int /*code*/) const
 			{

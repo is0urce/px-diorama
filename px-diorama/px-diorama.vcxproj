@@ -277,6 +277,7 @@
     <ClInclude Include="src\px\ui\canvas.hpp" />
     <ClInclude Include="src\px\ui\display.hpp" />
     <ClInclude Include="src\px\ui\panel.hpp" />
+    <ClInclude Include="src\px\ui\text_alignment.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />

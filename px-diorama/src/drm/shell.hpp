@@ -92,13 +92,6 @@ namespace px
 			t.enable();
 			m_units.push_back(t);
 
-			for (int i = 0; i != 10; ++i)
-			{
-				auto mob = spawn("@", { 1 + i, 1 + i });
-				mob.enable();
-				m_units.push_back(mob);
-			}
-
 			m_map.resize({ 100, 100 });
 			m_map.enumerate([this](auto const& point, auto & tile) {
 				tile.transform = m_transforms.make_shared(point);
