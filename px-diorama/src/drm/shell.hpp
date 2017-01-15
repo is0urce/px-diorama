@@ -89,10 +89,9 @@ namespace px
 			m_player->enable();
 
 			spawn("m", { 55, 46 }).enable();
-
 			spawn("|", { 55, 47 }).enable();
-
 			spawn("x", { 53, 47 }).enable();
+			spawn("m_snake", { 50, 50 }).enable();
 
 			m_map.resize({ 100, 100 });
 			m_map.enumerate([this](auto const& point, auto & tile) {
@@ -125,11 +124,14 @@ namespace px
 		{
 			m_perception.clear();
 
-			auto * transform = m_player->transform();
+			if (m_player)
+			{
+				auto * transform = m_player->transform();
 
-			float x_offset = -static_cast<float>(transform->x());
-			float y_offset = -static_cast<float>(transform->y());
-			m_sprites.write(m_perception.batches(), x_offset, y_offset);
+				float x_offset = -static_cast<float>(transform->x());
+				float y_offset = -static_cast<float>(transform->y());
+				m_sprites.write(m_perception.batches(), x_offset, y_offset);
+			}
 
 			m_canvas.cls();
 			m_ui.layout(rectangle(point2(0, 0), m_canvas.range()));
