@@ -89,9 +89,13 @@ namespace px
 			m_player->enable();
 
 			spawn("m", { 55, 46 }).enable();
-			spawn("|", { 55, 47 }).enable();
 			spawn("x", { 53, 47 }).enable();
 			spawn("m_snake", { 50, 50 }).enable();
+
+			spawn("p_table", { 55, 47 }).enable();
+			spawn("p_bookshelf", { 54, 47 }).enable();
+			spawn("p_locker", { 55, 48 }).enable();
+			spawn("p_box", { 55, 49 }).enable();
 
 			m_map.resize({ 100, 100 });
 			m_map.enumerate([this](auto const& point, auto & tile) {

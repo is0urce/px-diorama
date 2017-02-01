@@ -27,11 +27,25 @@
     {
       "path": "data/img/m_snake32.png",
       "meta": "data/img/m_snake32.json"
+    },
+    {
+      "path": "data/img/p_bookshelf.png",
+      "meta": "data/img/p_bookshelf.json"
     }
     ,
     {
-      "path": "data/img/px_box.png",
-      "meta": "data/img/bookshelf.json"
+      "path": "data/img/p_table.png",
+      "meta": "data/img/p_table.json"
+    }
+       ,
+    {
+      "path": "data/img/p_locker.png",
+      "meta": "data/img/p_locker.json"
+    }
+     ,
+    {
+      "path": "data/img/p_box.png",
+      "meta": "data/img/p_box.json"
     }
     ,
     {
