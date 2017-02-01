@@ -44,5 +44,17 @@ namespace px
 				m_description = text;
 			}
 		};
+
+		namespace
+		{
+			bool operator==(entity const& lh, entity const& rh)
+			{
+				return lh.name() == rh.name() && lh.tag() == rh.tag();
+			}
+			bool operator!=(entity const& lh, entity const& rh)
+			{
+				return !operator==(lh, rh);
+			}
+		}
 	}
 }

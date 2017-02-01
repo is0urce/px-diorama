@@ -17,6 +17,9 @@ namespace px
 		class traverse_options
 		{
 		public:
+			typedef E enumeration_type;
+
+		public:
 			// traverable getters
 
 			bool traversable() const { return m_traversable.test(0); }

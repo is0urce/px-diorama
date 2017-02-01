@@ -138,7 +138,7 @@ namespace px
 			template <typename E>
 			bool operator!=(const enhancement_collection<E>& lh, const enhancement_collection<E>& rh)
 			{
-				return !operator=(lh, rh);
+				return !operator==(lh, rh);
 			}
 		}
 	}

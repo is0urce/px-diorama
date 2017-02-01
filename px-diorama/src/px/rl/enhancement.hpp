@@ -10,7 +10,7 @@ namespace px
 	namespace rl
 	{
 		template<typename Effect>
-		struct enhancement
+		struct enhancement final
 		{
 		public:
 			typedef Effect effect_type;
@@ -34,7 +34,7 @@ namespace px
 			bool hidden; // is it invisible to players
 
 		public:
-			enhancement& operator+=(const enhancement &rhs)
+			enhancement& operator+=(enhancement const& rhs)
 			{
 				value0 += rhs.value0;
 				value1 += rhs.value1;
@@ -43,7 +43,7 @@ namespace px
 				subtype = rhs.subtype;
 				return *this;
 			}
-			enhancement& operator*=(const enhancement &rhs)
+			enhancement& operator*=(enhancement const& rhs)
 			{
 				value0 *= rhs.value0;
 				value1 *= rhs.value1;
@@ -57,12 +57,12 @@ namespace px
 		namespace
 		{
 			template <typename E>
-			bool operator==(const enhancement<E>& lh, const enhancement<E>& rh)
+			bool operator==(enhancement<E> const& lh, enhancement<E> const& rh)
 			{
 				return std::memcmp(&lh, &rh, sizeof(enhancement<E>)) == 0;
 			}
 			template <typename E>
-			bool operator!=(const enhancement<E>& lh, const enhancement<E>& rh)
+			bool operator!=(enhancement<E> const& lh, enhancement<E> const& rh)
 			{
 				return !operator=(lh, rh);
 			}

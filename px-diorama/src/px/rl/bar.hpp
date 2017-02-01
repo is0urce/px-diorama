@@ -14,7 +14,7 @@ namespace px
 	namespace rl
 	{
 		template <typename T>
-		struct bar
+		class bar
 		{
 		public:
 			typedef T value_type;

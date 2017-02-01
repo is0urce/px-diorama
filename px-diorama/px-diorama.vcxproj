@@ -246,6 +246,8 @@
     <ClInclude Include="src\px\rl\actor.hpp" />
     <ClInclude Include="src\px\rl\astar.hpp" />
     <ClInclude Include="src\px\rl\bar.hpp" />
+    <ClInclude Include="src\px\rl\basic_inventory.hpp" />
+    <ClInclude Include="src\px\rl\basic_item.hpp" />
     <ClInclude Include="src\px\rl\body.hpp" />
     <ClInclude Include="src\px\rl\buff.hpp" />
     <ClInclude Include="src\px\rl\character.hpp" />
