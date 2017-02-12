@@ -7,6 +7,7 @@
 
 #include <px/rl/bar.hpp>
 #include <px/rl/entity.hpp>
+#include <px/rl/soc/reputation_subject.hpp>
 
 #include <memory>
 
@@ -14,16 +15,13 @@ namespace px
 {
 	namespace rl
 	{
-		class body : public entity
+		class body
+			: public entity
+			, public reputation_subject
 		{
 		public:
 			typedef bar<int> bar;
 			typedef std::unique_ptr<bar> bar_ptr;
-
-		private:
-			bar_ptr m_hp;
-			bar_ptr m_mp;
-			unsigned int m_faction;
 
 		public:
 
@@ -62,20 +60,9 @@ namespace px
 				return m_mp.get();
 			}
 
-			// reputation
-
-			unsigned int faction() const
-			{
-				return m_faction;
-			}
-			void join_faction(unsigned int faction_id)
-			{
-				m_faction = faction_id;
-			}
-			void clear_faction()
-			{
-				m_faction = 0;
-			}
+		private:
+			bar_ptr m_hp;
+			bar_ptr m_mp;
 		};
 	}
 }

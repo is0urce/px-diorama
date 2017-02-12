@@ -8,11 +8,13 @@
 #include <px/es/component.hpp>
 #include <px/es/link_dispatcher.hpp>
 
+#include "drm/es/body.hpp"
 #include "drm/rl/inventory.hpp"
 
 namespace px {
 	class body_component final
-		: public es::component
+		: public rl::body
+		, public es::component
 		, public es::link_dispatcher<body_component>
 	{
 	public:

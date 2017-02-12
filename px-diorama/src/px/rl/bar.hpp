@@ -7,7 +7,7 @@
 // value that have maximal cap
 // starting value is maximal
 
-#ifndef pragma once
+#pragma once
 
 namespace px
 {
@@ -164,5 +164,3 @@ namespace px
 		};
 	}
 }
-
-#endif

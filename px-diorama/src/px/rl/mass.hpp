@@ -31,10 +31,12 @@ namespace px
 		public:
 			mass()
 				: m_transparent(true)
-			{}
+			{
+			}
 			mass(bool is_transparent)
 				: m_transparent(is_transparent)
-			{}
+			{
+			}
 			mass(bool is_transparent, bool is_traversable)
 				: m_transparent(is_transparent)
 			{
@@ -42,7 +44,8 @@ namespace px
 			}
 			mass(bool is_transparent, traverse_options const& opts)
 				: traverse_options(opts), m_transparent(is_transparent)
-			{}
+			{
+			}
 
 		private:
 			bool m_transparent;

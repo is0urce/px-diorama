@@ -10,9 +10,8 @@
 
 #include "es/transform_system.hpp"
 #include "es/sprite_system.hpp"
+#include "es/body_system.hpp"
 #include "es/unit.hpp"
-
-#include "es/body_component.hpp"
 
 #include "rl/map_chunk.hpp"
 #include "fn/generator.hpp"
@@ -149,11 +148,13 @@ namespace px
 
 			auto sprite = m_sprites.make_shared(name);
 			auto transform = m_transforms.make_shared(location);
+			auto body = m_bodies.make_shared();
 
 			sprite->connect(transform.get());
 
 			result.add(sprite);
 			result.add(transform);
+			result.add(body);
 
 			m_units.push_back(result);
 
@@ -178,6 +179,7 @@ namespace px
 
 		sprite_system m_sprites;
 		transform_system m_transforms;
+		body_system m_bodies;
 
 		perception m_perception;
 
