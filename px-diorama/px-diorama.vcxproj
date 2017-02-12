@@ -182,6 +182,7 @@
   <ItemGroup>
     <ClInclude Include="src\drm\draw\blur.hpp" />
     <ClInclude Include="src\drm\draw\distance_font.hpp" />
+    <ClInclude Include="src\drm\es\body_component.hpp" />
     <ClInclude Include="src\drm\es\sprite.hpp" />
     <ClInclude Include="src\drm\es\sprite_component.hpp" />
     <ClInclude Include="src\drm\es\sprite_system.hpp" />
@@ -246,8 +247,8 @@
     <ClInclude Include="src\px\rl\actor.hpp" />
     <ClInclude Include="src\px\rl\astar.hpp" />
     <ClInclude Include="src\px\rl\bar.hpp" />
-    <ClInclude Include="src\px\rl\basic_inventory.hpp" />
-    <ClInclude Include="src\px\rl\basic_item.hpp" />
+    <ClInclude Include="src\px\rl\lt\basic_inventory.hpp" />
+    <ClInclude Include="src\px\rl\lt\basic_item.hpp" />
     <ClInclude Include="src\px\rl\body.hpp" />
     <ClInclude Include="src\px\rl\buff.hpp" />
     <ClInclude Include="src\px\rl\character.hpp" />
@@ -256,14 +257,14 @@
     <ClInclude Include="src\px\rl\dialogue_evaluator.hpp" />
     <ClInclude Include="src\px\rl\dialogue_reply.hpp" />
     <ClInclude Include="src\px\rl\dialogue_state.hpp" />
-    <ClInclude Include="src\px\rl\effect.hpp" />
+    <ClInclude Include="src\drm\rl\effect.hpp" />
     <ClInclude Include="src\px\rl\enhancement.hpp" />
     <ClInclude Include="src\px\rl\enhancement_collection.hpp" />
     <ClInclude Include="src\px\rl\entity.hpp" />
     <ClInclude Include="src\px\rl\equipment_slot.hpp" />
     <ClInclude Include="src\px\rl\faction_relation.hpp" />
-    <ClInclude Include="src\px\rl\inventory.hpp" />
-    <ClInclude Include="src\px\rl\item.hpp" />
+    <ClInclude Include="src\drm\rl\inventory.hpp" />
+    <ClInclude Include="src\drm\rl\item.hpp" />
     <ClInclude Include="src\px\rl\i_ability.hpp" />
     <ClInclude Include="src\px\rl\map_stream.hpp" />
     <ClInclude Include="src\px\rl\mass.hpp" />

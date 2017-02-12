@@ -47,11 +47,11 @@ namespace px
 
 		namespace
 		{
-			bool operator==(entity const& lh, entity const& rh)
+			bool operator==(entity const& lh, entity const& rh) noexcept
 			{
 				return lh.name() == rh.name() && lh.tag() == rh.tag();
 			}
-			bool operator!=(entity const& lh, entity const& rh)
+			bool operator!=(entity const& lh, entity const& rh) noexcept
 			{
 				return !operator==(lh, rh);
 			}

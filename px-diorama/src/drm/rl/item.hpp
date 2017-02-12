@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <px/rl/basic_item.hpp>
+#include <px/rl/lt/basic_item.hpp>
 #include <px/rl/enhancement_collection.hpp>
 #include <px/rl/entity.hpp>
 
-#include <string>
+#include "drm/rl/effect.hpp"
 
 namespace px
 {
@@ -26,7 +26,7 @@ namespace px
 			typedef enhancement_collection<Effect> collection_type;
 
 		public:
-			bool can_stack(item & with) const
+			bool can_stack(item & with) const noexcept
 			{
 				if (&with == this) return false; // stacking into same item
 
@@ -35,7 +35,7 @@ namespace px
 				return static_cast<entity>(*this) == static_cast<entity>(with)
 					&& static_cast<collection_type>(*this) == static_cast<collection_type>(with);
 			}
-			unsigned int try_stack(item & with) const
+			unsigned int try_stack(item & with) const noexcept
 			{
 				if (can_stack(with))
 				{

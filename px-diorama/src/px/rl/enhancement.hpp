@@ -57,12 +57,12 @@ namespace px
 		namespace
 		{
 			template <typename E>
-			bool operator==(enhancement<E> const& lh, enhancement<E> const& rh)
+			bool operator==(enhancement<E> const& lh, enhancement<E> const& rh) noexcept
 			{
 				return std::memcmp(&lh, &rh, sizeof(enhancement<E>)) == 0;
 			}
 			template <typename E>
-			bool operator!=(enhancement<E> const& lh, enhancement<E> const& rh)
+			bool operator!=(enhancement<E> const& lh, enhancement<E> const& rh) noexcept
 			{
 				return !operator=(lh, rh);
 			}

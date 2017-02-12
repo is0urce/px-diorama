@@ -1,4 +1,4 @@
-// name: item.hpp
+// name: basic_item.hpp
 // type: c++ header
 // desc: class definition
 // auth: is0urce
@@ -17,7 +17,7 @@ namespace px
 			// returns number of items failed to stack (due restrictions), if zero - everything is stacked
 			unsigned int stack(basic_item & with) noexcept
 			{
-				if (&with == this) return; // stacking onto same item has no point
+				if (&with == this) return m_stack; // stacking onto same item has no point
 
 				unsigned int total = m_stack + with.m_stack;
 
@@ -37,7 +37,7 @@ namespace px
 			// returns items left
 			unsigned int split(unsigned int n, basic_item & into) noexcept
 			{
-				if (n == 0) return;
+				if (n == 0) return m_stack;
 
 				if (n > m_stack) n = m_stack; // can't move more items than stack has
 
@@ -107,6 +107,12 @@ namespace px
 				, m_max_stack(1)
 			{
 			}
+			basic_item(unsigned int stack, unsigned int max) noexcept
+				: m_stack(stack)
+				, m_max_stack(max)
+			{
+			}
+
 
 		private:
 			unsigned int m_stack;

@@ -180,9 +180,6 @@
     <ClInclude Include="src\px\rl\dialogue_state.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\effect.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\rl\enhancement.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -199,12 +196,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\i_ability.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\inventory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\item.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\map_stream.hpp">
@@ -309,10 +300,22 @@
     <ClInclude Include="src\px\ui\text_alignment.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\basic_inventory.hpp">
+    <ClInclude Include="src\drm\rl\inventory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\basic_item.hpp">
+    <ClInclude Include="src\drm\rl\item.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\lt\basic_inventory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\lt\basic_item.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\es\body_component.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\effect.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

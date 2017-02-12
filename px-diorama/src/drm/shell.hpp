@@ -12,6 +12,8 @@
 #include "es/sprite_system.hpp"
 #include "es/unit.hpp"
 
+#include "es/body_component.hpp"
+
 #include "rl/map_chunk.hpp"
 #include "fn/generator.hpp"
 

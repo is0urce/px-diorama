@@ -53,7 +53,7 @@ namespace px
 			{
 				remove(item, 1);
 			}
-			void move_all(basic_inventory & to)
+			void move_to(basic_inventory & to)
 			{
 				for (auto & loot : m_items)
 				{
