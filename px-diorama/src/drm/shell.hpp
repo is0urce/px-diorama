@@ -153,6 +153,7 @@ namespace px
 			body->health().create();
 
 			sprite->connect(transform.get());
+			transform->connect(body.get());
 
 			result.add(sprite);
 			result.add(transform);

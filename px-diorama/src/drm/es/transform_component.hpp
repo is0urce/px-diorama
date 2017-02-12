@@ -10,10 +10,13 @@
 #include <px/es/link_dispatcher.hpp>
 
 namespace px {
+	class body_component;
+
 	class transform_component final
 		: public es::transform<transform_component>
 		, public es::component
 		, public es::link_dispatcher<transform_component>
+		, public es::link<body_component>
 	{
 	public:
 		transform_component()
