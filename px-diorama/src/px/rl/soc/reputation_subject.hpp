@@ -14,38 +14,38 @@ namespace px
 		public:
 			// reputation
 
-			unsigned int faction() const
+			unsigned int faction() const noexcept
 			{
 				return m_faction;
 			}
-			void join_faction(unsigned int index)
+			void join_faction(unsigned int index) noexcept
 			{
 				m_faction = index;
 			}
-			void clear_faction()
+			void clear_faction() noexcept
 			{
 				m_faction = 0;
 			}
 
-			int reputation(reputation_subject const& with)
+			int reputation(reputation_subject const& with) const noexcept
 			{
 				return m_faction == with.m_faction ? 100 : -100;
 			}
-			bool hostile(reputation_subject const& with)
+			bool hostile(reputation_subject const& with) const noexcept
 			{
 				return reputation(with) < 0;
 			}
-			bool ally(reputation_subject const& with)
+			bool ally(reputation_subject const& with) const noexcept
 			{
 				return reputation(with) > 0;
 			}
 
 		public:
-			reputation_subject(unsigned int faction_index)
+			reputation_subject(unsigned int faction_index) noexcept
 				: m_faction(faction_index)
 			{
 			}
-			reputation_subject()
+			reputation_subject() noexcept
 				: reputation_subject(0)
 			{
 			}

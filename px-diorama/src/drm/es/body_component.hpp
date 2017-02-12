@@ -9,7 +9,6 @@
 #include <px/es/link_dispatcher.hpp>
 
 #include "drm/es/body.hpp"
-#include "drm/rl/inventory.hpp"
 
 namespace px {
 	class body_component final
@@ -23,6 +22,7 @@ namespace px {
 		}
 		virtual ~body_component()
 		{
+			clear();
 		}
 
 	protected:
@@ -32,8 +32,5 @@ namespace px {
 		virtual void deactivate_component() override
 		{
 		}
-
-	private:
-		bool m_inventory;
 	};
 }

@@ -150,6 +150,8 @@ namespace px
 			auto transform = m_transforms.make_shared(location);
 			auto body = m_bodies.make_shared();
 
+			body->health().create();
+
 			sprite->connect(transform.get());
 
 			result.add(sprite);
