@@ -6,13 +6,21 @@
 #pragma once
 
 #include <px/rl/lt/basic_inventory.hpp>
-#include "item.hpp"
+#include <px/rl/lt/basic_item.hpp>
 
 namespace px
 {
 	namespace rl
 	{
-		class inventory : public basic_inventory<rl::item<rl::effect>>
+		class item
+			: public basic_item<effect>
+		{
+		public:
+			unsigned int ORE_POWER;
+		};
+
+		class inventory
+			: public basic_inventory<item>
 		{
 		};
 	}

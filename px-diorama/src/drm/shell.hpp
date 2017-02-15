@@ -182,7 +182,7 @@ namespace px
 
 		sprite_system m_sprites;
 		transform_system m_transforms;
-		body_system m_bodies;
+		es::body_system m_bodies;
 
 		perception m_perception;
 

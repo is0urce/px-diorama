@@ -8,7 +8,7 @@
 #include <px/es/component.hpp>
 #include <px/es/link_dispatcher.hpp>
 
-#include "drm/es/body.hpp"
+#include "drm/rl/body.hpp"
 
 namespace px {
 	class body_component final

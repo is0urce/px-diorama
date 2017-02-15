@@ -132,9 +132,6 @@
     <ClInclude Include="src\drm\es\transform_system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\es\sprite.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\es\link_dispatcher.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -145,9 +142,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\key_translator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\astar.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\bar.hpp">
@@ -165,19 +159,10 @@
     <ClInclude Include="src\px\rl\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\equipment_slot.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\rl\i_ability.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\map_stream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\rl\mass.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\shadowcasting.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\skill.hpp">
@@ -190,9 +175,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\skill_set.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\tile.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\traverse.hpp">
@@ -276,13 +258,7 @@
     <ClInclude Include="src\drm\rl\inventory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\rl\item.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\rl\lt\basic_inventory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\lt\basic_item.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\es\body_component.hpp">
@@ -303,15 +279,6 @@
     <ClInclude Include="src\px\rl\dlg\dialogue_state.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\es\actor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\drm\es\body.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\drm\es\character.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\drm\es\body_system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -322,6 +289,51 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\resource.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\st\astar.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\st\shadowcasting.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\st\map_stream.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\st\tile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\equipment_slot.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\lt\stack.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\lt\basic_item.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\body.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\actor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\es\container_component.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\container.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\sprite.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\character.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\es\container_system.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\es\basic_system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,14 +6,12 @@
 #pragma once
 
 #include <px/es/basic_system.hpp>
-
-#include "drm/es/body_component.hpp"
+#include "container_component.hpp"
 
 namespace px {
 	namespace es {
-
-		class body_system final
-			: public es::basic_system<body_component, 1000>
+		class container_system final
+			: public basic_system<container_component, 1000>
 		{
 		};
 	}
