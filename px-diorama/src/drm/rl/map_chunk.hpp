@@ -7,8 +7,10 @@
 #include <px/rl/traverse.hpp>
 
 namespace px {
+
 	class transform_component;
 	class sprite_component;
+
 
 	struct tile : public rl::mass<rl::traverse>
 	{

@@ -11,26 +11,28 @@
 #include "drm/rl/body.hpp"
 
 namespace px {
-	class body_component final
-		: public rl::body
-		, public es::component
-		, public es::link_dispatcher<body_component>
-	{
-	public:
-		body_component()
-		{
-		}
-		virtual ~body_component()
-		{
-			clear();
-		}
 
-	protected:
-		virtual void activate_component() override
+		class body_component final
+			: public rl::body
+			, public es::component
+			, public es::link_dispatcher<body_component>
 		{
-		}
-		virtual void deactivate_component() override
-		{
-		}
-	};
+		public:
+			body_component()
+			{
+			}
+			virtual ~body_component()
+			{
+				clear();
+			}
+
+		protected:
+			virtual void activate_component() override
+			{
+			}
+			virtual void deactivate_component() override
+			{
+			}
+		};
+
 }

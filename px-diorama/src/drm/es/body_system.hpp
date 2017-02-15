@@ -13,7 +13,7 @@ namespace px {
 	namespace es {
 
 		class body_system final
-			: public es::basic_system<body_component, 1000>
+			: public basic_system<body_component, 1000>
 		{
 		};
 	}

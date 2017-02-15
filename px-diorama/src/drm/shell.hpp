@@ -11,6 +11,7 @@
 #include "es/transform_system.hpp"
 #include "es/sprite_system.hpp"
 #include "es/body_system.hpp"
+#include "es/container_system.hpp"
 #include "es/unit.hpp"
 
 #include "rl/map_chunk.hpp"
@@ -180,9 +181,10 @@ namespace px
 	private:
 		point2 m_hover;
 
-		sprite_system m_sprites;
-		transform_system m_transforms;
+		es::sprite_system m_sprites;
+		es::transform_system m_transforms;
 		es::body_system m_bodies;
+		es::container_system m_containers;
 
 		perception m_perception;
 

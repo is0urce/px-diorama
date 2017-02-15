@@ -11,6 +11,7 @@
 #include "drm/rl/container.hpp"
 
 namespace px {
+
 	class transform_component;
 
 	class container_component final

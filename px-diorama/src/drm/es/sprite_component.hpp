@@ -11,6 +11,7 @@
 #include "sprite.hpp"
 
 namespace px {
+
 	class transform_component;
 
 	class sprite_component final

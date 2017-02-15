@@ -10,6 +10,7 @@
 #include <px/es/link_dispatcher.hpp>
 
 namespace px {
+
 	class body_component;
 
 	class transform_component final

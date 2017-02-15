@@ -11,29 +11,32 @@
 #include <memory>
 
 namespace px {
-	class transform_system final
-	{
-	public:
-		typedef pool_chain<transform_component, 100000> pool_type;
+	namespace es {
 
-	public:
-		auto make_shared(point2 position)
+		class transform_system final
 		{
-			auto result = m_pool->make_shared();
-			result->place(position);
-			result->incarnate(&m_space);
-			return result;
-		}
+		public:
+			typedef pool_chain<transform_component, 100000> pool_type;
 
-	public:
-		transform_system()
-			: m_pool(std::make_unique<pool_type>())
-			, m_space(64)
-		{
-		}
+		public:
+			auto make_shared(point2 position)
+			{
+				auto result = m_pool->make_shared();
+				result->place(position);
+				result->incarnate(&m_space);
+				return result;
+			}
 
-	private:
-		std::unique_ptr<pool_type> m_pool;
-		transform_component::space_type m_space;
-	};
+		public:
+			transform_system()
+				: m_pool(std::make_unique<pool_type>())
+				, m_space(64)
+			{
+			}
+
+		private:
+			std::unique_ptr<pool_type> m_pool;
+			transform_component::space_type m_space;
+		};
+	}
 }
