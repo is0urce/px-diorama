@@ -6,30 +6,32 @@
 #pragma once
 
 #include "component.hpp"
-#include <px/common/shared_ptr.hpp>
 
 #include <algorithm>
-#include <memory>
+#include <stdexcept>
 #include <vector>
 
 namespace px
 {
 	namespace es
 	{
+		template <typename Pointer>
 		class component_collection
 		{
 		public:
-			typedef px::shared_ptr<component> component_ptr;
+			typedef Pointer component_ptr;
 
 		public:
-			void add(component_ptr c)
+			void add(component_ptr component)
 			{
-				m_components.push_back(c);
+				if (!component) throw std::runtime_error("px::es::component_collection::add(component) - component is null");
+
+				m_components.push_back(component);
 			}
 			// remove specified component (O=n)
-			void remove(component_ptr c)
+			void remove(component_ptr component)
 			{
-				m_components.erase(std::remove(std::begin(m_components), std::end(m_components), c));
+				m_components.erase(std::remove(std::begin(m_components), std::end(m_components), component));
 			}
 			// remove component by type (O=n)
 			template<typename C>
@@ -60,6 +62,7 @@ namespace px
 				}
 			}
 
+			// activate all components in a collection
 			void enable()
 			{
 				for (auto & component : m_components)
@@ -67,6 +70,8 @@ namespace px
 					component->activate();
 				}
 			}
+
+			// deactivate all components in a collection
 			void disable()
 			{
 				for (auto & component : m_components)
@@ -76,16 +81,17 @@ namespace px
 			}
 
 			// querry component by type
-			template<typename T>
-			px::shared_ptr<T> component() const
+			template<typename Sub>
+			auto component() const -> decltype(dynamic_pointer_cast<Sub>(component_ptr{}))
 			{
-				px::shared_ptr<T> cast;
+				decltype(dynamic_pointer_cast<Sub>(component_ptr{})) result;
+
 				for (auto & c : m_components)
 				{
-					cast = dynamic_pointer_cast<T>(c);
-					if (cast) break;
+					result = dynamic_pointer_cast<Sub>(c);
+					if (result) break;
 				}
-				return cast;
+				return result;
 			}
 
 		private:

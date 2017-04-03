@@ -41,12 +41,20 @@ namespace px {
 			}
 			auto make_shared(std::string const& name)
 			{
-				image const& img = m_meta[name];
 				auto result = m_pool->make_shared();
-
-				static_cast<image&>(*result) = img;
-				result->tint = color::white();
-
+				setup(*result, name);
+				return result;
+			}
+			auto make_unique(std::string const& name)
+			{
+				auto result = m_pool->make_unique();
+				setup(*result, name);
+				return result;
+			}
+			auto make_std(std::string const& name)
+			{
+				auto result = m_pool->make_std();
+				setup(*result, name);
 				return result;
 			}
 			void write(std::vector<std::vector<mesh_vertex>> & vertice_arrays, float x_offset, float y_offset)
@@ -80,6 +88,15 @@ namespace px {
 				: m_textures(0)
 				, m_pool(std::make_unique<pool_type>())
 			{
+			}
+
+		private:
+			void setup(sprite_component & element, std::string const& name)
+			{
+				image const& img = m_meta[name];
+
+				static_cast<image&>(element) = img;
+				element.tint = color::white();
 			}
 
 		private:

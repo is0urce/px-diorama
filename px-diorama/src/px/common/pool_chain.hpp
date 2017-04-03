@@ -78,6 +78,12 @@ namespace px
 			auto &chunk = aquire_free_pool();
 			return{ chunk.request(std::forward<Args>(args)...) , { this, &chunk } };
 		}
+		template <typename... Args>
+		std::shared_ptr<T> make_std(Args... args)
+		{
+			//++m_count;
+			return aquire_free_pool().make_std(std::forward<Args>(args)...);
+		}
 
 		// it's safe to release already released objects
 		void release(T* ptr)

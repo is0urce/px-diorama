@@ -85,6 +85,7 @@ namespace px
 					}
 				}
 			}
+
 		public:
 			display(canvas * cnv, rectangle frame)
 				: m_canvas(cnv)

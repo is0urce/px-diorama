@@ -35,11 +35,11 @@ namespace px
 				return static_cast<entity>(*this) == static_cast<entity>(with)
 					&& static_cast<collection_type>(*this) == static_cast<collection_type>(with);
 			}
-			unsigned int try_stack(basic_item & with) const noexcept
+			unsigned int try_stack_from(basic_item & with) noexcept
 			{
 				if (can_stack(with))
 				{
-					return stack_into(with);
+					return stack_from(with);
 				}
 				return with.count();
 			}

@@ -22,6 +22,8 @@
 #include <px/ui/canvas.hpp>
 #include <px/ui/panel.hpp>
 
+#include "ui/inventory_panel.hpp"
+
 #include <list>
 
 namespace px
@@ -88,22 +90,21 @@ namespace px
 		void start()
 		{
 			m_player = &spawn("@", { 54, 46 });
-			m_player->enable();
 
-			spawn("m", { 55, 46 }).enable();
-			spawn("x", { 53, 47 }).enable();
-			spawn("m_snake", { 50, 50 }).enable();
+			spawn("m", { 55, 46 });
+			spawn("x", { 53, 47 });
+			spawn("m_snake", { 50, 50 });
 
-			spawn("p_table", { 55, 47 }).enable();
-			spawn("p_bookshelf", { 54, 47 }).enable();
-			spawn("p_locker", { 55, 48 }).enable();
-			spawn("p_box", { 55, 49 }).enable();
+			spawn("p_table", { 55, 47 });
+			spawn("p_bookshelf", { 54, 47 });
+			spawn("p_locker", { 55, 48 });
+			spawn("p_box", { 55, 49 });
 
 			m_map.resize({ 100, 100 });
 			m_map.enumerate([this](auto const& point, auto & tile) {
 				tile.transform = m_transforms.make_shared(point);
 
-				tile.sprite = m_sprites.make_shared("#");
+				tile.sprite = m_sprites.make_std("#");
 				tile.sprite->connect(tile.transform.get());
 				tile.sprite->activate();
 
@@ -119,7 +120,7 @@ namespace px
 				if (t == 0) return;
 				auto & tile = m_map[point];
 
-				tile.sprite = m_sprites.make_shared(".");
+				tile.sprite = m_sprites.make_std(".");
 				tile.sprite->connect(tile.transform.get());
 				tile.sprite->activate();
 
@@ -145,24 +146,39 @@ namespace px
 		}
 		unit & spawn(std::string const& name, point2 location)
 		{
-			unit result;
+			m_units.emplace_back();
+			unit & result = m_units.back();
+
+			// create
 
 			auto sprite = m_sprites.make_shared(name);
 			auto transform = m_transforms.make_shared(location);
 			auto body = m_bodies.make_shared();
+			auto container = m_containers.make_shared();
+
+			// setup
+
+			auto itm = std::make_shared<rl::item>();
+			itm->set_name("item #X");
+			itm->add({ rl::effect::ore_power, 0x00, 0x00 });
+			container->add(itm);
 
 			body->health().create();
 
+			// assemble
+
 			sprite->connect(transform.get());
 			transform->connect(body.get());
+			body->connect(container.get());
 
 			result.add(sprite);
 			result.add(transform);
 			result.add(body);
+			result.add(container);
 
-			m_units.push_back(result);
+			result.enable();
 
-			return m_units.back();
+			return result;
 		}
 
 		ui::canvas & canvas()
@@ -175,7 +191,7 @@ namespace px
 		{
 			m_perception.scale(-0.95f);
 
-			m_ui.make<ui::panel>({ { 0.5, 0.5}, {0, 0}, {0, 0}, {0.5, 0.5} });
+			m_ui.make<ui::inventory_panel>({ { 0.5, 0.5}, {0, 0}, {0, 0}, {0.5, 0.5} });
 		}
 
 	private:

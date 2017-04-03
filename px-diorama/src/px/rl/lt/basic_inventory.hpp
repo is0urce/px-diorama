@@ -29,11 +29,20 @@ namespace px
 			}
 			void add(item_ptr item)
 			{
-				for (auto & stack : m_items)
+				if (item)
 				{
-					if (stack->try_stack(item) == 0) return; // stacked fully onto existing item
+					// try to stack onto existing items
+					for (auto & stack : m_items)
+					{
+						if (stack->try_stack_from(*item) == 0) break; // stacked fully onto existing item
+					}
+
+					// add remaining quantity to end of a list
+					if (item->count() > 0)
+					{
+						m_items.push_back(item);
+					}
 				}
-				m_items.push_back(item);
 			}
 			void remove(item_ptr & item, unsigned int n)
 			{

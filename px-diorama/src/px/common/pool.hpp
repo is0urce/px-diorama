@@ -111,6 +111,12 @@ namespace px
 		{
 			return{ request(std::forward<Args>(args)...), this };
 		}
+		template <typename... Args>
+		std::shared_ptr<T> make_std(Args... args)
+		{
+			T * ptr = request(std::forward<Args>(args)...);
+			return std::shared_ptr<T>{ ptr, smart_deleter(this) };
+		}
 
 		size_t size() const noexcept
 		{

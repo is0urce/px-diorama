@@ -22,8 +22,7 @@ namespace px {
 			auto make_shared(point2 position)
 			{
 				auto result = m_pool->make_shared();
-				result->place(position);
-				result->incarnate(&m_space);
+				setup(*result, position);
 				return result;
 			}
 
@@ -32,6 +31,13 @@ namespace px {
 				: m_pool(std::make_unique<pool_type>())
 				, m_space(64)
 			{
+			}
+
+		private:
+			void setup(transform_component & element, point2 position)
+			{
+				element.place(position);
+				element.incarnate(&m_space);
 			}
 
 		private:

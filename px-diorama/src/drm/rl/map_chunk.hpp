@@ -15,7 +15,7 @@ namespace px {
 	struct tile : public rl::mass<rl::traverse>
 	{
 		shared_ptr<transform_component> transform;
-		shared_ptr<sprite_component> sprite;
+		std::shared_ptr<sprite_component> sprite;
 	};
 
 	template <typename Tile>

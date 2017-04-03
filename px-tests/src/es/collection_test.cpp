@@ -2,6 +2,7 @@
 
 #include "catch.hpp"
 
+#include <px/common/shared_ptr.hpp>
 #include <px/es/component_collection.hpp>
 
 namespace component_collection_test {
@@ -18,7 +19,7 @@ namespace component_collection_test {
 
 	TEST_CASE("component collection test", "[component collection test]")
 	{
-		px::es::component_collection cc;
+		px::es::component_collection<px::shared_ptr<px::es::component>> cc;
 
 		auto h = px::make_shared<head>();
 

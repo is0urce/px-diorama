@@ -9,10 +9,13 @@
 #include "canvas.hpp"
 #include "display.hpp"
 
+#include <px/common/toggle.hpp>
+
 #include <string>
 #include <vector>
 #include <memory>
-#include <px/common/toggle.hpp>
+#include <map>
+#include <stdexcept>
 
 namespace px
 {
@@ -30,16 +33,6 @@ namespace px
 			{
 				return m_name;
 			}
-			void layout(rectangle rect)
-			{
-				m_bounds = m_align.calculate(rect);
-				m_display.reframe(m_bounds);
-
-				panel_action([&](auto p) {
-					p->layout(m_bounds);
-					return false;
-				});
-			}
 			rectangle bounds() const noexcept
 			{
 				return m_bounds;
@@ -48,31 +41,45 @@ namespace px
 			{
 				return m_bounds.range();
 			}
+			void layout(rectangle rect) noexcept
+			{
+				m_bounds = calculate_alignment(m_align, rect);
+				m_display.reframe(m_bounds);
+
+				panel_action([&](auto &subpanel) {
+					subpanel->layout(m_bounds);
+					return false;
+				});
+			}
 
 			// creation
-			void add(name_type name, alignment align, std::shared_ptr<panel> p)
+			void add(name_type name, alignment align, std::shared_ptr<panel> child)
 			{
-				p->m_name = name;
-				p->m_align = align;
-				p->m_bounds = align.calculate(m_bounds);
-				m_stack[name] = p;
+				if (!child) throw std::runtime_error("px::ui::panel::add(name, align, child) - child is null");
+
+				child->m_name = name;
+				child->m_align = align;
+				child->m_bounds = calculate_alignment(align, m_bounds);
+				m_stack[name] = child;
 			}
-			void add(alignment align, std::shared_ptr<panel> p)
+			void add(alignment align, std::shared_ptr<panel> child)
 			{
-				p->m_name = "";
-				p->m_align = align;
-				p->m_bounds = align.calculate(m_bounds);
-				m_unnamed.push_back(p);
+				if (!child) throw std::runtime_error("px::ui::panel::add(align, child) - child is null");
+
+				child->m_name = "";
+				child->m_align = align;
+				child->m_bounds = calculate_alignment(align, m_bounds);
+				m_unnamed.push_back(child);
 			}
 			template <typename SubPanel, typename ...Args>
-			std::shared_ptr<SubPanel> make(alignment align, Args &&...args)
+			std::shared_ptr<SubPanel> make(alignment align, Args &&... args)
 			{
 				auto result = std::make_shared<SubPanel>(std::forward<Args>(args)...);
 				add(align, result);
 				return result;
 			}
 			template <typename SubPanel, typename ...Args>
-			std::shared_ptr<SubPanel> make(name_type name, alignment align, Args &&...args)
+			std::shared_ptr<SubPanel> make(name_type name, alignment align, Args &&... args)
 			{
 				auto result = std::make_shared<SubPanel>(std::forward<Args>(args)...);
 				add(name, align, result);
@@ -112,23 +119,29 @@ namespace px
 
 		public:
 			panel()
-				: m_align(alignment::fill())
+				: m_align({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } })
 			{
 			}
 
 		private:
-			template<typename Op>
-			bool panel_action(Op && act)
+			template<typename Operator>
+			bool panel_action(Operator && callback_action)
 			{
 				for (auto &p : m_stack)
 				{
-					if (p.second && p.second->active() && std::forward<Op>(act)(p.second)) return true;
+					if (p.second && p.second->active() && std::forward<Operator>(callback_action)(p.second)) return true;
 				}
 				for (auto &p : m_unnamed)
 				{
-					if (p && p->active() && std::forward<Op>(act)(p)) return true;
+					if (p && p->active() && std::forward<Operator>(callback_action)(p)) return true;
 				}
 				return false;
+			}
+			static rectangle calculate_alignment(alignment const& align, rectangle const& parent) noexcept
+			{
+				point2 start = align.anchor_offset + parent.start() + (align.anchor_percent * parent.range()).ceil();
+				point2 range = align.size_absolute + (align.size_relative * parent.range()).ceil();
+				return{ start, range };
 			}
 
 		private:

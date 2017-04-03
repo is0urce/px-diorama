@@ -24,6 +24,16 @@ namespace px {
 				auto result = m_pool->make_shared();
 				return result;
 			}
+			auto make_unique()
+			{
+				auto result = m_pool->make_unique();
+				return result;
+			}
+			auto make_std()
+			{
+				auto result = m_pool->make_std();
+				return result;
+			}
 
 		public:
 			basic_system()
