@@ -6,7 +6,6 @@
 #pragma once
 
 #include <GL/GL.h>
-#include <vector>
 
 namespace px
 {
