@@ -1,10 +1,11 @@
 #pragma once
 
 #include <px/common/matrix.hpp>
-#include <px/common/shared_ptr.hpp>
 
 #include <px/rl/mass.hpp>
 #include <px/rl/traverse.hpp>
+
+#include "es/sprite_system.hpp"
 
 namespace px {
 
@@ -15,7 +16,7 @@ namespace px {
 	struct tile : public rl::mass<rl::traverse>
 	{
 		shared_ptr<transform_component> transform;
-		std::shared_ptr<sprite_component> sprite;
+		es::sprite_system::unique_ptr sprite;
 	};
 
 	template <typename Tile>

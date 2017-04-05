@@ -5,10 +5,9 @@
 
 #pragma once
 
-namespace px
-{
-	namespace es
-	{
+namespace px {
+	namespace es {
+
 		class component
 		{
 		public:

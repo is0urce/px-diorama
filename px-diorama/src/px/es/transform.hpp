@@ -5,10 +5,9 @@
 #include <px/common/point.hpp>
 #include <px/common/qtree.hpp>
 
-namespace px
-{
-	namespace es
-	{
+namespace px {
+	namespace es {
+
 		template <typename Sub>
 		class transform
 		{

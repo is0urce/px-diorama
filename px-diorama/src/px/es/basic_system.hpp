@@ -3,6 +3,11 @@
 // auth: is0urce
 // desc: class
 
+// base for multi-element systems
+// not an actual base class (but can be used as such)
+// but an template and multipurpose placeholder
+// or used for plain simple sustems with no additional behavior
+
 #pragma once
 
 #include <px/common/pool_chain.hpp>
@@ -12,27 +17,37 @@
 namespace px {
 	namespace es {
 
-		template <typename Component, unsigned int Size>
+		// Component - type of elements
+		// Size - size of object pools
+		template <typename Component, unsigned int Size = 10000>
 		class basic_system
 		{
 		public:
 			typedef pool_chain<Component, Size> pool_type;
+			typedef typename pool_type::shared_ptr shared_ptr;
+			typedef typename pool_type::std_ptr std_ptr;
+			typedef typename pool_type::unique_ptr unique_ptr;
 
 		public:
-			auto make_shared()
+			shared_ptr make_shared()
 			{
 				auto result = m_pool->make_shared();
 				return result;
 			}
-			auto make_unique()
+			unique_ptr make_unique()
 			{
 				auto result = m_pool->make_unique();
 				return result;
 			}
-			auto make_std()
+			std_ptr make_std()
 			{
 				auto result = m_pool->make_std();
 				return result;
+			}
+			template <typename Operator>
+			void enumerate(Operator && op) const
+			{
+				m_pool->enumerate(op);
 			}
 
 		public:

@@ -9,10 +9,9 @@
 
 #include <px/es/link.hpp>
 
-namespace px
-{
-	namespace es
-	{
+namespace px {
+	namespace es {
+
 		template <typename C>
 		class link_dispatcher
 		{

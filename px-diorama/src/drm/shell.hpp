@@ -104,7 +104,7 @@ namespace px
 			m_map.enumerate([this](auto const& point, auto & tile) {
 				tile.transform = m_transforms.make_shared(point);
 
-				tile.sprite = m_sprites.make_std("#");
+				tile.sprite = m_sprites.make_unique("#");
 				tile.sprite->connect(tile.transform.get());
 				tile.sprite->activate();
 
@@ -120,7 +120,7 @@ namespace px
 				if (t == 0) return;
 				auto & tile = m_map[point];
 
-				tile.sprite = m_sprites.make_std(".");
+				tile.sprite = m_sprites.make_unique(".");
 				tile.sprite->connect(tile.transform.get());
 				tile.sprite->activate();
 

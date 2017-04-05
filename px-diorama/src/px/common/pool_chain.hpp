@@ -26,8 +26,9 @@ namespace px
 		typedef pool<T, ChunkSize> pool_type;
 		typedef T element;
 		typedef T* pointer;
-		typedef std::unique_ptr<T, smart_deleter> unique_ptr;
-		typedef shared_ptr<T> shared_ptr;
+		typedef typename pool_type::shared_ptr shared_ptr; // our
+		typedef typename pool_type::std_ptr std_ptr; // STL
+		typedef std::unique_ptr<T, smart_deleter> unique_ptr; // differs from pool::unique_ptr
 
 	public:
 		size_t size() const noexcept
@@ -75,11 +76,11 @@ namespace px
 		unique_ptr make_unique(Args... args)
 		{
 			//++m_count;
-			auto &chunk = aquire_free_pool();
+			auto & chunk = aquire_free_pool();
 			return{ chunk.request(std::forward<Args>(args)...) , { this, &chunk } };
 		}
 		template <typename... Args>
-		std::shared_ptr<T> make_std(Args... args)
+		std_ptr make_std(Args... args)
 		{
 			//++m_count;
 			return aquire_free_pool().make_std(std::forward<Args>(args)...);
@@ -180,6 +181,7 @@ namespace px
 			pool_type chunk;
 			std::unique_ptr<node> next;
 		};
+
 		struct smart_deleter
 		{
 		public:

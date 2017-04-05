@@ -7,10 +7,9 @@
 
 #include <px/es/link_dispatcher.hpp>
 
-namespace px
-{
-	namespace es
-	{
+namespace px {
+	namespace es {
+
 		template <typename T>
 		class link
 		{

@@ -15,8 +15,8 @@
 
 #include "shared_ptr.hpp"
 
-namespace px
-{
+namespace px {
+
 	template <typename T, size_t Size>
 	class pool
 	{
@@ -27,8 +27,9 @@ namespace px
 	public:
 		typedef T element;
 		typedef T* pointer;
+		typedef shared_ptr<T> shared_ptr; // our
+		typedef std::shared_ptr<T> std_ptr; // stl
 		typedef std::unique_ptr<T, smart_deleter> unique_ptr;
-		typedef px::shared_ptr<T> shared_ptr;
 
 	public:
 		// returns nullptr if all object in pool were requested, full() returns true
@@ -112,10 +113,10 @@ namespace px
 			return{ request(std::forward<Args>(args)...), this };
 		}
 		template <typename... Args>
-		std::shared_ptr<T> make_std(Args... args)
+		std_ptr make_std(Args... args)
 		{
 			T * ptr = request(std::forward<Args>(args)...);
-			return std::shared_ptr<T>{ ptr, smart_deleter(this) };
+			return{ ptr, smart_deleter(this) };
 		}
 
 		size_t size() const noexcept

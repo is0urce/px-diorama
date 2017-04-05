@@ -11,10 +11,9 @@
 #include <stdexcept>
 #include <vector>
 
-namespace px
-{
-	namespace es
-	{
+namespace px {
+	namespace es {
+
 		template <typename Pointer>
 		class component_collection
 		{
