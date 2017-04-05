@@ -102,10 +102,10 @@ namespace px
 
 			m_map.resize({ 100, 100 });
 			m_map.enumerate([this](auto const& point, auto & tile) {
-				tile.transform = m_transforms.make_shared(point);
-
+				tile.transform.move(point);
 				tile.sprite = m_sprites.make_unique("#");
-				tile.sprite->connect(tile.transform.get());
+
+				tile.sprite->connect(&tile.transform);
 				tile.sprite->activate();
 
 				tile.make_wall();
@@ -121,7 +121,8 @@ namespace px
 				auto & tile = m_map[point];
 
 				tile.sprite = m_sprites.make_unique(".");
-				tile.sprite->connect(tile.transform.get());
+
+				tile.sprite->connect(&tile.transform);
 				tile.sprite->activate();
 
 				tile.make_ground();
@@ -151,16 +152,16 @@ namespace px
 
 			// create
 
-			auto sprite = m_sprites.make_shared(name);
-			auto transform = m_transforms.make_shared(location);
-			auto body = m_bodies.make_shared();
-			auto container = m_containers.make_shared();
+			auto sprite = m_sprites.make_std(name);
+			auto transform = m_transforms.make_std(location);
+			auto body = m_bodies.make_std();
+			auto container = m_containers.make_std();
 
 			// setup
 
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("item #X");
-			itm->add({ rl::effect::ore_power, 0x00, 0x00 });
+			itm->add({ rl::effect::ore_power, 0x100, 0x500 });
 			container->add(itm);
 
 			body->health().create();

@@ -5,31 +5,39 @@
 
 #pragma once
 
-#include <px/common/pool_chain.hpp>
-#include "transform_component.hpp"
+#include <px/es/basic_system.hpp>
 
-#include <memory>
+#include "transform_component.hpp"
 
 namespace px {
 	namespace es {
 
 		class transform_system final
+			: protected basic_system<transform_component>
 		{
-		public:
-			typedef pool_chain<transform_component, 100000> pool_type;
-
 		public:
 			auto make_shared(point2 position)
 			{
-				auto result = m_pool->make_shared();
+				auto result = basic_system::make_shared();
+				setup(*result, position);
+				return result;
+			}
+			auto make_unique(point2 position)
+			{
+				auto result = basic_system::make_unique();
+				setup(*result, position);
+				return result;
+			}
+			auto make_std(point2 position)
+			{
+				auto result = basic_system::make_std();
 				setup(*result, position);
 				return result;
 			}
 
 		public:
 			transform_system()
-				: m_pool(std::make_unique<pool_type>())
-				, m_space(64)
+				: m_space(64)
 			{
 			}
 
@@ -41,7 +49,6 @@ namespace px {
 			}
 
 		private:
-			std::unique_ptr<pool_type> m_pool;
 			transform_component::space_type m_space;
 		};
 	}

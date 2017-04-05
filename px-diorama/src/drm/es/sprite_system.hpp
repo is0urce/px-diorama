@@ -2,13 +2,12 @@
 
 #pragma once
 
-#include <px/common/pool_chain.hpp>
 #include "sprite_component.hpp"
+
+#include <px/es/basic_system.hpp>
 
 #include <map>
 #include <memory>
-
-#include <px/es/basic_system.hpp>
 
 namespace px {
 	namespace es {

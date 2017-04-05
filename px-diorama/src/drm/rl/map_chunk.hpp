@@ -15,7 +15,8 @@ namespace px {
 
 	struct tile : public rl::mass<rl::traverse>
 	{
-		shared_ptr<transform_component> transform;
+		//shared_ptr<transform_component> transform;
+		transform_component transform;
 		es::sprite_system::unique_ptr sprite;
 	};
 

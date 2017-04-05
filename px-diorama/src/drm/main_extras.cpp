@@ -1,5 +1,7 @@
 // name: main_extras.cpp
 
+// no debug for external dependencies
+
 // for those who can't into headers
 
 #ifndef NDEBUG

@@ -21,12 +21,12 @@ namespace px
 			{
 				window.paint(0x000000);
 			}
-			virtual void press_panel(unsigned int /*code*/) const
-			{
-			}
-			virtual void hover_panel(point2 const& /*position*/) const
-			{
-			}
+			//virtual void press_panel(unsigned int /*code*/) const
+			//{
+			//}
+			//virtual void hover_panel(point2 const& /*position*/) const
+			//{
+			//}
 
 		public:
 			inventory_panel()

@@ -12,7 +12,7 @@ namespace px {
 	namespace es {
 
 		class container_system final
-			: public basic_system<container_component, 1000>
+			: public basic_system<container_component>
 		{
 		};
 	}
