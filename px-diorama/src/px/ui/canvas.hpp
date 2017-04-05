@@ -30,6 +30,14 @@ namespace px
 			{
 				return m_codes.range();
 			}
+			size_t width() const noexcept
+			{
+				return m_codes.width();
+			}
+			size_t height() const noexcept
+			{
+				return m_codes.height();
+			}
 
 			// writing
 			void cls()
@@ -96,6 +104,11 @@ namespace px
 			matrix2<color> const& background() const noexcept
 			{
 				return m_back;
+			}
+
+			std::string info() const noexcept
+			{
+				return std::string("size = {") + std::to_string(m_front.width()) + std::string(",") + std::to_string(m_front.height()) + std::string("}");
 			}
 
 		public:

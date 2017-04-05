@@ -47,47 +47,36 @@ namespace px {
 			template <typename Operator>
 			void enumerate(Operator && fn)
 			{
-				for (auto & component : m_components)
-				{
-					std::forward<Operator>(fn)(component);
-				}
+				std::for_each(std::begin(m_components), std::end(m_components), std::forward<Operator>(fn));
 			}
 			template <typename Operator>
 			void enumerate(Operator && fn) const
 			{
-				for (auto const& component : m_components)
-				{
-					std::forward<Operator>(fn)(component);
-				}
+				std::for_each(std::begin(m_components), std::end(m_components), std::forward<Operator>(fn));
 			}
 
 			// activate all components in a collection
 			void enable()
 			{
-				for (auto & component : m_components)
-				{
-					component->activate();
-				}
+				enumerate([](auto & component) { component->activate(); });
 			}
 
 			// deactivate all components in a collection
 			void disable()
 			{
-				for (auto & component : m_components)
-				{
-					component->deactivate();
-				}
+				enumerate([](auto & component) { component->deactivate(); });
 			}
 
 			// querry component by type
-			template<typename Sub>
-			auto component() const -> decltype(dynamic_pointer_cast<Sub>(component_ptr{}))
+			// return shared_ptr<U>
+			template<typename U>
+			auto component() const -> decltype(dynamic_pointer_cast<U>(component_ptr{}))
 			{
-				decltype(dynamic_pointer_cast<Sub>(component_ptr{})) result;
+				decltype(dynamic_pointer_cast<U>(component_ptr{})) result;
 
 				for (auto & c : m_components)
 				{
-					result = dynamic_pointer_cast<Sub>(c);
+					result = dynamic_pointer_cast<U>(c);
 					if (result) break;
 				}
 				return result;

@@ -16,10 +16,32 @@ namespace px
 		class inventory_panel
 			: public panel
 		{
+		public:
+			void set_container(container_component * container) noexcept
+			{
+				m_container = container;
+			}
+			void clear_container() noexcept
+			{
+				m_container = nullptr;
+			}
+
+		public:
+			inventory_panel()
+			{
+			}
+
 		protected:
 			virtual void draw_panel(display & window) const
 			{
-				window.paint(0x000000);
+				if (m_container)
+				{
+					int x = 0;
+					m_container->enumerate([&](auto const& item) {
+						window.print({ 0, x }, 0xffffff, item->name());
+						++x;
+					});
+				}
 			}
 			//virtual void press_panel(unsigned int /*code*/) const
 			//{
@@ -28,13 +50,8 @@ namespace px
 			//{
 			//}
 
-		public:
-			inventory_panel()
-			{
-			}
-
 		private:
-			container_component * m_inventory;
+			container_component * m_container;
 		};
 	}
 }

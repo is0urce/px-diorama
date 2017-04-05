@@ -10,7 +10,7 @@
 namespace px {
 
 		class unit
-			: public es::component_collection<std::shared_ptr<es::component>>
+			: public es::component_collection<shared_ptr<es::component>>
 		{
 		public:
 			transform_component * transform()

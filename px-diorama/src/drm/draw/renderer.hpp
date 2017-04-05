@@ -30,14 +30,13 @@ namespace px
 	class renderer
 	{
 	public:
-		void render(perception const& data, ui::canvas const& canvas)
+		void render(perception const& data)
 		{
 			// load data
-			prepare_console(canvas);
+			prepare_console(data.canvas());
 
 			// prepare uniforms
 			m_camera.load<camera_uniform>(GL_STREAM_DRAW, { { data.scale(), data.scale() * m_width / m_height },{ 0.0, 0.0 } });
-			m_ui_uniform.load<ui_uniform>(GL_STREAM_DRAW, { { 100.0f / m_width, 100.0f / m_height }, { -1.0f, 1.0f } });
 
 			// g-pass
 			glUseProgram(m_batch);
@@ -164,17 +163,15 @@ namespace px
 		}
 		void prepare_console(ui::canvas const& canvas)
 		{
-			auto const& bg = canvas.background();
-			auto const& text = canvas.codes();
 			auto const& colors = canvas.colors();
-			size_t grid_size = bg.size();
+			size_t grid_size = colors.size();
 
 			std::vector<grid_vertex> grid;
 			std::vector<glyph_vertex> glyphs;
 			grid.reserve(grid_size * 4);
 			glyphs.reserve(grid_size * 4);
 
-			bg.enumerate([&](auto const& point, color const& color) {
+			canvas.background().enumerate([&](auto const& point, color const& color) {
 				glm::vec4 back(color.R, color.G, color.B, color.A);
 				grid.push_back({ { point.x(), -point.y() - 1 }, back });
 				grid.push_back({ { point.x(), -point.y() }, back });
@@ -182,8 +179,8 @@ namespace px
 				grid.push_back({ { point.x() + 1, -point.y() - 1 }, back });
 			});
 
-			text.enumerate([&](auto const& point, auto code) {
-				glm::vec4 front(colors[point].R, colors[point].G, colors[point].B, colors[point].A);
+			canvas.codes().enumerate([&](auto const& point, auto code) {
+				glm::vec4 front_color(colors[point].R, colors[point].G, colors[point].B, colors[point].A);
 				auto const& glyph = m_ui_font[code];
 				float sx = static_cast<float>(glyph.sx);
 				float sy = static_cast<float>(glyph.sy);
@@ -192,20 +189,22 @@ namespace px
 				glyphs.push_back({
 					{ point.x(), -point.y() - 1 },
 					{ sx, sy },
-					front });
+					front_color });
 				glyphs.push_back({
 					{ point.x(), -point.y() },
 					{ sx, dy },
-					front });
+					front_color });
 				glyphs.push_back({
 					{ point.x() + 1, -point.y() },
 					{ dx, dy },
-					front });
+					front_color });
 				glyphs.push_back({
 					{ point.x() + 1, -point.y() - 1 },
 					{ dx, sy },
-					front });
+					front_color });
 			});
+
+			m_ui_uniform.load<ui_uniform>(GL_STREAM_DRAW, {{ 2.0f / canvas.width(), 2.0f / canvas.height() },{ -1.0f, 1.0f } });
 
 			m_console_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(grid_vertex), grid.data());
 			m_ui_text_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(glyph_vertex), glyphs.data());

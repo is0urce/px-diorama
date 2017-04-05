@@ -77,10 +77,10 @@ namespace px
 		}
 
 		template <typename Document>
-		void add_atlas(Document && doc)
+		void add_atlas(Document && atlas)
 		{
 			m_perception.add_texture();
-			m_sprites.add_texture(std::forward<Document>(doc), true);
+			m_sprites.add_atlas(std::forward<Document>(atlas), true);
 		}
 
 		perception const& view() const noexcept
@@ -89,16 +89,7 @@ namespace px
 		}
 		void start()
 		{
-			m_player = &spawn("@", { 54, 46 });
-
-			spawn("m", { 55, 46 });
-			spawn("x", { 53, 47 });
-			spawn("m_snake", { 50, 50 });
-
-			spawn("p_table", { 55, 47 });
-			spawn("p_bookshelf", { 54, 47 });
-			spawn("p_locker", { 55, 48 });
-			spawn("p_box", { 55, 49 });
+			// terrain
 
 			m_map.resize({ 100, 100 });
 			m_map.enumerate([this](auto const& point, auto & tile) {
@@ -127,6 +118,22 @@ namespace px
 
 				tile.make_ground();
 			});
+
+			// units
+
+			m_player = &spawn("@", { 54, 46 });
+
+			spawn("m", { 55, 46 });
+			spawn("x", { 53, 47 });
+			spawn("m_snake", { 50, 50 });
+
+			spawn("p_table", { 55, 47 });
+			spawn("p_bookshelf", { 54, 47 });
+			spawn("p_locker", { 55, 48 });
+			spawn("p_box", { 55, 49 });
+
+			// ui
+			m_inventory->set_container(m_player->transform()->linked<body_component>()->linked<container_component>());
 		}
 		void frame(double /*time*/)
 		{
@@ -141,9 +148,10 @@ namespace px
 				m_sprites.write(m_perception.batches(), x_offset, y_offset);
 			}
 
-			m_canvas.cls();
-			m_ui.layout(rectangle(point2(0, 0), m_canvas.range()));
-			m_ui.draw(m_canvas);
+			// update user interface
+			m_perception.canvas().cls();
+			m_ui.layout(rectangle(point2(0,0), m_perception.canvas().range()));
+			m_ui.draw(m_perception.canvas());
 		}
 		unit & spawn(std::string const& name, point2 location)
 		{
@@ -152,10 +160,10 @@ namespace px
 
 			// create
 
-			auto sprite = m_sprites.make_std(name);
-			auto transform = m_transforms.make_std(location);
-			auto body = m_bodies.make_std();
-			auto container = m_containers.make_std();
+			auto sprite = m_sprites.make_shared(name);
+			auto transform = m_transforms.make_shared(location);
+			auto body = m_bodies.make_shared();
+			auto container = m_containers.make_shared();
 
 			// setup
 
@@ -181,10 +189,9 @@ namespace px
 
 			return result;
 		}
-
-		ui::canvas & canvas()
+		void resize_ui(unsigned int width, unsigned int height)
 		{
-			return m_canvas;
+			m_perception.canvas().resize(width, height);
 		}
 
 	public:
@@ -192,7 +199,7 @@ namespace px
 		{
 			m_perception.scale(-0.95f);
 
-			m_ui.make<ui::inventory_panel>({ { 0.5, 0.5}, {0, 0}, {0, 0}, {0.5, 0.5} });
+			m_inventory = m_ui.make<ui::inventory_panel>("inventory", { { 0.5, 0.5}, {0, 0}, {0, 0}, {1.0, 1.0} }).get();
 		}
 
 	private:
@@ -210,7 +217,7 @@ namespace px
 
 		map_chunk<tile> m_map;
 
-		ui::canvas m_canvas;
 		ui::panel m_ui;
+		ui::inventory_panel * m_inventory;
 	};
 }

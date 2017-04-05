@@ -307,8 +307,6 @@
     <None Include="data\shaders\blur.vert" />
     <None Include="data\shaders\process.frag" />
     <None Include="data\shaders\process.vert" />
-    <None Include="data\shaders\text.frag" />
-    <None Include="data\shaders\text.vert" />
     <None Include="data\shaders\uisolid.frag" />
     <None Include="data\shaders\uisolid.vert" />
     <None Include="data\shaders\uitext.frag" />

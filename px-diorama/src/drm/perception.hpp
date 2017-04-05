@@ -7,6 +7,8 @@
 
 #include "vertex.hpp"
 
+#include <px/ui/canvas.hpp>
+
 #include <vector>
 
 namespace px
@@ -48,6 +50,15 @@ namespace px
 			}
 		}
 
+		ui::canvas & canvas() noexcept
+		{
+			return m_canvas;
+		}
+		ui::canvas const& canvas() const noexcept
+		{
+			return m_canvas;
+		}
+
 	public:
 		perception()
 			: m_scale(1.0)
@@ -57,5 +68,6 @@ namespace px
 	private:
 		std::vector<std::vector<mesh_vertex>> m_batches;
 		float m_scale;
+		ui::canvas m_canvas;
 	};
 }

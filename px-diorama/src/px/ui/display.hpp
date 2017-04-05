@@ -86,6 +86,11 @@ namespace px
 				}
 			}
 
+			canvas const* get_canvas() const noexcept
+			{
+				return m_canvas;
+			}
+
 		public:
 			display(canvas * cnv, rectangle frame)
 				: m_canvas(cnv)
