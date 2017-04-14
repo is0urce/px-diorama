@@ -88,7 +88,7 @@ namespace px
 			{
 				m_stack.erase(name);
 			}
-			void remove(panel * ptr)
+			void remove(panel const* ptr)
 			{
 				m_unnamed.erase(std::remove_if(std::begin(m_unnamed), std::end(m_unnamed),
 					[ptr](auto const& subpanel) { return subpanel.get() == ptr; }),
@@ -150,11 +150,11 @@ namespace px
 			template<typename Operator>
 			bool panel_action(Operator && callback_action)
 			{
-				for (auto &p : m_stack)
+				for (auto & p : m_stack)
 				{
 					if (p.second && p.second->active() && std::forward<Operator>(callback_action)(p.second)) return true;
 				}
-				for (auto &p : m_unnamed)
+				for (auto & p : m_unnamed)
 				{
 					if (p && p->active() && std::forward<Operator>(callback_action)(p)) return true;
 				}

@@ -16,7 +16,6 @@ namespace px {
 
 		struct alignment
 		{
-		public:
 			vector2 anchor_percent;
 			point2 anchor_offset;
 			point2 size_absolute;
@@ -24,7 +23,6 @@ namespace px {
 		};
 
 		namespace {
-
 			static const alignment fill{ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } };
 		}
 	}
