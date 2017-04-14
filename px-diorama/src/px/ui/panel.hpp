@@ -71,15 +71,38 @@ namespace px
 				child->m_bounds = calculate_alignment(align, m_bounds);
 				m_unnamed.push_back(child);
 			}
+			void remove_all() noexcept
+			{
+				remove_all_anonimous();
+				remove_all_tagged();
+			}
+			void remove_all_anonimous() noexcept
+			{
+				m_unnamed.clear();
+			}
+			void remove_all_tagged() noexcept
+			{
+				m_stack.clear();
+			}
+			void remove(name_type const& name)
+			{
+				m_stack.erase(name);
+			}
+			void remove(panel * ptr)
+			{
+				m_unnamed.erase(std::remove_if(std::begin(m_unnamed), std::end(m_unnamed),
+					[ptr](auto const& subpanel) { return subpanel.get() == ptr; }),
+					std::end(m_unnamed));
+			}
 			template <typename SubPanel, typename ...Args>
-			std::shared_ptr<SubPanel> make(alignment align, Args &&... args)
+			auto make(alignment align, Args &&... args)
 			{
 				auto result = std::make_shared<SubPanel>(std::forward<Args>(args)...);
 				add(align, result);
 				return result;
 			}
 			template <typename SubPanel, typename ...Args>
-			std::shared_ptr<SubPanel> make(name_type name, alignment align, Args &&... args)
+			auto make(name_type name, alignment align, Args &&... args)
 			{
 				auto result = std::make_shared<SubPanel>(std::forward<Args>(args)...);
 				add(name, align, result);
@@ -118,7 +141,7 @@ namespace px
 			}
 
 		public:
-			panel()
+			panel() noexcept
 				: m_align({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } })
 			{
 			}
