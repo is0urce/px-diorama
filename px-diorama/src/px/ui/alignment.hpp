@@ -11,10 +11,9 @@
 #include <px/common/vector.hpp>
 #include <px/common/rectangle.hpp>
 
-namespace px
-{
-	namespace ui
-	{
+namespace px {
+	namespace ui {
+
 		struct alignment
 		{
 		public:
@@ -23,5 +22,10 @@ namespace px
 			point2 size_absolute;
 			vector2 size_relative;
 		};
+
+		namespace {
+
+			static const alignment fill{ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } };
+		}
 	}
 }

@@ -6,7 +6,7 @@
 // base for multi-element systems
 // not an actual base class (but can be used as such)
 // but an template and multipurpose placeholder
-// or used for plain simple sustems with no additional behavior
+// also can be used for plain simple systems with no additional behavior
 
 #pragma once
 
@@ -47,7 +47,7 @@ namespace px {
 			template <typename Operator>
 			void enumerate(Operator && op) const
 			{
-				m_pool->enumerate(op);
+				m_pool->enumerate(std::forward<Operator>(op));
 			}
 
 		public:

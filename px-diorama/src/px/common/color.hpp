@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include <cmath>
+#include <cmath> // sin, cos for colorspace transforms
 
-namespace px
-{
+namespace px {
+
 	class color
 	{
 	public:
@@ -162,5 +162,7 @@ namespace px
 		static color average(color const& a, color const& b) { return (a + b) / 2; }
 		static color average(color const& a, color const& b, color const& c) { return (a + b + c) / 3; }
 		static color average(color const& a, color const& b, color const& c, color const& d) { return (a + b + c + d) / 4; }
+
+		static const color blue;
 	};
 }

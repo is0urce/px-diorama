@@ -17,10 +17,12 @@
 #include "rl/map_chunk.hpp"
 #include "fn/generator.hpp"
 
+#include <px/common/colors.hpp>
 #include <px/es/component_collection.hpp>
 #include <px/fn/bsp.hpp>
 #include <px/ui/canvas.hpp>
 #include <px/ui/panel.hpp>
+#include <px/ui/board.hpp>
 
 #include "ui/inventory_panel.hpp"
 
@@ -199,7 +201,8 @@ namespace px
 		{
 			m_perception.scale(-0.95f);
 
-			m_inventory = m_ui.make<ui::inventory_panel>("inventory", { { 0.5, 0.5}, {0, 0}, {0, 0}, {1.0, 1.0} }).get();
+			m_inventory = m_ui.make<ui::inventory_panel>("inventory", { { 0.25, 0.25}, {0, 0}, {0, 0}, {0.5, 0.5} }).get();
+			m_inventory->make<ui::board>("bg", ui::fill, colors::blue);
 		}
 
 	private:
