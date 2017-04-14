@@ -5,10 +5,9 @@
 
 #pragma once
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		template<typename Effect>
 		struct enhancement final
 		{

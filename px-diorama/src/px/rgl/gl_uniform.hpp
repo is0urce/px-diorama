@@ -9,8 +9,8 @@
 
 #include "gl_buffer.hpp"
 
-namespace px
-{
+namespace px {
+
 	struct gl_uniform
 	{
 	private:

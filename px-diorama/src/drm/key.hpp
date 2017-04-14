@@ -7,8 +7,8 @@
 
 // virtual keys used by press-x
 
-namespace px
-{
+namespace px {
+
 	enum class key : unsigned int
 	{
 		not_valid = 0,

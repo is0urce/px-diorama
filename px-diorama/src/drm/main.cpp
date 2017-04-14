@@ -113,7 +113,7 @@ namespace px {
 				throw std::runtime_error("unhandled exception");
 			}
 		}
-		catch (std::runtime_error &exc)
+		catch (std::runtime_error & exc)
 		{
 			logger logger;
 			logger.write(exc.what());

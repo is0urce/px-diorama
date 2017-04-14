@@ -4,8 +4,8 @@
 
 #include <px/common/color.hpp>
 
-namespace px
-{
+namespace px {
+
 	struct image
 	{
 		float sx;

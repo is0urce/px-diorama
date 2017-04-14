@@ -4,8 +4,8 @@
 
 #include <memory>
 
-namespace px
-{
+namespace px {
+
 	template <typename T, typename Deleter>
 	class intrusive_ptr;
 

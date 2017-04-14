@@ -10,8 +10,8 @@
 #include <vector>
 #include <stdexcept>
 
-namespace px
-{
+namespace px {
+
 	template <typename Element , unsigned int...> class matrix2;
 
 	// matrix with fixed sizes

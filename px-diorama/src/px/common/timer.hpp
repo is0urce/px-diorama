@@ -6,8 +6,8 @@
 
 #pragma once
 
-namespace px
-{
+namespace px {
+
 	template <typename QueryOperator>
 	class timer
 	{

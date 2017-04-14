@@ -7,8 +7,8 @@
 #include <px/common/coordinate.hpp>
 #include <px/common/point.hpp>
 
-namespace px
-{
+namespace px {
+
 	struct vector2 : public coordinate<double, 2>
 	{
 	public:

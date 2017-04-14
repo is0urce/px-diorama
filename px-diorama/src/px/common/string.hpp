@@ -8,14 +8,13 @@
 #include <string>
 #include <functional>
 
-namespace
-{
+namespace {
 	const unsigned int replacement_character = 0xFFFD; // '<?>' glyph
 	const unsigned int byte_order_mark = 0xfeff; // we should skip that
 }
 
-namespace px
-{
+namespace px {
+
 	class string
 	{
 	public:

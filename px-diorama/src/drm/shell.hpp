@@ -23,13 +23,14 @@
 #include <px/ui/canvas.hpp>
 #include <px/ui/panel.hpp>
 #include <px/ui/board.hpp>
+#include <px/ui/text.hpp>
 
 #include "ui/inventory_panel.hpp"
 
 #include <list>
 
-namespace px
-{
+namespace px {
+
 	class shell
 		: public key_translator<shell>
 	{
@@ -202,7 +203,8 @@ namespace px
 			m_perception.scale(-0.95f);
 
 			m_inventory = m_ui.make<ui::inventory_panel>("inventory", { { 0.25, 0.25}, {0, 0}, {0, 0}, {0.5, 0.5} }).get();
-			m_inventory->make<ui::board>("bg", ui::fill, colors::blue);
+			m_inventory->make<ui::board>(ui::fill, color{ 0, 0, 0, 0.5 });
+			m_inventory->make<ui::text>(ui::fill, "Inventory");
 		}
 
 	private:

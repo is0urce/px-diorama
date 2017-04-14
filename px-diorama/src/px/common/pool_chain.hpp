@@ -13,8 +13,8 @@
 #include <array>
 #include <memory>
 
-namespace px
-{
+namespace px {
+
 	template <typename T, size_t ChunkSize>
 	class pool_chain
 	{

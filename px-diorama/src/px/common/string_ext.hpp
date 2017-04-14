@@ -10,10 +10,9 @@
 
 #include <string>
 
-namespace px
-{
-	namespace
-	{
+namespace px {
+	namespace {
+
 		inline std::string to_string(point2 const& p)
 		{
 			return "[" + std::to_string(p.get<0>()) + ":" + std::to_string(p.get<1>()) + "]";

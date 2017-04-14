@@ -11,8 +11,8 @@
 
 #include <vector>
 
-namespace px
-{
+namespace px {
+
 	class perception
 	{
 	public:

@@ -7,8 +7,8 @@
 #include <mutex>
 #include <string>
 
-namespace px
-{
+namespace px {
+
 	class logger
 	{
 	public:

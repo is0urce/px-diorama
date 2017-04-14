@@ -18,8 +18,8 @@
 
 //#include <px/common/point.hpp>
 
-namespace px
-{
+namespace px {
+
 	template<typename T>
 	class qtree
 	{

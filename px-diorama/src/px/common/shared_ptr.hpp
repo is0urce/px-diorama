@@ -9,8 +9,8 @@
 #include <atomic>
 #include <memory> // for default deleter
 
-namespace px
-{
+namespace px {
+
 	template<typename T>
 	class base_control_block
 	{

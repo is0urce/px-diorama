@@ -25,8 +25,8 @@
 #include <string>
 #include <vector>
 
-namespace px
-{
+namespace px {
+
 	class renderer
 	{
 	public:

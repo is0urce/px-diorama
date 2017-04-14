@@ -9,8 +9,8 @@
 
 #include <vector>
 
-namespace px
-{
+namespace px {
+
 	class gl_pass
 	{
 	public:

@@ -7,8 +7,8 @@
 
 #include <GL/GL.h>
 
-namespace px
-{
+namespace px {
+
 	class gl_texture
 	{
 	public:

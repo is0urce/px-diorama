@@ -5,10 +5,9 @@
 
 #pragma once
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		enum class effect : unsigned int
 		{
 			no_effect,

@@ -5,10 +5,9 @@
 
 #pragma once
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		enum class equipment_slot : unsigned int
 		{
 			hand_main,

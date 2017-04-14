@@ -11,8 +11,8 @@
 #include <string>
 #include <sstream>
 
-namespace px
-{
+namespace px {
+
 	inline std::string read_file(std::string const& name)
 	{
 		std::ifstream stream;

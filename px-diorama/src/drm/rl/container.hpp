@@ -7,10 +7,9 @@
 
 #include "drm/rl/inventory.hpp"
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		class container
 			: public inventory
 		{

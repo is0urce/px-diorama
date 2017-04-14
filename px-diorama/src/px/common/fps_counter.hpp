@@ -6,16 +6,19 @@
 
 #pragma once
 
-namespace px
-{
-	template <typename timer>
+namespace px {
+
+	template <typename Timer>
 	class fps_counter
 	{
+	public:
+		typedef Timer timer_type;
+
 	public:
 		const float interval = 0.2f;
 
 	public:
-		fps_counter(timer * timer)
+		fps_counter(timer_type * timer)
 			: m_timer(timer)
 			, m_frames(0)
 			, m_fps(0)
@@ -50,7 +53,7 @@ namespace px
 		}
 
 	private:
-		timer * m_timer;
+		timer_type * m_timer;
 		unsigned int m_frames;
 		decltype(m_timer->measure()) m_fps;
 		decltype(m_timer->measure()) m_last;

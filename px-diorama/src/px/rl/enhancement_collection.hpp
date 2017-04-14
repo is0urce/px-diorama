@@ -12,10 +12,9 @@
 #include <vector>
 #include <algorithm>
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		template <typename Effect>
 		class enhancement_collection
 		{

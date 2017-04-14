@@ -7,10 +7,9 @@
 
 #include <px/rl/skill_set.hpp>
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		template <typename SkillTarget>
 		class character
 			: public skill_set<std::string, SkillTarget, SkillTarget>

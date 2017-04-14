@@ -13,10 +13,9 @@
 
 #include <memory>
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		class body
 			: public entity
 			, public reputation_subject

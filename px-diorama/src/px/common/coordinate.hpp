@@ -9,8 +9,8 @@
 #include <cmath>
 #include <numeric>
 
-namespace px
-{
+namespace px {
+
 	template <typename Component, size_t Dim>
 	struct coordinate
 	{

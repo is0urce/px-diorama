@@ -9,15 +9,15 @@
 
 #include "key.hpp"
 
-namespace px
-{
-	template <typename Sub>
+namespace px {
+
+	template <typename U>
 	class key_translator
 	{
 	public:
 		void press(key code)
 		{
-			auto & game = static_cast<Sub&>(*this);
+			auto & game = static_cast<U&>(*this);
 			switch (code)
 			{
 			case key::move_none:

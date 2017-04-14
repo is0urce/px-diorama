@@ -8,8 +8,8 @@
 #include <string>
 #include <stdexcept>
 
-namespace px
-{
+namespace px {
+
 	class distance_font final
 	{
 	private:

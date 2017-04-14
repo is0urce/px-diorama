@@ -7,8 +7,8 @@
 
 #pragma once
 
-namespace px
-{
+namespace px {
+
 	template <bool Initial>
 	class toggle
 	{

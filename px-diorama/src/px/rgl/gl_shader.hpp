@@ -10,8 +10,8 @@
 #include <vector>
 #include <stdexcept>
 
-namespace px
-{
+namespace px {
+
 	class gl_shader
 	{
 	public:

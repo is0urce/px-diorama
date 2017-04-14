@@ -8,10 +8,9 @@
 #include <px/rl/lt/basic_inventory.hpp>
 #include <px/rl/lt/basic_item.hpp>
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		class item
 			: public basic_item<effect>
 		{

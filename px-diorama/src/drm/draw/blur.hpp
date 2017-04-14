@@ -16,8 +16,8 @@
 #include <array>
 #include <vector>
 
-namespace px
-{
+namespace px {
+
 	template <size_t Stages, size_t SampleRange>
 	class blur final
 	{

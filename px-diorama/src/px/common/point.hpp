@@ -6,8 +6,8 @@
 
 #include "coordinate.hpp"
 
-namespace px
-{
+namespace px {
+
 	struct point2 : public coordinate<int, 2>
 	{
 	public:

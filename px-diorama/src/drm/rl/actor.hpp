@@ -11,10 +11,9 @@
 
 #include <functional>
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		template<typename Parent, typename Effect, typename EquipmentSlot, typename Environment = void*>
 		class actor
 			: public body

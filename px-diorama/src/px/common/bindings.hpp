@@ -7,8 +7,8 @@
 
 #include <unordered_map>
 
-namespace px
-{
+namespace px {
+
 	template <typename SK, typename VK>
 	class bindings final
 	{

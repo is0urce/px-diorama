@@ -9,10 +9,9 @@
 
 #include "drm/es/container_component.hpp"
 
-namespace px
-{
-	namespace ui
-	{
+namespace px {
+	namespace ui {
+
 		class inventory_panel
 			: public panel
 		{

@@ -10,8 +10,8 @@
 #include <GL/GL.h>
 #include <sstream>
 
-namespace px
-{
+namespace px {
+
 	inline void gl_assert()
 	{
 		GLenum err = GL_NO_ERROR;
@@ -30,8 +30,8 @@ namespace px
 
 #else
 
-namespace px
-{
+namespace px {
+
 	inline void gl_assert()
 	{
 	}

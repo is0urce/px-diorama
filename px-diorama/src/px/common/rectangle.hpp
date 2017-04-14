@@ -11,8 +11,8 @@
 
 #include <functional>
 
-namespace px
-{
+namespace px {
+
 	struct rectangle
 	{
 	private:
