@@ -48,12 +48,12 @@ namespace px {
 			//virtual void hover_panel(point2 const& /*position*/) const
 			//{
 			//}
-			virtual bool click_panel(point2 const& position, int /*button*/) const override
+			virtual bool click_panel(point2 const& /*position*/, int /*button*/) const override
 			{
 				if (m_container)
 				{
 					int index = 0;
-					m_container->enumerate([&](auto const& item) {
+					m_container->enumerate([&](auto const& /*item*/) {
 						++index;
 					});
 				}

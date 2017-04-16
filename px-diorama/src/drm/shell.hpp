@@ -1,7 +1,9 @@
 // name: shell.hpp
 // type: c++ header
 // auth: is0urce
-// desc: input manager facade and application level event dispatcher
+// desc: c++ class
+
+// input manager facade and application level event dispatcher
 
 #pragma once
 

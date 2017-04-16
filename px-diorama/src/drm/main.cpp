@@ -47,9 +47,6 @@ namespace px {
 				bindings<int, key> bindings(config["bindings"]);
 				shell game;
 
-				// setup - ui canvas
-				game.resize(screen_width, screen_height);
-
 				// setup - load data
 				for (auto const& texture : config["textures"])
 				{
@@ -89,6 +86,9 @@ namespace px {
 				callback.on_scroll([&](auto * /* window */, double horisontal, double vertical) {
 					game.scroll(vertical, horisontal);
 				});
+
+				// setup - ui canvas
+				game.resize(screen_width, screen_height);
 
 				// start
 				game.start();
