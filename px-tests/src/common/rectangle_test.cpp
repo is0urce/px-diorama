@@ -41,4 +41,10 @@ TEST_CASE("rectangle", "[rectangle]")
 	REQUIRE(x.is_corner({ 5, 5 }));
 	REQUIRE(!x.is_corner({ 5, 6 }));
 	REQUIRE(x.is_corner({ 9, 9 }));
+
+	// contains test
+	REQUIRE(a.contains({ 0,0 }));
+	REQUIRE(!a.contains({ 10, 10 }));
+	REQUIRE(a.contains({ 9,9 }));
+	REQUIRE(!a.contains({ -1, 0 }));
 }

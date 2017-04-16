@@ -192,7 +192,7 @@
     <ClInclude Include="src\drm\es\sprite_system.hpp" />
     <ClInclude Include="src\drm\fn\generator.hpp" />
     <ClInclude Include="src\drm\rl\map_chunk.hpp" />
-    <ClInclude Include="src\drm\ui\inventory_panel.hpp" />
+    <ClInclude Include="src\drm\ui\inventory_list.hpp" />
     <ClInclude Include="src\drm\vertex.hpp" />
     <ClInclude Include="src\px\common\colors.hpp" />
     <ClInclude Include="src\px\es\basic_system.hpp" />

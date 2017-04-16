@@ -29,7 +29,7 @@ namespace px {
 			}
 
 		protected:
-			virtual void draw_panel(display & window) const
+			virtual void draw_panel(display & window) const override
 			{
 				window.paint(m_background);
 			}

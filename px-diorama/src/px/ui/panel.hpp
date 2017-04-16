@@ -44,11 +44,10 @@ namespace px
 			void layout(rectangle rect) noexcept
 			{
 				m_bounds = calculate_alignment(m_align, rect);
-				m_display.reframe(m_bounds);
+				m_display.set_frame(m_bounds);
 
-				panel_action([&](auto &subpanel) {
+				action([&](auto & subpanel) {
 					subpanel->layout(m_bounds);
-					return false;
 				});
 			}
 
@@ -113,10 +112,10 @@ namespace px
 			void draw(canvas & cnv)
 			{
 				m_display.assign(&cnv);
+
 				draw_panel(m_display);
-				panel_action([&](auto p) {
-					p->draw(cnv);
-					return false;
+				action([&](auto & subpanel) {
+					subpanel->draw(cnv);
 				});
 			}
 			template<typename Key>
@@ -127,6 +126,22 @@ namespace px
 			void hover(point2 position)
 			{
 				hover_panel(position - m_bounds.start());
+			}
+			bool click(point2 const& position, int button)
+			{
+				bool processed = false;
+
+				// this panel
+				if (m_bounds.contains(position))
+				{
+					processed = click_panel(position - m_bounds.start(), button);
+				}
+
+				// childrens
+				action([&](auto & subpanel) {
+					processed |= subpanel->click(position, button);
+				});
+				return processed;
 			}
 
 		protected:
@@ -139,6 +154,10 @@ namespace px
 			virtual void hover_panel(point2 const& /*position*/) const
 			{
 			}
+			virtual bool click_panel(point2 const& /*position*/, int /*button*/) const
+			{
+				return false;
+			}
 
 		public:
 			panel() noexcept
@@ -148,7 +167,7 @@ namespace px
 
 		private:
 			template<typename Operator>
-			bool panel_action(Operator && callback_action)
+			bool action_until(Operator && callback_action)
 			{
 				for (auto & p : m_stack)
 				{
@@ -157,6 +176,25 @@ namespace px
 				for (auto & p : m_unnamed)
 				{
 					if (p && p->active() && std::forward<Operator>(callback_action)(p)) return true;
+				}
+				return false;
+			}
+			template<typename Operator>
+			bool action(Operator && callback_action)
+			{
+				for (auto & pair : m_stack)
+				{
+					if (pair.second && pair.second->active())
+					{
+						std::forward<Operator>(callback_action)(pair.second);
+					}
+				}
+				for (auto & subpanel : m_unnamed)
+				{
+					if (subpanel && subpanel->active())
+					{
+						std::forward<Operator>(callback_action)(subpanel);
+					}
 				}
 				return false;
 			}

@@ -22,9 +22,6 @@
 
 namespace px {
 
-	static const unsigned int gui_cell_width = 50;
-	static const unsigned int gui_cell_height = 50;
-
 	int application()
 	{
 		try
@@ -51,7 +48,7 @@ namespace px {
 				shell game;
 
 				// setup - ui canvas
-				game.resize_ui(screen_width / gui_cell_width, screen_height / gui_cell_height);
+				game.resize(screen_width, screen_height);
 
 				// setup - load data
 				for (auto const& texture : config["textures"])
@@ -74,8 +71,8 @@ namespace px {
 					screen_width = widht;
 					screen_height = height;
 
-					graphics.resize(widht, height);
-					game.resize_ui(screen_width / gui_cell_width, screen_height / gui_cell_height);
+					graphics.resize(screen_width, screen_height);
+					game.resize(screen_width, screen_height);
 				});
 				callback.on_key([&](auto * /* window */, int key, int /* scancode */, int action, int /* mods */) {
 					if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(bindings.select(key, key::not_valid));

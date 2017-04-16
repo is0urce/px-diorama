@@ -73,7 +73,7 @@ namespace px {
 			}
 
 		protected:
-			virtual void draw_panel(display & window) const
+			virtual void draw_panel(display & window) const override
 			{
 				auto str = m_text();
 				auto len = str.length();

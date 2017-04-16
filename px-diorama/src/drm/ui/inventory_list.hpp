@@ -1,4 +1,4 @@
-// name: inventory_panel.hpp
+// name: inventory_list.hpp
 // type: c++
 // desc: class
 // auth: isource
@@ -12,7 +12,7 @@
 namespace px {
 	namespace ui {
 
-		class inventory_panel
+		class inventory_list
 			: public panel
 		{
 		public:
@@ -26,19 +26,19 @@ namespace px {
 			}
 
 		public:
-			inventory_panel()
+			inventory_list()
 			{
 			}
 
 		protected:
-			virtual void draw_panel(display & window) const
+			virtual void draw_panel(display & window) const override
 			{
 				if (m_container)
 				{
-					int x = 0;
+					int index = 0;
 					m_container->enumerate([&](auto const& item) {
-						window.print({ 0, x }, 0xffffff, item->name());
-						++x;
+						window.print({ 0, 0 + index }, 0xffffff, item->name());
+						++index;
 					});
 				}
 			}
@@ -48,6 +48,17 @@ namespace px {
 			//virtual void hover_panel(point2 const& /*position*/) const
 			//{
 			//}
+			virtual bool click_panel(point2 const& position, int /*button*/) const override
+			{
+				if (m_container)
+				{
+					int index = 0;
+					m_container->enumerate([&](auto const& item) {
+						++index;
+					});
+				}
+				return true;
+			}
 
 		private:
 			container_component * m_container;

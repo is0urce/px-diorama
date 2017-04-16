@@ -16,7 +16,7 @@ namespace px
 		class display final
 		{
 		public:
-			void reframe(rectangle frame) noexcept
+			void set_frame(rectangle frame) noexcept
 			{
 				m_bounds = frame;
 			}
@@ -92,13 +92,13 @@ namespace px
 			}
 
 		public:
-			display(canvas * cnv, rectangle frame)
+			display(canvas * cnv, rectangle frame) noexcept
 				: m_canvas(cnv)
 				, m_bounds(frame)
 			{
 
 			}
-			display()
+			display() noexcept
 				: display(nullptr, {})
 			{
 			}

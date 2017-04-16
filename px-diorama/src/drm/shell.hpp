@@ -25,11 +25,14 @@
 #include <px/ui/board.hpp>
 #include <px/ui/text.hpp>
 
-#include "ui/inventory_panel.hpp"
+#include "ui/inventory_list.hpp"
 
 #include <list>
 
 namespace px {
+
+	static const unsigned int gui_cell_width = 50;
+	static const unsigned int gui_cell_height = 50;
 
 	class shell
 		: public key_translator<shell>
@@ -39,13 +42,19 @@ namespace px {
 		{
 
 		}
-		void click(int /*button*/)
-		{
-			activate(0);
-		}
 		void hover(int x, int y)
 		{
 			m_hover = { x, y };
+		}
+		void click(int button)
+		{
+			auto ui_pos = m_hover / point2(gui_cell_width, gui_cell_height);
+			bool processed = m_ui.click(ui_pos, button);
+
+			if (!processed)
+			{
+				activate(0);
+			}
 		}
 		void scroll(double vertical, double horisontal)
 		{
@@ -170,10 +179,13 @@ namespace px {
 
 			// setup
 
-			auto itm = std::make_shared<rl::item>();
-			itm->set_name("item #X");
-			itm->add({ rl::effect::ore_power, 0x100, 0x500 });
-			container->add(itm);
+			for (int i = 0; i != 100; ++i)
+			{
+				auto itm = std::make_shared<rl::item>();
+				itm->set_name("item #" + std::to_string(i));
+				itm->add({ rl::effect::ore_power, 0x100, 0x500 });
+				container->add(itm);
+			}
 
 			body->health().create();
 
@@ -192,9 +204,11 @@ namespace px {
 
 			return result;
 		}
-		void resize_ui(unsigned int width, unsigned int height)
+		void resize(unsigned int width, unsigned int height)
 		{
-			m_perception.canvas().resize(width, height);
+			m_screen_width = width;
+			m_screen_height = height;
+			m_perception.canvas().resize(width / gui_cell_width, height / gui_cell_height);
 		}
 
 	public:
@@ -202,14 +216,13 @@ namespace px {
 		{
 			m_perception.scale(-0.95f);
 
-			m_inventory = m_ui.make<ui::inventory_panel>("inventory", { { 0.25, 0.25}, {0, 0}, {0, 0}, {0.5, 0.5} }).get();
-			m_inventory->make<ui::board>(ui::fill, color{ 0, 0, 0, 0.5 });
-			m_inventory->make<ui::text>(ui::fill, "Inventory");
+			auto i = m_ui.make<ui::panel>("inventory", { { 0.25, 0.25}, {0, 0}, {0, 0}, {0.5, 0.5} }).get();
+			i->make<ui::board>(ui::fill, color{ 0, 0, 1, 1 });
+			i->make<ui::text>(ui::fill, "Inventory");
+			m_inventory = i->make<ui::inventory_list>({ { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 1.0, 1.0 } }).get();
 		}
 
 	private:
-		point2 m_hover;
-
 		es::sprite_system m_sprites;
 		es::transform_system m_transforms;
 		es::body_system m_bodies;
@@ -222,7 +235,13 @@ namespace px {
 
 		map_chunk<tile> m_map;
 
+		// ui
+		point2 m_hover;
+		unsigned int m_screen_width;
+		unsigned int m_screen_height;
+		unsigned int m_ui_width;
+		unsigned int m_ui_height;
 		ui::panel m_ui;
-		ui::inventory_panel * m_inventory;
+		ui::inventory_list * m_inventory;
 	};
 }
