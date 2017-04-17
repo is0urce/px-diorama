@@ -42,12 +42,6 @@ namespace px {
 					});
 				}
 			}
-			//virtual void press_panel(unsigned int /*code*/) const
-			//{
-			//}
-			//virtual void hover_panel(point2 const& /*position*/) const
-			//{
-			//}
 			virtual bool click_panel(point2 const& /*position*/, int /*button*/) const override
 			{
 				if (m_container)

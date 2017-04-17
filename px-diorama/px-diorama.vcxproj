@@ -292,6 +292,7 @@
     <ClInclude Include="src\px\ui\panel.hpp" />
     <ClInclude Include="src\px\ui\text.hpp" />
     <ClInclude Include="src\px\ui\text_alignment.hpp" />
+    <ClInclude Include="src\px\ui\toggle.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />

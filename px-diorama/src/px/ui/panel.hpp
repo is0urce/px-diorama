@@ -22,10 +22,11 @@ namespace px
 	namespace ui
 	{
 		class panel
-			: public toggle<true>
+			: public px::toggle<true>
 		{
 		public:
 			typedef std::string name_type;
+			typedef std::shared_ptr<panel> panel_ptr;
 
 		public:
 			// accessory
@@ -43,31 +44,46 @@ namespace px
 			}
 			void layout(rectangle rect) noexcept
 			{
-				m_bounds = calculate_alignment(m_align, rect);
+				m_parent = rect;
+				layout();
+			}
+			alignment align() const noexcept
+			{
+				return m_align;
+			}
+			void layout() noexcept
+			{
+				m_bounds = layout_panel(m_parent);
+
 				m_display.set_frame(m_bounds);
 
+				// process to subpanels
 				action([&](auto & subpanel) {
 					subpanel->layout(m_bounds);
 				});
 			}
 
 			// creation
-			void add(name_type name, alignment align, std::shared_ptr<panel> child)
+			void add(name_type name, alignment align, panel_ptr child)
 			{
 				if (!child) throw std::runtime_error("px::ui::panel::add(name, align, child) - child is null");
 
 				child->m_name = name;
 				child->m_align = align;
-				child->m_bounds = calculate_alignment(align, m_bounds);
+
+				child->layout(m_bounds);
+
 				m_stack[name] = child;
 			}
-			void add(alignment align, std::shared_ptr<panel> child)
+			void add(alignment align, panel_ptr child)
 			{
 				if (!child) throw std::runtime_error("px::ui::panel::add(align, child) - child is null");
 
 				child->m_name = "";
 				child->m_align = align;
-				child->m_bounds = calculate_alignment(align, m_bounds);
+
+				child->layout(m_bounds);
+
 				m_unnamed.push_back(child);
 			}
 			void remove_all() noexcept
@@ -106,6 +122,21 @@ namespace px
 				auto result = std::make_shared<SubPanel>(std::forward<Args>(args)...);
 				add(name, align, result);
 				return result;
+			}
+			void set_alignment(alignment align) noexcept
+			{
+				m_align = align;
+				layout();
+			}
+			void inflate(int right, int bottom, int left, int top) noexcept
+			{
+				m_align.size_absolute = m_align.size_absolute.moved(right, bottom);
+				m_align.anchor_offset = m_align.anchor_offset.moved(-left, -top);
+				layout();
+			}
+			void deflate(int right, int bottom, int left, int top) noexcept
+			{
+				inflate(-right, -bottom, -left, -top);
 			}
 
 			// input
@@ -158,6 +189,10 @@ namespace px
 			{
 				return false;
 			}
+			virtual rectangle layout_panel(rectangle const& parent) const
+			{
+				return calculate_bounds(parent);
+			}
 
 		public:
 			panel() noexcept
@@ -198,21 +233,26 @@ namespace px
 				}
 				return false;
 			}
-			static rectangle calculate_alignment(alignment const& align, rectangle const& parent) noexcept
+			static rectangle calculate_bounds(alignment const& align, rectangle const& parent) noexcept
 			{
 				point2 start = align.anchor_offset + parent.start() + (align.anchor_percent * parent.range()).ceil();
 				point2 range = align.size_absolute + (align.size_relative * parent.range()).ceil();
 				return{ start, range };
 			}
+			rectangle calculate_bounds(rectangle const& parent) const noexcept
+			{
+				return calculate_bounds(m_align, parent);
+			}
 
 		private:
-			std::vector<std::shared_ptr<panel>> m_unnamed;
-			std::map<name_type, std::shared_ptr<panel>> m_stack;
-
 			name_type m_name;
+			display m_display;
 			alignment m_align;
 			rectangle m_bounds;
-			display m_display;
+			rectangle m_parent;
+
+			std::vector<std::shared_ptr<panel>> m_unnamed;
+			std::map<name_type, std::shared_ptr<panel>> m_stack;
 		};
 	}
 }

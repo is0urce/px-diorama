@@ -26,6 +26,8 @@
 #include <px/ui/panel.hpp>
 #include <px/ui/board.hpp>
 #include <px/ui/text.hpp>
+#include <px/ui/button.hpp>
+#include <px/ui/toggle.hpp>
 
 #include "ui/inventory_list.hpp"
 
@@ -218,10 +220,15 @@ namespace px {
 		{
 			m_perception.scale(-0.95f);
 
-			auto i = m_ui.make<ui::panel>("inventory", { { 0.25, 0.25}, {0, 0}, {0, 0}, {0.5, 0.5} }).get();
-			i->make<ui::board>(ui::fill, color{ 0, 0, 1, 1 });
-			i->make<ui::text>(ui::fill, "Inventory");
-			m_inventory = i->make<ui::inventory_list>({ { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 1.0, 1.0 } }).get();
+			auto inventory_toggle = m_ui.make<ui::toggle>("inventory_toggle", { { 0.25, 0.25 },{ 0, 0 },{ 0, 1 },{ 0.5, 0.0 } });
+			inventory_toggle->make<ui::board>("background", ui::fill, color{ 0, 0, 0.5, 1 });
+			inventory_toggle->make<ui::text>("title", ui::fill, "Inventory");
+
+			auto inventory_block = m_ui.make<ui::panel>("inventory_block", { { 0.25, 0.25 },{ 0, 1 },{ 0, -1 },{ 0.5, 0.5 } });
+			inventory_block->make<ui::board>("background", ui::fill, color{ 0, 0, 1, 1 });
+			m_inventory = inventory_block->make<ui::inventory_list>("list", ui::fill).get();
+
+			inventory_toggle->assign_content(inventory_block, false);
 		}
 
 	private:
