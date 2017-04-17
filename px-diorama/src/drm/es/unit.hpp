@@ -3,6 +3,8 @@
 // desc: class declaration
 // auth: is0urce
 
+#pragma once
+
 #include <px/es/component_collection.hpp>
 
 #include "transform_component.hpp"

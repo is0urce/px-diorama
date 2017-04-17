@@ -42,7 +42,7 @@ namespace px {
 		{
 			return m_batches.size();
 		}
-		void clear()
+		void clear_batches()
 		{
 			for (auto & b : m_batches)
 			{
@@ -66,8 +66,8 @@ namespace px {
 		}
 
 	private:
-		std::vector<std::vector<mesh_vertex>> m_batches;
 		float m_scale;
+		std::vector<std::vector<mesh_vertex>> m_batches;
 		ui::canvas m_canvas;
 	};
 }

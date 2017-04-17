@@ -55,10 +55,8 @@ namespace px
 			{
 				m_bounds = layout_panel(m_parent);
 
-				m_display.set_frame(m_bounds);
-
 				// process to subpanels
-				action([&](auto & subpanel) {
+				action([this](auto & subpanel) {
 					subpanel->layout(m_bounds);
 				});
 			}
@@ -140,11 +138,10 @@ namespace px
 			}
 
 			// input
-			void draw(canvas & cnv)
+			void draw(canvas & cnv) const
 			{
-				m_display.assign(&cnv);
-
-				draw_panel(m_display);
+				display window(&cnv, m_bounds);
+				draw_panel(window);
 				action([&](auto & subpanel) {
 					subpanel->draw(cnv);
 				});
@@ -233,6 +230,25 @@ namespace px
 				}
 				return false;
 			}
+			template<typename Operator>
+			bool action(Operator && callback_action) const
+			{
+				for (auto & pair : m_stack)
+				{
+					if (pair.second && pair.second->active())
+					{
+						std::forward<Operator>(callback_action)(pair.second);
+					}
+				}
+				for (auto & subpanel : m_unnamed)
+				{
+					if (subpanel && subpanel->active())
+					{
+						std::forward<Operator>(callback_action)(subpanel);
+					}
+				}
+				return false;
+			}
 			static rectangle calculate_bounds(alignment const& align, rectangle const& parent) noexcept
 			{
 				point2 start = align.anchor_offset + parent.start() + (align.anchor_percent * parent.range()).ceil();
@@ -246,7 +262,6 @@ namespace px
 
 		private:
 			name_type m_name;
-			display m_display;
 			alignment m_align;
 			rectangle m_bounds;
 			rectangle m_parent;

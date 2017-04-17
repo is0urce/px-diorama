@@ -59,7 +59,7 @@ namespace px {
 					if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 
 					graphics.add_texture(w, h, image.data());
-					game.add_atlas(nlohmann::json::parse(std::ifstream(atlas))["meta"]);
+					game.add_atlas(nlohmann::json::parse(std::ifstream(atlas))["meta"], true);
 				}
 
 				// setup - callbacks
