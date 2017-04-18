@@ -67,7 +67,7 @@ TEST_CASE("pools are open", "[pool]")
 	REQUIRE(p.size() == 0);
 	REQUIRE(count(p) == 0);
 	REQUIRE(p.empty() == true);
-	REQUIRE(p.size() == g_counter);
+	REQUIRE(static_cast<int>(p.size()) == g_counter);
 	REQUIRE(p.max_size() == maximum);
 
 	SECTION("querry and release")
@@ -75,7 +75,7 @@ TEST_CASE("pools are open", "[pool]")
 		element* first;
 
 		first = p.request("MASSAGE");
-		REQUIRE(p.size() == g_counter);
+		REQUIRE(static_cast<int>(p.size()) == g_counter);
 		REQUIRE(first != nullptr);
 		REQUIRE(p.size() == 1);
 		REQUIRE(count(p) == 1);
@@ -87,7 +87,7 @@ TEST_CASE("pools are open", "[pool]")
 		REQUIRE(p.size() == 0);
 		REQUIRE(count(p) == 0);
 		REQUIRE(p.empty() == true);
-		REQUIRE(p.size() == g_counter);
+		REQUIRE(static_cast<int>(p.size()) == g_counter);
 	}
 
 	SECTION("limitations and clearance")
@@ -101,14 +101,14 @@ TEST_CASE("pools are open", "[pool]")
 		REQUIRE(count(p) == maximum);
 		REQUIRE(is_sequental(p) == true);
 		REQUIRE(p.full() == true);
-		REQUIRE(p.size() == g_counter);
+		REQUIRE(static_cast<int>(p.size()) == g_counter);
 
 		// everything else is nullptr
 		REQUIRE(p.request() == nullptr);
 		REQUIRE(p.size() == maximum);
 		REQUIRE(count(p) == maximum);
 		REQUIRE(p.full() == true);
-		REQUIRE(p.size() == g_counter);
+		REQUIRE(static_cast<int>(p.size()) == g_counter);
 
 		for (auto eptr : list)
 		{
@@ -118,14 +118,14 @@ TEST_CASE("pools are open", "[pool]")
 		REQUIRE(p.size() == 0);
 		REQUIRE(count(p) == 0);
 		REQUIRE(p.empty() == true);
-		REQUIRE(p.size() == g_counter);
+		REQUIRE(static_cast<int>(p.size()) == g_counter);
 
 		// clear
 		p.clear();
 		REQUIRE(p.size() == 0);
 		REQUIRE(count(p) == 0);
 		REQUIRE(p.empty() == true);
-		REQUIRE(p.size() == g_counter);
+		REQUIRE(static_cast<int>(p.size()) == g_counter);
 	}
 
 	SECTION("limitations and clearance extended - smart pointers")
@@ -136,12 +136,12 @@ TEST_CASE("pools are open", "[pool]")
 			auto u2 = p.make_unique("with arguments");
 			REQUIRE(p.size() == 2);
 			REQUIRE(count(p) == 2);
-			REQUIRE(p.size() == g_counter);
+			REQUIRE(static_cast<int>(p.size()) == g_counter);
 		}
 		REQUIRE(p.size() == 0);
 		REQUIRE(count(p) == 0);
 		REQUIRE(p.empty() == true);
-		REQUIRE(p.size() == g_counter);
+		REQUIRE(static_cast<int>(p.size()) == g_counter);
 
 		// shared
 		std::list<px::shared_ptr<element>> list;
@@ -156,7 +156,7 @@ TEST_CASE("pools are open", "[pool]")
 		REQUIRE(p.size() == 0);
 		REQUIRE(count(p) == 0);
 		REQUIRE(p.empty() == true);
-		REQUIRE(p.size() == g_counter);
+		REQUIRE(static_cast<int>(p.size()) == g_counter);
 	}
 
 	SECTION("RNG MADNESS SHOW")
@@ -196,6 +196,6 @@ TEST_CASE("pools are open", "[pool]")
 		REQUIRE(count(p) == arr.size());
 		REQUIRE(std::equal(std::begin(arr), std::begin(arr) + arr.size(), std::begin(current)) == true);
 
-		REQUIRE(p.size() == g_counter);
+		REQUIRE(static_cast<int>(p.size()) == g_counter);
 	}
 }

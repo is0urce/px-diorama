@@ -193,7 +193,6 @@ namespace px {
 		}
 		~environment()
 		{
-			m_units.clear();
 		}
 
 	private:
@@ -220,8 +219,8 @@ namespace px {
 	private:
 		// components & units
 		es::sprite_system m_sprites;
-		std::list<std::shared_ptr<unit>> m_units;
 		factory m_factory;
+		std::list<std::shared_ptr<unit>> m_units;
 		unit * m_player;
 
 		// terrain

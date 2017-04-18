@@ -350,7 +350,6 @@ namespace px {
 	shared_ptr<T> make_shared(Args&&... args)
 	{
 		auto * pack = new control_block<T>::join_pack(std::forward<Args>(args)...);
-
-		return shared_ptr<T>(&(pack->value), &(pack->block));
+		return shared_ptr<T>(&pack->value, &pack->block);
 	}
 }

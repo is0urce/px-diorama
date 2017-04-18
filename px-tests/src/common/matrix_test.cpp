@@ -44,9 +44,9 @@ TEST_CASE("matrix", "[matrix]")
 	REQUIRE_NOTHROW(px::matrix2<int> f2(w, 0));
 
 
-	REQUIRE(a.width() == w);
-	REQUIRE(a.height() == h);
-	REQUIRE(a.size() == w * h);
+	REQUIRE(static_cast<int>(a.width()) == w);
+	REQUIRE(static_cast<int>(a.height()) == h);
+	REQUIRE(static_cast<int>(a.size()) == w * h);
 
 	REQUIRE((e[{ 5, 5 }]) == g);
 	REQUIRE(a.select({ -1, -1 }, element + 1) == element + 1);
