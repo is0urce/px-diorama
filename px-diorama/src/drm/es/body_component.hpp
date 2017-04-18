@@ -10,6 +10,8 @@
 
 #include "drm/rl/body.hpp"
 
+#include "useable.hpp"
+
 namespace px {
 
 	class container_component;
@@ -21,21 +23,36 @@ namespace px {
 		, public es::link<container_component>
 	{
 	public:
-		body_component()
+		void assign_useable(useable * use)
 		{
+			m_useable = use;
 		}
-		virtual ~body_component()
+		void clear_useable() noexcept
 		{
-			clear();
+			m_useable = nullptr;
+		}
+		bool can_use(body_component const& body, environment const& shell) const
+		{
+			return m_useable && m_useable->can_use(body, shell);
+		}
+		bool use(body_component & body, environment & shell)
+		{
+			return m_useable && m_useable->use(body, shell);
 		}
 
-	protected:
-		virtual void activate_component() override
+	public:
+		virtual ~body_component()
+		{
+			clear_useable();
+			clear_body();
+		}
+		body_component()
+			: m_useable(nullptr)
 		{
 		}
-		virtual void deactivate_component() override
-		{
-		}
+
+	private:
+		useable * m_useable;
 	};
 
 }

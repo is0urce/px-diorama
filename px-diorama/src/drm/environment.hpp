@@ -11,8 +11,8 @@
 
 #include "es/sprite_system.hpp"
 #include "es/unit.hpp"
-#include "factory.hpp"
-#include "unit_builder.hpp"
+#include "es/factory.hpp"
+#include "es/unit_builder.hpp"
 
 #include "fn/generator.hpp"
 #include "rl/map_chunk.hpp"
@@ -37,7 +37,8 @@ namespace px {
 	public:
 		void step(point2 const& direction)
 		{
-			auto * transform = m_player->transform();
+			if (!m_player) return;
+			transform_component * transform = m_player->transform();
 			if (!transform) return;
 
 			point2 destination = transform->position() + direction;
@@ -120,7 +121,7 @@ namespace px {
 			// render sprites
 			if (m_player)
 			{
-				if (auto * transform = m_player->transform())
+				if (transform_component * transform = m_player->transform())
 				{
 					float x_offset = -static_cast<float>(transform->x());
 					float y_offset = -static_cast<float>(transform->y());
@@ -168,6 +169,10 @@ namespace px {
 		void layout_ui(rectangle bounds) noexcept
 		{
 			m_ui.layout(bounds);
+		}
+
+		void expose_inventory(container_component * /*inventory*/)
+		{
 		}
 
 	public:

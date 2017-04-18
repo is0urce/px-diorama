@@ -7,20 +7,21 @@
 
 namespace px {
 
+	class environment;
 	class body_component;
 
 	class useable
 	{
 	public:
-		bool can_use(body_component const& body) const
+		bool can_use(body_component const& body, environment const& shell) const
 		{
-			return is_useable(body);
+			return is_useable(body, shell);
 		}
-		bool use(body_component & body)
+		bool use(body_component & body, environment & shell)
 		{
-			if (!can_use(body)) return false;
+			if (!can_use(body, shell)) return false;
 
-			use_useable(body);
+			use_useable(body, shell);
 			return true;
 		}
 
@@ -30,11 +31,11 @@ namespace px {
 		}
 
 	protected:
-		virtual bool is_useable(body_component const& /*body*/) const
+		virtual bool is_useable(body_component const& /*body*/, environment const& /*shell*/) const
 		{
 			return false;
 		}
-		virtual void use_useable(body_component & /*body*/) = 0
+		virtual void use_useable(body_component & /*body*/, environment & /*shell*/) = 0
 		{
 		}
 	};

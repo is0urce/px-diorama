@@ -43,7 +43,7 @@ namespace px {
 				return m_mp;
 			}
 
-			void clear()
+			void clear_body()
 			{
 				m_inventory.clear();
 				m_hp.remove();

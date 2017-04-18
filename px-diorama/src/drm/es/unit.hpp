@@ -23,7 +23,7 @@ namespace px {
 				}
 				return m_transform;
 			}
-			transform_component * transform() const
+			transform_component const* transform() const
 			{
 				if (m_transform)
 				{

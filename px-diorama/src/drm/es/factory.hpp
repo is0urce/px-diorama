@@ -3,14 +3,14 @@
 // auth: is0urce
 // desc: c++ class
 
-
 #pragma once
 
-#include "es/transform_system.hpp"
-#include "es/sprite_system.hpp"
-#include "es/body_system.hpp"
-#include "es/container_system.hpp"
-#include "es/unit.hpp"
+#include "transform_system.hpp"
+#include "sprite_system.hpp"
+#include "body_system.hpp"
+#include "container_system.hpp"
+
+#include "storage_component.hpp"
 
 #include <string>
 #include <stdexcept>
@@ -35,6 +35,10 @@ namespace px {
 		auto make_container()
 		{
 			return m_containers.make_shared();
+		}
+		auto make_storage()
+		{
+			return px::make_shared<storage_component>();
 		}
 
 	public:
