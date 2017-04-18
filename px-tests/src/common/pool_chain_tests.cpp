@@ -108,7 +108,6 @@ TEST_CASE("pool_chain", "[pool_chain]")
 		REQUIRE(p.size() == maximum + 1);
 		REQUIRE(count(p) == maximum + 1);
 
-
 		list.clear();
 		REQUIRE(p.size() == 0);
 		REQUIRE(count(p) == 0);

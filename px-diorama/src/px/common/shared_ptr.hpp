@@ -11,6 +11,16 @@
 
 namespace px {
 
+	template <typename T>
+	class default_delete
+	{
+	public:
+		void operator()(T const* ptr)
+		{
+			delete ptr;
+		}
+	};
+
 	template<typename T>
 	class base_control_block
 	{
@@ -27,52 +37,85 @@ namespace px {
 		{
 			return m_counter;
 		}
-		void release(T * ptr)
+		void release()
 		{
-			release_pointer(ptr);
+			release_pointer(m_memory);
+		}
+		//void assign_memory(T * memory)
+		//{
+		//	m_memory = memory;
+		//}
+		void swap(base_control_block & that)
+		{
+			m_counter = that.m_counter.exchange(m_counter);
+			std::swap(m_memory, that.m_memory);
 		}
 
 	public:
-		base_control_block() noexcept
-			: m_counter(0)
-		{
-		}
 		virtual ~base_control_block()
 		{
 		}
+		base_control_block(T * memory) noexcept
+			: m_counter(0)
+			, m_memory(memory)
+		{
+		}
+		base_control_block() noexcept
+			: m_counter(0)
+			, m_memory(nullptr)
+		{
+		}
+		//base_control_block(base_control_block const&) = default;
+		//base_control_block& operator=(base_control_block const&) = default;
 	protected:
 		virtual void release_pointer(T * /*ptr*/) = 0;
 
 	private:
 		std::atomic<unsigned int> m_counter;
+		T * m_memory;
 	};
 
-	template<typename T, typename Deleter = std::default_delete<T>>
+	template<typename T, typename Deleter = default_delete<T>>
 	class control_block
 		: public base_control_block<T>
 	{
 	public:
-		control_block()
-			: m_deleter(Deleter{})
+		void swap(control_block & that)
+		{
+			std::swap(m_deleter, that.m_deleter);
+			base_control_block::swap(that);
+		}
+	public:
+		virtual ~control_block()
 		{
 		}
-		control_block(Deleter d)
-			: m_deleter(d)
+		control_block()
+			: base_control_block(nullptr)
+			, m_deleter(Deleter{})
+		{
+		}
+		control_block(T * memory)
+			: base_control_block(memory)
+			, m_deleter(Deleter{})
+		{
+		}
+		control_block(T * memory, Deleter d)
+			: base_control_block(memory)
+			, m_deleter(d)
 		{
 		}
 		control_block(control_block && that)
 			: ctrl_block()
 		{
-			std::swap(m_deleter, that.m_deleter);
+			swap(that);
 		}
 		control_block& operator=(control_block && that)
 		{
-			std::swap(m_deleter, that.m_deleter);
+			swap(that);
 			return *this;
 		}
-		virtual ~control_block()
-		{
-		}
+		//control_block(control_block const&) = default;
+		//control_block& operator=(control_block const&) = default;
 
 	protected:
 		virtual void release_pointer(T * ptr) override
@@ -93,38 +136,80 @@ namespace px {
 			template <typename... Args>
 			join_pack(Args... args)
 				: value(std::forward<Args>(args)...)
+				, block(&value)
 			{
 			}
 		};
 	};
 
-	template<typename T, typename Deleter = std::default_delete<T>>
-	class dissolve_control_block
-		: public base_control_block<T>
-	{
-	public:
-		dissolve_control_block()
-			: m_deleter(Deleter{})
-		{
-		}
-		dissolve_control_block(Deleter d)
-			: m_deleter(d)
-		{
-		}
-		virtual ~dissolve_control_block()
-		{
-		}
+	//template<typename T, typename Deleter = std::default_delete < T >>
+	//class dissolve_control_block
+	//	: public base_control_block<T>
+	//{
+	//public:
+	//	dissolve_control_block(T * memory)
+	//		: base_control_block(memory)
+	//		, m_deleter(Deleter{})
+	//	{
+	//	}
+	//	dissolve_control_block(T * memory, Deleter d)
+	//		: base_control_block(memory)
+	//		, m_deleter(d)
+	//	{
+	//	}
+	//	virtual ~dissolve_control_block()
+	//	{
+	//	}
 
-	protected:
-		virtual void release_pointer(T * ptr) override
-		{
-			m_deleter(ptr);
-			delete this;
-		}
+	//protected:
+	//	virtual void release_pointer(T * ptr) override
+	//	{
+	//		m_deleter(ptr);
+	//		delete this;
+	//	}
 
-	private:
-		Deleter m_deleter;
-	};
+	//private:
+	//	Deleter m_deleter;
+	//};
+
+	//template<typename T>
+	//class dissolve_pack_block
+	//	: public base_control_block<T>
+	//{
+	//public:
+	//	struct join_pack;
+
+	//public:
+	//	virtual ~dissolve_pack_block()
+	//	{
+	//	}
+	//	dissolve_pack_block(join_pack * pack)
+	//	{
+	//	}
+
+	//protected:
+	//	virtual void release_pointer(T * ptr) override
+	//	{
+	//		delete m_pack;
+	//	}
+
+	//private:
+	//	join_pack * m_pack;
+
+	//public:
+	//	struct join_pack
+	//	{
+	//	public:
+	//		T value;
+	//		dissolve_pack_block block;
+	//	public:
+	//		template <typename... Args>
+	//		join_pack(Args... args)
+	//			: value(std::forward<Args>(args)...)
+	//		{
+	//		}
+	//	};
+	//};
 
 	template<typename T>
 	class shared_ptr final
@@ -231,7 +316,7 @@ namespace px {
 		{
 			if (m_pointer && m_ctrl->decrement() == 0)
 			{
-				m_ctrl->release(m_pointer);
+				m_ctrl->release();
 			}
 		}
 
@@ -265,6 +350,7 @@ namespace px {
 	shared_ptr<T> make_shared(Args&&... args)
 	{
 		auto * pack = new control_block<T>::join_pack(std::forward<Args>(args)...);
-		return{ &pack->value, &pack->block };
+
+		return shared_ptr<T>(&(pack->value), &(pack->block));
 	}
 }

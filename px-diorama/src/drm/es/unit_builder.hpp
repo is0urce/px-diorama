@@ -65,7 +65,10 @@ namespace px {
 			if (m_body && m_container)		m_body->connect(m_container.get());
 
 			// assign extra polymorphic links
-			if (m_body && m_storage) m_body->assign_useable(m_storage.get());
+			if (m_body && m_storage)
+			{
+				//m_body->assign_useable(m_storage.get());
+			}
 		}
 		template <typename Container>
 		void compose_unit(Container & product)

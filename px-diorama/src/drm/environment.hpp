@@ -60,6 +60,11 @@ namespace px {
 		}
 		void activate(unsigned int /*mod*/)
 		{
+			if (!m_player) return;
+			transform_component * transform = m_player->transform();
+
+			auto * body = transform->linked<body_component>();
+			body->use(*body, *this);
 		}
 
 		template <typename Document>
@@ -139,6 +144,7 @@ namespace px {
 			auto body = builder.add_body();
 			auto sprite = builder.add_sprite(name);
 			auto container = builder.add_container();
+			auto storage = builder.add_storage();
 
 			// setup
 			for (int i = 0; i != 100; ++i)
@@ -149,6 +155,7 @@ namespace px {
 				container->add(itm);
 			}
 			body->health().create();
+			body->set_name(name);
 
 			// track
 			auto result = builder.assemble();
@@ -171,8 +178,9 @@ namespace px {
 			m_ui.layout(bounds);
 		}
 
-		void expose_inventory(container_component * /*inventory*/)
+		void expose_inventory(container_component * inventory)
 		{
+			m_inventory->set_container(inventory);
 		}
 
 	public:
@@ -182,6 +190,10 @@ namespace px {
 			, m_inventory(nullptr)
 		{
 			setup_ui();
+		}
+		~environment()
+		{
+			m_units.clear();
 		}
 
 	private:
@@ -208,8 +220,8 @@ namespace px {
 	private:
 		// components & units
 		es::sprite_system m_sprites;
-		factory m_factory;
 		std::list<std::shared_ptr<unit>> m_units;
+		factory m_factory;
 		unit * m_player;
 
 		// terrain

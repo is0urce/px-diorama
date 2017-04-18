@@ -34,11 +34,11 @@ namespace px {
 	public:
 		// returns nullptr if all object in pool were requested, full() returns true
 		template <typename... Args>
-		T* request(Args... args)
+		T * request(Args... args)
 		{
-			T* result = nullptr;
-			links* rec = m_free;
-			if (rec != nullptr)
+			T * result = nullptr;
+			links * rec = m_free;
+			if (rec)
 			{
 				m_free = m_free->next_free; // pop free stack
 				m_live = rec->prev_live == nullptr ? rec : m_live; // set this as root?
@@ -71,7 +71,7 @@ namespace px {
 			auto index = ptr - reinterpret_cast<T*>(&m_pool[0]);
 			if (index >= 0 && index < Size)
 			{
-				links* rec = &m_links[index];
+				links * rec = &m_links[index];
 				if (rec->live) // ensure it's not double release
 				{
 					flag = true;
@@ -105,7 +105,8 @@ namespace px {
 		{
 			T * ptr = request(std::forward<Args>(args)...);
 			size_t index = ptr - reinterpret_cast<T*>(&m_pool[0]);
-			return{ ptr, &m_links[index].ctrl };
+			//m_links[index].ctrl.assign_memory(ptr);
+			return shared_ptr(ptr, &m_links[index].ctrl);
 		}
 		template <typename... Args>
 		unique_ptr make_unique(Args... args)
@@ -167,7 +168,7 @@ namespace px {
 		}
 
 	public:
-		pool() noexcept
+		pool()
 		{
 			startup();
 		}
@@ -191,24 +192,31 @@ namespace px {
 			m_current = 0;
 			m_free = &m_links[0];
 			m_live = nullptr;
+
+			//T* ptr = reinterpret_cast<T*>(&m_pool[0]);
 			for (size_t i = 0; i != Size; ++i)
 			{
 				m_links[i].next_free = i == Size - 1 ? nullptr : &m_links[i + 1];
 				m_links[i].prev_live = i == 0 ? nullptr : &m_links[i - 1];
 				m_links[i].next_live = nullptr;
 				m_links[i].live = false;
-				m_links[i].ctrl = smart_deleter(this);
+				m_links[i].ctrl = control_block<T, smart_deleter>(from_index(i), smart_deleter(this));
+				//m_links[i].ctrl.assign_memory(from_index(i));
 			}
 		}
 		template <typename... Args>
-		void create(T& item, Args... args)
+		void create(T & item, Args... args)
 		{
 			new (&item) T(std::forward<Args>(args)...);
 		}
-		void destroy(T& item)
+		void destroy(T & item)
 		{
 			item.~T();
 			//item; // 'item': unreferenced formal parameter if there is no destructor -> referencing
+		}
+		T * from_index(size_t index) noexcept
+		{
+			return reinterpret_cast<T*>(&m_pool[index * sizeof(T)]);
 		}
 
 	public:
