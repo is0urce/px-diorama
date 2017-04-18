@@ -49,6 +49,8 @@ namespace px {
 		{
 			if (!builder) throw std::runtime_error("px::unit_builder::ctor() - factory is null");
 		}
+		unit_builder(unit_builder const&) = delete;
+		unit_builder& operator=(unit_builder const&) = delete;
 
 	private:
 		void link_components()

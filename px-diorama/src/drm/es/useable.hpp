@@ -23,6 +23,12 @@ namespace px {
 			use_useable(body);
 			return true;
 		}
+
+	public:
+		virtual ~useable()
+		{
+		}
+
 	protected:
 		virtual bool is_useable(body_component const& /*body*/) const
 		{

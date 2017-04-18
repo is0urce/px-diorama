@@ -27,6 +27,7 @@ namespace px {
 
 		public:
 			inventory_list()
+				: m_container(nullptr)
 			{
 			}
 

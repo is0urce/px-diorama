@@ -9,20 +9,13 @@
 
 #include "perception.hpp"
 
-#include "es/transform_system.hpp"
 #include "es/sprite_system.hpp"
-#include "es/body_system.hpp"
-#include "es/container_system.hpp"
 #include "es/unit.hpp"
-
 #include "factory.hpp"
 #include "unit_builder.hpp"
 
 #include "fn/generator.hpp"
 #include "rl/map_chunk.hpp"
-
-#include "ui/inventory_list.hpp"
-#include "ui/recipe_list.hpp"
 
 #include <px/fn/bsp.hpp>
 
@@ -31,6 +24,9 @@
 #include <px/ui/text.hpp>
 #include <px/ui/button.hpp>
 #include <px/ui/toggle_panel.hpp>
+
+#include "ui/inventory_list.hpp"
+#include "ui/recipe_list.hpp"
 
 #include <list>
 
@@ -178,6 +174,7 @@ namespace px {
 		environment()
 			: m_factory(&m_sprites)
 			, m_player(nullptr)
+			, m_inventory(nullptr)
 		{
 			setup_ui();
 		}

@@ -43,6 +43,8 @@ namespace px {
 		{
 			if (!sprites) throw std::runtime_error("px::factory::ctor() - sprites is null");
 		}
+		factory(factory const&) = delete;
+		factory& operator=(factory const&) = delete;
 
 	private:
 		es::sprite_system * m_sprites;

@@ -23,7 +23,7 @@ namespace px {
 				}
 				return m_transform;
 			}
-			transform_component const* transform() const
+			transform_component * transform() const
 			{
 				if (m_transform)
 				{
@@ -31,6 +31,14 @@ namespace px {
 				}
 				return component<transform_component>().get();
 			}
+
+		public:
+			unit()
+				: m_transform(nullptr)
+			{
+			}
+			unit(unit const&) = delete;
+			unit& operator=(unit const&) = delete;
 
 		private:
 			transform_component * m_transform;
