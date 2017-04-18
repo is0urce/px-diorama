@@ -15,6 +15,9 @@
 #include "es/container_system.hpp"
 #include "es/unit.hpp"
 
+#include "factory.hpp"
+#include "unit_builder.hpp"
+
 #include "fn/generator.hpp"
 #include "rl/map_chunk.hpp"
 
@@ -102,7 +105,7 @@ namespace px {
 
 			// units
 
-			m_player = &spawn("@", { 54, 46 });
+			m_player = spawn("@", { 54, 46 }).get();
 
 			spawn("m", { 55, 46 });
 			spawn("x", { 53, 47 });
@@ -131,20 +134,15 @@ namespace px {
 			// render user interface
 			m_ui.draw(view.canvas());
 		}
-		unit & spawn(std::string const& name, point2 location)
+		std::shared_ptr<unit> spawn(std::string const& name, point2 location)
 		{
-			m_units.emplace_back();
-			unit & result = m_units.back();
-
-			// create
-
-			auto sprite = m_sprites.make_shared(name);
-			auto transform = m_transforms.make_shared(location);
-			auto body = m_bodies.make_shared();
-			auto container = m_containers.make_shared();
+			unit_builder builder(&m_factory);
+			auto transform = builder.add_transform(location);
+			auto body = builder.add_body();
+			auto sprite = builder.add_sprite(name);
+			auto container = builder.add_container();
 
 			// setup
-
 			for (int i = 0; i != 100; ++i)
 			{
 				auto itm = std::make_shared<rl::item>();
@@ -152,22 +150,11 @@ namespace px {
 				itm->add({ rl::effect::ore_power, 0x100, 0x500 });
 				container->add(itm);
 			}
-
 			body->health().create();
 
-			// assemble
-
-			sprite->connect(transform.get());
-			transform->connect(body.get());
-			body->connect(container.get());
-
-			result.add(sprite);
-			result.add(transform);
-			result.add(body);
-			result.add(container);
-
-			result.enable();
-
+			// store
+			auto result = builder.assemble(true);
+			m_units.push_back(result);
 			return result;
 		}
 		ui::panel & ui() noexcept
@@ -185,6 +172,7 @@ namespace px {
 
 	public:
 		environment()
+			: m_factory(&m_sprites)
 		{
 			setup_ui();
 		}
@@ -218,8 +206,9 @@ namespace px {
 		es::container_system m_containers;
 
 		// unit hierarchy
+		factory m_factory;
 		unit * m_player;
-		std::list<unit> m_units;
+		std::list<std::shared_ptr<unit>> m_units;
 
 		// terrain
 		map_chunk<tile> m_map;

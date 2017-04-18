@@ -369,6 +369,9 @@
     <ClInclude Include="src\drm\factory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\unit_builder.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
