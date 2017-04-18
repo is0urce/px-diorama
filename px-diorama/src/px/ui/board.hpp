@@ -21,6 +21,9 @@ namespace px {
 			board() : board({ 0, 0, 0, 1 })
 			{
 			}
+			virtual ~board()
+			{
+			}
 
 		public:
 			void set_bg_color(color background) noexcept

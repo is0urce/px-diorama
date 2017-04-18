@@ -9,16 +9,12 @@
 
 #include "key_translator.hpp"
 #include "perception.hpp"
-
-#include <px/ui/canvas.hpp>
-#include <px/ui/panel.hpp>
-
 #include "environment.hpp"
 
 namespace px {
 
-	static const unsigned int gui_cell_width = 50;
-	static const unsigned int gui_cell_height = 50;
+	static const unsigned int gui_cell_width = 16;
+	static const unsigned int gui_cell_height = 16;
 
 	class shell
 		: public key_translator<shell>

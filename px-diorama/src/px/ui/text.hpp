@@ -49,6 +49,9 @@ namespace px {
 				, m_alignment(align)
 			{
 			}
+			virtual ~text()
+			{
+			}
 
 		public:
 			auto current()

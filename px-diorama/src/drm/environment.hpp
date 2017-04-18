@@ -15,19 +15,19 @@
 #include "es/container_system.hpp"
 #include "es/unit.hpp"
 
-#include "rl/map_chunk.hpp"
 #include "fn/generator.hpp"
+#include "rl/map_chunk.hpp"
 
-#include <px/common/colors.hpp>
+#include "ui/inventory_list.hpp"
+#include "ui/recipe_list.hpp"
+
 #include <px/fn/bsp.hpp>
-#include <px/ui/canvas.hpp>
+
 #include <px/ui/panel.hpp>
 #include <px/ui/board.hpp>
 #include <px/ui/text.hpp>
 #include <px/ui/button.hpp>
-#include <px/ui/toggle.hpp>
-
-#include "ui/inventory_list.hpp"
+#include <px/ui/toggle_panel.hpp>
 
 #include <list>
 
@@ -192,16 +192,21 @@ namespace px {
 	private:
 		void setup_ui()
 		{
-			auto inventory_toggle = m_ui.make<ui::toggle>("inventory_toggle", { { 0.25, 0.25 },{ 0, 0 },{ 0, 1 },{ 0.5, 0.0 } });
+			auto inventory_block = m_ui.make<ui::panel>("inventory_block", { {0.25, 0.25}, {0, 1}, {0, -1}, {0.5, 0.5} });
+			inventory_block->make<ui::board>("background", ui::fill, color{ 0, 0, 1, 1 });
+			m_inventory = inventory_block->make<ui::inventory_list>("list", ui::fill).get();
+
+			auto inventory_toggle = m_ui.make<ui::toggle_panel>("inventory_toggle", { {0.25, 0.25}, {0, 0}, {0, 1}, {0.5, 0.0} });
 			inventory_toggle->add_background({ 0, 0, 0.5, 1 });
 			inventory_toggle->add_label("Inventory");
-
-			auto inventory_block = m_ui.make<ui::panel>("inventory_block", { { 0.25, 0.25 },{ 0, 1 },{ 0, -1 },{ 0.5, 0.5 } });
-			inventory_block->make<ui::board>("background", ui::fill, color{ 0, 0, 1, 1 });
-
 			inventory_toggle->assign_content(inventory_block, false);
 
-			m_inventory = inventory_block->make<ui::inventory_list>("list", ui::fill).get();
+			std::list<recipe> recipes;
+			recipes.push_back({ "sword", recipe_type::weapon, 8 });
+			recipes.push_back({ "mace", recipe_type::weapon, 6});
+			recipes.push_back({ "dagger", recipe_type::weapon, 4 });
+
+			m_ui.make<ui::recipe_list>("recipes", { {0.0, 0.0}, {0,0}, {0,0}, {0.5,0.0} }, std::move(recipes));
 		}
 
 

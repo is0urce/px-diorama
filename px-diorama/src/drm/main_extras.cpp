@@ -8,10 +8,6 @@
 #define NDEBUG
 #endif
 
-//#pragma optimize("agt", on) // faster debug
-//#pragma optimize("", on )
-//#define _HAS_ITERATOR_DEBUGGING 0
-
 #define _USE_MATH_DEFINES // M_PI in cmath before it's included by anyone else
 #include <cmath>
 

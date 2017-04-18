@@ -6,7 +6,6 @@
 #pragma once
 
 #include "alignment.hpp"
-#include "canvas.hpp"
 #include "display.hpp"
 
 #include <px/common/toggle.hpp>
@@ -17,10 +16,9 @@
 #include <map>
 #include <stdexcept>
 
-namespace px
-{
-	namespace ui
-	{
+namespace px {
+	namespace ui {
+
 		class panel
 			: public px::toggle<true>
 		{
@@ -155,36 +153,39 @@ namespace px
 			{
 				hover_panel(position - m_bounds.start());
 			}
+
+			// returns true if event dispatched by subpanels
 			bool click(point2 const& position, int button)
 			{
 				bool processed = false;
 
-				// this panel
-				if (m_bounds.contains(position))
-				{
-					processed = click_panel(position - m_bounds.start(), button);
-				}
-
 				// childrens
 				action([&](auto & subpanel) {
-					processed |= subpanel->click(position, button);
+					processed |= subpanel->click(position, button); // call recursive
 				});
+
+				// this one
+				if (!processed && m_bounds.contains(position))
+				{
+					processed = click_panel(position - m_bounds.start(), button); // call this virtual overload
+				}
+
 				return processed;
 			}
 
 		protected:
-			virtual void draw_panel(display & /*window*/) const
-			{
-			}
-			virtual void press_panel(unsigned int /*code*/) const
-			{
-			}
 			virtual void hover_panel(point2 const& /*position*/) const
 			{
 			}
 			virtual bool click_panel(point2 const& /*position*/, int /*button*/) const
 			{
 				return false;
+			}
+			virtual void press_panel(unsigned int /*code*/) const
+			{
+			}
+			virtual void draw_panel(display & /*window*/) const
+			{
 			}
 			virtual rectangle layout_panel(rectangle const& parent) const
 			{
@@ -194,6 +195,9 @@ namespace px
 		public:
 			panel() noexcept
 				: m_align({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } })
+			{
+			}
+			virtual ~panel()
 			{
 			}
 

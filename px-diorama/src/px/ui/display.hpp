@@ -9,10 +9,9 @@
 
 #include <px/common/rectangle.hpp>
 
-namespace px
-{
-	namespace ui
-	{
+namespace px {
+	namespace ui {
+
 		class display final
 		{
 		public:

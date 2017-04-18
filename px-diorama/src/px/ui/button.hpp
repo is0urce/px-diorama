@@ -25,6 +25,9 @@ namespace px {
 				: m_click(click)
 			{
 			}
+			virtual ~button()
+			{
+			}
 
 		protected:
 			virtual bool click_panel(point2 const& /*position*/, int button) const override

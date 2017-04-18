@@ -15,7 +15,7 @@
 namespace px {
 	namespace ui {
 
-		class toggle
+		class toggle_panel
 			: public panel
 		{
 		public:
@@ -55,7 +55,10 @@ namespace px {
 			}
 
 		public:
-			toggle() noexcept
+			toggle_panel() noexcept
+			{
+			}
+			virtual ~toggle_panel()
 			{
 			}
 

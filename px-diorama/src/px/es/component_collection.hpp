@@ -81,6 +81,27 @@ namespace px {
 				}
 				return result;
 			}
+			void swap(component_collection & that) noexcept
+			{
+				std::swap(m_components, that.m_components);
+			}
+
+		public:
+			component_collection()
+			{
+			}
+			component_collection(component_collection && that) noexcept
+				: unit()
+			{
+				swap(that);
+			}
+			component_collection& operator=(component_collection && that) noexcept
+			{
+				swap(that);
+				return *this;
+			}
+			component_collection(component_collection const&) = delete;
+			component_collection& operator=(component_collection const&) = delete;
 
 		private:
 			std::vector<component_ptr> m_components;

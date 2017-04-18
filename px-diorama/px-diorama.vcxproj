@@ -186,14 +186,18 @@
     <ClInclude Include="src\drm\es\body_component.hpp" />
     <ClInclude Include="src\drm\es\body_system.hpp" />
     <ClInclude Include="src\drm\es\container_system.hpp" />
+    <ClInclude Include="src\drm\es\useable.hpp" />
+    <ClInclude Include="src\drm\factory.hpp" />
     <ClInclude Include="src\drm\rl\container.hpp" />
     <ClInclude Include="src\drm\es\container_component.hpp" />
+    <ClInclude Include="src\drm\rl\recipe.hpp" />
     <ClInclude Include="src\drm\sprite.hpp" />
     <ClInclude Include="src\drm\es\sprite_component.hpp" />
     <ClInclude Include="src\drm\es\sprite_system.hpp" />
     <ClInclude Include="src\drm\fn\generator.hpp" />
     <ClInclude Include="src\drm\rl\map_chunk.hpp" />
     <ClInclude Include="src\drm\ui\inventory_list.hpp" />
+    <ClInclude Include="src\drm\ui\recipe_list.hpp" />
     <ClInclude Include="src\drm\vertex.hpp" />
     <ClInclude Include="src\px\common\colors.hpp" />
     <ClInclude Include="src\px\es\basic_system.hpp" />
@@ -293,7 +297,7 @@
     <ClInclude Include="src\px\ui\panel.hpp" />
     <ClInclude Include="src\px\ui\text.hpp" />
     <ClInclude Include="src\px\ui\text_alignment.hpp" />
-    <ClInclude Include="src\px\ui\toggle.hpp" />
+    <ClInclude Include="src\px\ui\toggle_panel.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\config.json" />

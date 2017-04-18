@@ -351,10 +351,22 @@
     <ClInclude Include="src\px\ui\button.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\ui\toggle.hpp">
+    <ClInclude Include="src\drm\environment.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\environment.hpp">
+    <ClInclude Include="src\drm\ui\recipe_list.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\recipe.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\es\useable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\ui\toggle_panel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\factory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
