@@ -124,11 +124,12 @@ namespace px {
 			// render sprites
 			if (m_player)
 			{
-				auto * transform = m_player->transform();
-
-				float x_offset = -static_cast<float>(transform->x());
-				float y_offset = -static_cast<float>(transform->y());
-				m_sprites.write(view.batches(), x_offset, y_offset);
+				if (auto * transform = m_player->transform())
+				{
+					float x_offset = -static_cast<float>(transform->x());
+					float y_offset = -static_cast<float>(transform->y());
+					m_sprites.write(view.batches(), x_offset, y_offset);
+				}
 			}
 
 			// render user interface
@@ -152,9 +153,12 @@ namespace px {
 			}
 			body->health().create();
 
-			// store
-			auto result = builder.assemble(true);
+			// track
+			auto result = builder.assemble();
+
+			result->enable();
 			m_units.push_back(result);
+
 			return result;
 		}
 		ui::panel & ui() noexcept
@@ -173,6 +177,7 @@ namespace px {
 	public:
 		environment()
 			: m_factory(&m_sprites)
+			, m_player(nullptr)
 		{
 			setup_ui();
 		}
@@ -199,16 +204,11 @@ namespace px {
 
 
 	private:
-		// systems
+		// components & units
 		es::sprite_system m_sprites;
-		es::transform_system m_transforms;
-		es::body_system m_bodies;
-		es::container_system m_containers;
-
-		// unit hierarchy
 		factory m_factory;
-		unit * m_player;
 		std::list<std::shared_ptr<unit>> m_units;
+		unit * m_player;
 
 		// terrain
 		map_chunk<tile> m_map;

@@ -33,17 +33,12 @@ namespace px {
 		{
 			return m_container = m_factory->make_container();
 		}
-		std::shared_ptr<unit> assemble(bool enable)
+		std::shared_ptr<unit> assemble()
 		{
 			auto result = std::make_shared<unit>();
 
 			link_components();
 			compose_unit(*result);
-
-			if (enable)
-			{
-				result->enable();
-			}
 
 			return result;
 		}
