@@ -40,7 +40,7 @@ namespace px {
 		{
 			return m_run;
 		}
-		void target(point2 relative_world_coordinates) noexcept
+		void target(point2 relative_world_coordinates)
 		{
 			if (!m_player) return;
 			transform_component * transform = m_player->transform();
@@ -50,12 +50,7 @@ namespace px {
 
 			if (m_target_panel)
 			{
-				transform_component * target = nullptr;
-				transform->world()->find(m_hover.x(), m_hover.y(), [&](int /*x*/, int /*y*/, auto * obj) {
-					target = obj;
-				});
-
-				m_target_panel->lock_target(transform);
+				m_target_panel->lock_target(find_any(m_hover));
 				m_target_panel->lock_position(m_hover);
 			}
 		}
@@ -69,10 +64,7 @@ namespace px {
 
 			if (!m_map.traversable(destination)) return;
 
-			transform_component * blocking = nullptr;
-			transform->world()->find(destination.x(), destination.y(), [&](int /*x*/, int /*y*/, auto * target) {
-				blocking = target;
-			});
+			transform_component * blocking = find_any(destination);
 
 			if (!blocking)
 			{
@@ -84,11 +76,14 @@ namespace px {
 		}
 		void activate(unsigned int /*mod*/)
 		{
-			if (!m_player) return;
-			transform_component * transform = m_player->transform();
-
-			auto * body = transform->linked<body_component>();
-			body->use(*body, *this);
+			if (auto target = find_any(m_hover))
+			{
+				auto body = target->linked<body_component>();
+				if (body)
+				{
+					body->use(*body, *this);
+				}
+			}
 		}
 
 		template <typename Document>
@@ -209,7 +204,6 @@ namespace px {
 		void expose_inventory(container_component * /*inventory*/)
 		{
 			m_ui["storage"].reverse_toggle();
-			//m_inventory->set_container(inventory);
 		}
 
 	public:
@@ -247,10 +241,23 @@ namespace px {
 			storage->make<ui::board>("background", ui::fill, color{ 1, 1, 0, 0.5 });
 			storage->deactivate();
 
-			m_target_panel = m_ui.make<ui::target_panel>("target", { { 1.0, 1.0 },{ -21, -2 },{ 20, 1 },{ 1.0, 1.0 } });
+			m_target_panel = m_ui.make<ui::target_panel>("target", { { 1.0, 1.0 },{ -21, -2 },{ 20, 1 },{ 0.0, 0.0 } });
 
 		}
-
+		transform_component * find_any(point2 position)
+		{
+			transform_component * result = nullptr;
+			if (m_player)
+			{
+				if (transform_component * transform = m_player->transform())
+				{
+					transform->world()->find(position.x(), position.y(), [&](int /*x*/, int /*y*/, transform_component * obj) {
+						result = obj;
+					});
+				}
+			}
+			return result;
+		}
 
 	private:
 		bool m_run;

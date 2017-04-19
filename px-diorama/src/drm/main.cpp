@@ -34,12 +34,31 @@ namespace px {
 				unsigned int screen_width = config["window"]["width"];
 				unsigned int screen_height = config["window"]["height"];
 				unsigned int vsync = config["window"]["vsync"];
-				//bool border = config["window"]["border"];
-				//bool fullscreen = config["window"]["fullscreen"];
+				bool border = config["window"]["border"];
+				bool fullscreen = config["window"]["fullscreen"];
 
 				// create window and context
 				glfw_instance instance;
-				glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", nullptr, nullptr);
+
+				glfwWindowHint(GLFW_DECORATED, border ? 1 : 0); // border
+
+				auto monitor = glfwGetPrimaryMonitor();
+				auto mode = glfwGetVideoMode(monitor);
+				if (fullscreen)
+				{
+					glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+					glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+					glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+					glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+					screen_width = mode->width;
+					screen_height = mode->height;
+				}
+				else
+				{
+					monitor = nullptr;
+				}
+
+				glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", monitor, nullptr);
 				glfwMakeContextCurrent(window);
 				glfwSwapInterval(vsync);
 				glewInit();	// initialize extensions loader (need context first)

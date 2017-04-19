@@ -76,7 +76,8 @@ namespace px {
 	public:
 		shell()
 		{
-			m_perception.zoom(-0.95f);
+			//m_perception.zoom(-0.95f);
+			m_perception.set_scale(1.0);
 		}
 
 	private:
@@ -86,7 +87,15 @@ namespace px {
 		}
 		point2 translate_world(point2 pixel_coordinates) const
 		{
-			return pixel_coordinates;
+			vector2 position = pixel_coordinates / vector2(m_screen_width, m_screen_height); // (0, 1) screen space
+
+			// (0, 1) -> (-1, +1) and reverse y
+			position.move(vector2{ -0.5, -0.5 });
+			position.multiply(vector2{ 2.0, -2.0 * m_screen_height / m_screen_width }); // account aspect
+			
+			position /= m_perception.scale();
+
+			return position.floor();
 		}
 
 	private:

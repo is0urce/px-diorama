@@ -29,6 +29,10 @@ namespace px {
 			m_scale *= factor + 1.0f;
 			m_scale = std::min(10000.0f, std::max(m_scale, 0.0001f)); // clamp
 		}
+		void set_scale(float multiplier)
+		{
+			m_scale = multiplier;
+		}
 
 		std::vector<std::vector<mesh_vertex>> & batches() noexcept
 		{

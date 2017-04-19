@@ -44,12 +44,22 @@ namespace px {
 			{
 				window.paint(color{ 1, 1, 1, 0.5 });
 				std::string txt("");
+				txt += std::string("[") + std::to_string(m_position.x()) + std::string(", ") + std::to_string(m_position.y()) + std::string("]");
+
 				if (m_target)
 				{
-					txt += std::string("[") + std::to_string(m_target->x()) + std::string(", ") + std::to_string(m_target->y()) + std::string("]");
-					txt += " ";
+					//txt += std::string("[") + std::to_string(m_target->x()) + std::string(", ") + std::to_string(m_target->y()) + std::string("]");
+					//txt += " ";
+					txt += "-OBJ";
+					if (auto body = m_target->linked<body_component>())
+					{
+						txt += "-BODY";
+						if (auto inventory = body->linked<container_component>())
+						{
+							txt += "-INV";
+						}
+					}
 				}
-				txt += std::string("[") + std::to_string(m_position.x()) + std::string(", ") + std::to_string(m_position.y()) + std::string("]");
 				window.print({ 0, 0 }, 0x000000, txt);
 			}
 			virtual bool click_panel(point2 const& /*position*/, int /*button*/) const override
