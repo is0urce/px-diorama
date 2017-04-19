@@ -36,6 +36,10 @@ namespace px {
 	class environment
 	{
 	public:
+		bool running() const noexcept
+		{
+			return m_run;
+		}
 		void target(point2 relative_world_coordinates) noexcept
 		{
 			if (!m_player) return;
@@ -47,8 +51,8 @@ namespace px {
 			if (m_target_panel)
 			{
 				transform_component * target = nullptr;
-				transform->world()->find(m_hover.x(), m_hover.y(), [&](int /*x*/, int /*y*/, auto * t) {
-					target = t;
+				transform->world()->find(m_hover.x(), m_hover.y(), [&](int /*x*/, int /*y*/, auto * obj) {
+					target = obj;
 				});
 
 				m_target_panel->lock_target(transform);
@@ -141,6 +145,10 @@ namespace px {
 			// ui
 			if (m_inventory) m_inventory->set_container(m_player->transform()->linked<body_component>()->linked<container_component>());
 		}
+		void stop()
+		{
+			m_run = false;
+		}
 		void write(perception & view) const
 		{
 			// render sprites
@@ -212,6 +220,7 @@ namespace px {
 			: m_factory(&m_sprites)
 			, m_player(nullptr)
 			, m_inventory(nullptr)
+			, m_run(true)
 		{
 			setup_ui();
 		}
@@ -244,6 +253,8 @@ namespace px {
 
 
 	private:
+		bool m_run;
+
 		point2 m_hover; // this variable uses relative world coordinates
 
 		// components & units

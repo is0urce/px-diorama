@@ -42,9 +42,9 @@ namespace px {
 				glfwSwapInterval(vsync);
 				glewInit();	// initialize extensions loader (need context first)
 
-				// create logic structure
+				// create game logic structures
 				renderer graphics(screen_width, screen_height);
-				bindings<int, key> bindings(config["bindings"]);
+				bindings<int, key> bindings(nlohmann::json::parse(std::ifstream("data/controls.json"))["bindings"]);
 				shell game;
 
 				// load data from configuration settings
@@ -95,7 +95,7 @@ namespace px {
 
 				// main loop
 				timer<glfw_time> time;
-				while (window.process())
+				while (window.process() && game.running())
 				{
 					game.frame(time);
 					graphics.render(game.view());
