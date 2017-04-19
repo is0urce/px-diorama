@@ -18,6 +18,9 @@ namespace px {
 			: public panel
 		{
 		public:
+			virtual ~recipe_list()
+			{
+			}
 			recipe_list(std::list<recipe> list) : m_recipes(list)
 			{
 			}

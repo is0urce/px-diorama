@@ -14,14 +14,14 @@ namespace px {
 			: public panel
 		{
 		public:
+			virtual ~board()
+			{
+			}
 			board(color background)
 				: m_background(background)
 			{
 			}
 			board() : board({ 0, 0, 0, 1 })
-			{
-			}
-			virtual ~board()
 			{
 			}
 

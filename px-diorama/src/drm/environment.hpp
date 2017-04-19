@@ -35,6 +35,10 @@ namespace px {
 	class environment
 	{
 	public:
+		void hover(point2 relative_world_coordinates) noexcept
+		{
+			m_hover = relative_world_coordinates;
+		}
 		void step(point2 const& direction)
 		{
 			if (!m_player) return;
@@ -119,7 +123,7 @@ namespace px {
 			spawn("p_box", { 55, 49 });
 
 			// ui
-			m_inventory->set_container(m_player->transform()->linked<body_component>()->linked<container_component>());
+			if (m_inventory) m_inventory->set_container(m_player->transform()->linked<body_component>()->linked<container_component>());
 		}
 		void write(perception & view) const
 		{
@@ -178,12 +182,16 @@ namespace px {
 			m_ui.layout(bounds);
 		}
 
-		void expose_inventory(container_component * inventory)
+		void expose_inventory(container_component * /*inventory*/)
 		{
-			m_inventory->set_container(inventory);
+			m_ui["storage"].reverse_toggle();
+			//m_inventory->set_container(inventory);
 		}
 
 	public:
+		~environment()
+		{
+		}
 		environment()
 			: m_factory(&m_sprites)
 			, m_player(nullptr)
@@ -191,32 +199,35 @@ namespace px {
 		{
 			setup_ui();
 		}
-		~environment()
-		{
-		}
 
 	private:
 		void setup_ui()
 		{
-			auto inventory_block = m_ui.make<ui::panel>("inventory_block", { {0.25, 0.25}, {0, 1}, {0, -1}, {0.5, 0.5} });
-			inventory_block->make<ui::board>("background", ui::fill, color{ 0, 0, 1, 1 });
-			m_inventory = inventory_block->make<ui::inventory_list>("list", ui::fill).get();
+			//auto inventory_block = m_ui.make<ui::panel>("inventory_block", { {0.25, 0.25}, {0, 1}, {0, -1}, {0.5, 0.5} });
+			//inventory_block->make<ui::board>("background", ui::fill, color{ 0, 0, 1, 1 });
+			//m_inventory = inventory_block->make<ui::inventory_list>("list", ui::fill).get();
 
-			auto inventory_toggle = m_ui.make<ui::toggle_panel>("inventory_toggle", { {0.25, 0.25}, {0, 0}, {0, 1}, {0.5, 0.0} });
-			inventory_toggle->add_background({ 0, 0, 0.5, 1 });
-			inventory_toggle->add_label("Inventory");
-			inventory_toggle->assign_content(inventory_block, false);
+			//auto inventory_toggle = m_ui.make<ui::toggle_panel>("inventory_toggle", { {0.25, 0.25}, {0, 0}, {0, 1}, {0.5, 0.0} });
+			//inventory_toggle->add_background({ 0, 0, 0.5, 1 });
+			//inventory_toggle->add_label("Inventory");
+			//inventory_toggle->assign_content(inventory_block, false);
 
-			std::list<recipe> recipes;
-			recipes.push_back({ "sword", recipe_type::weapon, 8 });
-			recipes.push_back({ "mace", recipe_type::weapon, 6});
-			recipes.push_back({ "dagger", recipe_type::weapon, 4 });
+			//std::list<recipe> recipes;
+			//recipes.push_back({ "sword", recipe_type::weapon, 8 });
+			//recipes.push_back({ "mace", recipe_type::weapon, 6});
+			//recipes.push_back({ "dagger", recipe_type::weapon, 4 });
+			//m_ui.make<ui::recipe_list>("recipes", { {0.0, 0.0}, {0,0}, {0,0}, {0.5,0.0} }, std::move(recipes));
 
-			m_ui.make<ui::recipe_list>("recipes", { {0.0, 0.0}, {0,0}, {0,0}, {0.5,0.0} }, std::move(recipes));
+			auto storage = m_ui.make<ui::panel>("storage", { { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 0.5, 0.5 } });
+			storage->make<ui::board>("background", ui::fill, color{ 1, 1, 0, 0.5 });
+
+			storage->deactivate();
 		}
 
 
 	private:
+		point2 m_hover; // this variable uses relative world coordinates
+
 		// components & units
 		es::sprite_system m_sprites;
 		factory m_factory;

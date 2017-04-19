@@ -90,6 +90,11 @@
     {
       "action": 9,
       "keys": [ 329 ]
+    },
+    {
+      "action": 20,
+      "keys": [ 69 ],
+      "comment" : "use"
     }
   ]
 }

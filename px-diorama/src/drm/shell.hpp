@@ -30,7 +30,7 @@ namespace px {
 		}
 		void click(int button)
 		{
-			bool processed = ui().click(m_hover / point2(gui_cell_width, gui_cell_height), button);
+			bool processed = ui().click(translate_gui(m_hover), button);
 
 			if (!processed)
 			{
@@ -75,6 +75,16 @@ namespace px {
 		shell()
 		{
 			m_perception.scale(-0.95f);
+		}
+
+	private:
+		point2 translate_gui(point2 pixel_coordinates) const
+		{
+			return pixel_coordinates / point2(gui_cell_width, gui_cell_height);
+		}
+		point2 translate_world(point2 pixel_coordinates) const
+		{
+			return pixel_coordinates;
 		}
 
 	private:

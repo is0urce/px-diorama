@@ -26,6 +26,9 @@ namespace px {
 			}
 
 		public:
+			virtual ~inventory_list()
+			{
+			}
 			inventory_list()
 				: m_container(nullptr)
 			{

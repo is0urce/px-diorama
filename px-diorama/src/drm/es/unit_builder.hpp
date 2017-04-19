@@ -67,7 +67,7 @@ namespace px {
 			// assign extra polymorphic links
 			if (m_body && m_storage)
 			{
-				//m_body->assign_useable(m_storage.get());
+				m_body->assign_useable(m_storage.get());
 			}
 		}
 		template <typename Container>

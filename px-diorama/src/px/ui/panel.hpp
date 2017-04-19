@@ -105,6 +105,21 @@ namespace px {
 					[ptr](auto const& subpanel) { return subpanel.get() == ptr; }),
 					std::end(m_unnamed));
 			}
+
+			panel & at(name_type const& tag)
+			{
+				auto find = m_stack.find(tag);
+				if (find == m_stack.end()) throw std::runtime_error("px::ui::panel::at(tag) - no item with this tag");
+
+				return *find->second;
+			}
+			panel const& at(name_type const& tag) const
+			{
+				auto find = m_stack.find(tag);
+				if (find == m_stack.end()) throw std::runtime_error("px::ui::panel::at(tag) - no item with this tag");
+
+				return *find->second;
+			}
 			template <typename SubPanel, typename ...Args>
 			auto make(alignment align, Args &&... args)
 			{
@@ -140,7 +155,7 @@ namespace px {
 			{
 				display window(&cnv, m_bounds);
 				draw_panel(window);
-				action([&](auto & subpanel) {
+				action([&](auto const& subpanel) {
 					subpanel->draw(cnv);
 				});
 			}
@@ -173,6 +188,31 @@ namespace px {
 				return processed;
 			}
 
+		public:
+			virtual ~panel()
+			{
+			}
+			panel() noexcept
+				: panel("", { { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } })
+			{
+			}
+			panel(name_type tag, alignment align)
+				: m_name(tag), m_align(align)
+			{
+			}
+			panel(panel const&) = delete;
+			panel & operator=(panel const&) = delete;
+
+		public:
+			panel & operator[](name_type const& tag)
+			{
+				return *m_stack[tag];
+			}
+			panel const& operator[](name_type const& tag) const
+			{
+				return at(tag);
+			}
+
 		protected:
 			virtual void hover_panel(point2 const& /*position*/) const
 			{
@@ -192,29 +232,20 @@ namespace px {
 				return calculate_bounds(parent);
 			}
 
-		public:
-			panel() noexcept
-				: m_align({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } })
-			{
-			}
-			virtual ~panel()
-			{
-			}
-
 		private:
-			template<typename Operator>
-			bool action_until(Operator && callback_action)
-			{
-				for (auto & p : m_stack)
-				{
-					if (p.second && p.second->active() && std::forward<Operator>(callback_action)(p.second)) return true;
-				}
-				for (auto & p : m_unnamed)
-				{
-					if (p && p->active() && std::forward<Operator>(callback_action)(p)) return true;
-				}
-				return false;
-			}
+			//template<typename Operator>
+			//bool action_until(Operator && callback_action)
+			//{
+			//	for (auto & p : m_stack)
+			//	{
+			//		if (p.second && p.second->active() && std::forward<Operator>(callback_action)(p.second)) return true;
+			//	}
+			//	for (auto & p : m_unnamed)
+			//	{
+			//		if (p && p->active() && std::forward<Operator>(callback_action)(p)) return true;
+			//	}
+			//	return false;
+			//}
 			template<typename Operator>
 			bool action(Operator && callback_action)
 			{
@@ -237,14 +268,14 @@ namespace px {
 			template<typename Operator>
 			bool action(Operator && callback_action) const
 			{
-				for (auto & pair : m_stack)
+				for (auto const& pair : m_stack)
 				{
 					if (pair.second && pair.second->active())
 					{
 						std::forward<Operator>(callback_action)(pair.second);
 					}
 				}
-				for (auto & subpanel : m_unnamed)
+				for (auto const& subpanel : m_unnamed)
 				{
 					if (subpanel && subpanel->active())
 					{
