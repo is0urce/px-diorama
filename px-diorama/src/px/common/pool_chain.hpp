@@ -19,13 +19,36 @@ namespace px {
 	class pool_chain
 	{
 	public:
-		struct node;
-		struct smart_deleter;
-
-	public:
 		typedef pool<T, ChunkSize> pool_type;
 		typedef T element;
 		typedef T* pointer;
+
+		struct node
+		{
+			pool_type chunk;
+			std::unique_ptr<node> next;
+		};
+		struct smart_deleter
+		{
+		public:
+			void operator()(T * ptr) // lambda
+			{
+				m_chunk->release(ptr);
+				//				--m_chain->m_count;
+			}
+			smart_deleter(pool_chain* current, pool_type* chunk) noexcept
+				: m_chain(current), m_chunk(chunk)
+			{
+			}
+			smart_deleter() noexcept
+				: smart_deleter(nullptr, nullptr)
+			{
+			}
+		private:
+			pool_chain* m_chain;
+			pool_type* m_chunk;
+		};
+
 		typedef typename pool_type::shared_ptr shared_ptr; // our
 		typedef typename pool_type::std_ptr std_ptr; // STL
 		typedef std::unique_ptr<T, smart_deleter> unique_ptr; // differs from pool::unique_ptr
@@ -87,9 +110,9 @@ namespace px {
 		}
 
 		// it's safe to release already released objects
-		void release(T* ptr)
+		void release(T * ptr)
 		{
-			for (node* i = &m_root; i != nullptr; i = i->next.get())
+			for (node * i = &m_root; i != nullptr; i = i->next.get())
 			{
 				if (i->chunk.contains(ptr))
 				{
@@ -133,7 +156,7 @@ namespace px {
 		// chain always has at least one root chunk after invoke even it's empty
 		void optimize() noexcept
 		{
-			for (std::unique_ptr<node>* i = &m_root.next; *i; i = &(*i)->next)
+			for (std::unique_ptr<node> * i = &m_root.next; *i; i = &(*i)->next)
 			{
 				if ((*i)->chunk.size() == 0)
 				{
@@ -150,12 +173,12 @@ namespace px {
 		{
 		}
 		pool_chain(pool_chain const&) = delete;
-		pool_chain& operator=(pool_chain const&) = delete;
+		pool_chain & operator=(pool_chain const&) = delete;
 
 	private:
-		pool_type& aquire_free_pool()
+		pool_type & aquire_free_pool()
 		{
-			for (node* i = &m_root; true; i = i->next.get())
+			for (node * i = &m_root; true; i = i->next.get())
 			{
 				if (!i->chunk.full())
 				{
@@ -174,33 +197,5 @@ namespace px {
 		node m_root;
 		//size_t m_count; // cashed for fast size query
 		size_t m_chunks; // current chunks
-
-	public:
-		struct node
-		{
-			pool_type chunk;
-			std::unique_ptr<node> next;
-		};
-
-		struct smart_deleter
-		{
-		public:
-			void operator()(T* ptr) // lambda
-			{
-				m_chunk->release(ptr);
-//				--m_chain->m_count;
-			}
-			smart_deleter(pool_chain* current, pool_type* chunk) noexcept
-				: m_chain(current), m_chunk(chunk)
-			{
-			}
-			smart_deleter() noexcept
-				: smart_deleter(nullptr, nullptr)
-			{
-			}
-		private:
-			pool_chain* m_chain;
-			pool_type* m_chunk;
-		};
 	};
 }

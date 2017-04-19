@@ -253,7 +253,7 @@ namespace px {
 		};
 
 	private:
-		std::array<char, sizeof(T) * Size> m_pool;
+		alignas(T) std::array<char, sizeof(T) * Size> m_pool;
 		std::array<links, Size> m_links;
 		size_t m_current; // cashed number of living objest for fast size queries
 		links* m_free; // first free node (root)

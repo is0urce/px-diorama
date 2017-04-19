@@ -50,13 +50,13 @@ namespace px {
 				{
 					//txt += std::string("[") + std::to_string(m_target->x()) + std::string(", ") + std::to_string(m_target->y()) + std::string("]");
 					//txt += " ";
-					txt += "-OBJ";
+					txt += " OBJ ";
 					if (auto body = m_target->linked<body_component>())
 					{
-						txt += "-BODY";
+						txt += body->name();
 						if (auto inventory = body->linked<container_component>())
 						{
-							txt += "-INV";
+							txt += " INV";
 						}
 					}
 				}

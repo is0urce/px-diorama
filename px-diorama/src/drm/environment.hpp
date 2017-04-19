@@ -241,7 +241,7 @@ namespace px {
 			storage->make<ui::board>("background", ui::fill, color{ 1, 1, 0, 0.5 });
 			storage->deactivate();
 
-			m_target_panel = m_ui.make<ui::target_panel>("target", { { 1.0, 1.0 },{ -21, -2 },{ 20, 1 },{ 0.0, 0.0 } });
+			m_target_panel = m_ui.make<ui::target_panel>("target", { { 1.0, 1.0 },{ -26, -2 },{ 25, 1 },{ 0.0, 0.0 } });
 
 		}
 		transform_component * find_any(point2 position)
