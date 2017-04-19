@@ -416,6 +416,7 @@
     <None Include="data\img\p_bookshelf.json" />
     <None Include="data\img\p_locker.json" />
     <None Include="data\controls.json" />
+    <None Include="data\textures.json" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\dlg\food.txt" />

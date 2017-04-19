@@ -34,6 +34,8 @@ namespace px {
 				unsigned int screen_width = config["window"]["width"];
 				unsigned int screen_height = config["window"]["height"];
 				unsigned int vsync = config["window"]["vsync"];
+				//bool border = config["window"]["border"];
+				//bool fullscreen = config["window"]["fullscreen"];
 
 				// create window and context
 				glfw_instance instance;
@@ -48,7 +50,8 @@ namespace px {
 				shell game;
 
 				// load data from configuration settings
-				for (auto const& texture : config["textures"])
+				auto textures = nlohmann::json::parse(std::ifstream("data/textures.json"));
+				for (auto const& texture : textures["textures"])
 				{
 					std::string path = texture["path"];
 					std::string atlas = texture["meta"];

@@ -327,6 +327,7 @@
     <None Include="data\shaders\uisolid.vert" />
     <None Include="data\shaders\uitext.frag" />
     <None Include="data\shaders\uitext.vert" />
+    <None Include="data\textures.json" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\dlg\food.txt" />
