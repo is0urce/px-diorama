@@ -22,13 +22,13 @@
 
 namespace px {
 
-	int application()
+	int run_application()
 	{
 		try
 		{
 			try
 			{
-				// load config
+				// load configuration
 				auto config = nlohmann::json::parse(std::ifstream("data/config.json"));
 
 				unsigned int screen_width = config["window"]["width"];
@@ -47,7 +47,7 @@ namespace px {
 				bindings<int, key> bindings(config["bindings"]);
 				shell game;
 
-				// setup - load data
+				// load data from configuration settings
 				for (auto const& texture : config["textures"])
 				{
 					std::string path = texture["path"];
@@ -62,7 +62,7 @@ namespace px {
 					game.add_atlas(nlohmann::json::parse(std::ifstream(atlas))["meta"], true);
 				}
 
-				// setup - callbacks
+				// setup callback procedures for window message handling
 				glfw_callback callback(window);
 				callback.on_resize([&](auto * /* window */, int widht, int height) {
 					screen_width = widht;
@@ -122,5 +122,5 @@ namespace px {
 
 int main()
 {
-	return px::application();
+	return px::run_application();
 }

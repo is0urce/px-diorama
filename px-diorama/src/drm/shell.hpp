@@ -27,6 +27,8 @@ namespace px {
 		void hover(int x, int y)
 		{
 			m_hover = { x, y };
+
+			target(translate_world(m_hover));
 		}
 		void click(int button)
 		{
@@ -39,7 +41,7 @@ namespace px {
 		}
 		void scroll(double vertical, double horisontal)
 		{
-			m_perception.scale(static_cast<float>(vertical + horisontal) * 0.1f);
+			m_perception.zoom(static_cast<float>(vertical + horisontal) * 0.1f);
 		}
 
 		template <typename Document>
@@ -74,7 +76,7 @@ namespace px {
 	public:
 		shell()
 		{
-			m_perception.scale(-0.95f);
+			m_perception.zoom(-0.95f);
 		}
 
 	private:

@@ -27,6 +27,7 @@
 
 #include "ui/inventory_list.hpp"
 #include "ui/recipe_list.hpp"
+#include "ui/target_panel.hpp"
 
 #include <list>
 
@@ -35,9 +36,24 @@ namespace px {
 	class environment
 	{
 	public:
-		void hover(point2 relative_world_coordinates) noexcept
+		void target(point2 relative_world_coordinates) noexcept
 		{
-			m_hover = relative_world_coordinates;
+			if (!m_player) return;
+			transform_component * transform = m_player->transform();
+			if (!transform) return;
+
+			m_hover = relative_world_coordinates + transform->position();
+
+			if (m_target_panel)
+			{
+				transform_component * target = nullptr;
+				transform->world()->find(m_hover.x(), m_hover.y(), [&](int /*x*/, int /*y*/, auto * t) {
+					target = t;
+				});
+
+				m_target_panel->lock_target(transform);
+				m_target_panel->lock_position(m_hover);
+			}
 		}
 		void step(point2 const& direction)
 		{
@@ -220,8 +236,10 @@ namespace px {
 
 			auto storage = m_ui.make<ui::panel>("storage", { { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 0.5, 0.5 } });
 			storage->make<ui::board>("background", ui::fill, color{ 1, 1, 0, 0.5 });
-
 			storage->deactivate();
+
+			m_target_panel = m_ui.make<ui::target_panel>("target", { { 1.0, 1.0 },{ -21, -2 },{ 20, 1 },{ 1.0, 1.0 } });
+
 		}
 
 
@@ -240,5 +258,6 @@ namespace px {
 		// user interface
 		ui::panel m_ui;
 		ui::inventory_list * m_inventory;
+		std::shared_ptr<ui::target_panel> m_target_panel;
 	};
 }

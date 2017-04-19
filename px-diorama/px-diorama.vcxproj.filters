@@ -378,6 +378,9 @@
     <ClInclude Include="src\drm\ui\storage_panel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\ui\target_panel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -412,6 +415,7 @@
     <None Include="data\img\p_table.json" />
     <None Include="data\img\p_bookshelf.json" />
     <None Include="data\img\p_locker.json" />
+    <None Include="data\controls.json" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\dlg\food.txt" />

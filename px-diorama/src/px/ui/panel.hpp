@@ -155,6 +155,7 @@ namespace px {
 			{
 				display window(&cnv, m_bounds);
 				draw_panel(window);
+
 				action([&](auto const& subpanel) {
 					subpanel->draw(cnv);
 				});
@@ -194,6 +195,10 @@ namespace px {
 			}
 			panel() noexcept
 				: panel("", { { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } })
+			{
+			}
+			panel(name_type tag)
+				: panel(tag, { { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } })
 			{
 			}
 			panel(name_type tag, alignment align)

@@ -21,7 +21,8 @@ namespace px {
 				: m_background(background)
 			{
 			}
-			board() : board({ 0, 0, 0, 1 })
+			board()
+				: board({ 0, 0, 0, 1 })
 			{
 			}
 

@@ -24,7 +24,7 @@ namespace px {
 		{
 			return m_scale;
 		}
-		void scale(float factor)
+		void zoom(float factor)
 		{
 			m_scale *= factor + 1.0f;
 			m_scale = std::min(10000.0f, std::max(m_scale, 0.0001f)); // clamp

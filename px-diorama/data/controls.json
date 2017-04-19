@@ -1,0 +1,46 @@
+{
+  "bindings": [
+    {
+      "action": 1,
+      "keys": [ 321 ]
+    },
+    {
+      "action": 2,
+      "keys": [ 83, 264, 322 ]
+    },
+    {
+      "action": 3,
+      "keys": [ 323 ]
+    }
+    ,
+    {
+      "action": 4,
+      "keys": [ 65, 263, 324 ]
+    },
+    {
+      "action": 5,
+      "keys": [ 325 ]
+    },
+    {
+      "action": 6,
+      "keys": [ 68, 262, 326 ]
+    },
+    {
+      "action": 7,
+      "keys": [ 327 ]
+    },
+    {
+      "action": 8,
+      "keys": [ 87, 265, 328 ]
+    },
+    {
+      "action": 9,
+      "keys": [ 329 ]
+    },
+    {
+      "action": 20,
+      "keys": [ 69 ],
+      "comment" : "use"
+    }
+  ]
+}
