@@ -176,6 +176,9 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\drm\environment-io.cpp" />
+    <ClCompile Include="src\drm\environment-ui.cpp" />
+    <ClCompile Include="src\drm\environment-main.cpp" />
     <ClCompile Include="src\drm\es\storage_component.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
     <ClCompile Include="src\drm\main_extras.cpp" />
@@ -203,6 +206,7 @@
     <ClInclude Include="src\drm\es\unit_builder.hpp" />
     <ClInclude Include="src\drm\ui\storage_panel.hpp" />
     <ClInclude Include="src\drm\ui\target_panel.hpp" />
+    <ClInclude Include="src\drm\es\unit_data.hpp" />
     <ClInclude Include="src\drm\vertex.hpp" />
     <ClInclude Include="src\px\common\colors.hpp" />
     <ClInclude Include="src\px\es\basic_system.hpp" />

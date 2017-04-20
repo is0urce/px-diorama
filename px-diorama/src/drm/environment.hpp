@@ -13,6 +13,7 @@
 #include "es/unit.hpp"
 #include "es/factory.hpp"
 #include "es/unit_builder.hpp"
+#include "es/unit_data.hpp"
 
 #include "fn/generator.hpp"
 #include "rl/map_chunk.hpp"
@@ -20,10 +21,6 @@
 #include <px/fn/bsp.hpp>
 
 #include <px/ui/panel.hpp>
-#include <px/ui/board.hpp>
-#include <px/ui/text.hpp>
-#include <px/ui/button.hpp>
-#include <px/ui/toggle_panel.hpp>
 
 #include "ui/inventory_list.hpp"
 #include "ui/recipe_list.hpp"
@@ -36,14 +33,22 @@ namespace px {
 	class environment
 	{
 	public:
-		bool running() const noexcept
+		bool running() const noexcept;
+		void shutdown() noexcept;
+		ui::panel & ui() noexcept;
+		ui::panel const& ui() const noexcept;
+		void layout_ui(rectangle bounds) noexcept;
+		void expose_inventory(container_component * /*inventory*/);
+
+		void save();
+		void save(std::string const& name);
+		void load();
+		void load(std::string const& name);
+
+
+		void lock_target(point2 relative_world_coordinates)
 		{
-			return m_run;
-		}
-		void target(point2 relative_world_coordinates)
-		{
-			if (!m_player) return;
-			transform_component * transform = m_player->transform();
+			transform_component * transform = m_player ? m_player->transform() : nullptr;
 			if (!transform) return;
 
 			m_hover = relative_world_coordinates + transform->position();
@@ -56,8 +61,7 @@ namespace px {
 		}
 		void step(point2 const& direction)
 		{
-			if (!m_player) return;
-			transform_component * transform = m_player->transform();
+			transform_component * transform = m_player ? m_player->transform() : nullptr;
 			if (!transform) return;
 
 			point2 destination = transform->position() + direction;
@@ -76,20 +80,13 @@ namespace px {
 		}
 		void activate(unsigned int /*mod*/)
 		{
-			if (auto target = find_any(m_hover))
-			{
-				auto body = target->linked<body_component>();
-				if (body)
-				{
-					body->use(*body, *this);
-				}
-			}
-		}
+			auto target = find_any(m_hover);
+			auto body = target ? target->linked<body_component>() : nullptr;
 
-		template <typename Document>
-		void add_sprite_atlas(Document && atlas, bool reverse_y)
-		{
-			m_sprites.add_atlas(std::forward<Document>(atlas), reverse_y);
+			if (body)
+			{
+				body->use(*body, *this);
+			}
 		}
 
 		void start()
@@ -140,21 +137,14 @@ namespace px {
 			// ui
 			if (m_inventory) m_inventory->set_container(m_player->transform()->linked<body_component>()->linked<container_component>());
 		}
-		void stop()
-		{
-			m_run = false;
-		}
 		void write(perception & view) const
 		{
 			// render sprites
-			if (m_player)
+			if (transform_component * transform = m_player ? m_player->transform() : nullptr)
 			{
-				if (transform_component * transform = m_player->transform())
-				{
-					float x_offset = -static_cast<float>(transform->x());
-					float y_offset = -static_cast<float>(transform->y());
-					m_sprites.write(view.batches(), x_offset, y_offset);
-				}
+				float x_offset = -static_cast<float>(transform->x());
+				float y_offset = -static_cast<float>(transform->y());
+				m_sprites.write(view.batches(), x_offset, y_offset);
 			}
 
 			// render user interface
@@ -188,74 +178,80 @@ namespace px {
 
 			return result;
 		}
-		ui::panel & ui() noexcept
+
+		template <typename Archive>
+		void save_unit(unit const& mobile, Archive & archive)
 		{
-			return m_ui;
+			unit_data data;
+			auto transform = mobile.component<transform_component>();
+			auto body = mobile.component<body_component>();
+
+			data.transform = transform;
+			data.body = body;
+			archive(data);
+
+			//if (data.transform)
+			//{
+			//	//transform->serialize(archive);
+			//}
 		}
-		ui::panel const& ui() const noexcept
+		template <typename Archive>
+		void load_unit(unit_builder & /*builder*/, Archive & archive)
 		{
-			return m_ui;
-		}
-		void layout_ui(rectangle bounds) noexcept
-		{
-			m_ui.layout(bounds);
+			unit_data data;
+			archive(data);
+
+			//if (data.transform)
+			//{
+			//	//auto transform = builder.add_transform();
+			//	//transform->serialize(archive);
+			//}
 		}
 
-		void expose_inventory(container_component * /*inventory*/)
+		template <typename Archive>
+		void save_units(Archive & archive)
 		{
-			m_ui["storage"].reverse_toggle();
+			size_t size = m_units.size();
+			archive(size);
+			for (auto const& unit : m_units)
+			{
+				save_unit(*unit, archive);
+			}
+		}
+		template <typename Archive>
+		void load_units(Archive & archive)
+		{
+			size_t size;
+			archive(size);
+			for (size_t i = 0; i != size; ++i)
+			{
+				unit_builder builder(&m_factory);
+				load_unit(builder, archive);
+				m_units.push_back(builder.assemble());
+			}
+		}
+
+		template <typename Document>
+		void add_sprite_atlas(Document && atlas, bool reverse_y)
+		{
+			m_sprites.add_atlas(std::forward<Document>(atlas), reverse_y);
 		}
 
 	public:
-		~environment()
-		{
-		}
-		environment()
-			: m_factory(&m_sprites)
-			, m_player(nullptr)
-			, m_inventory(nullptr)
-			, m_run(true)
-		{
-			setup_ui();
-		}
+		~environment();
+		environment();
 
 	private:
-		void setup_ui()
-		{
-			//auto inventory_block = m_ui.make<ui::panel>("inventory_block", { {0.25, 0.25}, {0, 1}, {0, -1}, {0.5, 0.5} });
-			//inventory_block->make<ui::board>("background", ui::fill, color{ 0, 0, 1, 1 });
-			//m_inventory = inventory_block->make<ui::inventory_list>("list", ui::fill).get();
-
-			//auto inventory_toggle = m_ui.make<ui::toggle_panel>("inventory_toggle", { {0.25, 0.25}, {0, 0}, {0, 1}, {0.5, 0.0} });
-			//inventory_toggle->add_background({ 0, 0, 0.5, 1 });
-			//inventory_toggle->add_label("Inventory");
-			//inventory_toggle->assign_content(inventory_block, false);
-
-			//std::list<recipe> recipes;
-			//recipes.push_back({ "sword", recipe_type::weapon, 8 });
-			//recipes.push_back({ "mace", recipe_type::weapon, 6});
-			//recipes.push_back({ "dagger", recipe_type::weapon, 4 });
-			//m_ui.make<ui::recipe_list>("recipes", { {0.0, 0.0}, {0,0}, {0,0}, {0.5,0.0} }, std::move(recipes));
-
-			auto storage = m_ui.make<ui::panel>("storage", { { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 0.5, 0.5 } });
-			storage->make<ui::board>("background", ui::fill, color{ 1, 1, 0, 0.5 });
-			storage->deactivate();
-
-			m_target_panel = m_ui.make<ui::target_panel>("target", { { 1.0, 1.0 },{ -26, -2 },{ 25, 1 },{ 0.0, 0.0 } });
-
-		}
+		void setup_ui();
 		transform_component * find_any(point2 position)
 		{
 			transform_component * result = nullptr;
-			if (m_player)
-			{
-				if (transform_component * transform = m_player->transform())
-				{
-					transform->world()->find(position.x(), position.y(), [&](int /*x*/, int /*y*/, transform_component * obj) {
-						result = obj;
-					});
-				}
-			}
+
+			auto transform = m_player ? m_player->transform() : nullptr;
+			auto world = transform ? transform->world() : nullptr;
+
+			if (world) world->find(position.x(), position.y(), [&](int /*x*/, int /*y*/, transform_component * obj) { result = obj;	});
+
 			return result;
 		}
 

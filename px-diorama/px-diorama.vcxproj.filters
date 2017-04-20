@@ -381,6 +381,9 @@
     <ClInclude Include="src\drm\ui\target_panel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\es\unit_data.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -390,6 +393,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\drm\es\storage_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\drm\environment-ui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\drm\environment-main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\drm\environment-io.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

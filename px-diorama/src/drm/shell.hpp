@@ -28,7 +28,7 @@ namespace px {
 		{
 			m_hover = { x, y };
 
-			target(translate_world(m_hover));
+			lock_target(translate_world(m_hover));
 		}
 		void click(int button)
 		{

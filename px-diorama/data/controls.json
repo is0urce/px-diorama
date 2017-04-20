@@ -41,6 +41,16 @@
       "action": 20,
       "keys": [ 69 ],
       "comment" : "use"
+    },
+    {
+      "action": 105,
+      "keys": [ 294 ],
+      "comment" : "quicksave"
+    },
+    {
+      "action": 109,
+      "keys": [ 298 ],
+      "comment" : "quickload"
     }
   ]
 }
