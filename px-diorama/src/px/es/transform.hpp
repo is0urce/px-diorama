@@ -87,7 +87,7 @@ namespace px {
 			template <typename Archive>
 			void serialize(Archive & archive)
 			{
-				archive(m_current, m_inside);
+				archive(m_current);
 			}
 
 		public:

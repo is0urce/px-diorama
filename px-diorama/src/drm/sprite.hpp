@@ -15,6 +15,7 @@ namespace px {
 		unsigned int texture;
 		unsigned int layer;
 		unsigned int glyph;
+		char const* name;
 	};
 
 	struct sprite

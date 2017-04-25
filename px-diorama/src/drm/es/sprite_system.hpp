@@ -88,7 +88,10 @@ namespace px {
 			template <typename Real>
 			void add_sprite(std::string const& name, Real sx, Real sy, Real dx, Real dy, bool reverse_y, unsigned int texture, unsigned int layer, unsigned int glyph)
 			{
-				auto & img = m_meta[name];
+				auto ib_pair = m_meta.emplace(name, image{});
+				auto & img = ib_pair.first->second; // get iterator, get value
+
+				// set image attributes
 				img.sx = sx;
 				img.sy = reverse_y ? 1 - sy : sy;
 				img.dx = dx;
@@ -96,6 +99,7 @@ namespace px {
 				img.layer = layer;
 				img.texture = texture;
 				img.glyph = glyph;
+				img.name = ib_pair.first->first.c_str(); // get iterator, get key, get c_str
 			}
 
 		private:

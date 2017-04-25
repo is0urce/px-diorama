@@ -42,6 +42,7 @@ namespace px {
 		bool running() const noexcept;
 		void shutdown() noexcept;
 		void start();
+		void clear();
 		std::shared_ptr<unit> spawn(std::string const& name, point2 location);
 
 		// user interface
@@ -105,10 +106,18 @@ namespace px {
 			archive(total_components);
 
 			mobile.enumerate_components([&](auto & part) {
-				if (px::shared_ptr<transform_component> transform = dynamic_pointer_cast<transform_component>(part))
+				if (auto transform = dynamic_pointer_cast<transform_component>(part))
 				{
 					archive(unit_component::transform);
 					archive(*transform);
+				}
+				else if (auto sprite = dynamic_pointer_cast<sprite_component>(part))
+				{
+					archive(unit_component::sprite);
+
+					size_t strlen = std::strlen(sprite->name);
+					archive(strlen);
+					archive.saveBinary(sprite->name, strlen);
 				}
 				else
 				{
@@ -127,14 +136,36 @@ namespace px {
 				unit_component variant;
 				archive(variant);
 
-				if (variant == unit_component::transform)
+				switch (variant) {
+				case unit_component::transform:
 				{
-					auto transform = builder.add_transform(point2{});
+					auto transform = builder.add_transform({});
 					archive(*transform);
 				}
-				else if (variant != unit_component::undefined) // defined! but not supported
+				break;
+				case unit_component::sprite:
 				{
-					throw std::runtime_error("px::environment::load_unit(builder, archive) - unknown component");
+					size_t strlen;
+					archive(strlen);
+
+					std::vector<char> name(strlen + 1);
+					archive.loadBinary(name.data(), strlen);
+					name[strlen] = 0;
+
+					auto sprite = builder.add_sprite(name.data());
+				}
+				break;
+					// there was unserilized component, just skip it
+				case unit_component::container:
+				case unit_component::storage:
+				case unit_component::body:
+				case unit_component::player:
+				case unit_component::undefined:
+					break;
+					// component defined, but not supported (version conflict?)
+				default:
+					//throw std::runtime_error("px::environment::load_unit(builder, archive) - unknown component");
+					break;
 				}
 			}
 		}
@@ -157,8 +188,13 @@ namespace px {
 			for (size_t i = 0; i != size; ++i)
 			{
 				unit_builder builder(m_factory.get());
+
 				load_unit(builder, archive);
-				m_units.push_back(builder.assemble());
+				auto mobile = builder.assemble();
+				mobile->enable();
+				m_units.push_back(mobile);
+
+				m_player = mobile.get();
 			}
 		}
 
@@ -194,8 +230,8 @@ namespace px {
 
 		// components & units
 		es::sprite_system m_sprites;
-		std::unique_ptr<factory> m_factory;
 		std::list<std::shared_ptr<unit>> m_units;
+		std::unique_ptr<factory> m_factory;
 		unit * m_player;
 
 		// terrain

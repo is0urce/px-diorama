@@ -14,13 +14,14 @@
 #include <fstream>
 
 namespace {
-	const char * quicksave_path = "quick.sav";
+	char const* quicksave_path = "quick.sav";
 }
 
 namespace px {
 
 	environment::~environment()
 	{
+		clear();
 	}
 
 	environment::environment()
@@ -40,7 +41,11 @@ namespace px {
 	{
 		m_run = false;
 	}
-
+	void environment::clear()
+	{
+		m_units.clear();
+		m_player = nullptr;
+	}
 	void environment::update(perception & view) const
 	{
 		// render sprites
@@ -150,8 +155,8 @@ namespace px {
 	{
 		std::ofstream output(name);
 
-		cereal::XMLOutputArchive archive(output);
-		//cereal::BinaryOutputArchive archive(output);
+		//cereal::XMLOutputArchive archive(output);
+		cereal::BinaryOutputArchive archive(output);
 
 		save_units(archive);
 	}
@@ -159,10 +164,11 @@ namespace px {
 	{
 		std::ifstream input(name);
 
-		cereal::XMLInputArchive archive(input);
-		//cereal::BinaryInputArchive archive(input);
+		//cereal::XMLInputArchive archive(input);
+		cereal::BinaryInputArchive archive(input);
 
-		m_units.clear();
+		clear();
+
 		load_units(archive);
 	}
 

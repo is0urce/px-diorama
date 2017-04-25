@@ -40,6 +40,10 @@ namespace px {
 			}
 
 		public:
+			virtual ~transform_system()
+			{
+				basic_system::clear(); // remove items before space release
+			}
 			transform_system()
 				: m_space(64)
 			{

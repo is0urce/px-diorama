@@ -19,7 +19,8 @@ namespace px {
 	public:
 		auto add_transform(point2 location)
 		{
-			return m_transform = m_factory->make_transform(location);
+			m_transform = m_factory->make_transform(location);
+			return m_transform;
 		}
 		auto add_sprite(std::string name)
 		{

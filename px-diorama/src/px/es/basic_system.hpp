@@ -49,6 +49,10 @@ namespace px {
 			{
 				m_pool->enumerate(std::forward<Operator>(op));
 			}
+			void clear()
+			{
+				m_pool->clear();
+			}
 
 		public:
 			basic_system()
