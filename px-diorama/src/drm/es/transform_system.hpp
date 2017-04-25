@@ -34,6 +34,10 @@ namespace px {
 				setup(*result, position);
 				return result;
 			}
+			transform_component::space_type * space() noexcept
+			{
+				return &m_space;
+			}
 
 		public:
 			transform_system()

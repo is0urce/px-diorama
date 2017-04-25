@@ -64,7 +64,7 @@ namespace px {
 			m_perception.canvas().cls();
 			layout_ui(m_perception.canvas().range());
 
-			write(m_perception);
+			update(m_perception);
 		}
 		void resize(unsigned int width, unsigned int height)
 		{
@@ -77,7 +77,7 @@ namespace px {
 		shell()
 		{
 			//m_perception.zoom(-0.95f);
-			m_perception.set_scale(1.0);
+			m_perception.set_scale(0.10f);
 		}
 
 	private:

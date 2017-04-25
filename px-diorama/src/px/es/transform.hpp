@@ -83,6 +83,13 @@ namespace px {
 				m_space->find(m_current.x(), m_current.y(), radius, [&](int x, int y, Sub * e) { std::forward<Operator>(fn)(e, point2{ x, y }); });
 			}
 
+			// space is not serizlized
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_current, m_inside);
+			}
+
 		public:
 			transform() noexcept
 				: m_inside(false), m_space(nullptr)

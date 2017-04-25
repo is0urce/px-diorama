@@ -43,14 +43,18 @@ namespace px {
 			{
 				m_components.clear();
 			}
+			size_t components_size() const noexcept
+			{
+				return m_components.size();
+			}
 
 			template <typename Operator>
-			void enumerate(Operator && fn)
+			void enumerate_components(Operator && fn)
 			{
 				std::for_each(std::begin(m_components), std::end(m_components), std::forward<Operator>(fn));
 			}
 			template <typename Operator>
-			void enumerate(Operator && fn) const
+			void enumerate_components(Operator && fn) const
 			{
 				std::for_each(std::begin(m_components), std::end(m_components), std::forward<Operator>(fn));
 			}
@@ -58,13 +62,13 @@ namespace px {
 			// activate all components in a collection
 			void enable()
 			{
-				enumerate([](auto & component) { component->activate(); });
+				enumerate_components([](auto & component) { component->activate(); });
 			}
 
 			// deactivate all components in a collection
 			void disable()
 			{
-				enumerate([](auto & component) { component->deactivate(); });
+				enumerate_components([](auto & component) { component->deactivate(); });
 			}
 
 			// querry component by type

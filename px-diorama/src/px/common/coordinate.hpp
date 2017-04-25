@@ -218,6 +218,14 @@ namespace px {
 				memory[i] = static_cast<Memory>(m_array[i]);
 			}
 		}
+		template <typename Archive>
+		void serialize(Archive & archive)
+		{
+			for (size_t i = 0; i < Dim; ++i)
+			{
+				archive(m_array[i]);
+			}
+		}
 
 	public:
 		// default constructor is for uninitialized state

@@ -176,8 +176,6 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\drm\environment-io.cpp" />
-    <ClCompile Include="src\drm\environment-ui.cpp" />
     <ClCompile Include="src\drm\environment-main.cpp" />
     <ClCompile Include="src\drm\es\storage_component.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
@@ -206,7 +204,7 @@
     <ClInclude Include="src\drm\es\unit_builder.hpp" />
     <ClInclude Include="src\drm\ui\storage_panel.hpp" />
     <ClInclude Include="src\drm\ui\target_panel.hpp" />
-    <ClInclude Include="src\drm\es\unit_data.hpp" />
+    <ClInclude Include="src\drm\es\unit_component.hpp" />
     <ClInclude Include="src\drm\vertex.hpp" />
     <ClInclude Include="src\px\common\colors.hpp" />
     <ClInclude Include="src\px\es\basic_system.hpp" />
@@ -317,7 +315,6 @@
     <None Include="data\img\m_snake32.json" />
     <None Include="data\img\p_locker.json" />
     <None Include="data\img\p_table.json" />
-    <None Include="data\img\rabling_harvester.json" />
     <None Include="data\img\taurus32.json" />
     <None Include="data\img\wall32.json" />
     <None Include="data\scripts\q.lua" />

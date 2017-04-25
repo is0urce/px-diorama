@@ -40,6 +40,14 @@ namespace px {
 		{
 			return px::make_shared<storage_component>();
 		}
+		auto sprites()
+		{
+			return m_sprites;
+		}
+		auto transforms()
+		{
+			return &m_transforms;
+		}
 
 	public:
 		factory(es::sprite_system * sprites)

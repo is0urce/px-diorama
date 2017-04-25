@@ -20,13 +20,13 @@ namespace px {
 		, public es::link<body_component>
 	{
 	public:
-		transform_component()
-		{
-		}
 		virtual ~transform_component()
 		{
 			retract();
 			reincarnate();
+		}
+		transform_component()
+		{
 		}
 
 	protected:
