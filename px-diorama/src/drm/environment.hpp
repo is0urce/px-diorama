@@ -106,12 +106,12 @@ namespace px {
 			archive(total_components);
 
 			mobile.enumerate_components([&](auto & part) {
-				if (auto transform = dynamic_pointer_cast<transform_component>(part))
+				if (auto transform = dynamic_cast<transform_component*>(part.get()))
 				{
 					archive(unit_component::transform);
 					archive(*transform);
 				}
-				else if (auto sprite = dynamic_pointer_cast<sprite_component>(part))
+				else if (auto sprite = dynamic_cast<sprite_component*>(part.get()))
 				{
 					archive(unit_component::sprite);
 
@@ -140,7 +140,7 @@ namespace px {
 				case unit_component::transform:
 				{
 					auto transform = builder.add_transform({});
-					archive(*transform);
+					archive(*transform); // should be disabled by default, so we can write to internal values
 				}
 				break;
 				case unit_component::sprite:
@@ -148,24 +148,22 @@ namespace px {
 					size_t strlen;
 					archive(strlen);
 
-					std::vector<char> name(strlen + 1);
+					std::vector<char> name(strlen + 1, 0);
 					archive.loadBinary(name.data(), strlen);
-					name[strlen] = 0;
 
-					auto sprite = builder.add_sprite(name.data());
+					builder.add_sprite(name.data());
 				}
 				break;
-					// there was unserilized component, just skip it
 				case unit_component::container:
 				case unit_component::storage:
 				case unit_component::body:
 				case unit_component::player:
+					// there was unserilized component, just skip it
 				case unit_component::undefined:
 					break;
 					// component defined, but not supported (version conflict?)
 				default:
-					//throw std::runtime_error("px::environment::load_unit(builder, archive) - unknown component");
-					break;
+					throw std::runtime_error("px::environment::load_unit(builder, archive) - unknown component");
 				}
 			}
 		}
