@@ -10,6 +10,7 @@
 #include <lodepng.h>
 #include <json.hpp>
 
+#include "configuration.hpp"
 #include "shell.hpp"
 #include "draw/renderer.hpp"
 
@@ -29,17 +30,20 @@ namespace px {
 			try
 			{
 				// load configuration
-				auto config = nlohmann::json::parse(std::ifstream("data/config.json"));
-
-				unsigned int screen_width = config["window"]["width"];
-				unsigned int screen_height = config["window"]["height"];
-				unsigned int vsync = config["window"]["vsync"];
-				bool border = config["window"]["border"];
-				bool fullscreen = config["window"]["fullscreen"];
+				bindings<int, key> bindings(nlohmann::json::parse(std::ifstream(keybindings_path))["bindings"]);
+				unsigned int screen_width, screen_height, vsync;
+				bool border, fullscreen;
+				{
+					auto config = nlohmann::json::parse(std::ifstream(configuration_path));
+					screen_width = config["window"]["width"];
+					screen_height = config["window"]["height"];
+					vsync = config["window"]["vsync"];
+					border = config["window"]["border"];
+					fullscreen = config["window"]["fullscreen"];
+				}
 
 				// create window and context
 				glfw_instance instance;
-
 				glfwWindowHint(GLFW_DECORATED, border ? 1 : 0); // border
 
 				auto monitor = glfwGetPrimaryMonitor();
@@ -61,15 +65,14 @@ namespace px {
 				glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", monitor, nullptr);
 				glfwMakeContextCurrent(window);
 				glfwSwapInterval(vsync);
-				glewInit();	// initialize extensions loader (need context first)
+				glewInit();	// initialize OpenGL extensions loader (need context first)
 
 				// create game logic structures
 				renderer graphics(screen_width, screen_height);
-				bindings<int, key> bindings(nlohmann::json::parse(std::ifstream("data/controls.json"))["bindings"]);
 				shell game;
 
 				// load data from configuration settings
-				auto textures = nlohmann::json::parse(std::ifstream("data/textures.json"));
+				auto textures = nlohmann::json::parse(std::ifstream(textureatlas_path));
 				for (auto const& texture : textures["textures"])
 				{
 					std::string path = texture["path"];
@@ -84,6 +87,7 @@ namespace px {
 					auto meta = nlohmann::json::parse(std::ifstream(atlas));
 					game.add_atlas(meta["meta"], true);
 				}
+				textures.clear();
 
 				// setup callback procedures for window message handling
 				glfw_callback callback(window);

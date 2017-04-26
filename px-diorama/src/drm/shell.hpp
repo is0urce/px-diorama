@@ -26,9 +26,7 @@ namespace px {
 		}
 		void hover(int x, int y)
 		{
-			m_hover = { x, y };
-
-			lock_target(translate_world(m_hover));
+			target(translate_world(m_hover = { x, y }));
 		}
 		void click(int button)
 		{
@@ -76,7 +74,6 @@ namespace px {
 	public:
 		shell()
 		{
-			//m_perception.zoom(-0.95f);
 			m_perception.set_scale(0.10f);
 		}
 

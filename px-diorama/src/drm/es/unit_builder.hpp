@@ -19,8 +19,7 @@ namespace px {
 	public:
 		auto add_transform(point2 location)
 		{
-			m_transform = m_factory->make_transform(location);
-			return m_transform;
+			return m_transform = m_factory->make_transform(location);
 		}
 		auto add_sprite(std::string name)
 		{
@@ -38,6 +37,12 @@ namespace px {
 		{
 			return m_storage = m_factory->make_storage();
 		}
+		auto add_player()
+		{
+			return m_player = m_factory->make_player();
+		}
+
+		// combine
 		std::shared_ptr<unit> assemble()
 		{
 			auto result = std::make_shared<unit>();
@@ -48,7 +53,24 @@ namespace px {
 			return result;
 		}
 
+		// fetch part status
+		bool is_player() const
+		{
+			return m_player;
+		}
+
+		// fetch current transform part
+		auto current_transform()
+		{
+			return m_transform;
+		}
+
 	public:
+		unit_builder(factory & builder)
+			: m_factory(&builder)
+		{
+
+		}
 		unit_builder(factory * builder)
 			: m_factory(builder)
 		{
@@ -79,6 +101,7 @@ namespace px {
 			if (m_body)			product.add(m_body);
 			if (m_container)	product.add(m_container);
 			if (m_storage)		product.add(m_storage);
+			if (m_player)		product.add(m_player);
 		}
 
 	private:
@@ -89,5 +112,6 @@ namespace px {
 		shared_ptr<body_component> m_body;
 		shared_ptr<container_component> m_container;
 		shared_ptr<storage_component> m_storage;
+		shared_ptr<player_component> m_player;
 	};
 }

@@ -11,7 +11,9 @@
 #include "container_system.hpp"
 
 #include "storage_component.hpp"
+#include "player_component.hpp"
 
+#include <memory>
 #include <string>
 #include <stdexcept>
 
@@ -24,7 +26,7 @@ namespace px {
 		{
 			return m_transforms.make_shared(location);
 		}
-		auto make_sprite(std::string name)
+		auto make_sprite(std::string const& name)
 		{
 			return m_sprites->make_shared(name);
 		}
@@ -40,6 +42,11 @@ namespace px {
 		{
 			return px::make_shared<storage_component>();
 		}
+		auto make_player()
+		{
+			return px::make_shared<player_component>();
+		}
+
 		auto sprites()
 		{
 			return m_sprites;
@@ -52,6 +59,7 @@ namespace px {
 	public:
 		factory(es::sprite_system * sprites)
 			: m_sprites(sprites)
+			, m_ss(std::make_unique<es::sprite_system>())
 		{
 			if (!sprites) throw std::runtime_error("px::factory::ctor() - sprites is null");
 		}
@@ -63,5 +71,6 @@ namespace px {
 		es::transform_system m_transforms;
 		es::body_system m_bodies;
 		es::container_system m_containers;
+		std::unique_ptr<es::sprite_system> m_ss;
 	};
 }

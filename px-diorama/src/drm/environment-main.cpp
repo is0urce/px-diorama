@@ -1,5 +1,8 @@
 #include "environment.hpp"
 
+#include "es/unit_builder.hpp"
+#include "es/unit_component.hpp"
+
 #include <px/ui/board.hpp>
 #include <px/ui/text.hpp>
 #include <px/ui/button.hpp>
@@ -44,15 +47,19 @@ namespace px {
 	void environment::clear()
 	{
 		m_units.clear();
-		m_player = nullptr;
+		impersonate(nullptr);
+	}
+	void environment::impersonate(transform_component * player)
+	{
+		m_player = player;
 	}
 	void environment::update(perception & view) const
 	{
 		// render sprites
-		if (auto transform = m_player ? m_player->transform() : nullptr)
+		if (m_player)
 		{
-			float dx = -static_cast<float>(transform->x());
-			float dy = -static_cast<float>(transform->y());
+			float dx = -static_cast<float>(m_player->x());
+			float dy = -static_cast<float>(m_player->y());
 			m_factory->sprites()->write(view.batches(), dx, dy);
 		}
 
@@ -95,7 +102,11 @@ namespace px {
 
 		// units
 
-		m_player = spawn("@", { 54, 46 }).get();
+		auto player = spawn("@", { 54, 46 });
+
+		player->add(m_factory->make_player());
+
+		m_player = player->transform();
 
 		spawn("m_snake", { 50, 50 });
 		spawn("m_h_rabling_harvester", { 50, 51 });
@@ -110,7 +121,7 @@ namespace px {
 		spawn("p_box", { 55, 49 });
 
 		// ui
-		if (m_inventory) m_inventory->set_container(m_player->transform()->linked<body_component>()->linked<container_component>());
+		if (m_inventory) m_inventory->set_container(m_player->linked<body_component>()->linked<container_component>());
 	}
 	void environment::generate_terrain()
 	{
@@ -170,6 +181,115 @@ namespace px {
 		clear();
 
 		load_units(archive);
+	}
+	template <typename Archive>
+	void environment::save_units(Archive & archive)
+	{
+		size_t size = m_units.size();
+		archive(size);
+		for (auto const& unit : m_units)
+		{
+			save_unit(*unit, archive);
+		}
+	}
+	template <typename Archive>
+	void environment::load_units(Archive & archive)
+	{
+		size_t total_units;
+		archive(total_units);
+		for (size_t i = 0; i != total_units; ++i)
+		{
+			unit_builder builder(*m_factory);
+			load_unit(builder, archive);
+			auto mobile = builder.assemble();
+
+			mobile->enable();
+			m_units.push_back(mobile);
+
+			if (builder.is_player())
+			{
+				impersonate(mobile->transform());
+			}
+		}
+	}
+	template <typename Archive>
+	void environment::save_unit(unit const& mobile, Archive & archive)
+	{
+		size_t total_components = mobile.components_size();
+		archive(total_components);
+
+		mobile.enumerate_components([&](auto & part) {
+			if (auto transform = dynamic_cast<transform_component*>(part.get()))
+			{
+				archive(unit_component::transform);
+				archive(*transform);
+			}
+			else if (auto sprite = dynamic_cast<sprite_component*>(part.get()))
+			{
+				archive(unit_component::sprite);
+
+				size_t strlen = std::strlen(sprite->name);
+				archive(strlen);
+				archive.saveBinary(sprite->name, strlen);
+			}
+			else if (auto player = dynamic_cast<player_component*>(part.get()))
+			{
+				archive(unit_component::player);
+			}
+			else
+			{
+				archive(unit_component::undefined);
+			}
+		});
+	}
+	template <typename Archive, typename Builder>
+	void environment::load_unit(Builder & builder, Archive & archive)
+	{
+		size_t total_components;
+		archive(total_components);
+
+		for (size_t i = 0; i != total_components; ++i)
+		{
+			unit_component variant;
+			archive(variant);
+
+			switch (variant) {
+			case unit_component::transform:
+			{
+				auto transform = builder.add_transform({});
+				archive(*transform); // should be disabled by default, so we can write to internal values
+			}
+			break;
+			case unit_component::sprite:
+			{
+				size_t strlen;
+				archive(strlen);
+
+				std::vector<char> name(strlen + 1, 0);
+				archive.loadBinary(name.data(), strlen);
+
+				builder.add_sprite(name.data());
+			}
+			break;
+			case unit_component::container:
+			case unit_component::storage:
+			case unit_component::body:
+				break;
+			case unit_component::player:
+			{
+				builder.add_player();
+			}
+			break;
+			case unit_component::undefined:
+			{
+				// there was unserilized component, just skip it
+			}
+			break;
+			// component defined, but not supported (version conflict?)
+			default:
+				throw std::runtime_error("px::environment::load_unit(builder, archive) - unknown component");
+			}
+		}
 	}
 
 

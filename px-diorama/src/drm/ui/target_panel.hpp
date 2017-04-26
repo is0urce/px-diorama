@@ -8,6 +8,7 @@
 #include <px/ui/panel.hpp>
 
 #include "drm/es/transform_component.hpp"
+#include "drm/es/body_component.hpp"
 
 namespace px {
 	namespace ui {
@@ -16,6 +17,11 @@ namespace px {
 			: public panel
 		{
 		public:
+			void lock(point2 position, transform_component * target)
+			{
+				lock_position(position);
+				lock_target(target);
+			}
 			void lock_target(transform_component * target)
 			{
 				m_target = target;

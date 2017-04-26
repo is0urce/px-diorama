@@ -182,12 +182,14 @@
     <ClCompile Include="src\drm\main_extras.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\drm\configuration.hpp" />
     <ClInclude Include="src\drm\draw\blur.hpp" />
     <ClInclude Include="src\drm\draw\distance_font.hpp" />
     <ClInclude Include="src\drm\environment.hpp" />
     <ClInclude Include="src\drm\es\body_component.hpp" />
     <ClInclude Include="src\drm\es\body_system.hpp" />
     <ClInclude Include="src\drm\es\container_system.hpp" />
+    <ClInclude Include="src\drm\es\player_component.hpp" />
     <ClInclude Include="src\drm\es\storage_component.hpp" />
     <ClInclude Include="src\drm\es\useable.hpp" />
     <ClInclude Include="src\drm\es\factory.hpp" />
