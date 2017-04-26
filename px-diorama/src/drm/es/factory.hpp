@@ -60,16 +60,14 @@ namespace px {
 		factory()
 			: m_sprites(std::make_unique<es::sprite_system>())
 		{
-	//		if (!sprites) throw std::runtime_error("px::factory::ctor() - sprites is null");
 		}
 		factory(factory const&) = delete;
 		factory& operator=(factory const&) = delete;
 
 	private:
-		//es::sprite_system * m_sprites;
 		es::transform_system m_transforms;
+		std::unique_ptr<es::sprite_system> m_sprites;
 		es::body_system m_bodies;
 		es::container_system m_containers;
-		std::unique_ptr<es::sprite_system> m_sprites;
 	};
 }

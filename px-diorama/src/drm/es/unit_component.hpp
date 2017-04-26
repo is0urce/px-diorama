@@ -28,8 +28,8 @@ namespace px {
 
 	enum class unit_persistency : std::uint8_t
 	{
-		serialized = 0,
-		permanent,
-		temporary
+		serialized	= 0,
+		permanent	= 1,
+		temporary	= 2
 	};
 }

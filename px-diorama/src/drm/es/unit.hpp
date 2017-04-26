@@ -20,19 +20,14 @@ namespace px {
 	public:
 		transform_component * transform()
 		{
-			if (!m_transform)
-			{
+			if (!m_transform) {
 				m_transform = component<transform_component>().get();
 			}
 			return m_transform;
 		}
 		transform_component const* transform() const
 		{
-			if (m_transform)
-			{
-				return m_transform;
-			}
-			return component<transform_component>().get();
+			return m_transform ? m_transform : component<transform_component>().get();
 		}
 
 	public:

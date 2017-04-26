@@ -200,7 +200,7 @@
     <ClInclude Include="src\drm\es\sprite_component.hpp" />
     <ClInclude Include="src\drm\es\sprite_system.hpp" />
     <ClInclude Include="src\drm\fn\generator.hpp" />
-    <ClInclude Include="src\drm\rl\map_chunk.hpp" />
+    <ClInclude Include="src\drm\rl\terrain.hpp" />
     <ClInclude Include="src\drm\ui\inventory_list.hpp" />
     <ClInclude Include="src\drm\ui\recipe_list.hpp" />
     <ClInclude Include="src\drm\es\unit_builder.hpp" />

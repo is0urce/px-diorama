@@ -1,7 +1,7 @@
 #pragma once
 
 #include <px/common/rectangle.hpp>
-#include <drm/rl/map_chunk.hpp>
+#include <px/common/matrix.hpp>
 
 #include <px/fn/room_aux.hpp>
 
@@ -24,8 +24,7 @@ namespace px { namespace fn {
 			void rasterize(matrix2<unsigned char> & map)
 			{
 				map.fill(0);
-				for (auto & room : m_rooms)
-				{
+				for (auto & room : m_rooms)	{
 					room.bounds.enumerate([&](auto const& point) {
 						if (!map.contains(point)) return;
 

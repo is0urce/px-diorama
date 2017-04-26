@@ -128,8 +128,11 @@ namespace px {
 	}
 	void environment::generate_terrain()
 	{
-		m_map.resize({ 100, 100 });
-		m_map.enumerate([this](auto const& point, auto & tile) {
+		point2 range(100, 100);
+		m_map.resize(range);
+		rectangle(range).enumerate([this](auto const& point) {
+			auto & tile = m_map[point];
+
 			tile.transform.move(point);
 
 			tile.ground = m_factory->sprites()->make_unique(";");
@@ -144,9 +147,10 @@ namespace px {
 		dig.generate(rng, 5, 12, 1, 15);
 		matrix2<unsigned char> map(100, 100);
 		dig.rasterize(map);
-		map.enumerate([&](auto const& point, unsigned char t) {
-			if (t == 0) return;
+		map.enumerate([this](auto const& point, auto terrain_variant) {
 			auto & tile = m_map[point];
+
+			if (terrain_variant == 0) return;
 
 			tile.ground.reset();
 
@@ -288,8 +292,8 @@ namespace px {
 				// there was unserilized component, just skip it
 			}
 			break;
-			// component defined, but not supported (version conflict?)
 			default:
+				// component defined, but not supported (version conflict?)
 				throw std::runtime_error("px::environment::load_unit(builder, archive) - unknown component");
 			}
 		}

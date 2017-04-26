@@ -1,4 +1,4 @@
-// name: map_chunk.hpp
+// name: terrain.hpp
 
 #pragma once
 
@@ -13,10 +13,10 @@ namespace px {
 
 	struct tile
 	{
-		// use transform in stack to avoid exessive management of simple anchor points
+		// use transform on stack to avoid exessive management of simple anchor points
 		transform_component transform;
 
-		// two sprite to composite tiles
+		// two sprites to composite tiles
 		es::sprite_system::unique_ptr ground;
 		es::sprite_system::unique_ptr wall;
 
@@ -25,15 +25,26 @@ namespace px {
 	};
 
 	template <typename Tile>
-	class map_chunk : public matrix2<Tile>
+	class terrain_chunk
 	{
 	public:
 		typedef Tile tile_type;
 
 	public:
+		void resize(point2 const& size)
+		{
+			m_matrix.resize(size);
+		}
 		bool traversable(point2 const& position) const noexcept
 		{
-			return contains(position) && at(position).mass.traversable();
+			return m_matrix.contains(position) && m_matrix[position].mass.traversable();
 		}
+		tile_type & operator[](point2 const& position)
+		{
+			return m_matrix[position];
+		}
+
+	private:
+		matrix2<tile_type> m_matrix;
 	};
 }

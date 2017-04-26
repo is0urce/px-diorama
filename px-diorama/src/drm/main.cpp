@@ -87,26 +87,26 @@ namespace px {
 
 				// setup callback procedures for window message handling
 				glfw_callback callback(window);
-				callback.on_resize([&](auto * /* window */, int widht, int height) {
+				callback.on_resize([&](auto /* window */, int widht, int height) {
 					screen_width = widht;
 					screen_height = height;
 
 					graphics.resize(screen_width, screen_height);
 					game.resize(screen_width, screen_height);
 				});
-				callback.on_key([&](auto * /* window */, int key, int /* scancode */, int action, int /* mods */) {
+				callback.on_key([&](auto /* window */, int key, int /* scancode */, int action, int /* mods */) {
 					if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(bindings.select(key, key::not_valid));
 				});
-				callback.on_text([&](auto * /* window */, unsigned int codepoint) {
+				callback.on_text([&](auto /* window */, unsigned int codepoint) {
 					game.text(codepoint);
 				});
-				callback.on_click([&](auto * /* window */, int button, int action, int /* mods */) {
+				callback.on_click([&](auto /* window */, int button, int action, int /* mods */) {
 					if (action == GLFW_PRESS) game.click(button);
 				});
-				callback.on_hover([&](auto * /* window */, double x, double y) {
+				callback.on_hover([&](auto /* window */, double x, double y) {
 					game.hover(static_cast<int>(x), static_cast<int>(y));
 				});
-				callback.on_scroll([&](auto * /* window */, double horisontal, double vertical) {
+				callback.on_scroll([&](auto /* window */, double horisontal, double vertical) {
 					game.scroll(vertical, horisontal);
 				});
 

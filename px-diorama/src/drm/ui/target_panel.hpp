@@ -52,10 +52,7 @@ namespace px {
 				std::string txt("");
 				txt += std::string("[") + std::to_string(m_position.x()) + std::string(", ") + std::to_string(m_position.y()) + std::string("]");
 
-				if (m_target)
-				{
-					//txt += std::string("[") + std::to_string(m_target->x()) + std::string(", ") + std::to_string(m_target->y()) + std::string("]");
-					//txt += " ";
+				if (m_target) {
 					txt += " OBJ ";
 					if (auto body = m_target->linked<body_component>())
 					{

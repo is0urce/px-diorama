@@ -10,7 +10,7 @@
 #include "es/unit.hpp"
 
 #include "fn/generator.hpp"
-#include "rl/map_chunk.hpp"
+#include "rl/terrain.hpp"
 
 #include <px/fn/bsp.hpp>
 
@@ -110,9 +110,9 @@ namespace px {
 
 		transform_component * find_any(point2 position)
 		{
-			auto world = m_player ? m_player->world() : nullptr;
-
 			transform_component * result = nullptr;
+
+			auto world = m_player ? m_player->world() : nullptr;
 			if (world) world->find(position.x(), position.y(), [&result](int /*x*/, int /*y*/, transform_component * obj) { result = obj; });
 
 			return result;
@@ -129,7 +129,7 @@ namespace px {
 		transform_component * m_player;
 
 		// terrain
-		map_chunk<tile> m_map;
+		terrain_chunk<tile> m_map;
 
 		// user interface
 		ui::panel m_ui;

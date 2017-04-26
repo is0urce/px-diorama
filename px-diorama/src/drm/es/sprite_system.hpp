@@ -41,8 +41,7 @@ namespace px {
 			template <typename Document>
 			void add_atlas(Document && atlas, bool reverse_y)
 			{
-				for (auto const& frame : atlas)
-				{
+				for (auto const& frame : atlas) {
 					add_sprite<float>(frame["name"], frame["sx"], frame["sy"], frame["dx"], frame["dy"], reverse_y, m_textures, 0, '?');
 				}
 				++m_textures;
