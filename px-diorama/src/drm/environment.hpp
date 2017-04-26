@@ -9,16 +9,13 @@
 
 #include "es/unit.hpp"
 
-#include "fn/generator.hpp"
 #include "rl/terrain.hpp"
+#include "ui/menu.hpp"
 
+#include "fn/generator.hpp"
 #include <px/fn/bsp.hpp>
 
 #include <px/ui/panel.hpp>
-
-#include "ui/inventory_list.hpp"
-#include "ui/recipe_list.hpp"
-#include "ui/target_panel.hpp"
 
 #include <list>
 #include <memory>
@@ -33,6 +30,8 @@ namespace px {
 	{
 	public:
 
+		void add_spritesheet(std::string const& path, bool reverse_y);
+
 		// flow
 
 		void update(perception & view) const;
@@ -43,11 +42,17 @@ namespace px {
 		void impersonate(transform_component * player);
 		std::shared_ptr<unit> spawn(std::string const& name, point2 location);
 
+		// actions
+
+		void target(point2 relative_world_coordinates);
+		void step(point2 const& direction);
+		void use(unsigned int ability_index);
+		void activate(unsigned int mod);
+
 		// user interface
 
-		ui::panel & ui() noexcept;
-		ui::panel const& ui() const noexcept;
-		void layout_ui(rectangle bounds) noexcept;
+		ui::panel * ui() noexcept;
+		ui::panel const* ui() const noexcept;
 		void expose_inventory(container_component * inventory);
 
 		// serialization
@@ -57,47 +62,13 @@ namespace px {
 		void load();
 		void load(std::string const& name);
 
-		void target(point2 relative_world_coordinates)
-		{
-			m_hover = relative_world_coordinates + (m_player ? m_player->position() : point2(0, 0));
-
-			if (m_target_panel) m_target_panel->lock(m_hover, find_any(m_hover));
-		}
-		void step(point2 const& direction)
-		{
-			if (!m_player) return;
-
-			point2 destination = m_player->position() + direction;
-
-			if (!m_map.traversable(destination)) return;
-
-			auto blocking = find_any(destination);
-
-			if (!blocking) {
-				m_player->place(destination);
-			}
-		}
-		void use(unsigned int /*index*/)
-		{
-		}
-		void activate(unsigned int /*mod*/)
-		{
-			auto target = find_any(m_hover);
-			if (auto body = target ? target->linked<body_component>() : nullptr) {
-				body->use(*body, *this);
-			}
-		}
-
-		void add_spritesheet(std::string const& path, bool reverse_y);
-
-
 	public:
 		~environment();
 		environment();
 
 	private:
-		void setup_ui();
 		void generate_terrain();
+		transform_component * find_any(point2 const& position);
 
 		template <typename Archive>
 		void save_units(Archive & archive);
@@ -108,32 +79,15 @@ namespace px {
 		template <typename Archive, typename Builder>
 		void load_unit(Builder & builder, Archive & archive);
 
-		transform_component * find_any(point2 position)
-		{
-			transform_component * result = nullptr;
-
-			auto world = m_player ? m_player->world() : nullptr;
-			if (world) world->find(position.x(), position.y(), [&result](int /*x*/, int /*y*/, transform_component * obj) { result = obj; });
-
-			return result;
-		}
-
 	private:
-		bool m_run;
+		bool								m_run;		// if engine is working
+		std::unique_ptr<factory>			m_factory;	// for assembling units, release last
 
-		point2 m_hover; // this variable uses relative world coordinates
+		point2								m_hover;	// current hovered tile (uses relative world coordinates)
+		ui::menu							m_ui;		// user interface
 
-		// components & units
-		std::unique_ptr<factory> m_factory;
-		std::list<std::shared_ptr<unit>> m_units;
-		transform_component * m_player;
-
-		// terrain
-		terrain_chunk<tile> m_map;
-
-		// user interface
-		ui::panel m_ui;
-		ui::inventory_list * m_inventory;
-		std::shared_ptr<ui::target_panel> m_target_panel;
+		terrain_chunk<tile>					m_map;		// terrain
+		std::list<std::shared_ptr<unit>>	m_units;	// scene
+		transform_component *				m_player;	// player transform
 	};
 }

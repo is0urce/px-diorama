@@ -1,18 +1,11 @@
+// name: environment.main
+
 #include "environment.hpp"
 
 #include "perception.hpp"
 
 #include "es/unit_builder.hpp"
 #include "es/unit_component.hpp"
-
-#include <px/ui/board.hpp>
-#include <px/ui/text.hpp>
-#include <px/ui/button.hpp>
-#include <px/ui/toggle_panel.hpp>
-
-#include "ui/inventory_list.hpp"
-#include "ui/recipe_list.hpp"
-#include "ui/target_panel.hpp"
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/xml.hpp>
@@ -29,15 +22,14 @@ namespace px {
 	environment::~environment()
 	{
 		clear();
+		m_map.resize({ 0,0 });
 	}
 
 	environment::environment()
 		: m_factory(std::make_unique<factory>())
 		, m_player(nullptr)
-		, m_inventory(nullptr)
 		, m_run(true)
 	{
-		setup_ui();
 	}
 
 	bool environment::running() const noexcept
@@ -68,7 +60,38 @@ namespace px {
 		}
 
 		// render user interface
-		m_ui.draw(view.canvas());
+		m_ui.main()->draw(view.canvas());
+	}
+
+	void environment::target(point2 relative_world_coordinates)
+	{
+		m_hover = relative_world_coordinates + (m_player ? m_player->position() : point2(0, 0));
+
+		m_ui.lock_target(m_hover, find_any(m_hover));
+	}
+	void environment::step(point2 const& direction)
+	{
+		if (!m_player) return;
+
+		point2 destination = m_player->position() + direction;
+
+		if (!m_map.traversable(destination)) return;
+
+		auto blocking = find_any(destination);
+
+		if (!blocking) {
+			m_player->place(destination);
+		}
+	}
+	void environment::use(unsigned int /*index*/)
+	{
+	}
+	void environment::activate(unsigned int /*mod*/)
+	{
+		auto target = find_any(m_hover);
+		if (auto body = target ? target->linked<body_component>() : nullptr) {
+			body->use(*body, *this);
+		}
 	}
 
 	std::shared_ptr<unit> environment::spawn(std::string const& name, point2 location)
@@ -124,7 +147,7 @@ namespace px {
 		spawn("p_box", { 55, 49 });
 
 		// ui
-		if (m_inventory) m_inventory->set_container(m_player->linked<body_component>()->linked<container_component>());
+		//if (m_inventory) m_inventory->set_container(m_player->linked<body_component>()->linked<container_component>());
 	}
 	void environment::generate_terrain()
 	{
@@ -300,46 +323,26 @@ namespace px {
 	}
 
 
-	ui::panel & environment::ui() noexcept
+	ui::panel * environment::ui() noexcept
 	{
-		return m_ui;
+		return m_ui.main();
 	}
-	ui::panel const& environment::ui() const noexcept
+	ui::panel const* environment::ui() const noexcept
 	{
-		return m_ui;
+		return m_ui.main();
 	}
-	void environment::layout_ui(rectangle bounds) noexcept
+	void environment::expose_inventory(container_component * storage)
 	{
-		m_ui.layout(bounds);
-	}
-
-	void environment::expose_inventory(container_component * /*inventory*/)
-	{
-		m_ui["storage"].reverse_toggle();
+		m_ui.expose_inventory(storage);
 	}
 
-	void environment::setup_ui()
+	transform_component *  environment::find_any(point2 const& position)
 	{
-		//auto inventory_block = m_ui.make<ui::panel>("inventory_block", { {0.25, 0.25}, {0, 1}, {0, -1}, {0.5, 0.5} });
-		//inventory_block->make<ui::board>("background", ui::fill, color{ 0, 0, 1, 1 });
-		//m_inventory = inventory_block->make<ui::inventory_list>("list", ui::fill).get();
+		transform_component * result = nullptr;
 
-		//auto inventory_toggle = m_ui.make<ui::toggle_panel>("inventory_toggle", { {0.25, 0.25}, {0, 0}, {0, 1}, {0.5, 0.0} });
-		//inventory_toggle->add_background({ 0, 0, 0.5, 1 });
-		//inventory_toggle->add_label("Inventory");
-		//inventory_toggle->assign_content(inventory_block, false);
+		auto world = m_player ? m_player->world() : nullptr;
+		if (world) world->find(position.x(), position.y(), [&result](int /*x*/, int /*y*/, transform_component * obj) { result = obj; });
 
-		//std::list<recipe> recipes;
-		//recipes.push_back({ "sword", recipe_type::weapon, 8 });
-		//recipes.push_back({ "mace", recipe_type::weapon, 6});
-		//recipes.push_back({ "dagger", recipe_type::weapon, 4 });
-		//m_ui.make<ui::recipe_list>("recipes", { {0.0, 0.0}, {0,0}, {0,0}, {0.5,0.0} }, std::move(recipes));
-
-		auto storage = m_ui.make<ui::panel>("storage", { { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 0.5, 0.5 } });
-		storage->make<ui::board>("background", ui::fill, color{ 1, 1, 0, 0.5 });
-		storage->deactivate();
-
-		m_target_panel = m_ui.make<ui::target_panel>("target", { { 1.0, 1.0 },{ -26, -2 },{ 25, 1 },{ 0.0, 0.0 } });
-
+		return result;
 	}
 }

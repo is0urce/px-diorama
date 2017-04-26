@@ -17,12 +17,12 @@ namespace px {
 			: public panel
 		{
 		public:
-			void lock(point2 position, transform_component * target)
+			void lock(point2 position, transform_component const* target)
 			{
 				lock_position(position);
 				lock_target(target);
 			}
-			void lock_target(transform_component * target)
+			void lock_target(transform_component const* target)
 			{
 				m_target = target;
 			}
@@ -72,7 +72,7 @@ namespace px {
 
 		private:
 			point2 m_position;
-			transform_component * m_target;
+			transform_component const* m_target;
 		};
 	}
 }

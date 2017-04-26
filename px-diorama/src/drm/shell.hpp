@@ -30,7 +30,7 @@ namespace px {
 		}
 		void click(int button)
 		{
-			bool processed = ui().click(translate_gui(m_hover), button);
+			bool processed = ui()->click(translate_gui(m_hover), button);
 
 			if (!processed)
 			{
@@ -59,7 +59,7 @@ namespace px {
 
 			// clear ui grid
 			m_perception.canvas().cls();
-			layout_ui(m_perception.canvas().range());
+			ui()->layout(m_perception.canvas().range());
 
 			update(m_perception);
 		}

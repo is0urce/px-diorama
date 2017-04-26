@@ -180,6 +180,7 @@
     <ClCompile Include="src\drm\es\storage_component.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
     <ClCompile Include="src\drm\main_extras.cpp" />
+    <ClCompile Include="src\drm\ui\menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\drm\configuration.hpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="src\drm\fn\generator.hpp" />
     <ClInclude Include="src\drm\rl\terrain.hpp" />
     <ClInclude Include="src\drm\ui\inventory_list.hpp" />
+    <ClInclude Include="src\drm\ui\menu.hpp" />
     <ClInclude Include="src\drm\ui\recipe_list.hpp" />
     <ClInclude Include="src\drm\es\unit_builder.hpp" />
     <ClInclude Include="src\drm\ui\storage_panel.hpp" />
