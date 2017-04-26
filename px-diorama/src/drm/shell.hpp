@@ -42,11 +42,10 @@ namespace px {
 			m_perception.zoom(static_cast<float>(vertical + horisontal) * 0.1f);
 		}
 
-		template <typename Document>
-		void add_atlas(Document && atlas, bool reverse_y)
+		void add_atlas(std::string const& name, bool reverse_y)
 		{
 			m_perception.add_texture();
-			add_sprite_atlas(atlas, reverse_y);
+			add_spritesheet(name, reverse_y);
 		}
 
 		perception const& view() const noexcept

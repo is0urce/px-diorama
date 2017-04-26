@@ -8,6 +8,9 @@
 
 #include <map>
 #include <memory>
+#include <vector>
+
+#include "drm/vertex.hpp"
 
 namespace px {
 	namespace es {

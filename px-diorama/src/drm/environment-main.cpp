@@ -1,5 +1,7 @@
 #include "environment.hpp"
 
+#include "perception.hpp"
+
 #include "es/unit_builder.hpp"
 #include "es/unit_component.hpp"
 
@@ -14,6 +16,8 @@
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/xml.hpp>
+#include <json.hpp>
+
 #include <fstream>
 
 namespace {
@@ -28,7 +32,7 @@ namespace px {
 	}
 
 	environment::environment()
-		: m_factory(std::make_unique<factory>(&m_sprites))
+		: m_factory(std::make_unique<factory>())
 		, m_player(nullptr)
 		, m_inventory(nullptr)
 		, m_run(true)
@@ -77,8 +81,7 @@ namespace px {
 		auto storage = builder.add_storage();
 
 		// setup
-		for (int i = 0; i != 100; ++i)
-		{
+		for (int i = 0; i != 100; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("item #" + std::to_string(i));
 			itm->add({ rl::effect::ore_power, 0x100, 0x500 });
@@ -128,12 +131,12 @@ namespace px {
 		m_map.resize({ 100, 100 });
 		m_map.enumerate([this](auto const& point, auto & tile) {
 			tile.transform.move(point);
-			tile.sprite = m_factory->sprites()->make_unique(";");
 
-			tile.sprite->connect(&tile.transform);
-			tile.sprite->activate();
+			tile.ground = m_factory->sprites()->make_unique(";");
+			tile.ground->connect(&tile.transform);
+			tile.ground->activate();
 
-			tile.make_wall();
+			tile.mass.make_wall();
 		});
 
 		std::mt19937 rng;
@@ -145,13 +148,20 @@ namespace px {
 			if (t == 0) return;
 			auto & tile = m_map[point];
 
-			tile.sprite = m_factory->sprites()->make_unique("+");
+			tile.ground.reset();
 
-			tile.sprite->connect(&tile.transform);
-			tile.sprite->activate();
+			tile.wall = m_factory->sprites()->make_unique("+");
+			tile.wall->connect(&tile.transform);
+			tile.wall->activate();
 
-			tile.make_ground();
+			tile.mass.make_ground();
 		});
+	}
+
+	void environment::add_spritesheet(std::string const& path, bool reverse_y)
+	{
+		auto document = nlohmann::json::parse(std::ifstream(path));
+		m_factory->sprites()->add_atlas(document["meta"], reverse_y);
 	}
 
 	void environment::save()
@@ -187,8 +197,7 @@ namespace px {
 	{
 		size_t size = m_units.size();
 		archive(size);
-		for (auto const& unit : m_units)
-		{
+		for (auto const& unit : m_units) {
 			save_unit(*unit, archive);
 		}
 	}
@@ -197,8 +206,7 @@ namespace px {
 	{
 		size_t total_units;
 		archive(total_units);
-		for (size_t i = 0; i != total_units; ++i)
-		{
+		for (size_t i = 0; i != total_units; ++i) {
 			unit_builder builder(*m_factory);
 			load_unit(builder, archive);
 			auto mobile = builder.assemble();
@@ -206,10 +214,8 @@ namespace px {
 			mobile->enable();
 			m_units.push_back(mobile);
 
-			if (builder.is_player())
-			{
-				impersonate(mobile->transform());
-			}
+			// set as a player, if this componen was used 
+			if (builder.is_player()) impersonate(mobile->transform());
 		}
 	}
 	template <typename Archive>
@@ -219,25 +225,22 @@ namespace px {
 		archive(total_components);
 
 		mobile.enumerate_components([&](auto & part) {
-			if (auto transform = dynamic_cast<transform_component*>(part.get()))
-			{
+			if (auto transform = dynamic_cast<transform_component*>(part.get())) {
 				archive(unit_component::transform);
+
 				archive(*transform);
 			}
-			else if (auto sprite = dynamic_cast<sprite_component*>(part.get()))
-			{
+			else if (auto sprite = dynamic_cast<sprite_component*>(part.get())) {
 				archive(unit_component::sprite);
 
 				size_t strlen = std::strlen(sprite->name);
 				archive(strlen);
 				archive.saveBinary(sprite->name, strlen);
 			}
-			else if (auto player = dynamic_cast<player_component*>(part.get()))
-			{
+			else if (auto player = dynamic_cast<player_component*>(part.get())) {
 				archive(unit_component::player);
 			}
-			else
-			{
+			else {
 				archive(unit_component::undefined);
 			}
 		});

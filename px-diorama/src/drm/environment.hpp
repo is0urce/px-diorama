@@ -7,9 +7,6 @@
 
 #pragma once
 
-#include "perception.hpp"
-
-#include "es/sprite_system.hpp"
 #include "es/unit.hpp"
 
 #include "fn/generator.hpp"
@@ -29,7 +26,8 @@
 
 namespace px {
 
-	class factory; // this thing is heavy
+	class factory;
+	class perception;
 
 	class environment
 	{
@@ -63,10 +61,7 @@ namespace px {
 		{
 			m_hover = relative_world_coordinates + (m_player ? m_player->position() : point2(0, 0));
 
-			if (m_target_panel)
-			{
-				m_target_panel->lock(m_hover, find_any(m_hover));
-			}
+			if (m_target_panel) m_target_panel->lock(m_hover, find_any(m_hover));
 		}
 		void step(point2 const& direction)
 		{
@@ -78,8 +73,7 @@ namespace px {
 
 			auto blocking = find_any(destination);
 
-			if (!blocking)
-			{
+			if (!blocking) {
 				m_player->place(destination);
 			}
 		}
@@ -89,16 +83,13 @@ namespace px {
 		void activate(unsigned int /*mod*/)
 		{
 			auto target = find_any(m_hover);
-			if (auto body = target ? target->linked<body_component>() : nullptr)
-			{
+			if (auto body = target ? target->linked<body_component>() : nullptr) {
 				body->use(*body, *this);
 			}
 		}
-		template <typename Document>
-		void add_sprite_atlas(Document && atlas, bool reverse_y)
-		{
-			m_sprites.add_atlas(std::forward<Document>(atlas), reverse_y);
-		}
+
+		void add_spritesheet(std::string const& path, bool reverse_y);
+
 
 	public:
 		~environment();
@@ -133,9 +124,8 @@ namespace px {
 		point2 m_hover; // this variable uses relative world coordinates
 
 		// components & units
-		es::sprite_system m_sprites;
-		std::list<std::shared_ptr<unit>> m_units;
 		std::unique_ptr<factory> m_factory;
+		std::list<std::shared_ptr<unit>> m_units;
 		transform_component * m_player;
 
 		// terrain

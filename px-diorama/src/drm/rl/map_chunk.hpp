@@ -1,23 +1,27 @@
+// name: map_chunk.hpp
+
 #pragma once
 
-#include <px/common/matrix.hpp>
+#include "es/sprite_system.hpp"
+#include "drm/es/transform_component.hpp"
 
+#include <px/common/matrix.hpp>
 #include <px/rl/mass.hpp>
 #include <px/rl/traverse.hpp>
 
-#include "es/sprite_system.hpp"
-
 namespace px {
 
-	class transform_component;
-	class sprite_component;
-
-
-	struct tile : public rl::mass<rl::traverse>
+	struct tile
 	{
-		//shared_ptr<transform_component> transform;
+		// use transform in stack to avoid exessive management of simple anchor points
 		transform_component transform;
-		es::sprite_system::unique_ptr sprite;
+
+		// two sprite to composite tiles
+		es::sprite_system::unique_ptr ground;
+		es::sprite_system::unique_ptr wall;
+
+		// attributes of a tile
+		rl::mass<rl::traverse> mass;
 	};
 
 	template <typename Tile>
@@ -29,7 +33,7 @@ namespace px {
 	public:
 		bool traversable(point2 const& position) const noexcept
 		{
-			return contains(position) && at(position).traversable();
+			return contains(position) && at(position).mass.traversable();
 		}
 	};
 }

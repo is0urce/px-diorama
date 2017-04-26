@@ -48,8 +48,7 @@ namespace px {
 
 				auto monitor = glfwGetPrimaryMonitor();
 				auto mode = glfwGetVideoMode(monitor);
-				if (fullscreen)
-				{
+				if (fullscreen)	{
 					glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 					glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 					glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
@@ -57,8 +56,7 @@ namespace px {
 					screen_width = mode->width;
 					screen_height = mode->height;
 				}
-				else
-				{
+				else {
 					monitor = nullptr;
 				}
 
@@ -73,8 +71,7 @@ namespace px {
 
 				// load data from configuration settings
 				auto textures = nlohmann::json::parse(std::ifstream(textureatlas_path));
-				for (auto const& texture : textures["textures"])
-				{
+				for (auto const& texture : textures["textures"]) {
 					std::string path = texture["path"];
 					std::string atlas = texture["meta"];
 
@@ -84,8 +81,7 @@ namespace px {
 					if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 
 					graphics.add_texture(w, h, image.data());
-					auto meta = nlohmann::json::parse(std::ifstream(atlas));
-					game.add_atlas(meta["meta"], true);
+					game.add_atlas(atlas, true);
 				}
 				textures.clear();
 
@@ -122,22 +118,21 @@ namespace px {
 
 				// main loop
 				timer<glfw_time> time;
-				while (window.process() && game.running())
-				{
+				while (window.process() && game.running()) {
 					game.frame(time);
 					graphics.render(game.view());
 				}
 			}
-			catch (std::runtime_error & exc)
+			catch (std::exception & exc)
 			{
 				throw std::move(exc);
 			}
 			catch (...)
 			{
-				throw std::runtime_error("unhandled exception");
+				throw std::exception("unhandled exception");
 			}
 		}
-		catch (std::runtime_error & exc)
+		catch (std::exception & exc)
 		{
 			logger logger;
 			logger.write(exc.what());

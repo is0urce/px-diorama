@@ -6,41 +6,44 @@
 #pragma once
 
 #include <px/es/component_collection.hpp>
+#include <px/common/shared_ptr.hpp>
 
-#include "transform_component.hpp"
+//#include "transform_component.hpp"
 
 namespace px {
 
-		class unit
-			: public es::component_collection<shared_ptr<es::component>>
+	class transform_component;
+
+	class unit
+		: public es::component_collection<shared_ptr<es::component>>
+	{
+	public:
+		transform_component * transform()
 		{
-		public:
-			transform_component * transform()
+			if (!m_transform)
 			{
-				if (!m_transform)
-				{
-					m_transform = component<transform_component>().get();
-				}
+				m_transform = component<transform_component>().get();
+			}
+			return m_transform;
+		}
+		transform_component const* transform() const
+		{
+			if (m_transform)
+			{
 				return m_transform;
 			}
-			transform_component const* transform() const
-			{
-				if (m_transform)
-				{
-					return m_transform;
-				}
-				return component<transform_component>().get();
-			}
+			return component<transform_component>().get();
+		}
 
-		public:
-			unit()
-				: m_transform(nullptr)
-			{
-			}
-			unit(unit const&) = delete;
-			unit& operator=(unit const&) = delete;
+	public:
+		unit()
+			: m_transform(nullptr)
+		{
+		}
+		unit(unit const&) = delete;
+		unit& operator=(unit const&) = delete;
 
-		private:
-			transform_component * m_transform;
-		};
+	private:
+		transform_component * m_transform;
+	};
 }

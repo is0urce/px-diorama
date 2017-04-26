@@ -49,7 +49,7 @@ namespace px {
 
 		auto sprites()
 		{
-			return m_sprites;
+			return m_sprites.get();
 		}
 		auto transforms()
 		{
@@ -57,20 +57,19 @@ namespace px {
 		}
 
 	public:
-		factory(es::sprite_system * sprites)
-			: m_sprites(sprites)
-			, m_ss(std::make_unique<es::sprite_system>())
+		factory()
+			: m_sprites(std::make_unique<es::sprite_system>())
 		{
-			if (!sprites) throw std::runtime_error("px::factory::ctor() - sprites is null");
+	//		if (!sprites) throw std::runtime_error("px::factory::ctor() - sprites is null");
 		}
 		factory(factory const&) = delete;
 		factory& operator=(factory const&) = delete;
 
 	private:
-		es::sprite_system * m_sprites;
+		//es::sprite_system * m_sprites;
 		es::transform_system m_transforms;
 		es::body_system m_bodies;
 		es::container_system m_containers;
-		std::unique_ptr<es::sprite_system> m_ss;
+		std::unique_ptr<es::sprite_system> m_sprites;
 	};
 }
