@@ -11,7 +11,7 @@ namespace px
 {
 	namespace rl
 	{
-		template<typename T>
+		template <typename T>
 		class resource
 			: public bar<T>
 		{
@@ -41,6 +41,15 @@ namespace px
 			operator bool() const noexcept
 			{
 				return m_enabled;
+			}
+
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_enabled);
+				if (m_enabled) {
+					bar::serialize(archive);
+				}
 			}
 
 		public:

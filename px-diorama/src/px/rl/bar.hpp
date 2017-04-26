@@ -19,37 +19,6 @@ namespace px
 		public:
 			typedef T value_type;
 
-		private:
-			T m_current;
-			T m_max;
-
-			// ctor & dtor
-		public:
-			bar() noexcept 
-				: m_current{}, m_max{}
-			{
-			}
-			bar(T max) noexcept
-				: m_current(max), m_max(max)
-			{
-			}
-			bar(T current, T max) noexcept
-			{
-				init(current, max);
-			}
-
-		private:
-			void init(T current, T max) noexcept
-			{
-				m_max = max;
-				m_current = cap(current);
-			}
-			T cap(T val) noexcept
-			{
-				return std::min<T>(val, m_max);
-			}
-
-
 		public:
 			// querry
 
@@ -107,7 +76,6 @@ namespace px
 
 			// mutation operators
 
-			bar& operator=(bar&) noexcept = default;
 			bar& operator=(T c) noexcept
 			{
 				set(c);
@@ -161,6 +129,47 @@ namespace px
 			{
 				return m_current > T{};
 			}
+
+			// io
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_current, m_max);
+			}
+
+			// ctor & dtor
+		public:
+			bar() noexcept
+				: m_current{}
+				, m_max{}
+			{
+			}
+			bar(T max) noexcept
+				: m_current(max)
+				, m_max(max)
+			{
+			}
+			bar(T current, T max) noexcept
+			{
+				init(current, max);
+			}
+			bar(bar const&) = default;
+			bar& operator=(bar const&) noexcept = default;
+
+		private:
+			void init(T current, T max) noexcept
+			{
+				m_max = max;
+				m_current = cap(current);
+			}
+			T cap(T val) const noexcept
+			{
+				return std::min<T>(val, m_max);
+			}
+
+		private:
+			T m_current;
+			T m_max;
 		};
 	}
 }
