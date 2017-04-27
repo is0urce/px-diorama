@@ -158,7 +158,7 @@ namespace px {
 
 			tile.transform.move(point);
 
-			tile.ground = m_factory->sprites()->make_unique(";");
+			tile.ground = m_factory->sprites()->make_unique("#");
 			tile.ground->connect(&tile.transform);
 			tile.ground->activate();
 
@@ -187,7 +187,10 @@ namespace px {
 
 	void environment::add_spritesheet(std::string const& path, bool reverse_y)
 	{
-		auto document = nlohmann::json::parse(std::ifstream(path));
+		std::ifstream input(path);
+		if (!input.is_open()) throw std::runtime_error("px::environment::add_sprite(path, bool) - file not exists, path=" + path);
+
+		auto document = nlohmann::json::parse(input);
 		m_factory->sprites()->add_atlas(document["meta"], reverse_y);
 	}
 

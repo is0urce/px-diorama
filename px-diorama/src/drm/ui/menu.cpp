@@ -64,7 +64,7 @@ namespace px {
 			storage->make<board>("background", fill, color{ 1, 1, 0, 0.5 });
 			storage->deactivate();
 
-			auto target = m_main->make<target_panel>("target", { { 1.0, 1.0 },{ -26, -2 },{ 25, 1 },{ 0.0, 0.0 } });
+			auto target = m_main->make<target_panel>("target", { { 0.5, 1.0 },{ -1, -2 },{ 0, 1 },{ 0.5, 0.0 } });
 			m_target = target.get();
 		}
 	}
