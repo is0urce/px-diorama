@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <px/rl/lt/stack.hpp>
+#include <px/rl/loot/stack.hpp>
 #include <px/rl/enhancement_collection.hpp>
 #include <px/rl/entity.hpp>
 

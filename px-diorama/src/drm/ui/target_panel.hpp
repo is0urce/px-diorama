@@ -65,7 +65,7 @@ namespace px {
 				}
 				window.print({ 0, 0 }, 0x000000, txt);
 			}
-			virtual bool click_panel(point2 const& /*position*/, int /*button*/) const override
+			virtual bool click_panel(point2 const& /*position*/, int /*button*/) override
 			{
 				return true;
 			}

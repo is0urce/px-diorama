@@ -63,7 +63,7 @@ namespace px {
 			}
 
 		protected:
-			virtual bool click_panel(point2 const& position, int /*button*/) const override
+			virtual bool click_panel(point2 const& position, int /*button*/) override
 			{
 				auto content = m_content.lock();
 				if (content && position.y() == 0)

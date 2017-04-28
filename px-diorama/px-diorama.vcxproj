@@ -270,8 +270,8 @@
     <ClInclude Include="src\drm\rl\actor.hpp" />
     <ClInclude Include="src\px\rl\st\astar.hpp" />
     <ClInclude Include="src\px\rl\bar.hpp" />
-    <ClInclude Include="src\px\rl\lt\basic_inventory.hpp" />
-    <ClInclude Include="src\px\rl\lt\stack.hpp" />
+    <ClInclude Include="src\px\rl\loot\basic_inventory.hpp" />
+    <ClInclude Include="src\px\rl\loot\stack.hpp" />
     <ClInclude Include="src\drm\rl\body.hpp" />
     <ClInclude Include="src\px\rl\buff.hpp" />
     <ClInclude Include="src\drm\rl\character.hpp" />
@@ -286,7 +286,7 @@
     <ClInclude Include="src\px\rl\entity.hpp" />
     <ClInclude Include="src\drm\rl\equipment_slot.hpp" />
     <ClInclude Include="src\drm\rl\inventory.hpp" />
-    <ClInclude Include="src\px\rl\lt\basic_item.hpp" />
+    <ClInclude Include="src\px\rl\loot\basic_item.hpp" />
     <ClInclude Include="src\px\rl\i_ability.hpp" />
     <ClInclude Include="src\px\rl\st\map_stream.hpp" />
     <ClInclude Include="src\px\rl\mass.hpp" />
@@ -313,12 +313,9 @@
   <ItemGroup>
     <None Include="data\config.json" />
     <None Include="data\controls.json" />
-    <None Include="data\img\p_bookshelf.json" />
     <None Include="data\img\dirt32.json" />
     <None Include="data\img\gnome32.json" />
     <None Include="data\img\m_snake32.json" />
-    <None Include="data\img\p_locker.json" />
-    <None Include="data\img\p_table.json" />
     <None Include="data\img\taurus32.json" />
     <None Include="data\img\wall32.json" />
     <None Include="data\scripts\q.lua" />

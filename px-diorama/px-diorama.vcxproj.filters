@@ -255,9 +255,6 @@
     <ClInclude Include="src\drm\rl\inventory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\lt\basic_inventory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\drm\es\body_component.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -301,12 +298,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\rl\equipment_slot.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\lt\stack.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\lt\basic_item.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\rl\body.hpp">
@@ -393,6 +384,15 @@
     <ClInclude Include="src\drm\ui\menu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\px\rl\loot\basic_inventory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\loot\basic_item.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\loot\stack.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -429,9 +429,6 @@
     <None Include="data\shaders\uitext.frag" />
     <None Include="data\shaders\uitext.vert" />
     <None Include="data\img\m_snake32.json" />
-    <None Include="data\img\p_table.json" />
-    <None Include="data\img\p_bookshelf.json" />
-    <None Include="data\img\p_locker.json" />
     <None Include="data\controls.json" />
     <None Include="data\textures.json" />
   </ItemGroup>

@@ -31,13 +31,13 @@ namespace px {
 		{
 			m_useable = nullptr;
 		}
-		bool can_use(body_component const& body, environment const& shell) const
+		bool can_use(body_component const* user, environment const& shell) const
 		{
-			return m_useable && m_useable->can_use(body, shell);
+			return m_useable && m_useable->can_use(user, shell);
 		}
-		bool use(body_component & body, environment & shell)
+		bool try_use(body_component * user, environment & shell)
 		{
-			return m_useable && m_useable->use(body, shell);
+			return m_useable && m_useable->try_use(user, shell);
 		}
 
 	public:

@@ -86,9 +86,10 @@ namespace px {
 			if (m_sprite && m_transform)	m_sprite->connect(m_transform.get());
 			if (m_transform && m_body)		m_transform->connect(m_body.get());
 			if (m_body && m_container)		m_body->connect(m_container.get());
+			if (m_storage && m_container)	m_storage->connect(m_container.get());
 
 			// assign extra polymorphic links
-			if (m_body && m_storage) {
+			if (m_storage && m_body) {
 				m_body->assign_useable(m_storage.get());
 			}
 		}

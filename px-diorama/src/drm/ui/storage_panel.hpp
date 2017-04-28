@@ -7,6 +7,8 @@
 
 #include <px/ui/panel.hpp>
 
+#include "inventory_list.hpp"
+
 namespace px {
 	namespace ui {
 
@@ -34,6 +36,8 @@ namespace px {
 			}
 
 		private:
+			inventory_list * m_container;
+			inventory_list * m_user;
 		};
 	}
 }

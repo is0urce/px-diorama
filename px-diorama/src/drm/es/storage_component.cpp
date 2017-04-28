@@ -17,13 +17,13 @@ namespace px {
 	{
 	}
 
-	bool storage_component::is_useable(body_component const& /*body*/, environment const& /*shell*/) const
+	bool storage_component::is_useable(body_component const* /*user*/, environment const& /*shell*/) const
 	{
 		return true;
 	}
 
-	void storage_component::use_useable(body_component & /*body*/, environment & shell)
+	void storage_component::use_useable(body_component * /*user*/, environment & shell)
 	{
-		shell.expose_inventory(link<container_component>());
+		shell.expose_inventory(linked<container_component>());
 	}
 }

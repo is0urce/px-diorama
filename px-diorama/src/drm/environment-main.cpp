@@ -90,7 +90,7 @@ namespace px {
 	{
 		auto target = find_any(m_hover);
 		if (auto body = target ? target->linked<body_component>() : nullptr) {
-			body->use(*body, *this);
+			body->try_use(body, *this);
 		}
 	}
 
@@ -104,7 +104,7 @@ namespace px {
 		auto storage = builder.add_storage();
 
 		// setup
-		for (int i = 0; i != 100; ++i) {
+		for (int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("item #" + std::to_string(i));
 			itm->add({ rl::effect::ore_power, 0x100, 0x500 });
@@ -334,9 +334,11 @@ namespace px {
 	{
 		return m_ui.main();
 	}
-	void environment::expose_inventory(container_component * storage)
+	void environment::expose_inventory(container_component * storage_container)
 	{
-		m_ui.expose_inventory(storage);
+		auto user_body = m_player ? m_player->linked<body_component>() : nullptr;
+		auto user_container = user_body ? user_body->linked<container_component>() : nullptr;
+		m_ui.open_storage(storage_container, user_container);
 	}
 
 	transform_component *  environment::find_any(point2 const& position)

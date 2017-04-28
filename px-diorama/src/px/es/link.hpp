@@ -36,13 +36,13 @@ namespace px {
 			{
 				m_link = nullptr;
 			}
-			operator T * () const noexcept
+			explicit operator T * () const noexcept
 			{
 				return m_link;
 			}
 
 		private:
-			T* m_link;
+			T * m_link;
 		};
 	}
 }

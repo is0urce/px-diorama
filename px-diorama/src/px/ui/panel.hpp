@@ -219,14 +219,14 @@ namespace px {
 			}
 
 		protected:
-			virtual void hover_panel(point2 const& /*position*/) const
+			virtual void hover_panel(point2 const& /*position*/)
 			{
 			}
-			virtual bool click_panel(point2 const& /*position*/, int /*button*/) const
+			virtual bool click_panel(point2 const& /*position*/, int /*button*/)
 			{
 				return false;
 			}
-			virtual void press_panel(unsigned int /*code*/) const
+			virtual void press_panel(unsigned int /*code*/)
 			{
 			}
 			virtual void draw_panel(display & /*window*/) const

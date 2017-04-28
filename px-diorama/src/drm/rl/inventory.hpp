@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <px/rl/lt/basic_inventory.hpp>
-#include <px/rl/lt/basic_item.hpp>
+#include <px/rl/loot/basic_inventory.hpp>
+#include <px/rl/loot/basic_item.hpp>
 
 namespace px {
 	namespace rl {

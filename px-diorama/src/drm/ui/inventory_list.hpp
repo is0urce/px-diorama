@@ -9,6 +9,8 @@
 
 #include "drm/es/container_component.hpp"
 
+#include <functional>
+
 namespace px {
 	namespace ui {
 
@@ -16,9 +18,16 @@ namespace px {
 			: public panel
 		{
 		public:
-			void set_container(container_component * container) noexcept
+			typedef std::function<void(std::shared_ptr<rl::item> & pos)> click_fn;
+
+		public:
+			void assign_container(container_component * container) noexcept
 			{
 				m_container = container;
+			}
+			void on_click(click_fn click_action)
+			{
+				m_click = click_action;
 			}
 			void clear_container() noexcept
 			{
@@ -46,13 +55,22 @@ namespace px {
 					});
 				}
 			}
-			virtual bool click_panel(point2 const& /*position*/, int /*button*/) const override
+			virtual bool click_panel(point2 const& position, int /*button*/) override
 			{
-				if (m_container)
+				if (m_container && m_click)
 				{
+					int selected = position.y();
 					int index = 0;
-					m_container->enumerate([&](auto const& /*item*/) {
+					m_container->enumerate_while([&](auto & item) {
+						if (selected == index) {
+							m_click(item);
+
+							return false;
+						}
+
 						++index;
+
+						return true;
 					});
 				}
 				return true;
@@ -60,6 +78,8 @@ namespace px {
 
 		private:
 			container_component * m_container;
+
+			click_fn m_click;
 		};
 	}
 }

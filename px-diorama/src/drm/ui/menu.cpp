@@ -34,9 +34,33 @@ namespace px {
 		{
 			return m_main.get();
 		}
-		void menu::expose_inventory(container_component * /*inventory*/)
+		void menu::open_storage(container_component * storage_inventory, container_component * user_inventory)
 		{
-			(*m_main)["storage"].reverse_toggle();
+			m_container->assign_container(storage_inventory);
+			m_inventory->assign_container(user_inventory);
+
+			m_container->on_click([storage_inventory, user_inventory](auto & item) {
+				storage_inventory->transfer_to(*user_inventory, item);
+			});
+			m_inventory->on_click([storage_inventory, user_inventory](auto & item) {
+				user_inventory->transfer_to(*storage_inventory, item);
+			});
+
+			(*m_main)["container_access"].activate();
+		}
+		void menu::close_storage()
+		{
+			m_container->assign_container(nullptr);
+			m_inventory->assign_container(nullptr);
+
+			m_container->on_click([](auto & /*item*/) {	});
+			m_inventory->on_click([](auto & /*item*/) { });
+
+			(*m_main)["container_access"].deactivate();
+		}
+		void menu::close_panels()
+		{
+			close_storage();
 		}
 		void menu::lock_target(point2 absolute, transform_component const* pawn)
 		{
@@ -66,6 +90,16 @@ namespace px {
 
 			auto target = m_main->make<target_panel>("target", { { 0.5, 1.0 },{ -1, -2 },{ 0, 1 },{ 0.5, 0.0 } });
 			m_target = target.get();
+
+			auto container = m_main->make<panel>("container_access", { { 0.0, 0.0 },{ 1, 1 },{ -2, -2 },{ 1.0, 1.0 } });
+			container->make<board>("bg", fill, color{ 1, 1, 1,0.5 });
+			auto container_inventory = container->make<ui::inventory_list>("c_list", { { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.5, 1.0 } });
+			auto user_inventory = container->make<ui::inventory_list>("u_list", { { 0.5, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } });
+
+			m_container = container_inventory.get();
+			m_inventory = user_inventory.get();
+
+			close_storage();
 		}
 	}
 }

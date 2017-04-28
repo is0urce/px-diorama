@@ -32,7 +32,10 @@ namespace px {
 			panel const* main() const noexcept;
 
 			void lock_target(point2 absolute, transform_component const* pawn);
-			void expose_inventory(container_component * storage);
+			void open_storage(container_component * storage_container, container_component * user_container);
+			void close_storage();
+
+			void close_panels();
 
 		public:
 			~menu();
@@ -43,6 +46,7 @@ namespace px {
 
 		private:
 			std::unique_ptr<panel> m_main;
+			inventory_list * m_container;
 			inventory_list * m_inventory;
 			target_panel * m_target;
 		};

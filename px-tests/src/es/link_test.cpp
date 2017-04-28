@@ -46,7 +46,7 @@ TEST_CASE("link", "[link]")
 		b.connect(&p);
 
 		hand* h = b.linked<hand>();
-		leg* l = b;
+		leg* l = static_cast<leg*>(b);
 
 		REQUIRE(&h1 == h);
 		REQUIRE(&l1 == l);
