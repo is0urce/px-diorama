@@ -13,11 +13,6 @@ namespace px
 	{
 		class entity
 		{
-		private:
-			std::string m_name;
-			std::string m_description;
-			std::string m_tag;
-
 		public:
 			std::string name() const
 			{
@@ -43,6 +38,11 @@ namespace px
 			{
 				m_description = text;
 			}
+
+		private:
+			std::string m_name;
+			std::string m_description;
+			std::string m_tag;
 		};
 
 		namespace

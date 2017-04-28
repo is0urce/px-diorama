@@ -101,6 +101,12 @@ namespace px
 				m_max_stack = 1;
 			}
 
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_stack, m_max_stack);
+			}
+
 		public:
 			stack() noexcept
 				: m_stack(1)
@@ -112,7 +118,6 @@ namespace px
 				, m_max_stack(max)
 			{
 			}
-
 
 		private:
 			unsigned int m_stack;

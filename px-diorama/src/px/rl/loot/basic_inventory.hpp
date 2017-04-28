@@ -44,36 +44,41 @@ namespace px
 			}
 			void remove(item_ptr & item, unsigned int n)
 			{
-				for (auto it = std::begin(m_items), last = std::end(m_items); it != last;) {
+				for (auto it = std::begin(m_items), last = std::end(m_items); it != last; ++it) {
 					if (*it == item && item->decrease(n) == 0) {
 						m_items.erase(it);
-						return;
+						break;
 					}
-					++it;
 				}
 			}
 			void remove(item_ptr & item)
 			{
 				remove(item, 1);
 			}
-			void transfer_to(basic_inventory & to, item_ptr & item)
+			void transfer(item_ptr & item, basic_inventory & destination)
 			{
+				if (&destination == this) return;
+
 				for (auto it = std::begin(m_items), last = std::end(m_items); it != last;++it) {
 					if (*it == item) {
-						to.add(item);
+						destination.add(item);
 						m_items.erase(it);
-						return;
+						break;
 					}
 				}
 			}
-			void transfer_to(basic_inventory & to)
+			void transfer(basic_inventory & destination)
 			{
+				if (&destination == this) return;
+
+				// move one by one, so items can stack
 				for (auto & loot : m_items) {
-					to.add(loot);
+					destination.add(loot);
 				}
 				clear();
 			}
 
+			// enumeration
 			template <typename UnaryOperator>
 			void enumerate(UnaryOperator && enum_fn) const
 			{

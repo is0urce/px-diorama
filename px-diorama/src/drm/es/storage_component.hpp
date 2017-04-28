@@ -13,7 +13,6 @@
 namespace px {
 
 	class container_component;
-	class body_component;
 
 	class storage_component final
 		: public useable
@@ -26,7 +25,7 @@ namespace px {
 		storage_component();
 
 	protected:
-		virtual bool is_useable(body_component const* /*user*/, environment const& /*shell*/) const override;
-		virtual void use_useable(body_component * /*user*/, environment & shell) override;
+		virtual bool is_useable(body_component const* user, environment const& shell) const override;
+		virtual void use_useable(body_component * user, environment & shell) override;
 	};
 }

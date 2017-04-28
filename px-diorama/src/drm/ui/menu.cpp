@@ -36,24 +36,29 @@ namespace px {
 		}
 		void menu::open_storage(container_component * storage_inventory, container_component * user_inventory)
 		{
-			m_container->assign_container(storage_inventory);
-			m_inventory->assign_container(user_inventory);
+			close_panels();
 
-			m_container->on_click([storage_inventory, user_inventory](auto & item) {
-				storage_inventory->transfer_to(*user_inventory, item);
-			});
-			m_inventory->on_click([storage_inventory, user_inventory](auto & item) {
-				user_inventory->transfer_to(*storage_inventory, item);
-			});
+			if (storage_inventory && user_inventory)
+			{
+				m_container->assign_container(storage_inventory);
+				m_inventory->assign_container(user_inventory);
 
-			(*m_main)["container_access"].activate();
+				m_container->on_click([storage_inventory, user_inventory](auto & item) {
+					storage_inventory->transfer(item, *user_inventory);
+				});
+				m_inventory->on_click([storage_inventory, user_inventory](auto & item) {
+					user_inventory->transfer(item, *storage_inventory);
+				});
+
+				(*m_main)["container_access"].activate();
+			}
 		}
 		void menu::close_storage()
 		{
 			m_container->assign_container(nullptr);
 			m_inventory->assign_container(nullptr);
 
-			m_container->on_click([](auto & /*item*/) {	});
+			m_container->on_click([](auto & /*item*/) { });
 			m_inventory->on_click([](auto & /*item*/) { });
 
 			(*m_main)["container_access"].deactivate();
