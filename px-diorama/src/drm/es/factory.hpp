@@ -12,6 +12,7 @@
 
 #include "storage_component.hpp"
 #include "player_component.hpp"
+#include "workshop_component.hpp"
 
 #include <memory>
 #include <string>
@@ -45,6 +46,10 @@ namespace px {
 		auto make_player()
 		{
 			return px::make_shared<player_component>();
+		}
+		auto make_workshop()
+		{
+			return px::make_shared<workshop_component>();
 		}
 
 		auto sprites()

@@ -3,6 +3,8 @@
 // desc: class declaration
 // auth: is0urce
 
+// pure abstract class
+
 #pragma once
 
 namespace px {

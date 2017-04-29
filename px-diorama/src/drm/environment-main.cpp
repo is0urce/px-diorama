@@ -89,8 +89,11 @@ namespace px {
 	void environment::activate(unsigned int /*mod*/)
 	{
 		auto target = find_any(m_hover);
-		if (auto body = target ? target->linked<body_component>() : nullptr) {
-			body->try_use(body, *this);
+		auto body = target ? target->linked<body_component>() : nullptr;
+		auto user = m_player ? m_player->linked<body_component>() : nullptr;
+
+		if (body) {
+			body->try_use(user, *this);
 		}
 	}
 
@@ -324,7 +327,6 @@ namespace px {
 			}
 		}
 	}
-
 
 	ui::panel * environment::ui() noexcept
 	{

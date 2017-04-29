@@ -20,6 +20,7 @@ namespace px {
 		: public rl::body
 		, public es::component
 		, public es::link_dispatcher<body_component>
+		, public es::link<transform_component>
 		, public es::link<container_component>
 	{
 	public:
@@ -27,7 +28,7 @@ namespace px {
 		{
 			m_useable = use;
 		}
-		void clear_useable() noexcept
+		void detach_useable() noexcept
 		{
 			m_useable = nullptr;
 		}
@@ -43,7 +44,7 @@ namespace px {
 	public:
 		virtual ~body_component()
 		{
-			clear_useable();
+			detach_useable();
 			clear_body();
 		}
 		body_component()

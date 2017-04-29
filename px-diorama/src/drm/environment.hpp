@@ -54,6 +54,7 @@ namespace px {
 		ui::panel * ui() noexcept;
 		ui::panel const* ui() const noexcept;
 		void expose_inventory(container_component * inventory);
+		void open_workshop(unsigned int workshop);
 
 		// serialization
 

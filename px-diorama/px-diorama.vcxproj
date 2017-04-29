@@ -192,8 +192,10 @@
     <ClInclude Include="src\drm\es\container_system.hpp" />
     <ClInclude Include="src\drm\es\player_component.hpp" />
     <ClInclude Include="src\drm\es\storage_component.hpp" />
+    <ClInclude Include="src\drm\es\unit_persistency.hpp" />
     <ClInclude Include="src\drm\es\useable.hpp" />
     <ClInclude Include="src\drm\es\factory.hpp" />
+    <ClInclude Include="src\drm\es\workshop_component.hpp" />
     <ClInclude Include="src\drm\rl\container.hpp" />
     <ClInclude Include="src\drm\es\container_component.hpp" />
     <ClInclude Include="src\drm\rl\recipe.hpp" />

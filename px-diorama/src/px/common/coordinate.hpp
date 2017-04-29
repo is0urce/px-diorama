@@ -148,9 +148,16 @@ namespace px {
 		component king_distance(coordinate const& target) const
 		{
 			component distance{};
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i < Dim; ++i) {
 				distance = (std::max)(distance, (std::abs)(m_array[i] - target.m_array[i]));
+			}
+			return distance;
+		}
+		static component king_distance(coordinate const& from, coordinate const& target)
+		{
+			component distance{};
+			for (size_t i = 0; i < Dim; ++i) {
+				distance = (std::max)(distance, (std::abs)(from.m_array[i] - target.m_array[i]));
 			}
 			return distance;
 		}

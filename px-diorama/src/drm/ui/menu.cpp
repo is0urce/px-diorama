@@ -98,8 +98,11 @@ namespace px {
 
 			auto container = m_main->make<panel>("container_access", { { 0.0, 0.0 },{ 1, 1 },{ -2, -2 },{ 1.0, 1.0 } });
 			container->make<board>("bg", fill, color{ 1, 1, 1,0.5 });
-			auto container_inventory = container->make<ui::inventory_list>("c_list", { { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.5, 1.0 } });
-			auto user_inventory = container->make<ui::inventory_list>("u_list", { { 0.5, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } });
+			auto container_inventory = container->make<ui::inventory_list>({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.5, 1.0 } });
+			auto user_inventory = container->make<ui::inventory_list>({ { 0.5, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } });
+
+			container_inventory->set_format([](auto const& item) { return item->name(); });
+			user_inventory->set_format([](auto const& item) { return item->name(); });
 
 			m_container = container_inventory.get();
 			m_inventory = user_inventory.get();

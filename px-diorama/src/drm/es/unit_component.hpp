@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "unit.hpp"
-
 #include <cstdint>
 
 namespace px {
@@ -15,21 +13,20 @@ namespace px {
 	// use hex notation for binary readability
 	enum class unit_component : std::uint8_t
 	{
-		// used mostly for indicating components that is not serialized
-		undefined	= 0x4E, // n
+		// core data
+		transform	= 'T',
+		sprite		= 'S',
+		body		= 'B',
+		container	= 'C',
 
-		transform	= 0x54, // t
-		sprite		= 0x73, // s
-		body		= 0x30,
-		container	= 0x40,
-		storage		= 0x50,
-		player		= 0x60
-	};
+		// useables
+		storage		= 's',
+		workshop    = 'w',
 
-	enum class unit_persistency : std::uint8_t
-	{
-		serialized	= 0,
-		permanent	= 1,
-		temporary	= 2
+		// controls
+		player		= '@',
+
+		// unspecified component indicator used mostly for indicating components that is not serialized
+		undefined	= '!' // n
 	};
 }

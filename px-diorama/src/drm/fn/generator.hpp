@@ -9,7 +9,9 @@
 #include <random>
 #include <vector>
 
-namespace px { namespace fn {
+namespace px {
+	namespace fn {
+
 		class dig_generator
 		{
 		public:
@@ -24,7 +26,7 @@ namespace px { namespace fn {
 			void rasterize(matrix2<unsigned char> & map)
 			{
 				map.fill(0);
-				for (auto & room : m_rooms)	{
+				for (auto & room : m_rooms) {
 					room.bounds.enumerate([&](auto const& point) {
 						if (!map.contains(point)) return;
 
@@ -67,7 +69,7 @@ namespace px { namespace fn {
 				point2 current = from;
 				int steps = 0;
 				bool dig;
-				
+
 				// move to wall
 				dig = true;
 				while (dig)
@@ -106,7 +108,7 @@ namespace px { namespace fn {
 				{
 					++shift;
 					candidate = { anchor - direction * shift, range };
-				} 
+				}
 				--shift;
 				candidate = { anchor - direction * shift, range };
 

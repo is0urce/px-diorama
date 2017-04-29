@@ -10,6 +10,8 @@
 
 //#include "transform_component.hpp"
 
+#include "unit_persistency.hpp"
+
 namespace px {
 
 	class transform_component;
@@ -29,16 +31,22 @@ namespace px {
 		{
 			return m_transform ? m_transform : component<transform_component>().get();
 		}
+		unit_persistency persistency() const noexcept
+		{
+			return m_persistency;
+		}
 
 	public:
 		unit()
-			: m_transform(nullptr)
+			: m_persistency(unit_persistency::serialized)
+			, m_transform(nullptr)
 		{
 		}
 		unit(unit const&) = delete;
 		unit& operator=(unit const&) = delete;
 
 	private:
-		transform_component * m_transform;
+		unit_persistency		m_persistency;
+		transform_component *	m_transform;
 	};
 }

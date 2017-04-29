@@ -32,8 +32,21 @@ namespace px {
 			template <typename T>
 			T * linked() const noexcept
 			{
-				link<T> const * l = static_cast<C const*>(this);
+				link<T> const* l = static_cast<C const*>(this);
 				return l->get_link();
+			}
+
+			template <typename T, typename D>
+			D * linked() noexcept
+			{
+				auto t = linked<T>();
+				return t ? t->linked<D>() : nullptr;
+			}
+			template <typename T, typename D>
+			D const* linked() const noexcept
+			{
+				auto t = linked<T>();
+				return t ? t->linked<D>() : nullptr;
 			}
 		};
 	}
