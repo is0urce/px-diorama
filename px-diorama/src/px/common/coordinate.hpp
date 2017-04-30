@@ -19,15 +19,19 @@ namespace px {
 		typedef Component component;
 
 	public:
-		const component& operator[](size_t i) const
+		component const& operator[](size_t i) const
 		{
 			return m_array[i];
 		}
-		component& operator[](size_t i)
+		component & operator[](size_t i)
 		{
 			return m_array[i];
 		}
-		const component at(size_t i) const
+		component & at(size_t i)
+		{
+			return m_array.at(i);
+		}
+		component const& at(size_t i) const
 		{
 			return m_array.at(i);
 		}
@@ -47,8 +51,7 @@ namespace px {
 		bool empty() const noexcept
 		{
 			bool result = true;
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				result &= m_array[i] == 0;
 			}
 			return result;
@@ -58,8 +61,7 @@ namespace px {
 
 		void negate() noexcept
 		{
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				m_array[i] = -m_array[i];
 			}
 		}
@@ -93,34 +95,31 @@ namespace px {
 		// vector transforms
 
 		template<typename ConvertElement>
-		void move(const coordinate<ConvertElement, depth> &move)
+		void move(coordinate<ConvertElement, depth> const& move)
 		{
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				m_array[i] += move[i];
 			}
 		}
 		template<typename ConvertElement>
-		void reverse(const coordinate<ConvertElement, depth> &move)
+		void reverse(coordinate<ConvertElement, depth> const& move)
 		{
-			for (size_t i = 0; i < Dim; ++i)
+			for (size_t i = 0; i != Dim; ++i)
 			{
 				m_array[i] -= move[i];
 			}
 		}
 		template<typename ConvertElement>
-		void multiply(const coordinate<ConvertElement, depth> &multiplier)
+		void multiply(coordinate<ConvertElement, depth> const& multiplier)
 		{
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				m_array[i] *= multiplier[i];
 			}
 		}
 		template<typename ConvertElement>
-		void divide(const coordinate<ConvertElement, depth> &divisor)
+		void divide(coordinate<ConvertElement, depth> const& divisor)
 		{
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				m_array[i] /= divisor[i];
 			}
 		}
@@ -129,15 +128,13 @@ namespace px {
 
 		void multiply(component multiplier)
 		{
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				m_array[i] *= multiplier;
 			}
 		}
 		void divide(component divisor)
 		{
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				m_array[i] /= divisor;
 			}
 		}
@@ -148,7 +145,7 @@ namespace px {
 		component king_distance(coordinate const& target) const
 		{
 			component distance{};
-			for (size_t i = 0; i < Dim; ++i) {
+			for (size_t i = 0; i != Dim; ++i) {
 				distance = (std::max)(distance, (std::abs)(m_array[i] - target.m_array[i]));
 			}
 			return distance;
@@ -156,7 +153,7 @@ namespace px {
 		static component king_distance(coordinate const& from, coordinate const& target)
 		{
 			component distance{};
-			for (size_t i = 0; i < Dim; ++i) {
+			for (size_t i = 0; i != Dim; ++i) {
 				distance = (std::max)(distance, (std::abs)(from.m_array[i] - target.m_array[i]));
 			}
 			return distance;

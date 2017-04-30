@@ -3,7 +3,9 @@
 #pragma once
 
 #include "sprite_component.hpp"
+#include "transform_component.hpp"
 
+#include <px/common/vector.hpp>
 #include <px/es/basic_system.hpp>
 
 #include <map>
@@ -46,23 +48,30 @@ namespace px {
 				}
 				++m_textures;
 			}
-			void write(std::vector<std::vector<mesh_vertex>> & vertice_arrays, float x_offset, float y_offset) const
+			void write(std::vector<std::vector<mesh_vertex>> & vertice_arrays, transform_component const& camera_transform, double delta) const
 			{
 				if (vertice_arrays.size() < m_textures) throw std::runtime_error("px::sprite_system::write() - vertices array texture size not match with internal counter");
+
+				auto camera_position = interpolate(camera_transform, delta);
+
+				auto ox = -camera_position.x();
+				auto oy = -camera_position.y();
 
 				enumerate([&](auto const& sprite) {
 						if (!sprite.active()) return; // continue
 
-						auto* transform = sprite.linked<transform_component>();
+						auto transform = sprite.linked<transform_component>();
+
 						if (!transform) return;
 
-						int x = transform->x();
-						int y = transform->y();
+						vector2 pos = interpolate(*transform, delta);
+						auto x = pos.x() + ox;
+						auto y = pos.y() + oy;
 
-						float sx = x_offset + static_cast<float>(x);
-						float sy = y_offset + static_cast<float>(y);
-						float dx = x_offset + static_cast<float>(x + 1);
-						float dy = y_offset + static_cast<float>(y + 1);
+						float sx = static_cast<float>(x);
+						float sy = static_cast<float>(y);
+						float dx = static_cast<float>(x + 1);
+						float dy = static_cast<float>(y + 1);
 
 						auto & vertices = vertice_arrays[sprite.texture];
 
@@ -80,6 +89,10 @@ namespace px {
 			}
 
 		private:
+			static vector2 interpolate(transform_component const& pawn, double w)
+			{
+				return vector2(pawn.last_position()).lerp(pawn.position(), w);
+			}
 			void setup(sprite_component & element, std::string const& name)
 			{
 				image const& img = m_meta[name];

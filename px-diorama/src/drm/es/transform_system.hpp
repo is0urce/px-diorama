@@ -53,6 +53,7 @@ namespace px {
 			void setup(transform_component & element, point2 position)
 			{
 				element.place(position);
+				element.store_position();
 				element.incarnate(&m_space);
 			}
 

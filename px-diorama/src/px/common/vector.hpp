@@ -9,6 +9,17 @@
 
 namespace px {
 
+	struct vector2;
+
+	template <typename T>
+	vector2 operator+(vector2 lhs, coordinate<T, 2> const& rhs);
+	template <typename T>
+	vector2 operator-(vector2 lhs, coordinate<T, 2> const& rhs);
+	template <typename T>
+	vector2 operator*(vector2 lhs, coordinate<T, 2> const& rhs);
+	template <typename T>
+	vector2 operator/(vector2 lhs, coordinate<T, 2> const& rhs);
+
 	struct vector2 : public coordinate<double, 2>
 	{
 	public:
@@ -63,7 +74,8 @@ namespace px {
 
 		vector2 moved(vector2 move) const { move.move(*this); return move; }
 		vector2 multiplied(vector2 stretch) const { stretch.multiply(*this); return stretch; }
-		vector2 multiplied(component stretch) const { vector2 result(*this); result.multiplied(stretch); return result; }
+		vector2 multiplied(component u, component v) const { vector2 result(*this); result.multiply(vector2{ u, v }); return result; }
+		vector2 multiplied(component stretch) const { vector2 result(*this); result.multiply(stretch); return result; }
 
 		vector2 operator-() const { vector2 negated = *this; negated.negate(); return negated; }
 
@@ -135,7 +147,7 @@ namespace px {
 
 	namespace
 	{
-		vector2 operator*(vector2 lhs, point2::component c) { lhs *= c; return lhs; }
-		vector2 operator/(vector2 lhs, point2::component c) { lhs /= c; return lhs; }
+		vector2 operator*(vector2 lhs, vector2::component c) { lhs *= c; return lhs; }
+		vector2 operator/(vector2 lhs, vector2::component c) { lhs /= c; return lhs; }
 	}
 }

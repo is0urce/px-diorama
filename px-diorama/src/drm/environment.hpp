@@ -34,7 +34,7 @@ namespace px {
 
 		// flow
 
-		void update(perception & view) const;
+		void update(perception & view, double time) const;
 		bool running() const noexcept;
 		void shutdown() noexcept;
 		void start();
@@ -68,6 +68,7 @@ namespace px {
 		environment();
 
 	private:
+		void turn();
 		void generate_terrain();
 		transform_component * find_any(point2 const& position);
 
@@ -87,6 +88,7 @@ namespace px {
 		point2								m_hover;	// current hovered tile (uses relative world coordinates)
 		ui::menu							m_ui;		// user interface
 
+		unsigned int						m_turn;		// current turn
 		terrain_chunk<tile>					m_map;		// terrain
 		std::list<std::shared_ptr<unit>>	m_units;	// scene
 		transform_component *				m_player;	// player transform

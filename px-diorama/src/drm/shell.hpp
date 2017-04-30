@@ -52,7 +52,7 @@ namespace px {
 		{
 			return m_perception;
 		}
-		void frame(double /*time*/)
+		void frame(double time)
 		{
 			// clear sprite batches
 			m_perception.clear_batches();
@@ -61,7 +61,7 @@ namespace px {
 			m_perception.canvas().cls();
 			ui()->layout(m_perception.canvas().range());
 
-			update(m_perception);
+			update(m_perception, time);
 		}
 		void resize(unsigned int width, unsigned int height)
 		{

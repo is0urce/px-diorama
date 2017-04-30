@@ -29,6 +29,7 @@ namespace px {
 		: m_factory(std::make_unique<factory>())
 		, m_player(nullptr)
 		, m_run(true)
+		, m_turn(1)
 	{
 	}
 
@@ -49,18 +50,32 @@ namespace px {
 	{
 		m_player = player;
 	}
-	void environment::update(perception & view) const
+	void environment::update(perception & view, double time) const
 	{
+		// track timestamp from last turn update
+		static unsigned int last_turn = 0;
+		static double last_time = 0;
+		if (m_turn != last_turn) {
+			last_turn = m_turn;
+			last_time = time;
+		}
+
 		// render sprites
-		if (m_player)
-		{
-			float dx = -static_cast<float>(m_player->x());
-			float dy = -static_cast<float>(m_player->y());
-			m_factory->sprites()->write(view.batches(), dx, dy);
+		if (m_player) {
+			auto span = (time - last_time) * 5;
+			m_factory->sprites()->write(view.batches(), *m_player, std::min(span, 1.0));
 		}
 
 		// render user interface
 		m_ui.main()->draw(view.canvas());
+	}
+	void environment::turn()
+	{
+		std::for_each(std::begin(m_units), std::end(m_units), [](auto & unit) {
+			auto transform = unit->transform();
+			if (transform) transform->store_position();
+		});
+		++m_turn;
 	}
 
 	void environment::target(point2 relative_world_coordinates)
@@ -80,6 +95,7 @@ namespace px {
 		auto blocking = find_any(destination);
 
 		if (!blocking) {
+			turn();
 			m_player->place(destination);
 		}
 	}
@@ -99,6 +115,7 @@ namespace px {
 
 	std::shared_ptr<unit> environment::spawn(std::string const& name, point2 location)
 	{
+		// create
 		unit_builder builder(m_factory.get());
 		auto transform = builder.add_transform(location);
 		auto body = builder.add_body();
@@ -107,18 +124,18 @@ namespace px {
 		auto storage = builder.add_storage();
 
 		// setup
+		transform->store_position();
+		body->health().create();
+		body->set_name(name);
 		for (int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("item #" + std::to_string(i));
 			itm->add({ rl::effect::ore_power, 0x100, 0x500 });
 			container->add(itm);
 		}
-		body->health().create();
-		body->set_name(name);
 
-		// track
+		// add to scene
 		auto result = builder.assemble();
-
 		result->enable();
 		m_units.push_back(result);
 
@@ -160,6 +177,7 @@ namespace px {
 			auto & tile = m_map[point];
 
 			tile.transform.move(point);
+			tile.transform.store_position();
 
 			tile.ground = m_factory->sprites()->make_unique("#");
 			tile.ground->connect(&tile.transform);
@@ -212,6 +230,7 @@ namespace px {
 		//cereal::XMLOutputArchive archive(output);
 		cereal::BinaryOutputArchive archive(output);
 
+		archive(m_turn);
 		save_units(archive);
 	}
 	void environment::load(std::string const& name)
@@ -223,6 +242,7 @@ namespace px {
 
 		clear();
 
+		archive(m_turn);
 		load_units(archive);
 	}
 	template <typename Archive>

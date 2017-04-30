@@ -3,6 +3,8 @@
 // auth: is0urce
 // desc: class methods implementation
 
+#pragma once
+
 #include "storage_component.hpp"
 
 #include "drm/environment.hpp"
