@@ -54,9 +54,6 @@ namespace px {
 
 				auto camera_position = interpolate(camera_transform, delta);
 
-				auto ox = -camera_position.x();
-				auto oy = -camera_position.y();
-
 				enumerate([&](auto const& sprite) {
 						if (!sprite.active()) return; // continue
 
@@ -64,9 +61,9 @@ namespace px {
 
 						if (!transform) return;
 
-						vector2 pos = interpolate(*transform, delta);
-						auto x = pos.x() + ox;
-						auto y = pos.y() + oy;
+						vector2 pos = interpolate(*transform, delta) - camera_position;
+						auto x = pos.x();
+						auto y = pos.y();
 
 						float sx = static_cast<float>(x);
 						float sy = static_cast<float>(y);

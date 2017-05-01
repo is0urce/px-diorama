@@ -20,6 +20,9 @@ namespace px {
 		{
 			m_batches.emplace_back();
 		}
+
+		// scaling
+
 		float scale() const noexcept
 		{
 			return m_scale;
@@ -38,13 +41,9 @@ namespace px {
 		{
 			return m_batches;
 		}
-		std::vector<mesh_vertex> const& batch(size_t n) const noexcept
+		std::vector<std::vector<mesh_vertex>> const& batches() const noexcept
 		{
-			return m_batches[n];
-		}
-		size_t textures() const noexcept
-		{
-			return m_batches.size();
+			return m_batches;
 		}
 		void clear_batches()
 		{
