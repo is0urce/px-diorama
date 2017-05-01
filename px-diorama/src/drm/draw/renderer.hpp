@@ -21,6 +21,7 @@
 #include <px/rft/ft_font.hpp>
 #include <px/ui/canvas.hpp>
 
+#include <cstdlib>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -45,6 +46,7 @@ namespace px {
 
 			// prepare uniforms
 			m_camera.load<camera_uniform>(GL_STREAM_DRAW, { { view.scale(), view.scale() * m_width / m_height },{ 0.0, 0.0 } });
+			m_lens.load<postprocess_uniform>(GL_STREAM_DRAW, { {}, {}, glm::vec4(std::rand(), std::rand(), std::rand(), std::rand()) });
 
 			// g-pass
 			glUseProgram(m_batch);
@@ -125,8 +127,8 @@ namespace px {
 
 			// shaders
 			m_batch = compile_program("data/shaders/batch", { "Camera" }, { "img" });
-			m_process = compile_program("data/shaders/process", {}, { "img", "blured" });
 			m_blur = compile_program("data/shaders/blur", { "Blur" }, { "img" });
+			m_process = compile_program("data/shaders/process", { "Lens" }, { "img", "blured" });
 
 			m_console = compile_program("data/shaders/uisolid", { "Camera" }, {});
 			m_glyph = compile_program("data/shaders/uitext", { "Camera" }, { "img" });
@@ -158,6 +160,7 @@ namespace px {
 			m_postprocess = { 0, 0, m_width, m_height };
 			m_postprocess.bind_texture(m_primary.texture, 0);
 			m_postprocess.bind_texture(m_blur_passes.result(), 1);
+			m_postprocess.bind_uniform(m_lens);
 
 			// ui console grid pass
 			m_ui_solid_pass = { 0, m_ui_solid_geometry, m_width, m_height };
@@ -245,6 +248,12 @@ namespace px {
 			glm::vec2 scale;
 			glm::vec2 offset;
 		};
+		struct postprocess_uniform
+		{
+			glm::vec4 focus_distance;
+			glm::vec4 lateral;
+			glm::vec4 noise;
+		};
 
 	private:
 		int m_width;
@@ -257,6 +266,7 @@ namespace px {
 		gl_program m_glyph;
 
 		gl_uniform m_camera;
+		gl_uniform m_lens;
 
 		offscreen m_primary;
 		offscreen m_ping;
