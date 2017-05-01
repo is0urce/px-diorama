@@ -39,7 +39,15 @@ namespace px {
 		}
 		void scroll(double vertical, double horisontal)
 		{
-			m_perception.zoom(static_cast<float>(vertical + horisontal) * 0.1f);
+			//m_perception.zoom(static_cast<float>(vertical + horisontal) * 0.1f);
+			m_pixel_zoom += (vertical + horisontal < 0) ? -1 : 1;
+			m_pixel_zoom = std::max(1, std::min(m_pixel_zoom, 8));
+
+			pixel_snap();
+		}
+		void pixel_snap(unsigned int ppu = 32)
+		{
+			m_perception.set_scale(ppu * m_pixel_zoom * 2.0f / m_screen_width);
 		}
 
 		void add_atlas(std::string const& name, bool reverse_y)
@@ -68,12 +76,14 @@ namespace px {
 			m_screen_width = width;
 			m_screen_height = height;
 			m_perception.canvas().resize(width / gui_cell_width, height / gui_cell_height);
+			pixel_snap();
 		}
 
 	public:
 		shell()
+			: m_pixel_zoom(2)
 		{
-			m_perception.set_scale(0.10f);
+			pixel_snap();
 		}
 
 	private:
@@ -103,5 +113,6 @@ namespace px {
 		unsigned int m_screen_height;
 		unsigned int m_ui_width;
 		unsigned int m_ui_height;
+		int m_pixel_zoom;
 	};
 }

@@ -19,13 +19,13 @@ const vec2 r_m = vec2(1.003, 1.003);
 const vec2 g_m = vec2(1.001, 1.001);
 const vec2 b_m = vec2(1.0, 1.0);
 
-const vec2 r_o = vec2(-0.0005, -0.0005);
-const vec2 g_o = vec2(0.0005, 0.0005);
-const vec2 b_o = vec2(0.0005, 0.0);
+//const vec2 r_o = vec2(-0.0005, -0.0005);
+//const vec2 g_o = vec2(0.0005, 0.0005);
+//const vec2 b_o = vec2(0.0005, 0.0);
 
-//const vec2 r_o = vec2(0.0, 0.0);
-//const vec2 g_o = vec2(0.0, 0.0);
-//const vec2 b_o = vec2(0.0, 0.0);
+const vec2 r_o = vec2(0.0, 0.0);
+const vec2 g_o = vec2(0.0, 0.0);
+const vec2 b_o = vec2(0.0, 0.0);
 
 const float inverted_gamma = 1 / 2.2;
 const float exposure = 0.05;
@@ -73,7 +73,7 @@ vec3 noise3(vec3 seed)
 
 vec3 tonemap(vec3 chroma)
 {
-	return chroma / (vec3(1, 1, 1) + chroma);
+	return chroma / (vec3(1.0) + chroma);
 }
 vec3 tonemap_exposure(vec3 chroma, float exposure)
 {
@@ -94,13 +94,13 @@ void main()
 	float b = seek(b_m, b_o).b * (1.0 - b_blur) + seek_blured(r_m, r_o).b * b_blur;
 
 	vec3 chroma = vec3(r, g, b);
-	vec3 n = noise3(lens.noise.rgb) / 64;
+	vec3 grain = noise3(lens.noise.rgb) / 64;
 
     // tone map
 	chroma = tonemap_exposure(chroma, 1);
 
-    // gamma
+    // gamma, convert to sRGB space
     chroma = pow(chroma, vec3(inverted_gamma));
 
-    fragColor = vec4(chroma + n, 1.0);
+    fragColor = vec4(chroma + grain, 1.0);
 }
