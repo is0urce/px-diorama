@@ -35,8 +35,7 @@ namespace px {
 		point2 floor() const
 		{
 			point2 result;
-			for (size_t i = 0; i < depth; ++i)
-			{
+			for (size_t i = 0; i != depth; ++i) {
 				result[i] = static_cast<point2::component>(std::floor(m_array[i]));
 			}
 			return result;
@@ -44,8 +43,7 @@ namespace px {
 		point2 ceil() const
 		{
 			point2 result;
-			for (size_t i = 0; i < depth; ++i)
-			{
+			for (size_t i = 0; i != depth; ++i) {
 				result[i] = static_cast<point2::component>(std::ceil(m_array[i]));
 			}
 			return result;
@@ -53,8 +51,7 @@ namespace px {
 		point2 round() const
 		{
 			point2 result;
-			for (size_t i = 0; i < depth; ++i)
-			{
+			for (size_t i = 0; i != depth; ++i) {
 				result[i] = static_cast<point2::component>(std::round(m_array[i]));
 			}
 			return result;
@@ -63,8 +60,7 @@ namespace px {
 		TargetType convert(Converter convert_fn) const
 		{
 			TargetType result;
-			for (size_t i = 0; i < depth; ++i)
-			{
+			for (size_t i = 0; i != depth; ++i) {
 				result[i] = convert_fn(m_array[i]);
 			}
 			return result;
@@ -80,34 +76,29 @@ namespace px {
 		vector2 operator-() const { vector2 negated = *this; negated.negate(); return negated; }
 
 		template <typename T>
-		vector2& operator+=(coordinate<T, depth> const& rhs) { move(rhs); return *this; }
+		vector2 & operator+=(coordinate<T, depth> const& rhs) { move(rhs); return *this; }
 		template <typename T>
-		vector2& operator-=(coordinate<T, depth> const& rhs) { reverse(rhs); return *this; }
+		vector2 & operator-=(coordinate<T, depth> const& rhs) { reverse(rhs); return *this; }
 		template <typename T>
-		vector2& operator*=(coordinate<T, depth> const& rhs) { multiply(rhs); return *this; }
+		vector2 & operator*=(coordinate<T, depth> const& rhs) { multiply(rhs); return *this; }
 		template <typename T>
-		vector2& operator/=(coordinate<T, depth> const& rhs) { divide(rhs); return *this; }
+		vector2 & operator/=(coordinate<T, depth> const& rhs) { divide(rhs); return *this; }
 
-		vector2& operator*=(component c) { multiply(c); return *this; };
-		vector2& operator/=(component c) { divide(c); return *this; };
+		vector2 & operator*=(component c) { multiply(c); return *this; };
+		vector2 & operator/=(component c) { divide(c); return *this; };
 
 		void normalize()
 		{
 			auto len = magnitude();
-			if (len > 0)
-			{
-				for (size_t i = 0; i < depth; ++i)
-				{
-					m_array[i] /= len;
-				}
+			if (len != 0) {
+				divide(len);
 			}
 		}
 		vector2 normalized() { vector2 result(*this); result.normalize(); return result; }
 		vector2 clamped(vector2 const& min, vector2 const& max) const
 		{
 			vector2 result;
-			for (size_t i = 0; i < depth; ++i)
-			{
+			for (size_t i = 0; i != depth; ++i) {
 				result[i] = (std::min)((std::max)(min[i], m_array[i]), max[i]);
 			}
 			return result;

@@ -163,8 +163,7 @@ namespace px {
 		component block_distance(coordinate const& target) const noexcept
 		{
 			component distance{};
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				distance += (std::abs)(m_array[i] - target.m_array[i]);
 			}
 			return distance;
@@ -174,8 +173,7 @@ namespace px {
 		component distance2(coordinate const& target) const noexcept
 		{
 			component distance{};
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				component delta = m_array[i] - target.m_array[i];
 				distance += delta * delta;
 			}
@@ -185,8 +183,7 @@ namespace px {
 		component magnitude2() const noexcept
 		{
 			component distance{};
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				distance += m_array[i] * m_array[i];
 			}
 			return distance;
@@ -207,26 +204,23 @@ namespace px {
 		// i/o
 
 		template <typename Memory>
-		void read(Memory *memory)
+		void read(Memory const* memory)
 		{
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				m_array[i] = static_cast<Memory>(memory[i]);
 			}
 		}
 		template <typename Memory>
-		void write(Memory *memory) const
+		void write(Memory * memory) const
 		{
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				memory[i] = static_cast<Memory>(m_array[i]);
 			}
 		}
 		template <typename Archive>
 		void serialize(Archive & archive)
 		{
-			for (size_t i = 0; i < Dim; ++i)
-			{
+			for (size_t i = 0; i != Dim; ++i) {
 				archive(m_array[i]);
 			}
 		}
@@ -250,8 +244,7 @@ namespace px {
 	template <typename Component, unsigned int Dim>
 	bool operator==(coordinate<Component, Dim> const& a, coordinate<Component, Dim> const& b)
 	{
-		for (size_t i = 0; i < Dim; ++i)
-		{
+		for (size_t i = 0; i != Dim; ++i) {
 			if (a[i] != b[i]) return false;
 		}
 		return true;

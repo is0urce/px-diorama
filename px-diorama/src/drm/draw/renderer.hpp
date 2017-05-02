@@ -34,6 +34,10 @@ namespace px {
 		unsigned int ui_font_atlas = 512;	// internal size of font atlas
 		float pi = 3.14f;
 		float pi_2 = pi * 2;
+
+		float lateral_r = 0.003f;
+		float lateral_g = 0.001f;
+		float lateral_b = 0.0f;
 	}
 
 	class renderer
@@ -45,8 +49,13 @@ namespace px {
 			prepare_console(view.canvas());
 
 			// prepare uniforms
-			m_camera.load<camera_uniform>(GL_STREAM_DRAW, { { view.scale(), view.scale() * m_width / m_height },{ 0.0, 0.0 } });
-			m_lens.load<postprocess_uniform>(GL_STREAM_DRAW, { {}, {}, glm::vec4(std::rand(), std::rand(), std::rand(), std::rand()) });
+			float aspect = static_cast<float>(m_width) / static_cast<float>(m_height);
+			glm::vec4 noize(std::rand(), std::rand(), std::rand(), std::rand());
+			glm::vec2 lens_r(1 + lateral_r, 1 + lateral_r * aspect);
+			glm::vec2 lens_g(1 + lateral_g, 1 + lateral_g * aspect);
+			glm::vec2 lens_b(1 + lateral_b, 1 + lateral_b * aspect);
+			m_camera.load<camera_uniform>(GL_STREAM_DRAW, { { view.scale(), view.scale() * aspect },{ 0.0, 0.0 } });
+			m_lens.load<postprocess_uniform>(GL_STREAM_DRAW, { noize, {}, {}, {}, {}, lens_r, lens_g, lens_b, aspect });
 
 			// g-pass
 			glUseProgram(m_batch);
@@ -128,7 +137,7 @@ namespace px {
 			// shaders
 			m_batch = compile_program("data/shaders/batch", { "Camera" }, { "img" });
 			m_blur = compile_program("data/shaders/blur", { "Blur" }, { "img" });
-			m_process = compile_program("data/shaders/process", { "Lens" }, { "img", "blured" });
+			m_process = compile_program("data/shaders/process", { "Lens" }, { "img", "blurred" });
 
 			m_console = compile_program("data/shaders/uisolid", { "Camera" }, {});
 			m_glyph = compile_program("data/shaders/uitext", { "Camera" }, { "img" });
@@ -156,7 +165,7 @@ namespace px {
 			}
 
 			// efx & postprocess
-			m_blur_passes = { m_primary.texture, m_ping.framebuffer, m_ping.texture, m_pong.framebuffer, m_pong.texture, m_width, m_height, 0.5f,{ pi_2 / 16, pi_2 / 16 * 3, pi_2 / 16 * 5, pi_2 / 16 * 7 } };
+			m_blur_passes = { m_primary.texture, m_ping.framebuffer, m_ping.texture, m_pong.framebuffer, m_pong.texture, m_width, m_height, 0.75f,{ pi_2 / 16, pi_2 / 16 * 3, pi_2 / 16 * 5, pi_2 / 16 * 7 } };
 			m_postprocess = { 0, 0, m_width, m_height };
 			m_postprocess.bind_texture(m_primary.texture, 0);
 			m_postprocess.bind_texture(m_blur_passes.result(), 1);
@@ -250,9 +259,18 @@ namespace px {
 		};
 		struct postprocess_uniform
 		{
+			glm::vec4 noize_seed;
 			glm::vec4 focus_distance;
-			glm::vec4 lateral;
-			glm::vec4 noise;
+
+			glm::vec2 lateral_r;
+			glm::vec2 lateral_g;
+			glm::vec2 lateral_b;
+
+			glm::vec2 offset_r;
+			glm::vec2 offset_g;
+			glm::vec2 offset_b;
+
+			glm::float32 aspect;
 		};
 
 	private:

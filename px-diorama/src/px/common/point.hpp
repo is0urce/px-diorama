@@ -20,26 +20,25 @@ namespace px {
 			return m_array[1];
 		}
 
-		point2 moved(point2 move) const { move.move(*this); return move; }
+		point2 moved(point2 movement) const { movement.move(*this); return movement; }
 		point2 moved(component x, component y) const { point2 result(x, y); result.move(*this); return result; }
 
 		point2 multiplied(point2 stretch) const { stretch.multiply(*this); return stretch; }
 
 		point2 operator-() const { point2 negated = *this; negated.negate(); return negated; }
 
-		point2& operator+=(point2 const& rhs) { move(rhs); return *this; }
-		point2& operator-=(point2 const& rhs) { reverse(rhs); return *this; }
-		point2& operator*=(point2 const& rhs) { multiply(rhs); return *this; }
-		point2& operator/=(point2 const& rhs) { divide(rhs); return *this; }
+		point2 & operator+=(point2 const& rhs) { move(rhs); return *this; }
+		point2 & operator-=(point2 const& rhs) { reverse(rhs); return *this; }
+		point2 & operator*=(point2 const& rhs) { multiply(rhs); return *this; }
+		point2 & operator/=(point2 const& rhs) { divide(rhs); return *this; }
 
-		point2& operator*=(component c) { multiply(c); return *this; };
-		point2& operator/=(component c) { divide(c); return *this; };
+		point2 & operator*=(component c) { multiply(c); return *this; };
+		point2 & operator/=(component c) { divide(c); return *this; };
 
 		point2 clamped(point2 const& min, point2 const& max) const
 		{
 			point2 result;
-			for (size_t i = 0; i < depth; ++i)
-			{
+			for (size_t i = 0; i != depth; ++i) {
 				result[i] = (std::min)((std::max)(min[i], m_array[i]), max[i]);
 			}
 			return result;

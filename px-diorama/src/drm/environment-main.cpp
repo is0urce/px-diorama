@@ -59,11 +59,11 @@ namespace px {
 			last_turn = m_turn;
 			last_time = time;
 		}
+		auto span = time - last_time;
 
 		// render sprites
 		if (m_player) {
-			auto span = (time - last_time) * 5;
-			m_factory->sprites()->write(view.batches(), *m_player, std::min(span, 1.0));
+			m_factory->sprites()->write(view.batches(), *m_player, span);
 		}
 
 		// render user interface

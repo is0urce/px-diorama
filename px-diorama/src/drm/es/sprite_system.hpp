@@ -52,7 +52,9 @@ namespace px {
 			{
 				if (vertice_arrays.size() < m_textures) throw std::runtime_error("px::sprite_system::write() - vertices array texture size not match with internal counter");
 
-				auto camera_position = interpolate(camera_transform, delta);
+				auto w = std::min(delta * 5, 1.0);
+
+				auto camera_position = interpolate(camera_transform, w);
 
 				enumerate([&](auto const& sprite) {
 						if (!sprite.active()) return; // continue
@@ -61,7 +63,7 @@ namespace px {
 
 						if (!transform) return;
 
-						vector2 pos = interpolate(*transform, delta) - camera_position;
+						vector2 pos = interpolate(*transform, w) - camera_position;
 						auto x = pos.x();
 						auto y = pos.y();
 
