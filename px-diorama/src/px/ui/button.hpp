@@ -21,22 +21,54 @@ namespace px {
 			typedef std::function<void(int)> click_fn;
 
 		public:
-			button(click_fn click)
-				: m_click(click)
+			void on_click(click_fn click)
+			{
+				m_click = click;
+			}
+			void add_shortcut(unsigned int code)
+			{
+				m_shortcuts.push_back(code);
+			}
+
+		public:
+			virtual ~button()
 			{
 			}
-			virtual ~button()
+			button()
+			{
+			}
+			button(click_fn click)
+				: m_click(click)
 			{
 			}
 
 		protected:
 			virtual bool click_panel(point2 const& /*position*/, int button) override
 			{
-				m_click(button);
+				press_button(button);
+				return true;
+			}
+			virtual void press_panel(unsigned int code) override
+			{
+				for (auto shortcut : m_shortcuts) {
+					if (shortcut == code) {
+						press_button(0);
+						return;
+					}
+				}
+			}
+
+		private:
+			void press_button(int button)
+			{
+				if (m_click) {
+					m_click(button);
+				}
 			}
 
 		private:
 			click_fn m_click;
+			std::vector<unsigned int> m_shortcuts;
 		};
 	}
 }

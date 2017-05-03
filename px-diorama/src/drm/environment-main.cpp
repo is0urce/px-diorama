@@ -49,6 +49,7 @@ namespace px {
 	void environment::impersonate(transform_component * player)
 	{
 		m_player = player;
+		m_factory->sprites()->assign_camera(m_player);
 	}
 	void environment::update(perception & view, double time) const
 	{
@@ -61,12 +62,11 @@ namespace px {
 		}
 		auto span = time - last_time;
 
-		// render sprites
-		if (m_player) {
-			m_factory->sprites()->write(view.batches(), *m_player, span);
-		}
+		// compose sprite batches
+		m_factory->sprites()->update(span);
+		view.assign_batches(&m_factory->sprites()->batches());
 
-		// render user interface
+		// compose user interface
 		m_ui.main()->draw(view.canvas());
 	}
 	void environment::turn()
@@ -148,12 +148,6 @@ namespace px {
 
 		// units
 
-		auto player = spawn("@", { 54, 46 });
-
-		player->add(m_factory->make_player());
-
-		m_player = player->transform();
-
 		spawn("m_snake", { 50, 50 });
 		spawn("m_h_rabling_harvester", { 50, 51 });
 		spawn("m_h_rabling_reaper", { 50, 52 });
@@ -166,8 +160,11 @@ namespace px {
 		spawn("p_locker", { 55, 48 });
 		spawn("p_box", { 55, 49 });
 
-		// ui
-		//if (m_inventory) m_inventory->set_container(m_player->linked<body_component>()->linked<container_component>());
+		// player
+		auto player = spawn("@", { 54, 46 });
+
+		player->add(m_factory->make_player());
+		impersonate(player->transform());
 	}
 	void environment::generate_terrain()
 	{

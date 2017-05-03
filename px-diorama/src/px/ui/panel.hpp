@@ -181,8 +181,7 @@ namespace px {
 				});
 
 				// this one
-				if (!processed && m_bounds.contains(position))
-				{
+				if (!processed && m_bounds.contains(position)) {
 					processed = click_panel(position - m_bounds.start(), button); // call this virtual overload
 				}
 
@@ -238,34 +237,17 @@ namespace px {
 			}
 
 		private:
-			//template<typename Operator>
-			//bool action_until(Operator && callback_action)
-			//{
-			//	for (auto & p : m_stack)
-			//	{
-			//		if (p.second && p.second->active() && std::forward<Operator>(callback_action)(p.second)) return true;
-			//	}
-			//	for (auto & p : m_unnamed)
-			//	{
-			//		if (p && p->active() && std::forward<Operator>(callback_action)(p)) return true;
-			//	}
-			//	return false;
-			//}
 			template<typename Operator>
 			bool action(Operator && callback_action)
 			{
-				for (auto & pair : m_stack)
-				{
-					if (pair.second && pair.second->active())
-					{
-						std::forward<Operator>(callback_action)(pair.second);
+				for (auto & pair : m_stack) {
+					if (pair.second && pair.second->active()) {
+						callback_action(pair.second);
 					}
 				}
-				for (auto & subpanel : m_unnamed)
-				{
-					if (subpanel && subpanel->active())
-					{
-						std::forward<Operator>(callback_action)(subpanel);
+				for (auto & subpanel : m_unnamed) {
+					if (subpanel && subpanel->active()) {
+						callback_action(subpanel);
 					}
 				}
 				return false;
@@ -273,18 +255,14 @@ namespace px {
 			template<typename Operator>
 			bool action(Operator && callback_action) const
 			{
-				for (auto const& pair : m_stack)
-				{
-					if (pair.second && pair.second->active())
-					{
-						std::forward<Operator>(callback_action)(pair.second);
+				for (auto const& pair : m_stack) {
+					if (pair.second && pair.second->active()) {
+						callback_action(pair.second);
 					}
 				}
-				for (auto const& subpanel : m_unnamed)
-				{
-					if (subpanel && subpanel->active())
-					{
-						std::forward<Operator>(callback_action)(subpanel);
+				for (auto const& subpanel : m_unnamed) {
+					if (subpanel && subpanel->active()) {
+						callback_action(subpanel);
 					}
 				}
 				return false;

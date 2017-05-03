@@ -12,8 +12,6 @@
 
 #include <px/common/pool_chain.hpp>
 
-#include <memory>
-
 namespace px {
 	namespace es {
 
@@ -31,37 +29,33 @@ namespace px {
 		public:
 			shared_ptr make_shared()
 			{
-				auto result = m_pool->make_shared();
-				return result;
+				return m_pool.make_shared();
 			}
 			unique_ptr make_unique()
 			{
-				auto result = m_pool->make_unique();
-				return result;
+				return  m_pool.make_unique();
 			}
 			std_ptr make_std()
 			{
-				auto result = m_pool->make_std();
-				return result;
+				return m_pool.make_std();
 			}
 			template <typename Operator>
 			void enumerate(Operator && op) const
 			{
-				m_pool->enumerate(std::forward<Operator>(op));
+				m_pool.enumerate(std::forward<Operator>(op));
 			}
 			void clear()
 			{
-				m_pool->clear();
+				m_pool.clear();
 			}
 
 		public:
 			basic_system()
-				: m_pool(std::make_unique<pool_type>())
 			{
 			}
 
 		private:
-			std::unique_ptr<pool_type> m_pool;
+			pool_type m_pool;
 		};
 	}
 }

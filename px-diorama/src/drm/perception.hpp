@@ -3,6 +3,8 @@
 // auth: is0urce
 // desc: data for rendering
 
+// aggregator of drawing data for rendering
+
 #pragma once
 
 #include "vertex.hpp"
@@ -16,11 +18,9 @@ namespace px {
 	class perception
 	{
 	public:
-		void add_texture()
-		{
-			m_batches.emplace_back();
-		}
+		typedef std::vector<std::vector<mesh_vertex>> arrays_type; // same as in sprite system
 
+	public:
 		// scaling
 
 		float scale() const noexcept
@@ -37,21 +37,18 @@ namespace px {
 			m_scale = multiplier;
 		}
 
-		std::vector<std::vector<mesh_vertex>> & batches() noexcept
+		// draw lists
+
+		std::vector<std::vector<mesh_vertex>> const* batches() const noexcept
 		{
-			return m_batches;
+			return m_vertices;
 		}
-		std::vector<std::vector<mesh_vertex>> const& batches() const noexcept
+		void assign_batches(std::vector<std::vector<mesh_vertex>> const* data) noexcept
 		{
-			return m_batches;
+			m_vertices = data;
 		}
-		void clear_batches()
-		{
-			for (auto & b : m_batches)
-			{
-				b.resize(0);
-			}
-		}
+
+		// ui grid
 
 		ui::canvas & canvas() noexcept
 		{
@@ -69,8 +66,8 @@ namespace px {
 		}
 
 	private:
-		float m_scale;
-		std::vector<std::vector<mesh_vertex>> m_batches;
+		std::vector<std::vector<mesh_vertex>> const* m_vertices;
 		ui::canvas m_canvas;
+		float m_scale;
 	};
 }

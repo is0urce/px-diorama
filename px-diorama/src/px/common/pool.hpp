@@ -105,7 +105,6 @@ namespace px {
 		{
 			T * ptr = request(std::forward<Args>(args)...);
 			size_t index = ptr - reinterpret_cast<T*>(&m_pool[0]);
-			//m_links[index].ctrl.assign_memory(ptr);
 			return shared_ptr(ptr, &m_links[index].ctrl);
 		}
 		template <typename... Args>
@@ -144,24 +143,22 @@ namespace px {
 				&& ptr < reinterpret_cast<T const*>(&m_pool[Size * sizeof(T)]);
 		}
 
-		template <typename Operator>
-		void enumerate(Operator && op)
+		template <typename UnaryFunction>
+		void enumerate(UnaryFunction && func)
 		{
-			for (links* i = m_live; i != nullptr; i = i->next_live)
-			{
-				std::forward<Operator>(op)(reinterpret_cast<T&>(m_pool[(i - &m_links[0]) * sizeof(T)]));
+			for (links * i = m_live; i != nullptr; i = i->next_live)	{
+				func(reinterpret_cast<T&>(m_pool[(i - &m_links[0]) * sizeof(T)]));
 			}
 		}
-		template <typename Operator>
-		void enumerate(Operator && op) const
+		template <typename UnaryFunction >
+		void enumerate(UnaryFunction && func) const
 		{
-			for (links const* i = m_live; i != nullptr; i = i->next_live)
-			{
-				std::forward<Operator>(op)(reinterpret_cast<T const&>(m_pool[(i - &m_links[0]) * sizeof(T)]));
+			for (links const* i = m_live; i != nullptr; i = i->next_live) {
+				func(reinterpret_cast<T const&>(m_pool[(i - &m_links[0]) * sizeof(T)]));
 			}
 		}
 
-		void clear() noexcept
+		void clear()
 		{
 			destroy_existing();
 			startup();
@@ -182,8 +179,7 @@ namespace px {
 	private:
 		void destroy_existing()
 		{
-			for (links* i = m_live; i != nullptr; i = i->next_live)
-			{
+			for (links* i = m_live; i != nullptr; i = i->next_live)	{
 				destroy(reinterpret_cast<T&>(m_pool[(i - &m_links[0]) * sizeof(T)]));
 			}
 		}
@@ -193,15 +189,12 @@ namespace px {
 			m_free = &m_links[0];
 			m_live = nullptr;
 
-			//T* ptr = reinterpret_cast<T*>(&m_pool[0]);
-			for (size_t i = 0; i != Size; ++i)
-			{
+			for (size_t i = 0; i != Size; ++i) {
 				m_links[i].next_free = i == Size - 1 ? nullptr : &m_links[i + 1];
 				m_links[i].prev_live = i == 0 ? nullptr : &m_links[i - 1];
 				m_links[i].next_live = nullptr;
 				m_links[i].live = false;
 				m_links[i].ctrl = control_block<T, smart_deleter>(from_index(i), smart_deleter(this));
-				//m_links[i].ctrl.assign_memory(from_index(i));
 			}
 		}
 		template <typename... Args>
@@ -241,13 +234,13 @@ namespace px {
 			{
 			}
 		private:
-			pool* m_current;
+			pool * m_current;
 		};
 		struct links
 		{
-			links* next_free;
-			links* next_live;
-			links* prev_live;
+			links * next_free;
+			links * next_live;
+			links * prev_live;
 			bool live; // auxiliary state to avoid double released
 			control_block<T, smart_deleter> ctrl; // for smart ptrs
 		};

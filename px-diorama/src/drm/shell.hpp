@@ -50,11 +50,10 @@ namespace px {
 			m_perception.set_scale(ppu * m_pixel_zoom * 2.0f / m_screen_width);
 		}
 
-		void add_atlas(std::string const& name, bool reverse_y)
-		{
-			m_perception.add_texture();
-			add_spritesheet(name, reverse_y);
-		}
+		//void add_atlas(std::string const& name, bool reverse_y)
+		//{
+		//	add_spritesheet(name, reverse_y);
+		//}
 
 		perception const& view() const noexcept
 		{
@@ -62,9 +61,6 @@ namespace px {
 		}
 		void frame(double time)
 		{
-			// clear sprite batches
-			m_perception.clear_batches();
-
 			// clear ui grid
 			m_perception.canvas().cls();
 			ui()->layout(m_perception.canvas().range());

@@ -125,24 +125,24 @@ namespace px {
 			}
 		}
 
-		template <typename Operator>
-		void enumerate(Operator && op)
+		template <typename UnaryFunction>
+		void enumerate(UnaryFunction && op)
 		{
 			for (node* i = &m_root; i != nullptr; i = i->next.get())
 			{
-				i->chunk.enumerate(std::forward<Operator>(op));
+				i->chunk.enumerate(std::forward<UnaryFunction>(op));
 			}
 		}
-		template <typename Operator>
-		void enumerate(Operator && op) const
+		template <typename UnaryFunction>
+		void enumerate(UnaryFunction && op) const
 		{
 			for (node const* i = &m_root; i != nullptr; i = i->next.get())
 			{
-				i->chunk.enumerate(std::forward<Operator>(op));
+				i->chunk.enumerate(std::forward<UnaryFunction>(op));
 			}
 		}
 
-		void clear() noexcept
+		void clear()
 		{
 			m_root.chunk.clear();
 			m_root.next.reset();

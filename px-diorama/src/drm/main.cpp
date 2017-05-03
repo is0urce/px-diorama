@@ -81,7 +81,7 @@ namespace px {
 					if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 
 					graphics.add_texture(w, h, image.data());
-					game.add_atlas(atlas, true);
+					game.add_spritesheet(atlas, true);
 				}
 				textures.clear();
 

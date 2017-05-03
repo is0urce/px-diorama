@@ -21,22 +21,25 @@ namespace px {
 			: public basic_system<sprite_component, 100000>
 		{
 		public:
+			typedef std::vector<std::vector<mesh_vertex>> arrays_type;
+
+		public:
 			auto make_shared(std::string const& name)
 			{
 				auto result = basic_system::make_shared();
-				setup(*result, name);
+				setup_component(*result, name);
 				return result;
 			}
 			auto make_unique(std::string const& name)
 			{
 				auto result = basic_system::make_unique();
-				setup(*result, name);
+				setup_component(*result, name);
 				return result;
 			}
 			auto make_std(std::string const& name)
 			{
 				auto result = basic_system::make_std();
-				setup(*result, name);
+				setup_component(*result, name);
 				return result;
 			}
 
@@ -44,46 +47,61 @@ namespace px {
 			void add_atlas(Document && atlas, bool reverse_y)
 			{
 				for (auto const& frame : atlas) {
-					add_sprite<float>(frame["name"], frame["sx"], frame["sy"], frame["dx"], frame["dy"], reverse_y, m_textures, 0, '?');
+					add_sprite<float>(frame["name"], frame["sx"], frame["sy"], frame["dx"], frame["dy"], reverse_y, static_cast<unsigned int>(m_batches.size()), 0, '?');
 				}
-				++m_textures;
+
+				m_batches.emplace_back();
 			}
-			void write(std::vector<std::vector<mesh_vertex>> & vertice_arrays, transform_component const& camera_transform, double delta) const
+			void update(double delta)
 			{
-				if (vertice_arrays.size() < m_textures) throw std::runtime_error("px::sprite_system::write() - vertices array texture size not match with internal counter");
+				if (!m_camera) return;
 
 				auto w = std::min(delta * 5, 1.0);
 
-				auto camera_position = interpolate(camera_transform, w);
+				vector2 camera_position = interpolate(*m_camera, w);
 
+				// clear previous data
+				for (auto & batch : m_batches) {
+					batch.resize(0);
+				}
+
+				// compose arrays
 				enumerate([&](auto const& sprite) {
-						if (!sprite.active()) return; // continue
+					if (!sprite.active()) return; // continue
 
-						auto transform = sprite.linked<transform_component>();
+					transform_component * transform = sprite.linked<transform_component>();
 
-						if (!transform) return;
+					if (!transform) return;
 
-						vector2 pos = interpolate(*transform, w) - camera_position;
-						auto x = pos.x();
-						auto y = pos.y();
+					vector2 pos = interpolate(*transform, w) - camera_position;
+					auto x = pos.x();
+					auto y = pos.y();
 
-						float sx = static_cast<float>(x);
-						float sy = static_cast<float>(y);
-						float dx = static_cast<float>(x + 1);
-						float dy = static_cast<float>(y + 1);
+					float sx = static_cast<float>(x);
+					float sy = static_cast<float>(y);
+					float dx = static_cast<float>(x + 1);
+					float dy = static_cast<float>(y + 1);
 
-						auto & vertices = vertice_arrays[sprite.texture];
+					auto & vertices = m_batches[sprite.texture];
 
-						vertices.push_back({ { sx, dy }, { sprite.sx, sprite.dy } });
-						vertices.push_back({ { sx, sy }, { sprite.sx, sprite.sy } });
-						vertices.push_back({ { dx, sy }, { sprite.dx, sprite.sy } });
-						vertices.push_back({ { dx, dy }, { sprite.dx, sprite.dy } });
-					});
+					vertices.push_back({ { sx, dy }, { sprite.sx, sprite.dy } });
+					vertices.push_back({ { sx, sy }, { sprite.sx, sprite.sy } });
+					vertices.push_back({ { dx, sy }, { sprite.dx, sprite.sy } });
+					vertices.push_back({ { dx, dy }, { sprite.dx, sprite.dy } });
+				});
+			}
+			void assign_camera(transform_component const* camera) noexcept
+			{
+				m_camera = camera;
+			}
+			arrays_type const& batches() const noexcept
+			{
+				return m_batches;
 			}
 
 		public:
 			sprite_system()
-				: m_textures(0)
+				: m_camera(nullptr)
 			{
 			}
 
@@ -92,7 +110,7 @@ namespace px {
 			{
 				return vector2(pawn.last_position()).lerp(pawn.position(), w);
 			}
-			void setup(sprite_component & element, std::string const& name)
+			void setup_component(sprite_component & element, std::string const& name)
 			{
 				image const& img = m_meta[name];
 
@@ -117,8 +135,9 @@ namespace px {
 			}
 
 		private:
-			std::map<std::string, image> m_meta;
-			unsigned int m_textures;
+			std::map<std::string, image>	m_meta;		// name -> texture dirctionary
+			arrays_type						m_batches;	// vertex data for rendering
+			transform_component const*		m_camera;	// central camera position
 		};
 	}
 }
