@@ -25,7 +25,7 @@ namespace px {
 			{
 				m_click = click;
 			}
-			void add_shortcut(unsigned int code)
+			void register_shortcut(unsigned int code)
 			{
 				m_shortcuts.push_back(code);
 			}
@@ -48,14 +48,15 @@ namespace px {
 				press_button(button);
 				return true;
 			}
-			virtual void press_panel(unsigned int code) override
+			virtual bool press_panel(unsigned int code) override
 			{
 				for (auto shortcut : m_shortcuts) {
 					if (shortcut == code) {
 						press_button(0);
-						return;
+						return true;
 					}
 				}
+				return false;
 			}
 
 		private:

@@ -32,14 +32,18 @@ namespace px {
 			panel const* main() const noexcept;
 
 			void lock_target(point2 absolute, transform_component const* pawn);
+
+			void open_inventory(container_component * inventory);
 			void open_storage(container_component * storage_container, container_component * user_container);
 			void close_storage();
 
-			void close_panels();
+			void close_sheets();
 
 		public:
 			~menu();
 			menu();
+			menu(menu const&) = delete;
+			menu& operator=(menu const&) = delete;
 
 		private:
 			void initialize();

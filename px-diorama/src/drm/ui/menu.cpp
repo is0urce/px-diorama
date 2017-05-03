@@ -13,6 +13,8 @@
 #include "recipe_list.hpp"
 #include "target_panel.hpp"
 
+#include "drm/key.hpp"
+
 namespace px {
 	namespace ui {
 
@@ -34,9 +36,13 @@ namespace px {
 		{
 			return m_main.get();
 		}
+		void menu::open_inventory(container_component * /* inventory */)
+		{
+			close_sheets();
+		}
 		void menu::open_storage(container_component * storage_inventory, container_component * user_inventory)
 		{
-			close_panels();
+			close_sheets();
 
 			if (storage_inventory && user_inventory)
 			{
@@ -63,7 +69,7 @@ namespace px {
 
 			(*m_main)["container_access"].deactivate();
 		}
-		void menu::close_panels()
+		void menu::close_sheets()
 		{
 			close_storage();
 		}
@@ -96,6 +102,7 @@ namespace px {
 			auto target = m_main->make<target_panel>("target", { { 0.5, 1.0 },{ -1, -2 },{ 0, 1 },{ 0.5, 0.0 } });
 			m_target = target.get();
 
+			// storage block
 			auto container = m_main->make<panel>("container_access", { { 0.0, 0.0 },{ 1, 1 },{ -2, -2 },{ 1.0, 1.0 } });
 			container->make<board>("bg", fill, color{ 1, 1, 1,0.5 });
 			auto container_inventory = container->make<ui::inventory_list>({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.5, 1.0 } });
@@ -106,8 +113,13 @@ namespace px {
 
 			m_container = container_inventory.get();
 			m_inventory = user_inventory.get();
-
 			close_storage();
+
+			// inventory block
+			auto inventory_button = m_main->make<button>({ {0.0, 0.0}, {0,0}, {1,1}, {0, 0} });
+			inventory_button->make<text>(ui::fill, "I");
+			inventory_button->on_click([&](int /* mouse_button */) { close_sheets(); });
+			inventory_button->register_shortcut(static_cast<unsigned int>(key::panel_inventory));
 		}
 	}
 }

@@ -94,8 +94,8 @@ namespace px {
 					graphics.resize(screen_width, screen_height);
 					game.resize(screen_width, screen_height);
 				});
-				callback.on_key([&](auto /* window */, int key, int /* scancode */, int action, int /* mods */) {
-					if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(bindings.select(key, key::not_valid));
+				callback.on_key([&](auto /* window */, int os_key, int /* scancode */, int action, int /* mods */) {
+					if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(bindings.select(os_key, key::not_valid));
 				});
 				callback.on_text([&](auto /* window */, unsigned int codepoint) {
 					game.text(codepoint);

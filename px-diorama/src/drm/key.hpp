@@ -42,10 +42,12 @@ namespace px {
 		navigate_next,
 		navigate_previous,
 
-		panel_inventory,
-		panel_character,
-		panel_map,
-		panel_journal,
+		panel_character = 500,
+		panel_craft = 501,
+		panel_inventory = 502,
+		panel_journal = 503,
+		panel_map = 504,
+		panel_options = 505,
 
 		command_ok,
 		command_cancel,

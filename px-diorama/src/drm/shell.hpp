@@ -21,7 +21,15 @@ namespace px {
 		, public environment
 	{
 	public:
-		void text(unsigned int /*codepoint*/)
+		void press(key action)
+		{
+			bool processed = ui()->press(static_cast<unsigned int>(action));
+
+			if (!processed) {
+				translate_key(action);
+			}
+		}
+		void text(unsigned int /* codepoint */)
 		{
 		}
 		void hover(int x, int y)
@@ -39,7 +47,6 @@ namespace px {
 		}
 		void scroll(double vertical, double horisontal)
 		{
-			//m_perception.zoom(static_cast<float>(vertical + horisontal) * 0.1f);
 			m_pixel_zoom += (vertical + horisontal < 0) ? -1 : 1;
 			m_pixel_zoom = std::max(1, std::min(m_pixel_zoom, 8));
 
@@ -49,11 +56,6 @@ namespace px {
 		{
 			m_perception.set_scale(ppu * m_pixel_zoom * 2.0f / m_screen_width);
 		}
-
-		//void add_atlas(std::string const& name, bool reverse_y)
-		//{
-		//	add_spritesheet(name, reverse_y);
-		//}
 
 		perception const& view() const noexcept
 		{

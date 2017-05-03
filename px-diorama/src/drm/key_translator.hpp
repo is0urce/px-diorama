@@ -15,7 +15,7 @@ namespace px {
 	class key_translator
 	{
 	public:
-		void press(key code)
+		void translate_key(key code)
 		{
 			auto & game = static_cast<U&>(*this);
 			switch (code)

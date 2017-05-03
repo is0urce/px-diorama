@@ -50,7 +50,13 @@
     {
       "action": 109,
       "keys": [ 298 ],
-      "comment" : "quickload"
+      "comment": "quickload"
+    }
+    ,
+    {
+      "action": 502,
+      "keys": [ 73 ],
+      "comment" : "i for inventory"
     }
   ]
 }

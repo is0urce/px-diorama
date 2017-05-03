@@ -160,10 +160,17 @@ namespace px {
 					subpanel->draw(cnv);
 				});
 			}
-			template<typename Key>
-			void press(Key code)
+			bool press(unsigned int code)
 			{
-				press_panel(static_cast<unsigned int>(code));
+				bool processed = false;
+
+				// childrens
+				action([&](auto & subpanel) {
+					processed |= subpanel->press(code);
+				});
+
+				// this one
+				return processed || press_panel(code);
 			}
 			void hover(point2 position)
 			{
@@ -218,17 +225,18 @@ namespace px {
 			}
 
 		protected:
-			virtual void hover_panel(point2 const& /*position*/)
+			virtual void hover_panel(point2 const& /* position */)
 			{
 			}
-			virtual bool click_panel(point2 const& /*position*/, int /*button*/)
+			virtual bool click_panel(point2 const& /* position */, int /* button */)
 			{
 				return false;
 			}
-			virtual void press_panel(unsigned int /*code*/)
+			virtual bool press_panel(unsigned int /* code */)
 			{
+				return false;
 			}
-			virtual void draw_panel(display & /*window*/) const
+			virtual void draw_panel(display & /* window */) const
 			{
 			}
 			virtual rectangle layout_panel(rectangle const& parent) const

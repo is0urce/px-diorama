@@ -83,21 +83,21 @@ namespace px
 			void enumerate(UnaryOperator && enum_fn) const
 			{
 				for (auto const& item : m_items) {
-					std::forward<UnaryOperator>(enum_fn)(item);
+					enum_fn(item);
 				}
 			}
 			template <typename UnaryOperator>
 			void enumerate(UnaryOperator && enum_fn)
 			{
 				for (auto & item : m_items)	{
-					std::forward<UnaryOperator>(enum_fn)(item);
+					enum_fn(item);
 				}
 			}
 
 			template <typename UnaryOperator>
 			bool enumerate_while(UnaryOperator && enum_fn) const
 			{
-				for (auto it = std::begin(m_items), last = std::end(m_items); it != last; ++it) {
+				for (auto it = std::cbegin(m_items), last = std::cend(m_items); it != last; ++it) {
 					if (!std::forward<UnaryOperator>(enum_fn)(*it)) return false;
 				}
 				return true;
