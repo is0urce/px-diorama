@@ -33,9 +33,11 @@ namespace px {
 
 			void lock_target(point2 absolute, transform_component const* pawn);
 
-			void open_inventory(container_component * inventory);
-			void open_storage(container_component * storage_container, container_component * user_container);
+			void open_inventory(container_component * user);
+			void open_storage(container_component * storage, container_component * user);
+			void open_workshop(container_component * user);
 			void close_storage();
+			void close_workshop();
 
 			void close_sheets();
 

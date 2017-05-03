@@ -47,6 +47,10 @@ namespace px {
 			{
 				m_click = click_action;
 			}
+			container_component * list()
+			{
+				return m_container;
+			}
 
 		public:
 			virtual ~inventory_list()

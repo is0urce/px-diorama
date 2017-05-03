@@ -21,7 +21,6 @@ namespace px {
 		menu::~menu()
 		{
 		}
-
 		menu::menu()
 			: m_main(std::make_unique<panel>())
 		{
@@ -40,32 +39,23 @@ namespace px {
 		{
 			close_sheets();
 		}
-		void menu::open_storage(container_component * storage_inventory, container_component * user_inventory)
+		void menu::open_storage(container_component * storage, container_component * user)
 		{
 			close_sheets();
 
-			if (storage_inventory && user_inventory)
-			{
-				m_container->assign_container(storage_inventory);
-				m_inventory->assign_container(user_inventory);
+			m_container->assign_container(storage);
+			m_inventory->assign_container(user);
 
-				m_container->on_click([storage_inventory, user_inventory](auto & item) {
-					storage_inventory->transfer(item, *user_inventory);
-				});
-				m_inventory->on_click([storage_inventory, user_inventory](auto & item) {
-					user_inventory->transfer(item, *storage_inventory);
-				});
-
-				(*m_main)["container_access"].activate();
-			}
+			(*m_main)["container_access"].activate();
+		}
+		void menu::open_workshop(container_component * /* user */)
+		{
+			close_sheets();
 		}
 		void menu::close_storage()
 		{
 			m_container->assign_container(nullptr);
 			m_inventory->assign_container(nullptr);
-
-			m_container->on_click([](auto & /*item*/) { });
-			m_inventory->on_click([](auto & /*item*/) { });
 
 			(*m_main)["container_access"].deactivate();
 		}
@@ -95,31 +85,41 @@ namespace px {
 			//recipes.push_back({ "dagger", recipe_type::weapon, 4 });
 			//m_ui.make<ui::recipe_list>("recipes", { {0.0, 0.0}, {0,0}, {0,0}, {0.5,0.0} }, std::move(recipes));
 
-			auto storage = m_main->make<panel>("storage", { { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 0.5, 0.5 } });
-			storage->make<board>("background", fill, color{ 1, 1, 0, 0.5 });
-			storage->deactivate();
-
+			// target status
 			auto target = m_main->make<target_panel>("target", { { 0.5, 1.0 },{ -1, -2 },{ 0, 1 },{ 0.5, 0.0 } });
 			m_target = target.get();
 
 			// storage block
-			auto container = m_main->make<panel>("container_access", { { 0.0, 0.0 },{ 1, 1 },{ -2, -2 },{ 1.0, 1.0 } });
-			container->make<board>("bg", fill, color{ 1, 1, 1,0.5 });
+			auto container = m_main->make<panel>("container_access", { { 0.25, 0.0 },{ 0, 1 },{ 0, -2 },{ 0.5, 1.0 } });
+			container->make<board>(ui::fill, color{ 1, 1, 1, 0.75 });
 			auto container_inventory = container->make<ui::inventory_list>({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.5, 1.0 } });
 			auto user_inventory = container->make<ui::inventory_list>({ { 0.5, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } });
 
-			container_inventory->set_format([](auto const& item) { return item->name(); });
-			user_inventory->set_format([](auto const& item) { return item->name(); });
-
 			m_container = container_inventory.get();
 			m_inventory = user_inventory.get();
-			close_storage();
 
-			// inventory block
-			auto inventory_button = m_main->make<button>({ {0.0, 0.0}, {0,0}, {1,1}, {0, 0} });
-			inventory_button->make<text>(ui::fill, "I");
-			inventory_button->on_click([&](int /* mouse_button */) { close_sheets(); });
-			inventory_button->register_shortcut(static_cast<unsigned int>(key::panel_inventory));
+			m_container->set_format([](auto const& item) { return item->name(); });
+			m_inventory->set_format([](auto const& item) { return item->name(); });
+			m_container->on_click([=](auto & item) {
+				auto from = m_container->list();
+				auto to = m_inventory->list();
+				if (from && to) from->transfer(item, *to);
+			});
+			m_inventory->on_click([=](auto & item) {
+				auto from = m_inventory->list();
+				auto to = m_container->list();
+				if (from && to) from->transfer(item, *to);
+			});
+
+			// inventory button
+			auto i_block = m_main->make<board>({ { 0.0, 0.0 },{ 1,1 },{ 1,1 },{ 0, 0 } }, color{ 1, 0.5,0, 1 });
+			i_block->make<text>(ui::fill, "i");
+			auto i_button = i_block->make<button>(ui::fill);
+			i_button->on_click([&](int /* mouse_button */) { close_sheets(); });
+			i_button->register_shortcut(static_cast<unsigned int>(key::panel_inventory));
+
+			// setup
+			close_sheets();
 		}
 	}
 }
