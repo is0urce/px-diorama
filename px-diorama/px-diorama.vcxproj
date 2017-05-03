@@ -320,7 +320,6 @@
     <None Include="data\img\m_snake32.json" />
     <None Include="data\img\taurus32.json" />
     <None Include="data\img\wall32.json" />
-    <None Include="data\scripts\q.lua" />
     <None Include="data\shaders\batch.frag" />
     <None Include="data\shaders\batch.vert" />
     <None Include="data\shaders\blur.frag" />
@@ -332,9 +331,6 @@
     <None Include="data\shaders\uitext.frag" />
     <None Include="data\shaders\uitext.vert" />
     <None Include="data\textures.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="data\dlg\food.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

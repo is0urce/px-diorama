@@ -36,8 +36,6 @@ namespace px {
 			void open_inventory(container_component * user);
 			void open_storage(container_component * storage, container_component * user);
 			void open_workshop(container_component * user);
-			void close_storage();
-			void close_workshop();
 
 			void close_sheets();
 

@@ -243,7 +243,7 @@ namespace px {
 		load_units(archive);
 	}
 	template <typename Archive>
-	void environment::save_units(Archive & archive)
+	void environment::save_units(Archive & archive) const
 	{
 		size_t size = m_units.size();
 		archive(size);
@@ -269,25 +269,25 @@ namespace px {
 		}
 	}
 	template <typename Archive>
-	void environment::save_unit(unit const& mobile, Archive & archive)
+	void environment::save_unit(unit const& mobile, Archive & archive) const
 	{
 		size_t total_components = mobile.components_size();
 		archive(total_components);
 
-		mobile.enumerate_components([&](auto & part) {
-			if (auto transform = dynamic_cast<transform_component*>(part.get())) {
+		mobile.enumerate_components([&](auto const& part) {
+			if (auto transform = dynamic_cast<transform_component const*>(part.get())) {
 				archive(unit_component::transform);
 
 				archive(*transform);
 			}
-			else if (auto sprite = dynamic_cast<sprite_component*>(part.get())) {
+			else if (auto sprite = dynamic_cast<sprite_component const*>(part.get())) {
 				archive(unit_component::sprite);
 
 				size_t strlen = std::strlen(sprite->name);
 				archive(strlen);
 				archive.saveBinary(sprite->name, strlen);
 			}
-			else if (auto player = dynamic_cast<player_component*>(part.get())) {
+			else if (auto player = dynamic_cast<player_component const*>(part.get())) {
 				archive(unit_component::player);
 			}
 			else {

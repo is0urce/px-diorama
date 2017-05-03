@@ -73,11 +73,11 @@ namespace px {
 		transform_component * find_any(point2 const& position);
 
 		template <typename Archive>
-		void save_units(Archive & archive);
+		void save_units(Archive & archive) const;
 		template <typename Archive>
 		void load_units(Archive & archive);
 		template <typename Archive>
-		void save_unit(unit const& mobile, Archive & archive);
+		void save_unit(unit const& mobile, Archive & archive) const;
 		template <typename Archive, typename Builder>
 		void load_unit(Builder & builder, Archive & archive);
 

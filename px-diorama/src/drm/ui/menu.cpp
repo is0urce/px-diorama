@@ -52,16 +52,12 @@ namespace px {
 		{
 			close_sheets();
 		}
-		void menu::close_storage()
+		void menu::close_sheets()
 		{
 			m_container->assign_container(nullptr);
 			m_inventory->assign_container(nullptr);
 
 			(*m_main)["container_access"].deactivate();
-		}
-		void menu::close_sheets()
-		{
-			close_storage();
 		}
 		void menu::lock_target(point2 absolute, transform_component const* pawn)
 		{
@@ -86,7 +82,7 @@ namespace px {
 			//m_ui.make<ui::recipe_list>("recipes", { {0.0, 0.0}, {0,0}, {0,0}, {0.5,0.0} }, std::move(recipes));
 
 			// target status
-			auto target = m_main->make<target_panel>("target", { { 0.5, 1.0 },{ -1, -2 },{ 0, 1 },{ 0.5, 0.0 } });
+			auto target = m_main->make<target_panel>("target", { { 0.0, 1.0 },{ 1, -2 },{ -2, 1 },{ 1.0, 0.0 } });
 			m_target = target.get();
 
 			// storage block
