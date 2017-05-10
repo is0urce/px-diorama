@@ -15,6 +15,11 @@ namespace px {
 			typedef Effect effect_type;
 
 		public:
+			static enhancement from_type(effect_type t, int v0)
+			{
+				return{ t, 0x00, v0 };
+			}
+
 			template <typename Archive>
 			void serialize(Archive & archive)
 			{

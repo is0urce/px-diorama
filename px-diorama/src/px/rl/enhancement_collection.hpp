@@ -56,13 +56,11 @@ namespace px {
 
 			// returns true if element removed
 			template <typename Predicate>
-			bool remove_first(Predicate&& predicate)
+			bool remove_first(Predicate && predicate)
 			{
 				bool done = false;
-				for (auto it = m_effects.begin(), last = m_effects.end(); it != last; ++it)
-				{
-					if (std::forward<Predicate>(predicate)(*it))
-					{
+				for (auto it = m_effects.begin(), last = m_effects.end(); it != last; ++it)	{
+					if (predicate(*it))	{
 						it = m_effects.erase(it);
 						done = true;
 						break;
@@ -74,49 +72,64 @@ namespace px {
 			// access
 
 			template <typename CallbackOperator>
-			void enumerate(CallbackOperator&& fn) const
+			void enumerate(CallbackOperator && fn) const
 			{
-				for (auto it = m_effects.cbegin(), last = m_effects.cend(); it != last; ++it)
-				{
-					std::forward<CallbackOperator>(fn)(*it);
+				for (auto const& efx : m_effects) {
+					fn(efx);
 				}
 			}
 
-			template <typename T, typename BinaryOperation>
-			T accumulate(T start, BinaryOperation&& fold) const
+			template <typename Accumulator, typename BinaryOperation>
+			Accumulator accumulate(Accumulator start, BinaryOperation && fold) const
 			{
-				for (auto it = m_effects.cbegin(), last = m_effects.cend(); it != last; ++it)
-				{
-					start = std::forward<BinaryOperation>(fold)(start, *it);
+				for (auto const& efx : m_effects) {
+					start = fold(start, efx);
 				}
 				return start;
 			}
 
-			template <effect_type TValue>
-			enhancement_type accumulate() const
+			template <effect_type MainType>
+			enhancement_type accumulate(enhancement_type accumulator) const
 			{
-				enhancement_type start{};
-				for (auto it = m_effects.cbegin(), last = m_effects.cend(); it != last; ++it)
-				{
-					if (it->main_type == TValue)
-					{
-						start += *it;
+				for (auto const& efx : m_effects) {
+					if (efx.main_type == MainType) {
+						accumulator += efx;
 					}
 				}
-				return start;
+				return accumulator;
 			}
 
-			template <effect_type TValue>
-			std::pair<bool, enhancement_type> find() const
+			template <effect_type MainType>
+			enhancement_type accumulate() const
 			{
-				for (auto const& e : m_effects)
-				{
-					if (e.main_type == TValue)
+				return accumulate<MainType>(enhancement_type{});
+			}
+
+			template <effect_type MainType>
+			auto value() const
+			{
+				return accumulate<MainType>(enhancement_type{}).value0;
+			}
+
+			template <effect_type MainType>
+			std::pair<bool, enhancement_type> find_effect() const
+			{
+				for (auto const& efx : m_effects) {
+					if (efx.main_type == MainType)
 					{
 						return{ true, e };
 					}
 				}
 				return{ false, {} };
+			}
+
+			template <effect_type MainType>
+			bool has_effect() const
+			{
+				for (auto const& efx : m_effects) {
+					if (efx.main_type == MainType) return true;
+				}
+				return false;
 			}
 
 			// compare

@@ -130,7 +130,7 @@ namespace px {
 		for (int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("item #" + std::to_string(i));
-			itm->add({ rl::effect::ore_power, 0x100, 0x500 });
+			itm->add(rl::item::enhancement_type::from_type(rl::effect::ore_power, i));
 			container->add(itm);
 		}
 
@@ -148,20 +148,24 @@ namespace px {
 
 		// units
 
-		spawn("m_snake", { 50, 50 });
-		spawn("m_h_rabling_harvester", { 50, 51 });
-		spawn("m_h_rabling_reaper", { 50, 52 });
-		spawn("m_h_rabling_shepard", { 50, 53 });
+		spawn("m_snake", { 50, 48 });
+		spawn("m_h_rabling_harvester", { 50, 49 });
+		spawn("m_h_rabling_reaper", { 50, 50 });
+		spawn("m_h_rabling_shepard", { 50, 51 });
 
-		spawn("m", { 53, 47 });
+		spawn("m", { 54, 47 });
 
-		spawn("p_table", { 55, 47 });
-		spawn("p_bookshelf", { 54, 47 });
-		spawn("p_locker", { 55, 48 });
-		spawn("p_box", { 55, 49 });
+		spawn("p_table", { 56, 48 });
+		spawn("p_locker", { 60, 48 });
+		spawn("p_box", { 55, 51 });
+
+		spawn("p_bookshelf", { 54, 46 });
+		spawn("p_bookshelf", { 55, 46 });
+		spawn("p_bookshelf", { 56, 46 });
+		spawn("p_bookshelf", { 57, 46 });
 
 		// player
-		auto player = spawn("@", { 54, 46 });
+		auto player = spawn("@", { 55, 46 });
 
 		player->add(m_factory->make_player());
 		impersonate(player->transform());
@@ -185,7 +189,7 @@ namespace px {
 
 		std::mt19937 rng;
 		fn::dig_generator dig(100, 100);
-		dig.generate(rng, 5, 12, 1, 15);
+		dig.generate(rng, 4, 7, 1, 15);
 		matrix2<unsigned char> map(100, 100);
 		dig.rasterize(map);
 		map.enumerate([this](auto const& point, auto terrain_variant) {
@@ -195,7 +199,7 @@ namespace px {
 
 			tile.ground.reset();
 
-			tile.wall = m_factory->sprites()->make_unique("+");
+			tile.wall = m_factory->sprites()->make_unique(".");
 			tile.wall->connect(&tile.transform);
 			tile.wall->activate();
 
