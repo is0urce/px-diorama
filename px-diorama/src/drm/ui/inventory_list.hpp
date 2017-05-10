@@ -29,10 +29,12 @@ namespace px {
 			void assign_container(container_component * container) noexcept
 			{
 				m_container = container;
+				m_scroll = 0;
 			}
 			void detach_container() noexcept
 			{
 				m_container = nullptr;
+				m_scroll = 0;
 			}
 
 			void set_format(format_fn format)
@@ -65,6 +67,7 @@ namespace px {
 			inventory_list()
 				: m_container(nullptr)
 				, m_color(0x000000)
+				, m_scroll(0)
 				, m_format([](auto const&) { return typeid(element_type).name(); })
 				, m_filter([](auto const&) { return true; })
 			{
@@ -75,7 +78,7 @@ namespace px {
 			{
 				if (m_container && m_format)
 				{
-					int index = 0;
+					int index = 0 - m_scroll;
 					m_container->enumerate([&](auto const& item) {
 						if (m_filter(item)) {
 							window.print({ 0, 0 + index }, m_color, m_format(item));
@@ -91,7 +94,7 @@ namespace px {
 					element_type * found = nullptr;
 					int selected = position.y();
 
-					int index = 0;
+					int index = 0 - m_scroll;
 					m_container->enumerate([&](auto & item) {
 						if (m_filter(item)) {
 							if (selected == index) found = &item;
@@ -104,9 +107,43 @@ namespace px {
 
 				return true; // event processed
 			}
+			virtual bool scroll_panel(double horisontal, double vertical) override
+			{
+				int scroll = horisontal + vertical > 0 ? 1 : -1;
+				scroll_list(-scroll);
+
+				return true;
+			}
+
+		private:
+			size_t count() const
+			{
+				size_t counter = 0;
+				if (m_container) {
+					m_container->enumerate([&](auto const& item) {
+						if (m_filter(item)) {
+							++counter;
+						}
+					});
+				}
+				return counter;
+			}
+
+			void scroll_list(int scroll)
+			{
+				m_scroll += scroll;
+
+				int height = bounds().range().y();
+				int total = static_cast<int>(count());
+
+				m_scroll = std::min(m_scroll, total - height + 1);
+				m_scroll = std::max(0, m_scroll);
+			}
 
 		private:
 			container_component * m_container;
+
+			int			m_scroll;
 
 			color		m_color;
 

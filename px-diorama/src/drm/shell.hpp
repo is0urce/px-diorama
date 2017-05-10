@@ -34,7 +34,12 @@ namespace px {
 		}
 		void hover(int x, int y)
 		{
-			target(translate_world(m_hover = { x, y }));
+			bool processed = ui()->hover(translate_gui(m_hover));
+
+			if (!processed)
+			{
+				target(translate_world(m_hover = { x, y }));
+			}	
 		}
 		void click(int button)
 		{
@@ -45,12 +50,16 @@ namespace px {
 				activate(0);
 			}
 		}
-		void scroll(double vertical, double horisontal)
+		void scroll(double horisontal, double vertical)
 		{
-			m_pixel_zoom += (vertical + horisontal < 0) ? -1 : 1;
-			m_pixel_zoom = std::max(1, std::min(m_pixel_zoom, 8));
+			bool processed = ui()->scroll(horisontal, vertical);
 
-			pixel_snap();
+			if (!processed) {
+				m_pixel_zoom += (vertical + horisontal < 0) ? -1 : 1;
+				m_pixel_zoom = std::max(1, std::min(m_pixel_zoom, 8));
+
+				pixel_snap();
+			}
 		}
 		void pixel_snap(unsigned int ppu = 32)
 		{

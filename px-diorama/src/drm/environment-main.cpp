@@ -127,7 +127,7 @@ namespace px {
 		transform->store_position();
 		body->health().create();
 		body->set_name(name);
-		for (int i = 0; i != 10; ++i) {
+		for (int i = 0; i != 30; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("item #" + std::to_string(i));
 			itm->add(rl::item::enhancement_type::from_type(rl::effect::ore_power, i));

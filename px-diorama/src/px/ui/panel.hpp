@@ -58,6 +58,10 @@ namespace px {
 					subpanel->layout(m_bounds);
 				});
 			}
+			bool focused() const noexcept
+			{
+				return m_focus;
+			}
 
 			// creation
 			void add(name_type name, alignment align, panel_ptr child)
@@ -172,9 +176,28 @@ namespace px {
 				// this one
 				return processed || press_panel(code);
 			}
-			void hover(point2 position)
+			bool hover(point2 absolute)
 			{
-				hover_panel(position - m_bounds.start());
+				m_focus = m_bounds.contains(absolute);
+
+				bool processed = false;
+
+				if (m_focus) {
+
+					point2 relative = absolute - m_bounds.start();
+
+					// childrens
+					action([&](auto & subpanel) {
+						processed |= subpanel->hover(absolute); // call recursive
+					});
+
+					// this one
+					if (!processed) {
+						processed = hover_panel(relative); // call this virtual overload
+					}
+				}
+
+				return processed;
 			}
 
 			// returns true if event dispatched by subpanels
@@ -190,6 +213,26 @@ namespace px {
 				// this one
 				if (!processed && m_bounds.contains(position)) {
 					processed = click_panel(position - m_bounds.start(), button); // call this virtual overload
+				}
+
+				return processed;
+			}
+
+			bool scroll(double horisontal, double vertical)
+			{
+				bool processed = false;
+
+				if (m_focus) {
+
+					// childrens
+					action([&](auto & subpanel) {
+						processed |= subpanel->scroll(horisontal, vertical); // call recursive
+					});
+
+					// this one
+					if (!processed && focused()) {
+						processed = scroll_panel(horisontal, vertical); // call this virtual overload
+					}
 				}
 
 				return processed;
@@ -225,14 +268,19 @@ namespace px {
 			}
 
 		protected:
-			virtual void hover_panel(point2 const& /* position */)
+			virtual bool hover_panel(point2 const& /* position */)
 			{
+				return false;
 			}
 			virtual bool click_panel(point2 const& /* position */, int /* button */)
 			{
 				return false;
 			}
 			virtual bool press_panel(unsigned int /* code */)
+			{
+				return false;
+			}
+			virtual bool scroll_panel(double /* horisontal */, double /* vertical */)
 			{
 				return false;
 			}
@@ -291,6 +339,8 @@ namespace px {
 			alignment m_align;
 			rectangle m_bounds;
 			rectangle m_parent;
+
+			bool m_focus;
 
 			std::vector<std::shared_ptr<panel>> m_unnamed;
 			std::map<name_type, std::shared_ptr<panel>> m_stack;

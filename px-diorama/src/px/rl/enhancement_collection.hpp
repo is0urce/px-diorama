@@ -134,7 +134,7 @@ namespace px {
 
 			// compare
 
-			bool compare(enhancement_collection vs) const
+			bool compare(enhancement_collection const& vs) const
 			{
 				return std::equal(m_effects.cbegin(), m_effects.cend(), vs.m_effects.cbegin(), vs.m_effects.cend(), [](const enhancement_type &l, const enhancement_type &r) { return l == r; });
 			}

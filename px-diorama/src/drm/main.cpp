@@ -107,7 +107,7 @@ namespace px {
 					game.hover(static_cast<int>(x), static_cast<int>(y));
 				});
 				callback.on_scroll([&](auto /* window */, double horisontal, double vertical) {
-					game.scroll(vertical, horisontal);
+					game.scroll(horisontal, vertical);
 				});
 
 				// setup - ui canvas
