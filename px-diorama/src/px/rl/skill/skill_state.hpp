@@ -7,40 +7,25 @@
 
 #pragma once
 
-#include <tuple>
-
 #include <px/rl/entity.hpp>
+
+#include <tuple>
 
 namespace px
 {
 	namespace rl
 	{
-		class skill_base : public entity
+		class skill_state : public entity
 		{
 		public:
 			typedef unsigned int time_type;
-			typedef unsigned int range_component;
+			typedef int range_component;
 			typedef std::pair<range_component, range_component> range;
-		private:
-			time_type m_cooldown;
-			time_type m_timer;
-			bool m_hostile;
-			std::string m_alias; // short name;
 
 		public:
-			skill_base()
-				: m_cooldown(0), m_timer(0), m_hostile(false)
-			{}
-			virtual ~skill_base() {}
-
-		public:
-			void set_cooldown_time(time_type time)
+			void set_cooldown(time_type time)
 			{
 				m_cooldown = time;
-			}
-			void set_cooldown_remaining(time_type time)
-			{
-				m_timer = time;
 			}
 			time_type cooldown_time() const
 			{
@@ -52,11 +37,11 @@ namespace px
 			}
 			bool on_cooldown() const
 			{
-				return m_timer > 0;
+				return m_timer != 0;
 			}
-			void cooldown(time_type time)
+			void cooldown_by(time_type by_time)
 			{
-				m_timer = (m_timer < time) ? 0 : m_timer - time;
+				m_timer = (m_timer < by_time) ? 0 : (m_timer - by_time);
 			}
 			void reset_cooldown()
 			{
@@ -75,15 +60,29 @@ namespace px
 			{
 				m_hostile = flag;
 			}
+			void set_hostile()
+			{
+				m_hostile = true;
+			}
 
-			auto alias() const
+			template <typename Archive>
+			void serialize(Archive & archive)
 			{
-				return m_alias;
+				archive(m_cooldown);
 			}
-			void set_alias(std::string short_name)
+
+		public:
+			skill_state()
+				: m_cooldown(0)
+				, m_timer(0)
+				, m_hostile(false)
 			{
-				m_alias = short_name;
 			}
+
+		private:
+			time_type	m_cooldown; // remaining time to ready state
+			time_type	m_timer;	// cooldown duratiion
+			bool		m_hostile;	// considered as hostile by npc
 		};
 	}
 }

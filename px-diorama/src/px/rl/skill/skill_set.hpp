@@ -4,7 +4,8 @@
 // auth: is0urce
 
 #pragma once
-#include <px/rl/skill_book.hpp>
+
+#include "skill_book.hpp"
 
 #include <vector>
 #include <memory>
@@ -44,7 +45,7 @@ namespace px
 			{
 				if (!m_provider) throw std::runtime_error("px::rl::skill_set::invalidate() - book provider is null");
 
-				for (auto &slot : m_skills)
+				for (auto & slot : m_skills)
 				{
 					auto s = m_provider->find(it->tag);
 

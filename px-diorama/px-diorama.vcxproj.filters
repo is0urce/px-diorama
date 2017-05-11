@@ -159,22 +159,7 @@
     <ClInclude Include="src\px\rl\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\i_ability.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\rl\mass.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\skill.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\skill_base.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\skill_book.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\skill_set.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\traverse.hpp">
@@ -397,6 +382,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\es\unit_persistency.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\skill\skill_book.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\skill\skill_impact.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\skill\skill_set.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\skill\skill_state.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\es\character_component.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\skill\skill_instance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\skill\skill_functional.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\skill\skill.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

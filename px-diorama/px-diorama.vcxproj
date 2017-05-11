@@ -189,6 +189,7 @@
     <ClInclude Include="src\drm\environment.hpp" />
     <ClInclude Include="src\drm\es\body_component.hpp" />
     <ClInclude Include="src\drm\es\body_system.hpp" />
+    <ClInclude Include="src\drm\es\character_component.hpp" />
     <ClInclude Include="src\drm\es\container_system.hpp" />
     <ClInclude Include="src\drm\es\player_component.hpp" />
     <ClInclude Include="src\drm\es\storage_component.hpp" />
@@ -270,6 +271,9 @@
     <ClInclude Include="src\px\rgl\gl_buffer.hpp" />
     <ClInclude Include="src\px\rgl\rgl.hpp" />
     <ClInclude Include="src\drm\rl\actor.hpp" />
+    <ClInclude Include="src\px\rl\skill\skill.hpp" />
+    <ClInclude Include="src\px\rl\skill\skill_instance.hpp" />
+    <ClInclude Include="src\px\rl\skill\skill_impact.hpp" />
     <ClInclude Include="src\px\rl\st\astar.hpp" />
     <ClInclude Include="src\px\rl\bar.hpp" />
     <ClInclude Include="src\px\rl\loot\basic_inventory.hpp" />
@@ -289,15 +293,14 @@
     <ClInclude Include="src\drm\rl\equipment_slot.hpp" />
     <ClInclude Include="src\drm\rl\inventory.hpp" />
     <ClInclude Include="src\px\rl\loot\basic_item.hpp" />
-    <ClInclude Include="src\px\rl\i_ability.hpp" />
     <ClInclude Include="src\px\rl\st\map_stream.hpp" />
     <ClInclude Include="src\px\rl\mass.hpp" />
     <ClInclude Include="src\px\rl\resource.hpp" />
     <ClInclude Include="src\px\rl\st\shadowcasting.hpp" />
-    <ClInclude Include="src\px\rl\skill.hpp" />
-    <ClInclude Include="src\px\rl\skill_base.hpp" />
-    <ClInclude Include="src\px\rl\skill_book.hpp" />
-    <ClInclude Include="src\px\rl\skill_set.hpp" />
+    <ClInclude Include="src\px\rl\skill\skill_functional.hpp" />
+    <ClInclude Include="src\px\rl\skill\skill_state.hpp" />
+    <ClInclude Include="src\px\rl\skill\skill_book.hpp" />
+    <ClInclude Include="src\px\rl\skill\skill_set.hpp" />
     <ClInclude Include="src\px\rl\soc\reputation_subject.hpp" />
     <ClInclude Include="src\px\rl\st\tile.hpp" />
     <ClInclude Include="src\px\rl\traverse.hpp" />

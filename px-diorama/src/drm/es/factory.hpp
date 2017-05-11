@@ -13,6 +13,7 @@
 #include "storage_component.hpp"
 #include "player_component.hpp"
 #include "workshop_component.hpp"
+#include "character_component.hpp"
 
 #include <memory>
 #include <string>
