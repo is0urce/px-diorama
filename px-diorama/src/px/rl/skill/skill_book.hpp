@@ -8,42 +8,42 @@
 #include "skill.hpp"
 
 #include <map>
+#include <tuple>
 
-namespace px
-{
-	namespace rl
-	{
-		template <typename Tag, typename User, typename Target>
-		class skill_book : public std::map<Tag, rl::skill<User, Target>>
+namespace px {
+	namespace rl {
+
+		template <typename Tag, typename Impact, typename State = void*>
+		class skill_book
 		{
 		public:
 			typedef Tag tag_type;
-			typedef rl::skill<User, Target> skill_type;
-			typedef typename skill_type::target_fn tf;
-			typedef typename skill_type::target_check_fn tfc;
-			typedef typename skill_type::ground_fn gf;
-			typedef typename skill_type::ground_check_fn gfc;
+			typedef Impact impact_type;
+			typedef State state_type;
+			typedef std::tuple<state_type, impact_type> record_type;
 
 		public:
-			skill_type & add_target(tag_type name, tf action_fn, tfc condition_fn)
+			//template <typename ...Args>
+			//void emplace(Tag name, state_type state, Args&&... args)
+			//{
+			//	m_map.emplace(name, state, std::forward<Args>(args)...);
+			//}
+			//record_type const& operator[](Tag name)
+			//{
+			//	return m_map[name];
+			//}
+
+		public:
+			skill_book()
 			{
-				// std::pair<map::<key, value>::iterator,bool> - True for Insertion, False for No Insertion.
-				auto ib_pair = emplace(name, skill_type{ action_fn, condition_fn });
-
-				if (!ib_pair.second) throw std::runtime_error("px::rl::skill_book::add_target(..) - skill with same tag exists");
-
-				ib_pair.first->second.set_tag(name);
-				return ib_pair.first->second; // value of an iterator
 			}
-			skill_type & add_ground(tag_type name, gf action_fn, gfc condition_fn)
-			{
-				auto pair = emplace(name, skill_type{ action_fn, condition_fn });
+			skill_book(skill_book const&) = delete;
+			skill_book & operator=(skill_book const&) = delete;
 
-				if (!pair.second) throw std::runtime_error("px::rl::skill_book::add_target(..) - skill with same tag exists");
-
-				pair.first->second.set_tag(name);
-				return pair.first->second; // value of an iterator
-			}
+		private:
+			std::map<tag_type, record_type> m_map;
+			//std::map<tag_type, state_type> m_map;
+			//std::map<tag_type, impact_type> m_map2;
 		};
 	}
 }

@@ -16,6 +16,9 @@ namespace px {
 			: public skill_instance<User, Target, Area>
 		{
 		public:
+			typedef skill_state state_type;
+
+		public:
 			skill_state & state() noexcept
 			{
 				return m_state;
@@ -23,6 +26,19 @@ namespace px {
 			skill_state const& state() const noexcept
 			{
 				return m_state;
+			}
+
+		public:
+			virtual ~skill()
+			{
+			}
+			skill()
+				: m_state{}
+			{
+			}
+			skill(state_type state)
+				: m_state(state)
+			{
 			}
 
 		protected:

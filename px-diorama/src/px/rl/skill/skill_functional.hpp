@@ -9,10 +9,9 @@
 
 #include <functional>
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		template <typename User, typename Target, typename Area>
 		class skill_functional
 			: public skill_impact<User, Target, Area>

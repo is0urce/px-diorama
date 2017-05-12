@@ -26,6 +26,15 @@ namespace px {
 				m_base = base_impact;
 			}
 
+		public:
+			virtual ~skill_instance()
+			{
+			}
+			skill_instance()
+				: m_base(nullptr)
+			{
+			}
+
 		protected:
 			virtual bool useable_instance() const
 			{
@@ -39,7 +48,7 @@ namespace px {
 
 			virtual bool targeted_skill() const override
 			{
-				return m_base && m_base->targeted_skill();
+				return m_base && m_base->targeted();
 			}
 			virtual void use_skill(user_type user, target_type target) override
 			{
@@ -59,7 +68,7 @@ namespace px {
 			}
 
 		private:
-			impact_type *	m_base;
+			impact_type * m_base;
 		};
 
 	}

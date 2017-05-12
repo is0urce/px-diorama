@@ -21,25 +21,25 @@ namespace px {
 		public:
 			bool targeted() const
 			{
-				return targeted_ability();
+				return targeted_skill();
 			}
 
 			bool useable(user_type user, target_type target) const
 			{
-				return useable_ability(user, target);
+				return useable_skill(user, target);
 			}
 			bool useable(user_type user, area_type area) const
 			{
-				return useable_ability(user, area);
+				return useable_skill(user, area);
 			}
 
-			void use(user_type user, target_type t)
+			void use(user_type user, target_type target)
 			{
-				use_ability(user, t);
+				use_skill(user, target);
 			}
-			void use(user_type user, area_type t)
+			void use(user_type user, area_type area)
 			{
-				use_ability(user, t);
+				use_skill(user, area);
 			}
 
 			bool try_use(user_type user, target_type target)
