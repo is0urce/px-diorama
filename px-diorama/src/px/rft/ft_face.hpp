@@ -53,23 +53,24 @@ namespace px
 		//}
 
 	public:
-		ft_face(FT_Library library, const char* path, unsigned int index)
+		~ft_face()
+		{
+			FT_Done_Face(m_face);
+		}
+		ft_face(FT_Library library, char const* path, unsigned int index)
 		{
 			auto error = FT_New_Face(library, path, index, &m_face);
 			if (error) throw std::runtime_error("px::rft::ft_face::ctor() - error #" + std::to_string(error) + " path=" + std::string(path) + " index=" + std::to_string(index));
 		}
-		ft_face(FT_Library library, const char* path)
+		ft_face(FT_Library library, char const* path)
 			: ft_face(library, path, 0)
 		{
 		}
 		ft_face(ft_face const&) = delete;
 		ft_face& operator=(ft_face const&) = delete;
-		~ft_face()
-		{
-			FT_Done_Face(m_face);
-		}
+
 	private:
-		FT_Face m_face;
-		unsigned int m_size;
+		FT_Face			m_face;
+		unsigned int	m_size;
 	};
 }

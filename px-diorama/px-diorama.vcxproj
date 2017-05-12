@@ -95,7 +95,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;lib/lua53.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -116,7 +116,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;lib/lua53.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -142,7 +142,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;lib/lua53.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -168,7 +168,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;lib/glfw3.lib;lib/glew32s.lib;lib/freetype27.lib;lib/lua53.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -190,6 +190,7 @@
     <ClInclude Include="src\drm\es\body_component.hpp" />
     <ClInclude Include="src\drm\es\body_system.hpp" />
     <ClInclude Include="src\drm\es\character_component.hpp" />
+    <ClInclude Include="src\drm\es\character_system.hpp" />
     <ClInclude Include="src\drm\es\container_system.hpp" />
     <ClInclude Include="src\drm\es\player_component.hpp" />
     <ClInclude Include="src\drm\es\storage_component.hpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="src\drm\ui\target_panel.hpp" />
     <ClInclude Include="src\drm\es\unit_component.hpp" />
     <ClInclude Include="src\drm\vertex.hpp" />
+    <ClInclude Include="src\drm\es\wrap_unit.hpp" />
     <ClInclude Include="src\px\common\colors.hpp" />
     <ClInclude Include="src\px\es\basic_system.hpp" />
     <ClInclude Include="src\px\es\transform.hpp" />
@@ -323,6 +325,9 @@
     <None Include="data\img\m_snake32.json" />
     <None Include="data\img\taurus32.json" />
     <None Include="data\img\wall32.json" />
+    <None Include="data\scripts\damage.lua" />
+    <None Include="data\scripts\melee.lua" />
+    <None Include="data\scripts\teleport.lua" />
     <None Include="data\shaders\batch.frag" />
     <None Include="data\shaders\batch.vert" />
     <None Include="data\shaders\blur.frag" />
@@ -333,6 +338,7 @@
     <None Include="data\shaders\uisolid.vert" />
     <None Include="data\shaders\uitext.frag" />
     <None Include="data\shaders\uitext.vert" />
+    <None Include="data\skills.json" />
     <None Include="data\textures.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -261,25 +261,10 @@
     <ClInclude Include="src\drm\es\body_system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\soc\reputation_subject.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\drm\rl\damage_type.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\resource.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\st\astar.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\st\shadowcasting.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\st\map_stream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\st\tile.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\rl\equipment_slot.hpp">
@@ -408,6 +393,27 @@
     <ClInclude Include="src\px\rl\skill\skill.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\px\rl\soc\reputation_subject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\st\astar.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\st\map_stream.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\st\shadowcasting.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\st\tile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\es\character_system.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\es\wrap_unit.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -445,5 +451,9 @@
     <None Include="data\img\m_snake32.json" />
     <None Include="data\controls.json" />
     <None Include="data\textures.json" />
+    <None Include="data\skills.json" />
+    <None Include="data\scripts\teleport.lua" />
+    <None Include="data\scripts\damage.lua" />
+    <None Include="data\scripts\melee.lua" />
   </ItemGroup>
 </Project>

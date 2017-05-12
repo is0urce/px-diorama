@@ -10,6 +10,8 @@
 #include "body_system.hpp"
 #include "container_system.hpp"
 
+#include "character_system.hpp"
+
 #include "storage_component.hpp"
 #include "player_component.hpp"
 #include "workshop_component.hpp"
@@ -75,5 +77,6 @@ namespace px {
 		std::unique_ptr<es::sprite_system> m_sprites;
 		es::body_system m_bodies;
 		es::container_system m_containers;
+		es::character_system m_characters;
 	};
 }

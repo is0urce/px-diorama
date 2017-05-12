@@ -165,13 +165,13 @@ namespace px {
 		}
 
 	public:
-		pool()
-		{
-			startup();
-		}
 		~pool()
 		{
 			destroy_existing();
+		}
+		pool()
+		{
+			startup();
 		}
 		pool(pool const&) = delete;
 		pool& operator=(pool const&) = delete;

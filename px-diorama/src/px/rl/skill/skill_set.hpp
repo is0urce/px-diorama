@@ -14,8 +14,8 @@ namespace px
 {
 	namespace rl
 	{
-		template <typename Book, typename Instance>
-		class skill_set
+		template <typename Instance, typename Book>
+		class skill_set final
 		{
 		public:
 			typedef Book book_type;
@@ -77,10 +77,8 @@ namespace px
 			}
 			void cooldown(unsigned int time)
 			{
-				//for (auto & skill : m_skills)
-				//{
-				//	if (skill.ability)
-				//	{
+				//for (auto & skill : m_skills) {
+				//	if (skill.state().cooldown(time)) {
 				//		skill.ability->cooldown(time);
 				//	}
 				//}

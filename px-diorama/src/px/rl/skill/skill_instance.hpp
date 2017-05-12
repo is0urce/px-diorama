@@ -21,7 +21,7 @@ namespace px {
 			typedef skill_impact<User, Target, Area> impact_type;
 
 		public:
-			void link(impact_type * base_impact)
+			void link_impact(impact_type * base_impact)
 			{
 				m_base = base_impact;
 			}
@@ -32,6 +32,10 @@ namespace px {
 			}
 			skill_instance()
 				: m_base(nullptr)
+			{
+			}
+			skill_instance(impact_type const* base_impact)
+				: m_base(base_impact)
 			{
 			}
 

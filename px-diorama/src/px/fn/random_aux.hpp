@@ -10,10 +10,9 @@
 #include <random>
 #include <type_traits>
 
-namespace px
-{
-	namespace fn
-	{
+namespace px {
+	namespace fn {
+
 		namespace
 		{
 			// get random 4-way direction

@@ -6,10 +6,9 @@
 #include FT_FREETYPE_H
 
 #include <stdexcept>
-#include <string>
 
-namespace px
-{
+namespace px {
+
 	class ft_library
 	{
 	public:
@@ -21,7 +20,12 @@ namespace px
 		{
 			std::swap(m_library, that.m_library);
 		}
+
 	public:
+		~ft_library()
+		{
+			FT_Done_FreeType(m_library);
+		}
 		ft_library()
 		{
 			auto error = FT_Init_FreeType(&m_library);
@@ -29,10 +33,7 @@ namespace px
 		}
 		ft_library(ft_library const&) = delete;
 		ft_library& operator=(ft_library const&) = delete;
-		~ft_library()
-		{
-			FT_Done_FreeType(m_library);
-		}
+
 	private:
 		FT_Library m_library;
 	};

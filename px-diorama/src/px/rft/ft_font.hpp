@@ -9,6 +9,7 @@
 
 #include <cstring>
 #include <map>
+#include <stdexcept>
 #include <vector>
 
 namespace px

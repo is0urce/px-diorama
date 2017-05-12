@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "skill.hpp"
-
 #include <map>
 #include <tuple>
 
@@ -14,7 +12,7 @@ namespace px {
 	namespace rl {
 
 		template <typename Tag, typename Impact, typename State = void*>
-		class skill_book
+		class skill_book final
 		{
 		public:
 			typedef Tag tag_type;
@@ -23,11 +21,11 @@ namespace px {
 			typedef std::tuple<state_type, impact_type> record_type;
 
 		public:
-			//template <typename ...Args>
-			//void emplace(Tag name, state_type state, Args&&... args)
-			//{
-			//	m_map.emplace(name, state, std::forward<Args>(args)...);
-			//}
+			template <typename ...Args>
+			void emplace(Tag name, state_type state, Args &&... args)
+			{
+				m_map.emplace(name, record_type{ state, impact_type{std::forward<Args>(args)...} });
+			}
 			//record_type const& operator[](Tag name)
 			//{
 			//	return m_map[name];
@@ -42,8 +40,7 @@ namespace px {
 
 		private:
 			std::map<tag_type, record_type> m_map;
-			//std::map<tag_type, state_type> m_map;
-			//std::map<tag_type, impact_type> m_map2;
+			std::map<tag_type, impact_type> m_impact;
 		};
 	}
 }

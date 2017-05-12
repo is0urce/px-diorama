@@ -12,10 +12,9 @@
 #include <memory>
 #include <random>
 
-namespace px
-{
-	namespace fn
-	{
+namespace px {
+	namespace fn {
+
 		// Random - rng device
 		// Props - user-defined data associated to node
 		template <typename Props = void*>

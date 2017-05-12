@@ -131,7 +131,7 @@ namespace px {
 				img.layer = layer;
 				img.texture = texture;
 				img.glyph = glyph;
-				img.name = ib_pair.first->first.c_str(); // get iterator, get key, get c_str
+				img.name = ib_pair.first->first.c_str(); // get iterator, get key, get c_str pointer
 			}
 
 		private:

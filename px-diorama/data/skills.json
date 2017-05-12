@@ -1,0 +1,10 @@
+{
+	"skills": [{
+			"path": "data/script/mark.lua",
+			"name": "mark"
+		},
+		{
+			"path": "data/script/recall.js",
+			"name": "recall"
+		}]
+}

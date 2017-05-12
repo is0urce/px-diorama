@@ -81,8 +81,8 @@ namespace px
 
 		private:
 			time_type	m_cooldown; // remaining time to ready state
-			time_type	m_timer;	// cooldown duratiion
-			bool		m_hostile;	// considered as hostile by npc
+			time_type	m_timer;	// cooldown duration
+			bool		m_hostile;	// is considered as hostile by npc
 		};
 	}
 }

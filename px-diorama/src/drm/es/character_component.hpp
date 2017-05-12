@@ -32,17 +32,22 @@ namespace px {
 		typedef rl::skill_book<std::string, rl::skill_functional<actor_type, actor_type, area_type>, instance_type::state_type> book_type;
 
 	public:
+		void provide_skillbook(book_type const* book)
+		{
+			m_skills.provide(book);
+		}
+
+	public:
 		virtual ~character_component()
 		{
 		}
 		character_component()
 		{
-			m_skills.provide(&m_book);
 		}
 
 	private:
 		book_type m_book;
-		rl::skill_set<book_type, instance_type> m_skills;
+		rl::skill_set<instance_type, book_type> m_skills;
 	};
 
 }

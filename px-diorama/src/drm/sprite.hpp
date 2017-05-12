@@ -8,14 +8,17 @@ namespace px {
 
 	struct image
 	{
-		float sx;
-		float sy;
-		float dx;
-		float dy;
-		unsigned int texture;
-		unsigned int layer;
-		unsigned int glyph;
-		char const* name;
+		// texture coordinates start/end x/y
+		float			sx;
+		float			sy;
+		float			dx;
+		float			dy;
+
+		unsigned int	texture;	// texture atlas index
+		unsigned int	layer;		// sorting layer
+		unsigned int	glyph;		// alternative glyph
+
+		char const*		name;		// persistent pointer to image name
 	};
 
 	struct sprite

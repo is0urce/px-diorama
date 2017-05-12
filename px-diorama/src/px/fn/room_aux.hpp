@@ -7,10 +7,9 @@
 
 #include "random_aux.hpp"
 
-namespace px
-{
-	namespace fn
-	{
+namespace px {
+	namespace fn {
+
 		namespace
 		{
 			// get random point in a rectangle
