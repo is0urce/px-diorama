@@ -5,6 +5,10 @@
 
 #pragma once
 
+// collection of systems
+// instantiated at once
+// takes a lot of space, should be part of heap allocation (or kindly ask os for more stack memory)
+
 #include "transform_system.hpp"
 #include "sprite_system.hpp"
 #include "body_system.hpp"
@@ -32,7 +36,7 @@ namespace px {
 		}
 		auto make_sprite(std::string const& name)
 		{
-			return m_sprites->make_shared(name);
+			return m_sprites.make_shared(name);
 		}
 		auto make_body()
 		{
@@ -41,6 +45,10 @@ namespace px {
 		auto make_container()
 		{
 			return m_containers.make_shared();
+		}
+		auto make_character()
+		{
+			return m_characters.make_shared();
 		}
 		auto make_storage()
 		{
@@ -57,26 +65,29 @@ namespace px {
 
 		auto sprites()
 		{
-			return m_sprites.get();
+			return &m_sprites;
 		}
 		auto transforms()
 		{
 			return &m_transforms;
 		}
+		auto characters()
+		{
+			return &m_characters;
+		}
 
 	public:
 		factory()
-			: m_sprites(std::make_unique<es::sprite_system>())
 		{
 		}
 		factory(factory const&) = delete;
 		factory& operator=(factory const&) = delete;
 
 	private:
-		es::transform_system m_transforms;
-		std::unique_ptr<es::sprite_system> m_sprites;
-		es::body_system m_bodies;
-		es::container_system m_containers;
-		es::character_system m_characters;
+		es::transform_system	m_transforms;
+		es::sprite_system		m_sprites;
+		es::body_system			m_bodies;
+		es::container_system	m_containers;
+		es::character_system	m_characters;
 	};
 }

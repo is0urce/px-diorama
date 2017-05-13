@@ -36,7 +36,7 @@ namespace px {
 				: m_state{}
 			{
 			}
-			skill(state_type start_state, skill_impact<User, Target, Area> const* impact)
+			skill(state_type start_state, skill_impact<User, Target, Area> * impact)
 				: skill_instance(impact), m_state(start_state)
 			{
 			}

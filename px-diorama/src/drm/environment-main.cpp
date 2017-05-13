@@ -99,10 +99,21 @@ namespace px {
 			m_player->place(destination);
 		}
 	}
-	void environment::use(unsigned int /*index*/)
+	void environment::use(unsigned int action_index)
 	{
+		auto * user_body = m_player ? m_player->linked<body_component>() : nullptr;
+		auto * character = user_body ? user_body->linked<character_component>() : nullptr;
+		if (character) {
+			auto & skill = character->skills().at(action_index - 1);
+			if (skill.targeted()) {
+
+			}
+			else {
+				skill.try_use(user_body, m_hover);
+			}
+		}
 	}
-	void environment::activate(unsigned int /*mod*/)
+	void environment::activate(unsigned int /* mod */)
 	{
 		auto target = find_any(m_hover);
 		auto body = target ? target->linked<body_component>() : nullptr;
@@ -122,6 +133,7 @@ namespace px {
 		auto sprite = builder.add_sprite(name);
 		auto container = builder.add_container();
 		auto storage = builder.add_storage();
+		auto character = builder.add_character();
 
 		// setup
 		transform->store_position();
@@ -133,6 +145,7 @@ namespace px {
 			itm->add(rl::item::enhancement_type::from_type(rl::effect::ore_power, i));
 			container->add(itm);
 		}
+		character->skills().learn_skill("sk_teleport");
 
 		// add to scene
 		auto result = builder.assemble();

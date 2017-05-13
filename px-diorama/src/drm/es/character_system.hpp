@@ -53,23 +53,50 @@ namespace px {
 
 				if (!maybe_tag) throw std::runtime_error("px::rl::character_system::load_skill(path) - no tag, path = " + std::string(path));
 
+				// state props
+
+				book_type::state_type props;
+
 				std::string tag = maybe_tag.value();
 				std::string name = m_lua["name"].get_or(std::string("?"));
 				std::string alias = m_lua["alias"].get_or(name);
 				int cooldown = m_lua["cooldown"].get_or(0);
 				bool targeted = m_lua["targeted"].get_or(false);
 
-				book_type::state_type props;
 				props.set_name(name);
 				props.set_tag(tag);
 				props.set_cooldown(cooldown);
+
+				// functional
+
+				std::function<void(body_component *, body_component *)> target_action;
+				std::function<bool(body_component *, body_component *)> target_condition;
+				std::function<void(body_component *, point2 const&)> area_action;
+				std::function<bool(body_component *, point2 const&)> area_condition;
 
 				if (targeted) {
 					std::function<void(wrap_unit, wrap_unit)> script_action = m_lua["action"];
 					std::function<bool(wrap_unit, wrap_unit)> script_condition = m_lua["condition"];
 
-					auto target_action = [script_action](body_component * user, body_component * target) { script_action(user, target); };
-					auto target_condition = [script_condition](body_component * user, body_component * target) { return script_condition(user, target); };
+					target_action = [script_action](body_component * user, body_component * target) {
+						try
+						{
+							script_action(user, target);
+						}
+						catch (...)
+						{
+						}
+					};
+					target_condition = [script_condition](body_component * user, body_component * target) {
+						try
+						{
+							return script_condition(user, target);
+						}
+						catch (...)
+						{
+							return false;
+						}
+					};
 
 					m_book.emplace(tag, props, targeted, target_action, target_condition, nullptr, nullptr);
 				}
@@ -77,11 +104,30 @@ namespace px {
 					std::function<void(wrap_unit, point2 const&)> script_action = m_lua["action"];
 					std::function<bool(wrap_unit, point2 const&)> script_condition = m_lua["condition"];
 
-					auto area_action = [script_action](body_component * user, point2 const& area) { script_action(user, area); };
-					auto area_condition = [script_condition](body_component * user, point2 const& area) { return script_condition(user, area); };
-
-					m_book.emplace(tag, props, targeted, nullptr, nullptr, area_action, area_condition);
+					area_action = [script_action](body_component * user, point2 const& area) { 
+						try
+						{
+							script_action(user, area);
+						}
+						catch (...)
+						{
+						}
+					};
+					area_condition = [script_condition](body_component * user, point2 const& area) {
+						try
+						{
+							return script_condition(user, area);
+						}
+						catch (...)
+						{
+							return false;
+						}
+					};
 				}
+
+				// create record
+
+				m_book.emplace(tag, props, targeted, target_action, target_condition, area_action, area_condition);
 			}
 
 		public:
@@ -89,8 +135,12 @@ namespace px {
 			{
 				m_lua.open_libraries(sol::lib::base, sol::lib::package);
 
-				m_lua.new_usertype<wrap_unit>("unit");
+				m_lua.new_usertype<wrap_unit>("unit"
+					, "place", &wrap_unit::place);
 				m_lua.new_usertype<point2>("point");
+				m_lua.new_usertype<environment>("environment");
+
+				m_lua.script_file("data/scripts/damage_types.lua");
 
 				load_skill("data/scripts/teleport.lua");
 			}
@@ -98,7 +148,7 @@ namespace px {
 		private:
 			void setup_component(character_component & element)
 			{
-				element.provide_skillbook(&m_book);
+				element.skills().provide_book(&m_book);
 			}
 
 		private:

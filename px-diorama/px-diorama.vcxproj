@@ -325,7 +325,7 @@
     <None Include="data\img\m_snake32.json" />
     <None Include="data\img\taurus32.json" />
     <None Include="data\img\wall32.json" />
-    <None Include="data\scripts\damage.lua" />
+    <None Include="data\scripts\damage_types.lua" />
     <None Include="data\scripts\melee.lua" />
     <None Include="data\scripts\teleport.lua" />
     <None Include="data\shaders\batch.frag" />

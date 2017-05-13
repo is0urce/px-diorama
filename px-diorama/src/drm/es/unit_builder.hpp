@@ -41,6 +41,10 @@ namespace px {
 		{
 			return m_player = m_factory->make_player();
 		}
+		auto add_character()
+		{
+			return m_character = m_factory->make_character();
+		}
 
 		// combine
 		std::shared_ptr<unit> assemble()
@@ -82,18 +86,23 @@ namespace px {
 	private:
 		void link_components()
 		{
-			// setup dispatcher links
-			if (m_sprite && m_transform)	m_sprite->connect(m_transform.get());
-			if (m_transform && m_body)		m_transform->connect(m_body.get());
-			if (m_body && m_container)		m_body->connect(m_container.get());
-			if (m_body && m_transform)		m_body->connect(m_transform.get());
+			if (m_transform) {
+				if (m_body)			m_transform->connect(m_body.get());
+			}
+
+			if (m_sprite) {
+				if (m_transform)	m_sprite->connect(m_transform.get());
+			}
+
+			if (m_body) {
+				if (m_transform)	m_body->connect(m_transform.get());
+				if (m_container)	m_body->connect(m_container.get());
+				if (m_character)	m_body->connect(m_character.get());
+				if (m_storage)		m_body->assign_useable(m_storage.get()); // assign extra polymorphic links
+			}
+
 			if (m_storage && m_container)	m_storage->connect(m_container.get());
 			if (m_container && m_transform) m_container->connect(m_transform.get());
-
-			// assign extra polymorphic links
-			if (m_storage && m_body) {
-				m_body->assign_useable(m_storage.get());
-			}
 		}
 		template <typename Container>
 		void compose_unit(Container & product)
@@ -104,16 +113,18 @@ namespace px {
 			if (m_container)	product.add(m_container);
 			if (m_storage)		product.add(m_storage);
 			if (m_player)		product.add(m_player);
+			if (m_character)	product.add(m_character);
 		}
 
 	private:
-		factory * m_factory;
+		factory *							m_factory;
 
-		shared_ptr<transform_component> m_transform;
-		shared_ptr<sprite_component> m_sprite;
-		shared_ptr<body_component> m_body;
-		shared_ptr<container_component> m_container;
-		shared_ptr<storage_component> m_storage;
-		shared_ptr<player_component> m_player;
+		shared_ptr<transform_component>		m_transform;
+		shared_ptr<sprite_component>		m_sprite;
+		shared_ptr<body_component>			m_body;
+		shared_ptr<character_component>		m_character;
+		shared_ptr<container_component>		m_container;
+		shared_ptr<storage_component>		m_storage;
+		shared_ptr<player_component>		m_player;
 	};
 }

@@ -40,7 +40,12 @@
     {
       "action": 20,
       "keys": [ 69 ],
-      "comment" : "use"
+      "comment": "use"
+    },
+    {
+      "action": 11,
+      "keys": [ 49 ],
+      "comment" : "slot 1"
     },
     {
       "action": 105,
@@ -51,8 +56,7 @@
       "action": 109,
       "keys": [ 298 ],
       "comment": "quickload"
-    }
-    ,
+    },
     {
       "action": 502,
       "keys": [ 73 ],

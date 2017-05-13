@@ -453,7 +453,7 @@
     <None Include="data\textures.json" />
     <None Include="data\skills.json" />
     <None Include="data\scripts\teleport.lua" />
-    <None Include="data\scripts\damage.lua" />
     <None Include="data\scripts\melee.lua" />
+    <None Include="data\scripts\damage_types.lua" />
   </ItemGroup>
 </Project>

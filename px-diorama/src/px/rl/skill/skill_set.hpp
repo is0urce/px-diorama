@@ -23,9 +23,9 @@ namespace px
 			typedef typename book_type::tag_type tag_type;
 
 		public:
-			void provide(book_type const* book)
+			void provide_book(book_type * book)
 			{
-				m_provider = book;
+				m_book = book;
 			}
 			void invalidate_skills()
 			{
@@ -40,22 +40,23 @@ namespace px
 				//	slot.assign(s->second);
 				//}
 			}
-			auto add_skill(tag_type tag, size_t slot)
+			void learn_skill(tag_type tag)
 			{
-				//if (!m_provider) throw std::runtime_error("px::rl::skill_set::add(name, slot) - book provider is null");
+				if (!m_book) throw std::runtime_error("px::rl::skill_set::add(name, slot) - book provider is null");
+	
+				if (auto * record = m_book->fetch(tag)) {
 
-				//auto it = m_provider->find(tag);
-
-				//if (it == m_provider->end()) throw std::runtime_error("px::rl::skill_set::add(name, slot) - book has no skill with name " + tag);
-
-				//m_skills.reserve(slot + 1);
-				//m_skills.emplace(m_skills.begin() + slot, tag, it->second);
-
-				//return skill(slot);
+					m_skills.emplace_back(std::get<0>(*record), &std::get<1>(*record));
+				}
 			}
-			auto add_skill(tag_type tag)
+			void replace_skill(tag_type tag, size_t slot)
 			{
-				return add_skill(tag, m_skills.size());
+				if (!m_book) throw std::runtime_error("px::rl::skill_set::add(name, slot) - book provider is null");
+
+				if (auto * record = m_book->fetch(tag)) {
+
+					m_skills[slot] = { std::get<0>(*record), &std::get<1>(*record) };
+				}
 			}
 			void clear_skills()
 			{
@@ -66,14 +67,14 @@ namespace px
 				return m_skills.size();
 			}
 
-			instance_type * skill(size_t slot)
+			instance_type & at(size_t slot)
 			{
-				return (slot < m_skills.size()) ? m_skills[slot].ability.get() : nullptr;
+				return m_skills.at(slot);
 			}
 			template <size_t Slot>
-			instance_type * skill()
+			instance_type & at()
 			{
-				return (Slot < m_skills.size()) ? m_skills[Slot].ability.get() : nullptr;
+				return m_skills.at(slot);
 			}
 			void cooldown(unsigned int time)
 			{
@@ -86,11 +87,11 @@ namespace px
 
 		public:
 			skill_set()
-				: m_provider(nullptr)
+				: m_book(nullptr)
 			{
 			}
-			skill_set(book_type const* book)
-				: m_provider(book)
+			skill_set(book_type * book)
+				: m_book(book)
 			{
 			}
 			skill_set(skill_set const&) = delete;
@@ -98,7 +99,7 @@ namespace px
 
 		private:
 			std::vector<instance_type>	m_skills;	// array of learned/selected skills
-			book_type const*			m_provider;	// create and invalidate source
+			book_type *					m_book;	// create and invalidate source
 		};
 	}
 }

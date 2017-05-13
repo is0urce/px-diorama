@@ -5,23 +5,26 @@
 
 tag = "sk_teleport"
 
+-- state attributes
+
 hostile = false
 targeted = false
-cooldown = 20
+instant = false
+cooldown = 0
 cost = 0
 
 name = "Teleport"
 short = "Tport"
 description = "Teleports you to target location"
 
-range = function (user, target)
-	return 0, 10000
-end
+-- returns true if skill can be used
 
 condition = function (user, target)
 	return not user:dead()
 end
 
+-- action taken if skill is used
+
 action = function (user, target)
-	user:move(target)
+	user:place(target)
 end

@@ -14,7 +14,9 @@
 
 namespace px {
 
+	class transform_component;
 	class container_component;
+	class character_component;
 
 	class body_component final
 		: public rl::body
@@ -22,6 +24,7 @@ namespace px {
 		, public es::link_dispatcher<body_component>
 		, public es::link<transform_component>
 		, public es::link<container_component>
+		, public es::link<character_component>
 	{
 	public:
 		void assign_useable(useable * use)

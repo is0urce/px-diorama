@@ -44,8 +44,8 @@ namespace px {
 
 			bool try_use(user_type user, target_type target)
 			{
-				if (useable_ability(user, target)) {
-					use_ability(user, target);
+				if (useable_skill(user, target)) {
+					use_skill(user, target);
 					return true;
 				}
 				return false;
@@ -53,8 +53,8 @@ namespace px {
 
 			bool try_use(user_type user, area_type area)
 			{
-				if (useable_ability(user, area)) {
-					use_ability(user, area);
+				if (useable_skill(user, area)) {
+					use_skill(user, area);
 					return true;
 				}
 				return false;

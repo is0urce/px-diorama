@@ -26,10 +26,20 @@ namespace px {
 			{
 				m_map.emplace(name, record_type{ state, impact_type{std::forward<Args>(args)...} });
 			}
-			//record_type const& operator[](Tag name)
-			//{
-			//	return m_map[name];
-			//}
+
+			record_type & at(tag_type name)
+			{
+				return m_map.at(name);
+			}
+			record_type & operator[](tag_type name)
+			{
+				return m_map[name];
+			}
+			record_type * fetch(tag_type name)
+			{
+				auto it = m_map.find(name);
+				return it == m_map.end() ? nullptr : &it->second;
+			}
 
 		public:
 			skill_book()
@@ -40,7 +50,6 @@ namespace px {
 
 		private:
 			std::map<tag_type, record_type> m_map;
-			std::map<tag_type, impact_type> m_impact;
 		};
 	}
 }

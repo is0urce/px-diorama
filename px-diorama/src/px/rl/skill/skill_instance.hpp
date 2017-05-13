@@ -34,7 +34,7 @@ namespace px {
 				: m_base(nullptr)
 			{
 			}
-			skill_instance(impact_type const* base_impact)
+			skill_instance(impact_type * base_impact)
 				: m_base(base_impact)
 			{
 			}
