@@ -68,9 +68,13 @@ namespace px {
 		environment();
 
 	private:
-		void turn();
+		void turn_begin();
+		void turn_end();
 		void generate_terrain();
 		transform_component * find_any(point2 const& position);
+
+		template <typename Action>
+		void turn(Action && intent_action, int time);
 
 		template <typename Archive>
 		void save_units(Archive & archive) const;
@@ -85,7 +89,7 @@ namespace px {
 		bool								m_run;		// if engine is working
 		std::unique_ptr<factory>			m_factory;	// for assembling units, release last
 
-		point2								m_hover;	// current hovered tile (uses relative world coordinates)
+		point2								m_hover;	// current hovered tile
 		ui::menu							m_ui;		// user interface
 
 		unsigned int						m_turn;		// current turn

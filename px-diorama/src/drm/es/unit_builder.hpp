@@ -73,7 +73,6 @@ namespace px {
 		unit_builder(factory & builder)
 			: m_factory(&builder)
 		{
-
 		}
 		unit_builder(factory * builder)
 			: m_factory(builder)

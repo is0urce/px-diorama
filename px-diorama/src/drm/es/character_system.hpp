@@ -4,7 +4,8 @@
 
 #include "character_component.hpp"
 
-#include "wrap_unit.hpp"
+#include "script_unit.hpp"
+#include "script_environment.hpp"
 
 #include <px/es/basic_system.hpp>
 
@@ -45,6 +46,10 @@ namespace px {
 				return result;
 			}
 
+			void provide_environment(environment * bind)
+			{
+				m_lua["game"] = script_environment(bind);
+			}
 			void load_skill(char const* path)
 			{
 				m_lua.script_file(path);
@@ -75,8 +80,8 @@ namespace px {
 				std::function<bool(body_component *, point2 const&)> area_condition;
 
 				if (targeted) {
-					std::function<void(wrap_unit, wrap_unit)> script_action = m_lua["action"];
-					std::function<bool(wrap_unit, wrap_unit)> script_condition = m_lua["condition"];
+					std::function<void(script_unit, script_unit)> script_action = m_lua["action"];
+					std::function<bool(script_unit, script_unit)> script_condition = m_lua["condition"];
 
 					target_action = [script_action](body_component * user, body_component * target) {
 						try
@@ -101,8 +106,8 @@ namespace px {
 					m_book.emplace(tag, props, targeted, target_action, target_condition, nullptr, nullptr);
 				}
 				else {
-					std::function<void(wrap_unit, point2 const&)> script_action = m_lua["action"];
-					std::function<bool(wrap_unit, point2 const&)> script_condition = m_lua["condition"];
+					std::function<void(script_unit, point2 const&)> script_action = m_lua["action"];
+					std::function<bool(script_unit, point2 const&)> script_condition = m_lua["condition"];
 
 					area_action = [script_action](body_component * user, point2 const& area) { 
 						try
@@ -135,12 +140,16 @@ namespace px {
 			{
 				m_lua.open_libraries(sol::lib::base, sol::lib::package);
 
-				m_lua.new_usertype<wrap_unit>("unit"
-					, "place", &wrap_unit::place);
-				m_lua.new_usertype<point2>("point");
-				m_lua.new_usertype<environment>("environment");
-
 				m_lua.script_file("data/scripts/damage_types.lua");
+
+				m_lua.new_usertype<script_unit>("unit"
+					, "place", &script_unit::place
+					, "position", &script_unit::position);
+				m_lua.new_usertype<point2>("point");
+				m_lua.new_usertype<script_environment>("environment"
+					, "distance", &script_environment::distance);
+
+				m_lua["game"] = script_environment(nullptr);
 
 				load_skill("data/scripts/teleport.lua");
 			}

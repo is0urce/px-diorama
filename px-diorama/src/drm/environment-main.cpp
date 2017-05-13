@@ -31,6 +31,7 @@ namespace px {
 		, m_run(true)
 		, m_turn(1)
 	{
+		m_factory->characters()->provide_environment(this);
 	}
 
 	bool environment::running() const noexcept
@@ -69,13 +70,25 @@ namespace px {
 		// compose user interface
 		m_ui.main()->draw(view.canvas());
 	}
-	void environment::turn()
+	void environment::turn_begin()
 	{
 		std::for_each(std::begin(m_units), std::end(m_units), [](auto & unit) {
 			auto transform = unit->transform();
 			if (transform) transform->store_position();
 		});
+	}
+	void environment::turn_end()
+	{
 		++m_turn;
+	}
+	template <typename Action>
+	void environment::turn(Action && intent_action, int time)
+	{
+		turn_begin();
+		intent_action();
+		for (int i = 0; i < time; ++i) {
+			turn_end();
+		}
 	}
 
 	void environment::target(point2 relative_world_coordinates)
@@ -95,29 +108,36 @@ namespace px {
 		auto blocking = find_any(destination);
 
 		if (!blocking) {
-			turn();
+			turn_begin();
 			m_player->place(destination);
+			turn_end();
 		}
 	}
 	void environment::use(unsigned int action_index)
 	{
-		auto * user_body = m_player ? m_player->linked<body_component>() : nullptr;
-		auto * character = user_body ? user_body->linked<character_component>() : nullptr;
-		if (character) {
-			auto & skill = character->skills().at(action_index - 1);
-			if (skill.targeted()) {
+		auto * user = m_player ? m_player->linked<body_component>() : nullptr;
+		auto * character = user ? user->linked<character_component>() : nullptr;
 
+		if (auto * skill = character ? character->skills().get_skill(action_index - 1) : nullptr) {
+
+			//int turns = skill->state().instant() ? 0 : 1;
+
+			if (skill->targeted()) {
+				auto * transform = find_any(m_hover);
+				auto * target = transform ? transform->linked<body_component>() : nullptr;
+
+				skill->try_use(user, target);
 			}
 			else {
-				skill.try_use(user_body, m_hover);
+				skill->try_use(user, m_hover);
 			}
 		}
 	}
 	void environment::activate(unsigned int /* mod */)
 	{
-		auto target = find_any(m_hover);
-		auto body = target ? target->linked<body_component>() : nullptr;
-		auto user = m_player ? m_player->linked<body_component>() : nullptr;
+		auto * target = find_any(m_hover);
+		auto * body = target ? target->linked<body_component>() : nullptr;
+		auto * user = m_player ? m_player->linked<body_component>() : nullptr;
 
 		if (body) {
 			body->try_use(user, *this);
@@ -377,7 +397,7 @@ namespace px {
 		m_ui.open_storage(storage_container, user_container);
 	}
 
-	transform_component *  environment::find_any(point2 const& position)
+	transform_component * environment::find_any(point2 const& position)
 	{
 		transform_component * result = nullptr;
 

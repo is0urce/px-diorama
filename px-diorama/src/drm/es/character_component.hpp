@@ -8,13 +8,10 @@
 #include <px/es/component.hpp>
 #include <px/es/link_dispatcher.hpp>
 
-#include <px/rl/skill/skill_functional.hpp>
-#include <px/rl/skill/skill_instance.hpp>
-#include <px/rl/skill/skill_state.hpp>
-#include <px/rl/skill/skill_book.hpp>
-#include <px/rl/skill/skill_set.hpp>
-
 #include <px/rl/skill/skill.hpp>
+#include <px/rl/skill/skill_book.hpp>
+#include <px/rl/skill/skill_functional.hpp>
+#include <px/rl/skill/skill_set.hpp>
 
 namespace px {
 

@@ -3,7 +3,7 @@
 -- auth: is0urce
 -- desc: enumerate damage types
 
-damage = {
+damage_type = {
 	pure = 0, -- no-resist type
 
 	-- Etheral / Material

@@ -9,9 +9,7 @@ tag = "sk_teleport"
 
 hostile = false
 targeted = false
-instant = false
-cooldown = 0
-cost = 0
+instant = true
 
 name = "Teleport"
 short = "Tport"

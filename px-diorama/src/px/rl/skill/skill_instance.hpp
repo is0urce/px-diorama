@@ -56,11 +56,11 @@ namespace px {
 			}
 			virtual void use_skill(user_type user, target_type target) override
 			{
-				m_base->use(user, target);
+				if (m_base) m_base->use(user, target);
 			}
 			virtual void use_skill(user_type user, area_type area) override
 			{
-				m_base->use(user, area);
+				if (m_base) m_base->use(user, area);
 			}
 			virtual bool useable_skill(user_type user, target_type target) const override
 			{

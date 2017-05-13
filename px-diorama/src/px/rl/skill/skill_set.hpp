@@ -15,7 +15,7 @@ namespace px
 	namespace rl
 	{
 		template <typename Instance, typename Book>
-		class skill_set final
+		class skill_set
 		{
 		public:
 			typedef Book book_type;
@@ -27,25 +27,11 @@ namespace px
 			{
 				m_book = book;
 			}
-			void invalidate_skills()
-			{
-				//if (!m_provider) throw std::runtime_error("px::rl::skill_set::invalidate() - book provider is null");
-
-				//for (auto & slot : m_skills)
-				//{
-				//	auto s = m_provider->find(it->tag);
-
-				//	if (s == m_provider->end()) throw std::runtime_error("px::rl::skill_set::invalidate - book has no skill with name " + it->tag);
-
-				//	slot.assign(s->second);
-				//}
-			}
 			void learn_skill(tag_type tag)
 			{
 				if (!m_book) throw std::runtime_error("px::rl::skill_set::add(name, slot) - book provider is null");
 	
 				if (auto * record = m_book->fetch(tag)) {
-
 					m_skills.emplace_back(std::get<0>(*record), &std::get<1>(*record));
 				}
 			}
@@ -54,15 +40,20 @@ namespace px
 				if (!m_book) throw std::runtime_error("px::rl::skill_set::add(name, slot) - book provider is null");
 
 				if (auto * record = m_book->fetch(tag)) {
-
 					m_skills[slot] = { std::get<0>(*record), &std::get<1>(*record) };
+				}
+			}
+			void invalidate_skills()
+			{
+				for (size_t i = 0, size = m_skills.size(); i != size; ++i) {
+					replace_skill(i, m_skills[i].state().name());
 				}
 			}
 			void clear_skills()
 			{
 				m_skills.clear();
 			}
-			size_t skils_total() const
+			size_t skill_count() const
 			{
 				return m_skills.size();
 			}
@@ -76,13 +67,15 @@ namespace px
 			{
 				return m_skills.at(slot);
 			}
-			void cooldown(unsigned int time)
+			instance_type * get_skill(size_t index)
 			{
-				//for (auto & skill : m_skills) {
-				//	if (skill.state().cooldown(time)) {
-				//		skill.ability->cooldown(time);
-				//	}
-				//}
+				return index < m_skills.size() ? &m_skills[index] : nullptr;
+			}
+			void cooldown_by(unsigned int delta)
+			{
+				for (auto & skill : m_skills) {
+					skill.state().cooldown_by(time);
+				}
 			}
 
 		public:
@@ -99,7 +92,7 @@ namespace px
 
 		private:
 			std::vector<instance_type>	m_skills;	// array of learned/selected skills
-			book_type *					m_book;	// create and invalidate source
+			book_type *					m_book;		// create and invalidate source
 		};
 	}
 }

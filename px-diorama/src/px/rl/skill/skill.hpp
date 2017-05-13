@@ -44,7 +44,7 @@ namespace px {
 		protected:
 			virtual bool useable_instance() const override
 			{
-				return !m_state.on_cooldown();
+				return !m_state.is_cooldown();
 			}
 			virtual void use_instance() override
 			{

@@ -1,28 +1,35 @@
-// name: wrap_unit.cpp
+// name: script_unit.cpp
 
 // script bindings for game object unit
 
 #pragma once
 
+#include "body_component.hpp"
+#include "transform_component.hpp"
+
 namespace px {
 
-	class wrap_unit
+	class script_unit
 	{
 	public:
 		void place(point2 location)
 		{
-			auto pawn = transform();
+			auto * pawn = transform();
 			if (pawn) {
 				pawn->place(location);
 			}
 		}
+		point2 position()
+		{
+			auto * pawn = transform();
+			return pawn ? pawn->position() : point2(0, 0);
+		}
 
 	public:
-		wrap_unit(body_component * body)
+		script_unit(body_component * body)
 			: m_body(body)
 			, m_transform(nullptr)
 		{
-
 		}
 
 	private:
