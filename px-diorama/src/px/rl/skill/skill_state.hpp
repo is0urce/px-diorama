@@ -48,7 +48,7 @@ namespace px
 			template <typename Archive>
 			void serialize(Archive & archive)
 			{
-				archive(m_cooldown, m_timer, m_hostile, m_instant, m_min_range, m_max_range);
+				archive(m_cooldown, m_timer, m_cost, m_hostile, m_instant, m_min_range, m_max_range);
 			}
 
 			// attrubute get
@@ -64,6 +64,10 @@ namespace px
 			bool hostile() const noexcept
 			{
 				return m_hostile;
+			}
+			int cost() const noexcept
+			{
+				return m_cost;
 			}
 			range_type range_min() const noexcept
 			{
@@ -84,6 +88,10 @@ namespace px
 			void set_cooldown(time_type cooldown_duration) noexcept
 			{
 				m_cooldown = cooldown_duration;
+			}
+			void set_cost(int cost) noexcept
+			{
+				m_cost = cost;
 			}
 			void set_instant(bool is_instant) noexcept
 			{
@@ -107,6 +115,7 @@ namespace px
 			skill_state()
 				: m_cooldown(0)
 				, m_timer(0)
+				, m_cost(0)
 				, m_hostile(false)
 				, m_instant(false)
 				, m_min_range(-1)
@@ -117,6 +126,7 @@ namespace px
 		private:
 			time_type	m_cooldown;		// remaining time to ready state
 			time_type	m_timer;		// cooldown duration
+			int			m_cost;			// resource required to use
 			bool		m_hostile;		// is considered as hostile by npc
 			bool		m_instant;		// is turn not passed after use
 			range_type	m_min_range;	// min use distance

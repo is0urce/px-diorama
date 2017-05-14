@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "draw/popup.hpp"
 #include "vertex.hpp"
 
 #include <px/ui/canvas.hpp>
@@ -39,11 +40,11 @@ namespace px {
 
 		// draw lists
 
-		std::vector<std::vector<mesh_vertex>> const* batches() const noexcept
+		arrays_type const* batches() const noexcept
 		{
 			return m_vertices;
 		}
-		void assign_batches(std::vector<std::vector<mesh_vertex>> const* data) noexcept
+		void assign_batches(arrays_type const* data) noexcept
 		{
 			m_vertices = data;
 		}
@@ -66,8 +67,9 @@ namespace px {
 		}
 
 	private:
-		std::vector<std::vector<mesh_vertex>> const* m_vertices;
+		arrays_type const* m_vertices;
 		ui::canvas m_canvas;
 		float m_scale;
+		std::vector<popup> m_popups;
 	};
 }

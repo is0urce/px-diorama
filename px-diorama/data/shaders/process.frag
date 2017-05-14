@@ -89,6 +89,10 @@ void main()
 	float g_blur = blur_factor * 0.25;
 	float b_blur = blur_factor * 0.5;
 
+	//float r_blur = 1;
+	//float g_blur = 1;
+	//float b_blur = 1;
+
 	float r = seek(lens.lateral_r, lens.offset_r).r * (1.0 - r_blur) + seek_blurred(lens.lateral_r, lens.offset_r).r * r_blur;
 	float g = seek(lens.lateral_g, lens.offset_g).g * (1.0 - g_blur) + seek_blurred(lens.lateral_g, lens.offset_g).g * g_blur;
 	float b = seek(lens.lateral_b, lens.offset_b).b * (1.0 - b_blur) + seek_blurred(lens.lateral_b, lens.offset_b).b * b_blur;

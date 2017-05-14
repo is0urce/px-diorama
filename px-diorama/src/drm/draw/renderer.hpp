@@ -167,7 +167,7 @@ namespace px {
 			}
 
 			// efx & postprocess
-			m_blur_passes = { m_primary.texture, m_ping.framebuffer, m_ping.texture, m_pong.framebuffer, m_pong.texture, m_width, m_height, 0.75f,{ pi_2 / 16, pi_2 / 16 * 3, pi_2 / 16 * 5, pi_2 / 16 * 7 } };
+			m_blur_passes = { m_primary.texture, m_ping.framebuffer, m_ping.texture, m_pong.framebuffer, m_pong.texture, m_width, m_height, 0.5f,{ pi_2 / 16, pi_2 / 16 * 3, pi_2 / 16 * 5, pi_2 / 16 * 7 } };
 			m_postprocess = { 0, 0, m_width, m_height };
 			m_postprocess.bind_texture(m_primary.texture, 0);
 			m_postprocess.bind_texture(m_blur_passes.result(), 1);

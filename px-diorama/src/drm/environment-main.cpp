@@ -157,7 +157,7 @@ namespace px {
 
 		// setup
 		transform->store_position();
-		body->health().create();
+		body->health()->set(100);
 		body->set_name(name);
 		for (int i = 0; i != 30; ++i) {
 			auto itm = std::make_shared<rl::item>();
@@ -405,5 +405,10 @@ namespace px {
 		if (world) world->find(position.x(), position.y(), [&result](int /*x*/, int /*y*/, transform_component * obj) { result = obj; });
 
 		return result;
+	}
+
+	void environment::popup(point2 location, std::string text, color tint, float size)
+	{
+		m_notifications.push_back({ location, text, tint, size });
 	}
 }

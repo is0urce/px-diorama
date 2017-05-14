@@ -8,6 +8,7 @@
 #pragma once
 
 #include "es/unit.hpp"
+#include "rl/notification.hpp"
 
 #include "rl/terrain.hpp"
 #include "ui/menu.hpp"
@@ -55,6 +56,7 @@ namespace px {
 		ui::panel const* ui() const noexcept;
 		void expose_inventory(container_component * inventory);
 		void open_workshop(unsigned int workshop);
+		void popup(point2 location, std::string text, color tint, float size);
 
 		// serialization
 
@@ -86,15 +88,17 @@ namespace px {
 		void load_unit(Builder & builder, Archive & archive);
 
 	private:
-		bool								m_run;		// if engine is working
-		std::unique_ptr<factory>			m_factory;	// for assembling units, release last
+		std::unique_ptr<factory>			m_factory;			// for assembling units, release last
 
-		point2								m_hover;	// current hovered tile
-		ui::menu							m_ui;		// user interface
+		point2								m_hover;			// current hovered tile
+		ui::menu							m_ui;				// user interface
+		std::vector<notification>			m_notifications;	// popups
 
-		unsigned int						m_turn;		// current turn
-		terrain_chunk<tile>					m_map;		// terrain
-		std::list<std::shared_ptr<unit>>	m_units;	// scene
-		transform_component *				m_player;	// player transform
+		unsigned int						m_turn;				// current turn
+		terrain_chunk<tile>					m_map;				// terrain
+		std::list<std::shared_ptr<unit>>	m_units;			// scene
+		transform_component *				m_player;			// player transform
+
+		bool								m_run;				// if engine is working
 	};
 }

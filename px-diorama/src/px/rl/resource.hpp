@@ -13,22 +13,11 @@ namespace px
 	{
 		template <typename T>
 		class resource
-			: public bar<T>
 		{
 		public:
-			typedef bar<T> bar;
+			typedef bar<T> bar_type;
 
 		public:
-			void set(T amount)
-			{
-				create();
-				bar::set(amount);
-			}
-			void set(T current, T max)
-			{
-				create();
-				bar::set(current, max);
-			}
 			void create() noexcept
 			{
 				m_enabled = true;
@@ -43,12 +32,20 @@ namespace px
 				return m_enabled;
 			}
 
+			bar_type * operator->() noexcept {
+				m_enabled = true;
+				return &m_bar;
+			}
+			bar_type const* operator->() const noexcept {
+				return &m_bar;
+			}
+
 			template <typename Archive>
 			void serialize(Archive & archive)
 			{
 				archive(m_enabled);
 				if (m_enabled) {
-					bar::serialize(archive);
+					m_mar.serialize(archive);
 				}
 			}
 
@@ -60,6 +57,7 @@ namespace px
 
 		private:
 			bool m_enabled;
+			bar_type m_bar;
 		};
 	}
 }

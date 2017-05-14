@@ -25,6 +25,7 @@ namespace px {
 		{
 		public:
 			typedef character_component::book_type book_type;
+			typedef book_type::state_type state_type;
 
 		public:
 			auto make_shared()
@@ -60,17 +61,28 @@ namespace px {
 
 				// state props
 
-				book_type::state_type props;
+				state_type props;
 
 				std::string tag = maybe_tag.value();
-				std::string name = m_lua["name"].get_or(std::string("?"));
+				std::string name = m_lua["name"].get_or(tag);
 				std::string alias = m_lua["alias"].get_or(name);
-				int cooldown = m_lua["cooldown"].get_or(0);
+				std::string description = m_lua["description"].get_or(std::string(""));
 				bool targeted = m_lua["targeted"].get_or(false);
+				bool hostile = m_lua["hostile"].get_or(false);
+				bool instant = m_lua["instant"].get_or(false);
+				int cooldown = m_lua["cooldown"].get_or(0);
+				int cost = m_lua["cost"].get_or(0);
+				int min_range = m_lua["min_range"].get_or(-1);
+				int max_range = m_lua["max_range"].get_or(-1);
 
-				props.set_name(name);
 				props.set_tag(tag);
+				props.set_name(name);
+				props.set_description(description);
+				props.set_hostile(hostile);
+				props.set_instant(instant);
 				props.set_cooldown(cooldown);
+				props.set_cost(cost);
+				props.set_range(min_range, max_range);
 
 				// functional
 
@@ -102,8 +114,6 @@ namespace px {
 							return false;
 						}
 					};
-
-					m_book.emplace(tag, props, targeted, target_action, target_condition, nullptr, nullptr);
 				}
 				else {
 					std::function<void(script_unit, point2 const&)> script_action = m_lua["action"];
@@ -149,7 +159,7 @@ namespace px {
 				m_lua.new_usertype<script_environment>("environment"
 					, "distance", &script_environment::distance);
 
-				m_lua["game"] = script_environment(nullptr);
+				provide_environment(nullptr);
 
 				load_skill("data/scripts/teleport.lua");
 			}

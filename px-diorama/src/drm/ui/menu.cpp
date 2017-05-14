@@ -82,7 +82,7 @@ namespace px {
 			//m_ui.make<ui::recipe_list>("recipes", { {0.0, 0.0}, {0,0}, {0,0}, {0.5,0.0} }, std::move(recipes));
 
 			// target status
-			auto target = m_main->make<target_panel>("target", { { 0.0, 1.0 },{ 1, -2 },{ -2, 1 },{ 1.0, 0.0 } });
+			auto target = m_main->make<target_panel>("target", { { 0.0, 1.0 },{ 1, -5 },{ -2, 4 },{ 1.0, 0.0 } });
 			m_target = target.get();
 
 			// storage block
