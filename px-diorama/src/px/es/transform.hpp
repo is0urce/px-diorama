@@ -37,8 +37,7 @@ namespace px {
 			}
 			void place(point2 destination)
 			{
-				if (m_space && m_inside)
-				{
+				if (m_space && m_inside) {
 					m_space->move(x(), y(), static_cast<Sub*>(this), destination.x(), destination.y());
 				}
 				m_current = destination;
@@ -50,14 +49,12 @@ namespace px {
 
 			void incarnate(space_type * space)
 			{
-				if (m_inside)
-				{
+				if (m_inside) {
 					do_retract();
 					m_space = space;
 					do_insert();
 				}
-				else
-				{
+				else {
 					m_space = space;
 				}
 			}
@@ -83,12 +80,16 @@ namespace px {
 			template <typename Operator>
 			void nearest(Operator && fn) const
 			{
-				m_space->find(m_current.x(), m_current.y(), [&](int /*x*/, int /*y*/, Sub * e) { std::forward<Operator>(fn)(e); });
+				m_space->find(m_current.x(), m_current.y(), [&](int /* x */, int /* y */, Sub * e) {
+					fn(e);
+				});
 			}
 			template <typename Operator>
 			void nearest(unsigned int radius, Operator && fn) const
 			{
-				m_space->find(m_current.x(), m_current.y(), radius, [&](int x, int y, Sub * e) { std::forward<Operator>(fn)(e, point2{ x, y }); });
+				m_space->find(m_current.x(), m_current.y(), radius, [&](int x, int y, Sub * e) {
+					fn(e, point2{ x, y });
+				});
 			}
 
 			// space is not serizlized
@@ -100,7 +101,8 @@ namespace px {
 
 		public:
 			transform() noexcept
-				: m_inside(false), m_space(nullptr)
+				: m_inside(false)
+				, m_space(nullptr)
 			{
 			}
 
@@ -115,10 +117,10 @@ namespace px {
 			}
 
 		private:
-			space_type * m_space;
-			bool m_inside;
-			point2 m_current;
-			point2 m_last;
+			space_type *	m_space;
+			bool			m_inside;
+			point2			m_current;
+			point2			m_last;
 		};
 	}
 }

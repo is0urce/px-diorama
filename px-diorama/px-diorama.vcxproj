@@ -283,7 +283,7 @@
     <ClInclude Include="src\px\rl\bar.hpp" />
     <ClInclude Include="src\px\rl\loot\basic_inventory.hpp" />
     <ClInclude Include="src\px\rl\loot\stack.hpp" />
-    <ClInclude Include="src\drm\rl\body.hpp" />
+    <ClInclude Include="src\px\rl\body.hpp" />
     <ClInclude Include="src\px\rl\buff.hpp" />
     <ClInclude Include="src\drm\rl\character.hpp" />
     <ClInclude Include="src\drm\rl\damage_type.hpp" />
@@ -306,7 +306,7 @@
     <ClInclude Include="src\px\rl\skill\skill_state.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_book.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_set.hpp" />
-    <ClInclude Include="src\px\rl\soc\reputation_subject.hpp" />
+    <ClInclude Include="src\px\rl\reputation_subject.hpp" />
     <ClInclude Include="src\px\rl\st\tile.hpp" />
     <ClInclude Include="src\px\rl\traverse.hpp" />
     <ClInclude Include="src\px\rl\traverse_options.hpp" />

@@ -58,7 +58,7 @@ namespace px {
 					window.print({ 0, ++line }, 0x000000, body->name());
 					auto & health = body->health();
 					if (health) {
-						window.print({ 0, ++line }, 0x000000, std::string("HP:") + std::to_string(health->current()) + std::string("/") + std::to_string(health->maximum()));
+						window.print({ 0, ++line }, 0x000000, std::string("HP ") + std::to_string(health->current()) + std::string("/") + std::to_string(health->maximum()));
 					}
 					else {
 						window.print({ 0, ++line }, 0x000000, "no health");

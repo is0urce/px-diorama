@@ -8,7 +8,7 @@
 #include <px/es/component.hpp>
 #include <px/es/link_dispatcher.hpp>
 
-#include "drm/rl/body.hpp"
+#include <px/rl/body.hpp>
 
 #include "useable.hpp"
 
@@ -19,12 +19,12 @@ namespace px {
 	class character_component;
 
 	class body_component final
-		: public rl::body
-		, public es::component
+		: public es::component
 		, public es::link_dispatcher<body_component>
 		, public es::link<transform_component>
 		, public es::link<container_component>
 		, public es::link<character_component>
+		, public rl::body
 	{
 	public:
 		void assign_useable(useable * use)
@@ -53,6 +53,7 @@ namespace px {
 		body_component()
 			: m_useable(nullptr)
 		{
+			clear_body();
 		}
 
 	private:

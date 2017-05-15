@@ -19,7 +19,7 @@ namespace px {
 	{
 	public:
 		// Operator should provide void operator()(unsigned int)
-		template<typename Operator>
+		template <typename Operator>
 		static void enumerate_utf8(std::string const& text, Operator fn)
 		{
 			std::string::size_type i{};

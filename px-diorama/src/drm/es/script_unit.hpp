@@ -12,6 +12,9 @@ namespace px {
 	class script_unit
 	{
 	public:
+
+		// pawn
+
 		void place(point2 location)
 		{
 			auto * pawn = transform();
@@ -23,6 +26,13 @@ namespace px {
 		{
 			auto * pawn = transform();
 			return pawn ? pawn->position() : point2(0, 0);
+		}
+
+		// resources
+
+		bool dead() const
+		{
+			return m_body && m_body->health() && m_body->health()->empty();
 		}
 		void damage(int dmg)
 		{
@@ -53,9 +63,24 @@ namespace px {
 			}
 		}
 
+		// social
+
+		int reputation(script_unit const& b) const
+		{
+			return m_body && b.m_body ? m_body->reputation(*b.m_body) : 0;
+		}
+
+		// special
+
+		// provide equality operator
+		bool operator==(script_unit & b)
+		{
+			return m_body == b.m_body;
+		}
+
 	public:
-		script_unit(body_component * body)
-			: m_body(body)
+		script_unit(body_component * unit_body)
+			: m_body(unit_body)
 			, m_transform(nullptr)
 		{
 		}

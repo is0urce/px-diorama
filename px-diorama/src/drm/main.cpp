@@ -9,6 +9,7 @@
 
 #include <lodepng.h>
 #include <json.hpp>
+#include <date/date.h>
 
 #include "configuration.hpp"
 #include "shell.hpp"
@@ -134,8 +135,14 @@ namespace px {
 		}
 		catch (std::exception & exc)
 		{
+			auto now = std::chrono::system_clock::now();
+			auto today = date::floor<date::days>(now);
+
+			std::stringstream ss;
+			ss << date::year_month_day(today) << " " << date::make_time(now - today) << " UTC, exception thrown, what=\"" << exc.what() << "\"";
+
 			logger logger;
-			logger.write(exc.what());
+			logger.write(ss.str());
 			return -1;
 		}
 		return 0;

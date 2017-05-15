@@ -75,11 +75,11 @@ namespace px {
 			}
 			virtual bool useable_skill(user_type user, target_type target) const override
 			{
-				return m_target_check || m_target_check(user, target);
+				return m_target_check && m_target_check(user, target);
 			}
 			virtual bool useable_skill(user_type user, area_type area) const override
 			{
-				return m_ground_check || m_ground_check(user, area);
+				return m_ground_check && m_ground_check(user, area);
 			}
 
 			// aux functions

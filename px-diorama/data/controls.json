@@ -48,6 +48,46 @@
       "comment" : "slot 1"
     },
     {
+      "action": 12,
+      "keys": [ 50 ],
+      "comment" : "slot 2"
+    },
+    {
+      "action": 13,
+      "keys": [ 51 ],
+      "comment" : "slot 3"
+    },
+    {
+      "action": 14,
+      "keys": [ 52 ],
+      "comment" : "slot 4"
+    },
+    {
+      "action": 15,
+      "keys": [ 53 ],
+      "comment" : "slot 5"
+    },
+    {
+      "action": 16,
+      "keys": [ 54 ],
+      "comment" : "slot 6"
+    },
+    {
+      "action": 17,
+      "keys": [ 55 ],
+      "comment" : "slot 7"
+    },
+    {
+      "action": 18,
+      "keys": [ 56 ],
+      "comment" : "slot 8"
+    },
+    {
+      "action": 19,
+      "keys": [ 57 ],
+      "comment" : "slot 9"
+    },
+    {
       "action": 105,
       "keys": [ 294 ],
       "comment" : "quicksave"

@@ -3,7 +3,7 @@
 -- auth: is0urce
 -- desc: skill script
 
-tag = "sk_teleport"
+tag = "sk_v_teleport"
 
 -- state attributes
 

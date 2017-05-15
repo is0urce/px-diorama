@@ -7,6 +7,7 @@
 #include "script_unit.hpp"
 #include "script_environment.hpp"
 
+#include <px/common/assert.hpp>
 #include <px/es/basic_system.hpp>
 
 #include <px/rl/skill/skill_book.hpp>
@@ -51,98 +52,106 @@ namespace px {
 			{
 				m_lua["game"] = script_environment(bind);
 			}
-			void load_skill(char const* path)
+			void load_skill(std::string tag, std::string const& path)
 			{
-				m_lua.script_file(path);
-				
-				sol::optional<std::string> maybe_tag = m_lua["tag"];
+				try
+				{
+					auto & sandbox = m_scripts[tag] = sol::environment(m_lua, sol::create, m_lua.globals());
+					m_lua.script_file(path, sandbox);
 
-				if (!maybe_tag) throw std::runtime_error("px::rl::character_system::load_skill(path) - no tag, path = " + std::string(path));
+					// state props
 
-				// state props
+					state_type props;
 
-				state_type props;
+					std::string name = sandbox["name"].get_or(tag);
+					std::string alias = sandbox["alias"].get_or(name);
+					std::string description = sandbox["description"].get_or(std::string(""));
+					bool targeted = sandbox["targeted"].get_or(false);
+					bool hostile = sandbox["hostile"].get_or(false);
+					bool instant = sandbox["instant"].get_or(false);
+					int cooldown = sandbox["cooldown"].get_or(0);
+					int cost = sandbox["cost"].get_or(0);
+					int min_range = sandbox["min_range"].get_or(-1);
+					int max_range = sandbox["max_range"].get_or(-1);
 
-				std::string tag = maybe_tag.value();
-				std::string name = m_lua["name"].get_or(tag);
-				std::string alias = m_lua["alias"].get_or(name);
-				std::string description = m_lua["description"].get_or(std::string(""));
-				bool targeted = m_lua["targeted"].get_or(false);
-				bool hostile = m_lua["hostile"].get_or(false);
-				bool instant = m_lua["instant"].get_or(false);
-				int cooldown = m_lua["cooldown"].get_or(0);
-				int cost = m_lua["cost"].get_or(0);
-				int min_range = m_lua["min_range"].get_or(-1);
-				int max_range = m_lua["max_range"].get_or(-1);
+					props.set_tag(tag);
+					props.set_name(name);
+					props.set_description(description);
+					props.set_hostile(hostile);
+					props.set_instant(instant);
+					props.set_cooldown(cooldown);
+					props.set_cost(cost);
+					props.set_range(min_range, max_range);
 
-				props.set_tag(tag);
-				props.set_name(name);
-				props.set_description(description);
-				props.set_hostile(hostile);
-				props.set_instant(instant);
-				props.set_cooldown(cooldown);
-				props.set_cost(cost);
-				props.set_range(min_range, max_range);
+					// functional
+					std::function<void(body_component *, body_component *)> target_action;
+					std::function<bool(body_component *, body_component *)> target_condition;
+					std::function<void(body_component *, point2 const&)> area_action;
+					std::function<bool(body_component *, point2 const&)> area_condition;
 
-				// functional
+					if (targeted) {
+						target_action = [&sandbox](body_component * user, body_component * target) -> void {
+							try
+							{
+								sandbox["action"](script_unit(user), script_unit(target));
+							}
+							catch (sol::error & lua_error)
+							{
+								px_rethrow(lua_error);
+							}
+						};
+						target_condition = [&sandbox](body_component * user, body_component * target) -> bool {
+							try
+							{
+								sol::function_result function_result = sandbox["condition"](script_unit(user), script_unit(target));
+								bool result = function_result;
+								return result;
+							}
+							catch (sol::error & lua_error)
+							{
+								px_rethrow(lua_error);
+								return false;
+							}
+						};
+					}
+					else {
+						area_action = [&sandbox](body_component * user, point2 const& area) -> void {
+							try
+							{
+								sandbox["action"](script_unit(user), area);
+							}
+							catch (sol::error & lua_error)
+							{
+								px_rethrow(lua_error);
+							}
+						};
+						area_condition = [&sandbox](body_component * user, point2 const& area) -> bool {
+							try
+							{
+								sol::function_result fr = sandbox["condition"](script_unit(user), area);
+								bool result = fr;
+								return result;
+							}
+							catch (sol::error & lua_error)
+							{
+								px_rethrow(lua_error);
+								return false;
+							}
+						};
+					}
 
-				std::function<void(body_component *, body_component *)> target_action;
-				std::function<bool(body_component *, body_component *)> target_condition;
-				std::function<void(body_component *, point2 const&)> area_action;
-				std::function<bool(body_component *, point2 const&)> area_condition;
+					// create record
 
-				if (targeted) {
-					std::function<void(script_unit, script_unit)> script_action = m_lua["action"];
-					std::function<bool(script_unit, script_unit)> script_condition = m_lua["condition"];
-
-					target_action = [script_action](body_component * user, body_component * target) {
-						try
-						{
-							script_action(user, target);
-						}
-						catch (...)
-						{
-						}
-					};
-					target_condition = [script_condition](body_component * user, body_component * target) {
-						try
-						{
-							return script_condition(user, target);
-						}
-						catch (...)
-						{
-							return false;
-						}
-					};
+					m_book.emplace(tag, props, targeted, target_action, target_condition, area_action, area_condition);
 				}
-				else {
-					std::function<void(script_unit, point2 const&)> script_action = m_lua["action"];
-					std::function<bool(script_unit, point2 const&)> script_condition = m_lua["condition"];
-
-					area_action = [script_action](body_component * user, point2 const& area) { 
-						try
-						{
-							script_action(user, area);
-						}
-						catch (...)
-						{
-						}
-					};
-					area_condition = [script_condition](body_component * user, point2 const& area) {
-						try
-						{
-							return script_condition(user, area);
-						}
-						catch (...)
-						{
-							return false;
-						}
-					};
+				catch (sol::error & script_error)
+				{
+					px_rethrow(script_error);
 				}
-
-				// create record
-
-				m_book.emplace(tag, props, targeted, target_action, target_condition, area_action, area_condition);
+				catch (...)
+				{
+					throw std::runtime_error("px::character_system::load_skill(path), tag=" + tag);
+				}
 			}
 
 		public:
@@ -150,29 +159,47 @@ namespace px {
 			{
 				m_lua.open_libraries(sol::lib::base, sol::lib::package);
 
-				m_lua.script_file("data/scripts/damage_types.lua");
-
 				m_lua.new_usertype<script_unit>("unit"
 					, "place", &script_unit::place
-					, "position", &script_unit::position);
+					, "position", &script_unit::position
+					, "dead", &script_unit::dead
+					, "damage", &script_unit::damage);
 				m_lua.new_usertype<point2>("point");
 				m_lua.new_usertype<script_environment>("environment"
 					, "distance", &script_environment::distance);
 
 				provide_environment(nullptr);
 
-				load_skill("data/scripts/teleport.lua");
+				load_libraries();
+				load_skills();
 			}
 
 		private:
 			void setup_component(character_component & element)
 			{
-				element.skills().provide_book(&m_book);
+				element.provide_book(&m_book);
+			}
+			void load_libraries()
+			{
+				try
+				{
+					m_lua.script_file("data/scripts/i_damage.lua");
+				}
+				catch (...)
+				{
+					throw std::runtime_error("px::character_system::load_libraries() error");
+				}
+			}
+			void load_skills()
+			{
+				load_skill("sk_v_teleport", "data/scripts/sk_v_teleport.lua");
+				load_skill("sk_s_smite", "data/scripts/sk_s_smite.lua");
 			}
 
 		private:
-			book_type	m_book;
-			sol::state	m_lua;
+			sol::state								m_lua;
+			std::map<std::string, sol::environment> m_scripts;
+			book_type								m_book;
 		};
 	}
 }

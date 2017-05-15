@@ -7,7 +7,7 @@
 
 #include <px/rl/resource.hpp>
 #include <px/rl/entity.hpp>
-#include <px/rl/soc/reputation_subject.hpp>
+#include <px/rl/reputation_subject.hpp>
 
 #include "drm/rl/inventory.hpp"
 

@@ -118,10 +118,11 @@ namespace px {
 		auto * user = m_player ? m_player->linked<body_component>() : nullptr;
 		auto * character = user ? user->linked<character_component>() : nullptr;
 
-		if (auto * skill = character ? character->skills().get_skill(action_index - 1) : nullptr) {
+		if (auto * skill = character ? character->get_skill(action_index - 1) : nullptr) {
 
 			//int turns = skill->state().instant() ? 0 : 1;
 
+			turn_begin();
 			if (skill->targeted()) {
 				auto * transform = find_any(m_hover);
 				auto * target = transform ? transform->linked<body_component>() : nullptr;
@@ -165,7 +166,8 @@ namespace px {
 			itm->add(rl::item::enhancement_type::from_type(rl::effect::ore_power, i));
 			container->add(itm);
 		}
-		character->skills().learn_skill("sk_teleport");
+		character->learn_skill("sk_v_teleport");
+		character->learn_skill("sk_s_smite");
 
 		// add to scene
 		auto result = builder.assemble();

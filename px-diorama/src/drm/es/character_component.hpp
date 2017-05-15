@@ -30,13 +30,17 @@ namespace px {
 		typedef rl::skill_set<instance_type, book_type> skillset_type;
 
 	public:
-		skillset_type & skills()
+		instance_type * get_skill(size_t slot)
 		{
-			return m_skills;
+			return m_skills.get_skill(slot);
 		}
-		skillset_type const& skills() const noexcept
+		void learn_skill(std::string tag)
 		{
-			return m_skills;
+			m_skills.learn_skill(tag);
+		}
+		void provide_book(book_type * skillbook)
+		{
+			m_skills.provide_book(skillbook);
 		}
 
 	public:
