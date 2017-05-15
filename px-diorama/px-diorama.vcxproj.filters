@@ -461,8 +461,19 @@
     <None Include="data\controls.json" />
     <None Include="data\textures.json" />
     <None Include="data\skills.json" />
-    <None Include="data\scripts\teleport.lua" />
-    <None Include="data\scripts\melee.lua" />
-    <None Include="data\scripts\damage_types.lua" />
+    <None Include="data\scripts\panacea.lua" />
+    <None Include="data\scripts\i_damage.lua" />
+    <None Include="data\scripts\sk_d_ambush.lua" />
+    <None Include="data\scripts\sk_v_melee.lua" />
+    <None Include="data\scripts\sk_v_teleport.lua" />
+    <None Include="data\scripts\sk_i_fireball.lua" />
+    <None Include="data\scripts\sk_i_blink.lua" />
+    <None Include="data\scripts\sk_d_vial.lua" />
+    <None Include="data\scripts\sk_s_charge.lua" />
+    <None Include="data\scripts\sk_s_execute.lua" />
+    <None Include="data\scripts\sk_s_flurry.lua" />
+    <None Include="data\scripts\sk_s_rend.lua" />
+    <None Include="data\scripts\sk_s_shield.lua" />
+    <None Include="data\scripts\sk_s_smite.lua" />
   </ItemGroup>
 </Project>
