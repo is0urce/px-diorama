@@ -29,9 +29,15 @@
 namespace px {
 
 	namespace {
-		char const* ui_font_path = "data/fonts/PragmataPro.ttf";
-		unsigned int ui_font_size = 18;	// size of fon
-		unsigned int ui_font_atlas = 512;	// internal size of font atlas
+		char const* grid_font_path = "data/fonts/DejaVuSansMono.ttf";
+		char const* popup_font_path = "data/fonts/DejaVuSansMono.ttf";
+
+		unsigned int grid_font_size = 18;	// size of fon
+		unsigned int grid_font_atlas = 512;	// internal size of font atlas
+
+		unsigned int popup_font_size = 18;
+		unsigned int popup_font_atlas = 512;
+
 		float pi = 3.14f;
 		float pi_2 = pi * 2;
 
@@ -47,6 +53,13 @@ namespace px {
 		{
 			// load data
 			prepare_console(view.canvas());
+			prepare_popups(view.popups(), view.delta());
+
+			// update font textures
+			unsigned int w, h;
+			void const* font_bits;
+			std::tie(font_bits, w, h) = m_ui_font.download();
+			m_font_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_UNSIGNED_BYTE, font_bits);
 
 			// prepare uniforms
 			float aspect = static_cast<float>(m_width) / static_cast<float>(m_height);
@@ -79,10 +92,6 @@ namespace px {
 			m_ui_solid_pass.draw_arrays(GL_QUADS, m_ui_solid_buffer.size());
 
 			glUseProgram(m_glyph);
-			unsigned int w, h;
-			void const* font_bits = m_ui_font.download(w, h);
-			m_font_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_UNSIGNED_BYTE, font_bits);
-			glBindTexture(GL_TEXTURE_2D, m_font_texture);
 			m_ui_text_pass.draw_arrays(GL_QUADS, m_ui_text_buffer.size());
 
 			gl_assert();
@@ -116,7 +125,7 @@ namespace px {
 		renderer(int width, int height)
 			: m_width(width)
 			, m_height(height)
-			, m_ui_font(ui_font_path, ui_font_size, ui_font_atlas)
+			, m_ui_font(grid_font_path, grid_font_size, grid_font_atlas)
 		{
 			// create font texture
 			for (int i = 32; i != 256; ++i) m_ui_font.rasterize(i);
@@ -227,6 +236,13 @@ namespace px {
 
 			m_ui_solid_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(grid_vertex), grid.data());
 			m_ui_text_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(glyph_vertex), glyphs.data());
+		}
+		void prepare_popups(std::vector<notification> const& popups, double delta)
+		{
+			std::vector<glyph_vertex> glyphs;
+
+			popups;
+			delta;
 		}
 
 	private:

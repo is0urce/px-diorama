@@ -72,10 +72,6 @@ namespace px {
 		}
 		void frame(double time)
 		{
-			// clear ui grid
-			m_perception.canvas().cls();
-			ui()->layout(m_perception.canvas().range());
-
 			update(m_perception, time);
 		}
 		void resize(unsigned int width, unsigned int height)

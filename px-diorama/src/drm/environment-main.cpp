@@ -30,6 +30,8 @@ namespace px {
 		, m_player(nullptr)
 		, m_run(true)
 		, m_turn(1)
+		, m_last_turn(0)
+		, m_last_time(0)
 	{
 		m_factory->characters()->provide_environment(this);
 	}
@@ -52,22 +54,26 @@ namespace px {
 		m_player = player;
 		m_factory->sprites()->assign_camera(m_player);
 	}
-	void environment::update(perception & view, double time) const
+	void environment::update(perception & view, double time)
 	{
 		// track timestamp from last turn update
-		static unsigned int last_turn = 0;
-		static double last_time = 0;
-		if (m_turn != last_turn) {
-			last_turn = m_turn;
-			last_time = time;
+		if (m_turn != m_last_turn) {
+			m_last_turn = m_turn;
+			m_last_time = time;
 		}
-		auto span = time - last_time;
+		auto span = time - m_last_time;
 
-		// compose sprite batches
+		// notifications
+		view.set_delta(time);
+		view.write_popups(m_notifications);
+
+		// sprite batches
 		m_factory->sprites()->update(span);
 		view.assign_batches(&m_factory->sprites()->batches());
 
 		// compose user interface
+		view.canvas().cls();
+		m_ui.main()->layout(view.canvas().range());
 		m_ui.main()->draw(view.canvas());
 	}
 	void environment::turn_begin()

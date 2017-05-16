@@ -35,7 +35,7 @@ namespace px {
 
 		// flow
 
-		void update(perception & view, double time) const;
+		void update(perception & view, double time);
 		bool running() const noexcept;
 		void shutdown() noexcept;
 		void start();
@@ -98,6 +98,9 @@ namespace px {
 		terrain_chunk<tile>					m_map;				// terrain
 		std::list<std::shared_ptr<unit>>	m_units;			// scene
 		transform_component *				m_player;			// player transform
+
+		unsigned int						m_last_turn;		// last updated turn
+		double								m_last_time;		// last time of update
 
 		bool								m_run;				// if engine is working
 	};

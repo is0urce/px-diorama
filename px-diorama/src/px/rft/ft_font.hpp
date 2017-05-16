@@ -10,6 +10,7 @@
 #include <cstring>
 #include <map>
 #include <stdexcept>
+#include <tuple>
 #include <vector>
 
 namespace px
@@ -39,10 +40,14 @@ namespace px
 		}
 		void const* download(unsigned int & width, unsigned int & height)
 		{
-			width = m_width;
-			height = m_height;
+			void const * result;
+			std::tie(result, width, height) = download();
+			return result;
+		}
+		std::tuple<void const*, unsigned int, unsigned int> download()
+		{
 			m_dirty = false;
-			return m_atlas.data();
+			return std::tuple<void const*, unsigned int, unsigned int>{ m_atlas.data(), m_width, m_height };
 		}
 		bool updated() const noexcept
 		{

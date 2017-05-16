@@ -37,5 +37,6 @@ action = function(user, target)
 
 	--if hit then
 	target:damage(1)
+	game:popup(target:position(), "-1", 0xff0000, 1.0)
 	--end
 end

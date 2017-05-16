@@ -52,20 +52,21 @@ namespace px {
 			{
 				m_lua["game"] = script_environment(bind);
 			}
-			void load_skill(std::string tag, std::string const& path)
+			void load_skill(std::string const& path)
 			{
 				try
 				{
-					auto & sandbox = m_scripts[tag] = sol::environment(m_lua, sol::create, m_lua.globals());
+					auto & sandbox = m_scripts[path] = sol::environment(m_lua, sol::create, m_lua.globals());
 					m_lua.script_file(path, sandbox);
 
 					// state props
 
 					state_type props;
 
+					std::string tag = sandbox["tag"].get_or<std::string>(path);
 					std::string name = sandbox["name"].get_or(tag);
 					std::string alias = sandbox["alias"].get_or(name);
-					std::string description = sandbox["description"].get_or(std::string(""));
+					std::string description = sandbox["description"].get_or<std::string>("");
 					bool targeted = sandbox["targeted"].get_or(false);
 					bool hostile = sandbox["hostile"].get_or(false);
 					bool instant = sandbox["instant"].get_or(false);
@@ -84,61 +85,50 @@ namespace px {
 					props.set_range(min_range, max_range);
 
 					// functional
-					std::function<void(body_component *, body_component *)> target_action;
-					std::function<bool(body_component *, body_component *)> target_condition;
-					std::function<void(body_component *, point2 const&)> area_action;
-					std::function<bool(body_component *, point2 const&)> area_condition;
-
-					if (targeted) {
-						target_action = [&sandbox](body_component * user, body_component * target) -> void {
-							try
-							{
-								sandbox["action"](script_unit(user), script_unit(target));
-							}
-							catch (sol::error & lua_error)
-							{
-								px_rethrow(lua_error);
-							}
-						};
-						target_condition = [&sandbox](body_component * user, body_component * target) -> bool {
-							try
-							{
-								sol::function_result function_result = sandbox["condition"](script_unit(user), script_unit(target));
-								bool result = function_result;
-								return result;
-							}
-							catch (sol::error & lua_error)
-							{
-								px_rethrow(lua_error);
-								return false;
-							}
-						};
-					}
-					else {
-						area_action = [&sandbox](body_component * user, point2 const& area) -> void {
-							try
-							{
-								sandbox["action"](script_unit(user), area);
-							}
-							catch (sol::error & lua_error)
-							{
-								px_rethrow(lua_error);
-							}
-						};
-						area_condition = [&sandbox](body_component * user, point2 const& area) -> bool {
-							try
-							{
-								sol::function_result fr = sandbox["condition"](script_unit(user), area);
-								bool result = fr;
-								return result;
-							}
-							catch (sol::error & lua_error)
-							{
-								px_rethrow(lua_error);
-								return false;
-							}
-						};
-					}
+					auto target_action = [&sandbox](body_component * user, body_component * target) -> void {
+						try
+						{
+							sandbox["action"](script_unit(user), script_unit(target));
+						}
+						catch (sol::error & lua_error)
+						{
+							px_rethrow(lua_error);
+						}
+					};
+					auto target_condition = [&sandbox](body_component * user, body_component * target) -> bool {
+						try
+						{
+							sol::function_result script_result = sandbox["condition"](script_unit(user), script_unit(target));
+							return script_result.get<bool>();
+						}
+						catch (sol::error & lua_error)
+						{
+							px_rethrow(lua_error);
+							return false;
+						}
+					};
+					auto area_action = [&sandbox](body_component * user, point2 const& area) -> void {
+						try
+						{
+							sandbox["action"](script_unit(user), area);
+						}
+						catch (sol::error & lua_error)
+						{
+							px_rethrow(lua_error);
+						}
+					};
+					auto area_condition = [&sandbox](body_component * user, point2 const& area) -> bool {
+						try
+						{
+							sol::function_result script_result = sandbox["condition"](script_unit(user), area);
+							return script_result.get<bool>();
+						}
+						catch (sol::error & lua_error)
+						{
+							px_rethrow(lua_error);
+							return false;
+						}
+					};
 
 					// create record
 
@@ -150,7 +140,7 @@ namespace px {
 				}
 				catch (...)
 				{
-					throw std::runtime_error("px::character_system::load_skill(path), tag=" + tag);
+					throw std::runtime_error("px::character_system::load_skill(path), path=" + path);
 				}
 			}
 
@@ -166,7 +156,8 @@ namespace px {
 					, "damage", &script_unit::damage);
 				m_lua.new_usertype<point2>("point");
 				m_lua.new_usertype<script_environment>("environment"
-					, "distance", &script_environment::distance);
+					, "distance", &script_environment::distance
+					, "popup", &script_environment::popup);
 
 				provide_environment(nullptr);
 
@@ -192,8 +183,8 @@ namespace px {
 			}
 			void load_skills()
 			{
-				load_skill("sk_v_teleport", "data/scripts/sk_v_teleport.lua");
-				load_skill("sk_s_smite", "data/scripts/sk_s_smite.lua");
+				load_skill("data/scripts/sk_v_teleport.lua");
+				load_skill("data/scripts/sk_s_smite.lua");
 			}
 
 		private:

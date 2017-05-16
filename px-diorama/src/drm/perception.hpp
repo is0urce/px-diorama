@@ -8,6 +8,7 @@
 #pragma once
 
 #include "draw/popup.hpp"
+#include "rl/notification.hpp"
 #include "vertex.hpp"
 
 #include <px/ui/canvas.hpp>
@@ -60,6 +61,28 @@ namespace px {
 			return m_canvas;
 		}
 
+		// popups
+		template <typename PopupContainer>
+		void write_popups(PopupContainer const& popups)
+		{
+			for (notification const& line : popups) {
+				m_popups.push_back(line);
+			}
+		}
+		std::vector<notification> const& popups() const noexcept
+		{
+			return m_popups;
+		}
+
+		void set_delta(double delta_time)
+		{
+			m_delta = delta_time;
+		}
+		double delta() const noexcept
+		{
+			return m_delta;
+		}
+
 	public:
 		perception()
 			: m_scale(1.0)
@@ -70,6 +93,7 @@ namespace px {
 		arrays_type const* m_vertices;
 		ui::canvas m_canvas;
 		float m_scale;
-		std::vector<popup> m_popups;
+		std::vector<notification> m_popups;
+		double m_delta;
 	};
 }
