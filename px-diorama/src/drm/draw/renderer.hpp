@@ -72,7 +72,7 @@ namespace px {
 
 			// g-pass
 			glUseProgram(m_batch);
-			if (auto batches_array = view.batches())
+			if (auto const& batches_array = view.batches())
 			{
 				for (size_t i = 0, total = batches_array->size(); i != total; ++i) {
 					auto const& vertices = (*batches_array)[i];
@@ -245,14 +245,46 @@ namespace px {
 
 			m_ui_uniform.load<ui_uniform>(GL_STREAM_DRAW, { { 2.0f / canvas.width(), 2.0f / canvas.height() },{ -1.0f, 1.0f } });
 
-			m_ui_solid_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(grid_vertex), grid.data());
-			m_ui_text_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(glyph_vertex), glyphs.data());
+			m_ui_solid_buffer.load(GL_STREAM_DRAW, grid.size() * sizeof(grid_vertex), grid.data());
+			m_ui_text_buffer.load(GL_STREAM_DRAW, glyphs.size() * sizeof(glyph_vertex), glyphs.data());
 		}
 		void prepare_popups(std::vector<popup> const& popups)
 		{
 			std::vector<glyph_vertex> glyphs;
 
-			popups;
+			for (auto const& popup : popups) {
+				glm::vec4 tint(popup.tint.R, popup.tint.G, popup.tint.B, popup.tint.A);
+				float stride = 0;
+				for (char letter_code : popup.text) {
+					auto const& glyph = m_ui_font[letter_code];
+					float sx = static_cast<float>(glyph.sx);
+					float sy = static_cast<float>(glyph.sy);
+					float dx = static_cast<float>(glyph.dx);
+					float dy = static_cast<float>(glyph.dy);
+					float x = popup.x;
+					float y = popup.y + stride;
+					glyphs.push_back({
+						{ x, y },
+						{ sx, sy },
+						tint });
+					glyphs.push_back({
+						{ x, y + 1 },
+						{ sx, dy },
+						tint });
+					glyphs.push_back({
+						{ x + 1, y + 1 },
+						{ dx, dy },
+						tint });
+					glyphs.push_back({
+						{ x + 1, y },
+						{ dx, sy },
+						tint });
+
+					stride += 1;
+				}
+			}
+
+			m_popup_buffer.load(GL_STREAM_DRAW, sizeof(glyph_vertex) * glyphs.size(), glyphs.data());
 		}
 
 	private:
@@ -305,18 +337,18 @@ namespace px {
 		int m_width;
 		int m_height;
 
-		gl_program m_batch;
-		gl_program m_blur;
-		gl_program m_process;
-		gl_program m_console;
-		gl_program m_glyph;
+		gl_program	m_batch;
+		gl_program	m_blur;
+		gl_program	m_process;
+		gl_program	m_console;
+		gl_program	m_glyph;
 
-		gl_uniform m_camera;
-		gl_uniform m_lens;
+		gl_uniform	m_camera;
+		gl_uniform	m_lens;
 
-		offscreen m_primary;
-		offscreen m_ping;
-		offscreen m_pong;
+		offscreen	m_primary;
+		offscreen	m_ping;
+		offscreen	m_pong;
 
 		std::vector<batch> m_batches;
 

@@ -20,11 +20,6 @@ namespace {
 
 namespace px {
 
-	struct less : std::less<point2>
-	{
-		bool operator()(point2 const& a, point2 const& b) { return a.lex_less(b); }
-	};
-
 	environment::~environment()
 	{
 		clear();
@@ -67,21 +62,23 @@ namespace px {
 			m_last_turn = m_turn;
 			m_last_time = time;
 		}
-		auto span = time - m_last_time;
+		double span = time - m_last_time;
+		double delta_time = std::min(span * 5, 1.0);
 
 		// notifications
+		vector2 camera = m_player ? m_player->interpolate(delta_time) : vector2(0, 0);
 		view.clear_popups();
 		for (auto const& kv_list : m_notifications) {
-			auto & position = kv_list.first;
+			vector2 position = vector2(kv_list.first) - camera;
 			for (auto const& note : kv_list.second) {
-				float x = static_cast<float>(position.x() + 0.5);
-				float y = static_cast<float>(position.y() + 0.5 + time);
-				view.emplace_popup(x, y, note.text, note.tint);
+				float x = static_cast<float>(position.x());
+				float y = static_cast<float>(position.y() + span);
+				view.emplace_popup(x, y, note.text, note.tint.dissolved(std::min(span * 0.2, 1.0)));
 			}
 		}
 
 		// sprite batches
-		m_factory->sprites()->update(span);
+		m_factory->sprites()->update(delta_time);
 		view.assign_batches(&m_factory->sprites()->batches());
 
 		// compose user interface
@@ -91,6 +88,7 @@ namespace px {
 	}
 	void environment::turn_begin()
 	{
+		//m_notifications.clear();
 		std::for_each(std::begin(m_units), std::end(m_units), [](auto & unit) {
 			auto transform = unit->transform();
 			if (transform) transform->store_position();
@@ -147,10 +145,12 @@ namespace px {
 				auto * target = transform ? transform->linked<body_component>() : nullptr;
 
 				skill->try_use(user, target);
+
 			}
 			else {
 				skill->try_use(user, m_hover);
 			}
+			turn_end();
 		}
 	}
 	void environment::activate(unsigned int /* mod */)

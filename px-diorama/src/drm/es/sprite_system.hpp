@@ -54,8 +54,6 @@ namespace px {
 			}
 			void update(double delta_time)
 			{
-				delta_time = std::min(delta_time * 5, 1.0);
-
 				vector2 camera_position = m_camera ? m_camera->interpolate(delta_time) : vector2{0, 0};
 
 				// clear previous data
@@ -74,7 +72,7 @@ namespace px {
 					vector2 pos = transform->interpolate(delta_time) - camera_position;
 					float sx = static_cast<float>(pos.x()) - sprite.tx; // center offset
 					float sy = static_cast<float>(pos.y()) - sprite.ty;
-					float dx = sx + sprite.mx;
+					float dx = sx + sprite.mx; // precalculated magnitudes
 					float dy = sy + sprite.my;
 
 					auto & vertices = m_batches[sprite.texture];
