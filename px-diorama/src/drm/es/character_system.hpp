@@ -92,7 +92,7 @@ namespace px {
 						}
 						catch (sol::error & lua_error)
 						{
-							px_rethrow(lua_error);
+							px_assert_nothrow(lua_error);
 						}
 					};
 					auto target_condition = [&sandbox](body_component * user, body_component * target) -> bool {
@@ -103,7 +103,7 @@ namespace px {
 						}
 						catch (sol::error & lua_error)
 						{
-							px_rethrow(lua_error);
+							px_assert_nothrow(lua_error);
 							return false;
 						}
 					};
@@ -114,7 +114,7 @@ namespace px {
 						}
 						catch (sol::error & lua_error)
 						{
-							px_rethrow(lua_error);
+							px_assert_nothrow(lua_error);
 						}
 					};
 					auto area_condition = [&sandbox](body_component * user, point2 const& area) -> bool {
@@ -125,7 +125,7 @@ namespace px {
 						}
 						catch (sol::error & lua_error)
 						{
-							px_rethrow(lua_error);
+							px_assert_nothrow(lua_error);
 							return false;
 						}
 					};
@@ -136,7 +136,7 @@ namespace px {
 				}
 				catch (sol::error & script_error)
 				{
-					px_rethrow(script_error);
+					px_assert_nothrow(script_error);
 				}
 				catch (...)
 				{

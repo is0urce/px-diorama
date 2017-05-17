@@ -225,6 +225,11 @@ namespace px {
 			}
 		}
 
+		bool lex_less(coordinate const& cmp) const
+		{
+			return std::lexicographical_compare(m_array.cbegin(), m_array.cend(), cmp.m_array.cbegin(), cmp.m_array.cend());
+		}
+
 	public:
 		// default constructor is for uninitialized state
 		// use coordinate(0,..) for constexpr

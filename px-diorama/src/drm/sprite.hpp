@@ -14,6 +14,11 @@ namespace px {
 		float			dx;
 		float			dy;
 
+		float			tx;			// center x offset
+		float			ty;			// center y offset
+		float			mx;			// size x, precalculated
+		float			my;			// size y, precalculated
+
 		unsigned int	texture;	// texture atlas index
 		unsigned int	layer;		// sorting layer
 		unsigned int	glyph;		// alternative glyph

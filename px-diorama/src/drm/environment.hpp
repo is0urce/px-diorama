@@ -19,6 +19,7 @@
 #include <px/ui/panel.hpp>
 
 #include <list>
+#include <map>
 #include <memory>
 #include <string> // save names
 
@@ -92,7 +93,6 @@ namespace px {
 
 		point2								m_hover;			// current hovered tile
 		ui::menu							m_ui;				// user interface
-		std::vector<notification>			m_notifications;	// popups
 
 		unsigned int						m_turn;				// current turn
 		terrain_chunk<tile>					m_map;				// terrain
@@ -103,5 +103,12 @@ namespace px {
 		double								m_last_time;		// last time of update
 
 		bool								m_run;				// if engine is working
+
+
+		struct point_less
+		{
+			bool operator()(point2 const& a, point2 const& b) const { return a.lex_less(b); }
+		};
+		std::map<point2, std::list<notification>, point_less>	m_notifications;	// popups
 	};
 }

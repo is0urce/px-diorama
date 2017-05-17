@@ -36,8 +36,7 @@ namespace px {
 		{
 			bool processed = ui()->hover(translate_gui(m_hover));
 
-			if (!processed)
-			{
+			if (!processed) {
 				target(translate_world(m_hover = { x, y }));
 			}	
 		}
@@ -45,8 +44,7 @@ namespace px {
 		{
 			bool processed = ui()->click(translate_gui(m_hover), button);
 
-			if (!processed)
-			{
+			if (!processed) {
 				activate(0);
 			}
 		}

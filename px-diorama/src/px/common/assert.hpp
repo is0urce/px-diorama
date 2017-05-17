@@ -7,7 +7,7 @@
 #ifdef NDEBUG
 
 #define px_assert(EXPRESSION) ((void)0)
-#define px_rethrow(EXPRESSION) ((void)EXPRESSION);
+#define px_assert_nothrow(EXPRESSION) ((void)EXPRESSION);
 
 #else
 
@@ -24,6 +24,6 @@ inline void px_debug_assert(const char* expression, const char* file, int line)
 
 #define px_assert(EXPRESSION) ((EXPRESSION) ? (void)0 : px_debug_assert(#EXPRESSION, __FILE__, __LINE__))
 
-#define px_rethrow(EXPRESSION) (px_debug_assert((EXPRESSION).what(), __FILE__, __LINE__))
+#define px_assert_nothrow(EXPRESSION) (px_debug_assert((EXPRESSION).what(), __FILE__, __LINE__))
 
 #endif

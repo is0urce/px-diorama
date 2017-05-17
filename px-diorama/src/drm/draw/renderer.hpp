@@ -53,7 +53,7 @@ namespace px {
 		{
 			// load data
 			prepare_console(view.canvas());
-			prepare_popups(view.popups(), view.delta());
+			prepare_popups(view.popups());
 
 			// update font textures
 			unsigned int w, h;
@@ -87,6 +87,9 @@ namespace px {
 
 			glUseProgram(m_process);
 			m_postprocess.draw_arrays(GL_QUADS, 4);
+
+			glUseProgram(m_glyph);
+			m_popup_pass.draw_arrays(GL_QUADS, m_popup_buffer.size());
 
 			glUseProgram(m_console);
 			m_ui_solid_pass.draw_arrays(GL_QUADS, m_ui_solid_buffer.size());
@@ -149,14 +152,18 @@ namespace px {
 			m_batch = compile_program("data/shaders/batch", { "Camera" }, { "img" });
 			m_blur = compile_program("data/shaders/blur", { "Blur" }, { "img" });
 			m_process = compile_program("data/shaders/process", { "Lens" }, { "img", "blurred" });
-
 			m_console = compile_program("data/shaders/uisolid", { "Camera" }, {});
 			m_glyph = compile_program("data/shaders/uitext", { "Camera" }, { "img" });
 
+			// ui grid
 			m_ui_solid_buffer = { GL_ARRAY_BUFFER };
 			m_ui_text_buffer = { GL_ARRAY_BUFFER };
 			m_ui_solid_geometry.swizzle(m_ui_solid_buffer, sizeof(grid_vertex), { GL_FLOAT, GL_FLOAT }, { 2, 4 }, { offsetof(grid_vertex, pos), offsetof(grid_vertex, color) });
 			m_ui_text_geometry.swizzle(m_ui_text_buffer, sizeof(glyph_vertex), { GL_FLOAT, GL_FLOAT, GL_FLOAT }, { 2, 2, 4 }, { offsetof(glyph_vertex, pos), offsetof(glyph_vertex, texture), offsetof(glyph_vertex, tint) });
+
+			// popup notifications
+			m_popup_buffer = { GL_ARRAY_BUFFER };
+			m_popup_geometry.swizzle(m_popup_buffer, sizeof(glyph_vertex), { GL_FLOAT, GL_FLOAT, GL_FLOAT }, { 2, 2, 4 }, { offsetof(glyph_vertex, pos), offsetof(glyph_vertex, texture), offsetof(glyph_vertex, tint) });
 		}
 		void create_framebuffers()
 		{
@@ -188,6 +195,10 @@ namespace px {
 			m_ui_text_pass = { 0, m_ui_text_geometry, m_width, m_height };
 			m_ui_text_pass.bind_uniform(m_ui_uniform);
 			m_ui_text_pass.bind_texture(m_font_texture);
+
+			m_popup_pass = { 0, m_popup_geometry, m_width, m_height };
+			m_popup_pass.bind_uniform(m_camera); // only /bc pod equal!
+			m_popup_pass.bind_texture(m_font_texture);
 		}
 		void prepare_console(ui::canvas const& canvas)
 		{
@@ -237,12 +248,11 @@ namespace px {
 			m_ui_solid_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(grid_vertex), grid.data());
 			m_ui_text_buffer.load(GL_STREAM_DRAW, grid_size * 4 * sizeof(glyph_vertex), glyphs.data());
 		}
-		void prepare_popups(std::vector<notification> const& popups, double delta)
+		void prepare_popups(std::vector<popup> const& popups)
 		{
 			std::vector<glyph_vertex> glyphs;
 
 			popups;
-			delta;
 		}
 
 	private:
@@ -314,15 +324,19 @@ namespace px {
 		gl_pass m_postprocess;
 
 		// ui console grid
+		ft_font		m_ui_font;
+		gl_texture	m_font_texture;
+		gl_uniform	m_ui_uniform;
+		gl_buffer	m_ui_solid_buffer;
+		gl_buffer	m_ui_text_buffer;
+		gl_vao		m_ui_solid_geometry;
+		gl_vao		m_ui_text_geometry;
+		gl_pass		m_ui_solid_pass;
+		gl_pass		m_ui_text_pass;
 
-		ft_font m_ui_font;
-		gl_texture m_font_texture;
-		gl_uniform m_ui_uniform;
-		gl_buffer m_ui_solid_buffer;
-		gl_buffer m_ui_text_buffer;
-		gl_vao m_ui_solid_geometry;
-		gl_vao m_ui_text_geometry;
-		gl_pass m_ui_solid_pass;
-		gl_pass m_ui_text_pass;
+		// popup notifications
+		gl_buffer	m_popup_buffer;
+		gl_vao		m_popup_geometry;
+		gl_pass		m_popup_pass;
 	};
 }

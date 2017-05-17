@@ -8,7 +8,6 @@
 #pragma once
 
 #include "draw/popup.hpp"
-#include "rl/notification.hpp"
 #include "vertex.hpp"
 
 #include <px/ui/canvas.hpp>
@@ -21,6 +20,7 @@ namespace px {
 	{
 	public:
 		typedef std::vector<std::vector<mesh_vertex>> arrays_type; // same as in sprite system
+		typedef std::vector<popup> popups_type;
 
 	public:
 		// scaling
@@ -62,25 +62,17 @@ namespace px {
 		}
 
 		// popups
-		template <typename PopupContainer>
-		void write_popups(PopupContainer const& popups)
+		void clear_popups()
 		{
-			for (notification const& line : popups) {
-				m_popups.push_back(line);
-			}
+			m_popups.clear();
 		}
-		std::vector<notification> const& popups() const noexcept
+		void emplace_popup(float x, float y, std::string text, color tint)
+		{
+			m_popups.push_back({ x, y, text, tint });
+		}
+		popups_type const& popups() const noexcept
 		{
 			return m_popups;
-		}
-
-		void set_delta(double delta_time)
-		{
-			m_delta = delta_time;
-		}
-		double delta() const noexcept
-		{
-			return m_delta;
 		}
 
 	public:
@@ -93,7 +85,6 @@ namespace px {
 		arrays_type const* m_vertices;
 		ui::canvas m_canvas;
 		float m_scale;
-		std::vector<notification> m_popups;
-		double m_delta;
+		popups_type m_popups;
 	};
 }

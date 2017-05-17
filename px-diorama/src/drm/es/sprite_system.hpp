@@ -52,17 +52,15 @@ namespace px {
 
 				m_batches.emplace_back();
 			}
-			void update(double delta)
+			void update(double delta_time)
 			{
-				if (!m_camera) return;
+				delta_time = std::min(delta_time * 5, 1.0);
 
-				auto w = std::min(delta * 5, 1.0);
-
-				vector2 camera_position = interpolate(*m_camera, w);
+				vector2 camera_position = m_camera ? m_camera->interpolate(delta_time) : vector2{0, 0};
 
 				// clear previous data
-				for (auto & batch : m_batches) {
-					batch.resize(0);
+				for (auto & sprite_batch : m_batches) {
+					sprite_batch.resize(0);
 				}
 
 				// compose arrays
@@ -73,14 +71,11 @@ namespace px {
 
 					if (!transform) return;
 
-					vector2 pos = interpolate(*transform, w) - camera_position;
-					auto x = pos.x();
-					auto y = pos.y();
-
-					float sx = static_cast<float>(x);
-					float sy = static_cast<float>(y);
-					float dx = static_cast<float>(x + 1);
-					float dy = static_cast<float>(y + 1);
+					vector2 pos = transform->interpolate(delta_time) - camera_position;
+					float sx = static_cast<float>(pos.x()) - sprite.tx; // center offset
+					float sy = static_cast<float>(pos.y()) - sprite.ty;
+					float dx = sx + sprite.mx;
+					float dy = sy + sprite.my;
 
 					auto & vertices = m_batches[sprite.texture];
 
@@ -106,10 +101,6 @@ namespace px {
 			}
 
 		private:
-			static vector2 interpolate(transform_component const& pawn, double w)
-			{
-				return vector2(pawn.last_position()).lerp(pawn.position(), w);
-			}
 			void setup_component(sprite_component & element, std::string const& name)
 			{
 				image const& img = m_meta[name];
@@ -128,6 +119,11 @@ namespace px {
 				img.sy = reverse_y ? 1 - sy : sy;
 				img.dx = dx;
 				img.dy = reverse_y ? 1 - dy : dy;
+				img.mx = 1;
+				img.my = 1;
+				img.tx = 0;
+				img.ty = 0;
+
 				img.layer = layer;
 				img.texture = texture;
 				img.glyph = glyph;

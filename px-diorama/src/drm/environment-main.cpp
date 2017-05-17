@@ -9,6 +9,7 @@
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/xml.hpp>
+#include <cereal/types/string.hpp>
 #include <json.hpp>
 
 #include <fstream>
@@ -18,6 +19,11 @@ namespace {
 }
 
 namespace px {
+
+	struct less : std::less<point2>
+	{
+		bool operator()(point2 const& a, point2 const& b) { return a.lex_less(b); }
+	};
 
 	environment::~environment()
 	{
@@ -64,8 +70,15 @@ namespace px {
 		auto span = time - m_last_time;
 
 		// notifications
-		view.set_delta(time);
-		view.write_popups(m_notifications);
+		view.clear_popups();
+		for (auto const& kv_list : m_notifications) {
+			auto & position = kv_list.first;
+			for (auto const& note : kv_list.second) {
+				float x = static_cast<float>(position.x() + 0.5);
+				float y = static_cast<float>(position.y() + 0.5 + time);
+				view.emplace_popup(x, y, note.text, note.tint);
+			}
+		}
 
 		// sprite batches
 		m_factory->sprites()->update(span);
@@ -328,9 +341,7 @@ namespace px {
 			else if (auto sprite = dynamic_cast<sprite_component const*>(part.get())) {
 				archive(unit_component::sprite);
 
-				size_t strlen = std::strlen(sprite->name);
-				archive(strlen);
-				archive.saveBinary(sprite->name, strlen);
+				archive(std::string(sprite->name));
 			}
 			else if (auto player = dynamic_cast<player_component const*>(part.get())) {
 				archive(unit_component::player);
@@ -360,13 +371,10 @@ namespace px {
 			break;
 			case unit_component::sprite:
 			{
-				size_t strlen;
-				archive(strlen);
+				std::string tag;
+				archive(tag);
 
-				std::vector<char> name(strlen + 1, 0);
-				archive.loadBinary(name.data(), strlen);
-
-				builder.add_sprite(name.data());
+				builder.add_sprite(tag);
 			}
 			break;
 			case unit_component::container:
@@ -410,13 +418,13 @@ namespace px {
 		transform_component * result = nullptr;
 
 		auto world = m_player ? m_player->world() : nullptr;
-		if (world) world->find(position.x(), position.y(), [&result](int /*x*/, int /*y*/, transform_component * obj) { result = obj; });
+		if (world) world->find(position.x(), position.y(), [&result](int /* x */, int /* y */, transform_component * obj) { result = obj; });
 
 		return result;
 	}
 
 	void environment::popup(point2 location, std::string text, color tint, float size)
 	{
-		m_notifications.push_back({ location, text, tint, size });
+		m_notifications[location].push_back({ text, tint, size });
 	}
 }

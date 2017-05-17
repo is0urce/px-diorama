@@ -19,10 +19,6 @@ namespace px {
 			{
 				return m_current;
 			}
-			auto const& last_position() const noexcept
-			{
-				return m_last;
-			}
 			auto x() const noexcept
 			{
 				return m_current.x();
@@ -41,10 +37,6 @@ namespace px {
 					m_space->move(x(), y(), static_cast<Sub*>(this), destination.x(), destination.y());
 				}
 				m_current = destination;
-			}
-			void store_position() noexcept
-			{
-				m_last = m_current;
 			}
 
 			void incarnate(space_type * space)
@@ -96,7 +88,7 @@ namespace px {
 			template <typename Archive>
 			void serialize(Archive & archive)
 			{
-				archive(m_current, m_last);
+				archive(m_current);
 			}
 
 		public:
@@ -120,7 +112,6 @@ namespace px {
 			space_type *	m_space;
 			bool			m_inside;
 			point2			m_current;
-			point2			m_last;
 		};
 	}
 }

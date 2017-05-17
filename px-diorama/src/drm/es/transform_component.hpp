@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <px/common/vector.hpp>
+
 #include <px/es/transform.hpp>
 #include <px/es/component.hpp>
 #include <px/es/link_dispatcher.hpp>
@@ -19,6 +21,27 @@ namespace px {
 		, public es::link_dispatcher<transform_component>
 		, public es::link<body_component>
 	{
+	public:
+		void store_position() noexcept
+		{
+			m_last = position();
+		}
+		point2 const& last_position() const noexcept
+		{
+			return m_last;
+		}
+		vector2 interpolate(double w) const
+		{
+			return vector2(m_last).lerp(position(), w);
+		}
+
+		template <typename Archive>
+		void serialize(Archive & archive)
+		{
+			transform::serialize(archive);
+			archive(m_last);
+		}
+
 	public:
 		virtual ~transform_component()
 		{
@@ -38,5 +61,8 @@ namespace px {
 		{
 			retract();
 		}
+
+	private:
+		point2 m_last;
 	};
 }
