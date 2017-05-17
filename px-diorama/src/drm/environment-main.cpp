@@ -16,6 +16,8 @@
 
 namespace {
 	char const* quicksave_path = "quick.sav";
+	const float popup_speed = 0.2f;
+	const float movement_speed = 0.1f;
 }
 
 namespace px {
@@ -63,7 +65,7 @@ namespace px {
 			m_last_time = time;
 		}
 		double span = time - m_last_time;
-		double delta_time = std::min(span * 5, 1.0);
+		double delta_time = std::min(span * movement_speed, 1.0);
 
 		// notifications
 		vector2 camera = m_player ? m_player->interpolate(delta_time) : vector2(0, 0);
@@ -73,7 +75,7 @@ namespace px {
 			for (auto const& note : kv_list.second) {
 				float x = static_cast<float>(position.x());
 				float y = static_cast<float>(position.y() + span);
-				view.emplace_popup(x, y, note.text, note.tint.dissolved(std::min(span * 0.2, 1.0)));
+				view.emplace_popup(x, y, note.text, note.tint.dissolved(std::min(span * popup_speed, 1.0)));
 			}
 		}
 

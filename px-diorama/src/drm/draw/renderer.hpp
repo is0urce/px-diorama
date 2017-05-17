@@ -72,7 +72,7 @@ namespace px {
 
 			// g-pass
 			glUseProgram(m_batch);
-			if (auto const& batches_array = view.batches())
+			if (auto const* batches_array = view.batches())
 			{
 				for (size_t i = 0, total = batches_array->size(); i != total; ++i) {
 					auto const& vertices = (*batches_array)[i];
@@ -109,7 +109,7 @@ namespace px {
 			i.texture.image2d(GL_RGBA, GL_RGBA, width, height, 0, GL_UNSIGNED_BYTE, data); // actual loading
 			i.texture.filters(GL_NEAREST, GL_NEAREST); // required
 
-			i.vertices = { GL_ARRAY_BUFFER };
+			i.vertices = GL_ARRAY_BUFFER;
 			i.geometry.swizzle(i.vertices, sizeof(mesh_vertex), { GL_FLOAT, GL_FLOAT }, { 2, 2 }, { offsetof(mesh_vertex, pos), offsetof(mesh_vertex, texture) });
 
 			i.pass = { m_primary.framebuffer, i.geometry, m_width, m_height };
@@ -156,13 +156,13 @@ namespace px {
 			m_glyph = compile_program("data/shaders/uitext", { "Camera" }, { "img" });
 
 			// ui grid
-			m_ui_solid_buffer = { GL_ARRAY_BUFFER };
-			m_ui_text_buffer = { GL_ARRAY_BUFFER };
+			m_ui_solid_buffer = GL_ARRAY_BUFFER;
+			m_ui_text_buffer = GL_ARRAY_BUFFER;
 			m_ui_solid_geometry.swizzle(m_ui_solid_buffer, sizeof(grid_vertex), { GL_FLOAT, GL_FLOAT }, { 2, 4 }, { offsetof(grid_vertex, pos), offsetof(grid_vertex, color) });
 			m_ui_text_geometry.swizzle(m_ui_text_buffer, sizeof(glyph_vertex), { GL_FLOAT, GL_FLOAT, GL_FLOAT }, { 2, 2, 4 }, { offsetof(glyph_vertex, pos), offsetof(glyph_vertex, texture), offsetof(glyph_vertex, tint) });
 
 			// popup notifications
-			m_popup_buffer = { GL_ARRAY_BUFFER };
+			m_popup_buffer = GL_ARRAY_BUFFER;
 			m_popup_geometry.swizzle(m_popup_buffer, sizeof(glyph_vertex), { GL_FLOAT, GL_FLOAT, GL_FLOAT }, { 2, 2, 4 }, { offsetof(glyph_vertex, pos), offsetof(glyph_vertex, texture), offsetof(glyph_vertex, tint) });
 		}
 		void create_framebuffers()
