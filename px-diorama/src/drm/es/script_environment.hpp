@@ -20,7 +20,7 @@ namespace px {
 		}
 		void popup(point2 location, std::string text, int rgba, float size)
 		{
-			m_environment->popup(location, text, rgba, size);
+			m_environment->popup(location, text, color(rgba), size);
 		}
 		void emit_vfx(point2 location, std::string const& tag)
 		{

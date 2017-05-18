@@ -60,6 +60,11 @@ namespace px {
 			place(start);
 			m_last = start;
 		}
+		transform_component(point2 start, point2 last)
+		{
+			place(start);
+			m_last = last;
+		}
 
 	protected:
 		virtual void activate_component() override

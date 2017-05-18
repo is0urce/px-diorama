@@ -27,6 +27,13 @@ namespace px
 
 			double sx, sy, dx, dy;
 			double left, top;
+
+			long advance_h;
+			long advance_v;
+			long width;
+			long height;
+			long bearing_hx;
+			long bearing_hy;
 		};
 	public:
 		glyph const& operator[](unsigned int code)
@@ -52,6 +59,10 @@ namespace px
 		bool updated() const noexcept
 		{
 			return m_dirty;
+		}
+		auto kerning(unsigned int l1, unsigned int l2) const
+		{
+			return m_face.kerning(l1, l2) >> 6;
 		}
 
 	public:
@@ -95,6 +106,13 @@ namespace px
 			}
 
 			// assign data
+			result.advance_h = slot->metrics.horiAdvance;
+			result.advance_v = slot->metrics.vertAdvance;
+			result.width = slot->metrics.width;
+			result.height = slot->metrics.height;
+			result.bearing_hx = slot->metrics.horiBearingX;
+			result.bearing_hy = slot->metrics.horiBearingY;
+
 			result.sx = (m_pen_x + padding) / static_cast<double>(m_width);
 			result.dx = (m_pen_x + padding + slot->bitmap.width) / static_cast<double>(m_width);
 			result.dy = (m_pen_y + padding) / static_cast<double>(m_height);

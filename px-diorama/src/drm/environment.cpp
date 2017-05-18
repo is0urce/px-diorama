@@ -94,11 +94,12 @@ namespace px {
 	}
 	void environment::turn_begin()
 	{
-		//m_notifications.clear();
-		std::for_each(std::begin(m_units), std::end(m_units), [](auto & unit) {
-			auto transform = unit->transform();
+		m_notifications.clear();
+		m_visuals.clear();
+		for (auto & unit : m_units) {
+			auto * transform = unit->transform();
 			if (transform) transform->store_position();
-		});
+		}
 	}
 	void environment::turn_end()
 	{
@@ -440,10 +441,9 @@ namespace px {
 	}
 	void environment::emit_projectile(point2 start, point2 end, std::string const& tag)
 	{
-		m_visuals.push_back({ end, m_factory->sprites()->make_unique(tag) });
+		m_visuals.push_back({ { end, start }, m_factory->sprites()->make_unique(tag) });
 		auto & vfx = m_visuals.back();
 
-		vfx.transform.set_last_position(start);
 		vfx.sprite->connect(&vfx.transform);
 		vfx.sprite->activate();
 	}

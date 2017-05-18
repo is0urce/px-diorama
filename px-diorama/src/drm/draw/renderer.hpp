@@ -225,22 +225,12 @@ namespace px {
 				float sy = static_cast<float>(glyph.sy);
 				float dx = static_cast<float>(glyph.dx);
 				float dy = static_cast<float>(glyph.dy);
-				glyphs.push_back({
-					{ point.x(), -point.y() - 1 },
-					{ sx, sy },
-					front_color });
-				glyphs.push_back({
-					{ point.x(), -point.y() },
-					{ sx, dy },
-					front_color });
-				glyphs.push_back({
-					{ point.x() + 1, -point.y() },
-					{ dx, dy },
-					front_color });
-				glyphs.push_back({
-					{ point.x() + 1, -point.y() - 1 },
-					{ dx, sy },
-					front_color });
+				float x = static_cast<float>(point.x());
+				float y = static_cast<float>(point.y());
+				glyphs.push_back({ { x + 0, -y - 1 }, { sx, sy }, front_color });
+				glyphs.push_back({ { x + 0, -y - 0 }, { sx, dy }, front_color });
+				glyphs.push_back({ { x + 1, -y - 0 }, { dx, dy }, front_color });
+				glyphs.push_back({ { x + 1, -y - 1 }, { dx, sy }, front_color });
 			});
 
 			m_ui_uniform.load<ui_uniform>(GL_STREAM_DRAW, { { 2.0f / canvas.width(), 2.0f / canvas.height() },{ -1.0f, 1.0f } });
@@ -254,21 +244,43 @@ namespace px {
 
 			for (auto const& popup : popups) {
 				glm::vec4 tint(popup.tint.R, popup.tint.G, popup.tint.B, popup.tint.A);
-				float stride = 0;
-				for (char letter_code : popup.text) {
-					auto const& glyph = m_ui_font[letter_code];
+				std::string const& text = popup.text;
+				float pen_x = popup.x + 0.5f;
+				float pen_y = popup.y + 0.5f;
+				float mult = 12.0f;
+				float mx = mult / 64 / m_width;
+				float my = mult / 64 / m_height;
+
+				long text_width = 0;
+				for (size_t i = 0, size = text.size(); i != size; ++i) {
+					int kerning = i == 0 ? 0 : m_ui_font.kerning(text[i - 1], text[i]);
+					text_width += kerning + m_ui_font[text[i]].advance_h;
+				}
+
+				pen_x -= text_width * mx / 2; // center
+
+				for (size_t i = 0, size = text.size(); i != size; ++i) {
+					auto const& glyph = m_ui_font[text[i]];
+
+					long kerning = i == 0 ? 0 : m_ui_font.kerning(text[i - 1], text[i]);
+					pen_x += (kerning >> 6) * mx;
+
 					float sx = static_cast<float>(glyph.sx);
 					float sy = static_cast<float>(glyph.sy);
 					float dx = static_cast<float>(glyph.dx);
 					float dy = static_cast<float>(glyph.dy);
-					float x = popup.x;
-					float y = popup.y + stride;
-					glyphs.push_back({ { x, y },			{ sx, sy },	tint });
-					glyphs.push_back({ { x, y + 1 },		{ sx, dy },	tint });
-					glyphs.push_back({ { x + 1, y + 1 },	{ dx, dy }, tint });
-					glyphs.push_back({ { x + 1, y },		{ dx, sy }, tint });
 
-					stride += 1;
+					float x = pen_x + glyph.bearing_hx * mx;
+					float y = pen_y + glyph.bearing_hy * my;
+					float w = glyph.width * mx;
+					float h = glyph.height * my;
+
+					glyphs.push_back({ { x + 0, y - h }, { sx, sy }, tint });
+					glyphs.push_back({ { x + 0, y + 0 }, { sx, dy }, tint });
+					glyphs.push_back({ { x + w, y + 0 }, { dx, dy }, tint });
+					glyphs.push_back({ { x + w, y - h }, { dx, sy }, tint });
+
+					pen_x += glyph.advance_h * mx;
 				}
 			}
 

@@ -42,9 +42,9 @@ namespace px {
 			, B(b)
 			, A(a) {}
 		constexpr color(unsigned int hex) noexcept
-			: R(hex / 256 / 256 % 256)
-			, G(hex / 256 % 256)
-			, B(hex % 256)
+			: R(hex / 256 / 256 % 256 / 255.0)
+			, G(hex / 256 % 256 / 255.0)
+			, B(hex % 256 / 255.0)
 			, A(1) {}
 
 	public:

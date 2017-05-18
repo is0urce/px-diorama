@@ -45,12 +45,13 @@ namespace px
 		{
 			return m_size;
 		}
-		//auto kerning(unsigned int l1, unsigned int l2) const
-		//{
-		//	FT_Vector kerning;
-		//	FT_Get_Kerning(m_face, l1, l2, FT_KERNING_DEFAULT, &kerning);
-		//	return (kerning.x >> 6) / double(m_size);
-		//}
+		auto kerning(unsigned int l1, unsigned int l2) const
+		{
+			FT_Vector kerning;
+			auto error = FT_Get_Kerning(m_face, l1, l2, FT_KERNING_DEFAULT, &kerning);
+			if (error) throw std::runtime_error("px::rft::ft_face::kerning(a, b) - FT_Get_Kerning error");
+			return kerning.x;;
+		}
 
 	public:
 		~ft_face()

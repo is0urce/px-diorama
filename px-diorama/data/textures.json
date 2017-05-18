@@ -36,9 +36,14 @@
 			"path": "data/img/p_furniture.png",
 			"meta": "data/img/p_furniture.json"
 		},
+    {
+      "path": "data/img/m_h_rablings.png",
+      "meta": "data/img/m_h_rablings.json"
+    }
+    ,
 		{
-			"path": "data/img/m_h_rablings.png",
-			"meta": "data/img/m_h_rablings.json"
+			"path": "data/img/e_swipe.png",
+			"meta": "data/img/e_swipe.json"
 		}
 	]
 }
