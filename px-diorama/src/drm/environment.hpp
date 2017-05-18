@@ -16,6 +16,7 @@
 #include <px/common/coordinate.hpp>
 #include <px/common/coordinate_ext.hpp>
 
+#include <list>
 #include <map>
 #include <memory>
 #include <string>
@@ -57,6 +58,7 @@ namespace px {
 		void open_workshop(unsigned int workshop);
 		void popup(point2 location, std::string text, color tint, float size);
 		void emit_vfx(point2 location, std::string const& tag);
+		void emit_projectile(point2 from, point2 to, std::string const& tag);
 
 		// serialization
 
@@ -92,7 +94,7 @@ namespace px {
 
 		point2								m_hover;			// current hovered tile
 		ui::menu							m_ui;				// user interface
-		std::vector<vfx>					m_visuals;			// visual effects container
+		std::list<vfx>						m_visuals;			// visual effects container
 		std::map<point2, std::vector<notification>, lex_less> m_notifications;	// popups container
 
 		unsigned int						m_turn;				// current turn

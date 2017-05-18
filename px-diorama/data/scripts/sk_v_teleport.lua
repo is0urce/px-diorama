@@ -25,4 +25,5 @@ end
 
 action = function (user, target)
 	user:place(target)
+	game:vfx_projectile(user:position(), target, "m")
 end

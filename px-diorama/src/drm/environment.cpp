@@ -436,8 +436,14 @@ namespace px {
 
 	void environment::emit_vfx(point2 location, std::string const& tag)
 	{
-		m_visuals.push_back({ location, m_factory->sprites()->make_unique(tag) });
+		emit_projectile(location, location, tag);
+	}
+	void environment::emit_projectile(point2 start, point2 end, std::string const& tag)
+	{
+		m_visuals.push_back({ end, m_factory->sprites()->make_unique(tag) });
 		auto & vfx = m_visuals.back();
+
+		vfx.transform.set_last_position(start);
 		vfx.sprite->connect(&vfx.transform);
 		vfx.sprite->activate();
 	}

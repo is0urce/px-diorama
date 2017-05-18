@@ -26,6 +26,10 @@ namespace px {
 		{
 			m_last = position();
 		}
+		void set_last_position(point2 last) noexcept
+		{
+			m_last = last;
+		}
 		point2 const& last_position() const noexcept
 		{
 			return m_last;

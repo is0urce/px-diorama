@@ -26,6 +26,10 @@ namespace px {
 		{
 			m_environment->emit_vfx(location, tag);
 		}
+		void emit_projectile(point2 start, point2 end, std::string const& tag)
+		{
+			m_environment->emit_projectile(start, end, tag);
+		}
 
 	public:
 		script_environment() noexcept

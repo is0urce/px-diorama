@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <px/common/assert.hpp>
+
 #include "sprite_component.hpp"
 #include "transform_component.hpp"
 
@@ -66,6 +68,8 @@ namespace px {
 					if (!sprite.active()) return; // continue
 
 					transform_component * transform = sprite.linked<transform_component>();
+
+					px_assert(transform);
 
 					if (!transform) return;
 
