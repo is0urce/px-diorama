@@ -176,7 +176,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\drm\environment-main.cpp" />
+    <ClCompile Include="src\drm\environment.cpp" />
     <ClCompile Include="src\drm\es\storage_component.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
     <ClCompile Include="src\drm\main_extras.cpp" />
@@ -218,7 +218,9 @@
     <ClInclude Include="src\drm\es\unit_component.hpp" />
     <ClInclude Include="src\drm\vertex.hpp" />
     <ClInclude Include="src\drm\es\script_unit.hpp" />
+    <ClInclude Include="src\drm\vfx.hpp" />
     <ClInclude Include="src\px\common\colors.hpp" />
+    <ClInclude Include="src\px\common\coordinate_ext.hpp" />
     <ClInclude Include="src\px\es\basic_system.hpp" />
     <ClInclude Include="src\px\es\transform.hpp" />
     <ClInclude Include="src\drm\es\transform_component.hpp" />

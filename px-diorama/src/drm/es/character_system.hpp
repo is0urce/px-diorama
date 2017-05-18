@@ -157,7 +157,8 @@ namespace px {
 				m_lua.new_usertype<point2>("point");
 				m_lua.new_usertype<script_environment>("environment"
 					, "distance", &script_environment::distance
-					, "popup", &script_environment::popup);
+					, "popup", &script_environment::popup
+					, "vfx", &script_environment::emit_vfx);
 
 				provide_environment(nullptr);
 

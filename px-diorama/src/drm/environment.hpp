@@ -8,20 +8,18 @@
 #pragma once
 
 #include "es/unit.hpp"
-#include "rl/notification.hpp"
-
 #include "rl/terrain.hpp"
+#include "rl/notification.hpp"
 #include "ui/menu.hpp"
+#include "vfx.hpp"
 
-#include "fn/generator.hpp"
-#include <px/fn/bsp.hpp>
+#include <px/common/coordinate.hpp>
+#include <px/common/coordinate_ext.hpp>
 
-#include <px/ui/panel.hpp>
-
-#include <list>
 #include <map>
 #include <memory>
-#include <string> // save names
+#include <string>
+#include <vector>
 
 namespace px {
 
@@ -58,6 +56,7 @@ namespace px {
 		void expose_inventory(container_component * inventory);
 		void open_workshop(unsigned int workshop);
 		void popup(point2 location, std::string text, color tint, float size);
+		void emit_vfx(point2 location, std::string const& tag);
 
 		// serialization
 
@@ -93,22 +92,17 @@ namespace px {
 
 		point2								m_hover;			// current hovered tile
 		ui::menu							m_ui;				// user interface
+		std::vector<vfx>					m_visuals;			// visual effects container
+		std::map<point2, std::vector<notification>, lex_less> m_notifications;	// popups container
 
 		unsigned int						m_turn;				// current turn
 		terrain_chunk<tile>					m_map;				// terrain
-		std::list<std::shared_ptr<unit>>	m_units;			// scene
+		std::vector<std::shared_ptr<unit>>	m_units;			// scene
 		transform_component *				m_player;			// player transform
 
 		unsigned int						m_last_turn;		// last updated turn
 		double								m_last_time;		// last time of update
 
 		bool								m_run;				// if engine is working
-
-
-		struct point_less
-		{
-			bool operator()(point2 const& a, point2 const& b) const { return a.lex_less(b); }
-		};
-		std::map<point2, std::list<notification>, point_less>	m_notifications;	// popups
 	};
 }

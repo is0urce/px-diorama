@@ -128,16 +128,14 @@ namespace px {
 		template <typename UnaryFunction>
 		void enumerate(UnaryFunction && op)
 		{
-			for (node* i = &m_root; i != nullptr; i = i->next.get())
-			{
+			for (node* i = &m_root; i != nullptr; i = i->next.get())	{
 				i->chunk.enumerate(std::forward<UnaryFunction>(op));
 			}
 		}
 		template <typename UnaryFunction>
 		void enumerate(UnaryFunction && op) const
 		{
-			for (node const* i = &m_root; i != nullptr; i = i->next.get())
-			{
+			for (node const* i = &m_root; i != nullptr; i = i->next.get())	{
 				i->chunk.enumerate(std::forward<UnaryFunction>(op));
 			}
 		}

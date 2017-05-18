@@ -423,6 +423,12 @@
     <ClInclude Include="src\px\rl\body.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\vfx.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\common\coordinate_ext.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -434,10 +440,10 @@
     <ClCompile Include="src\drm\es\storage_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\drm\environment-main.cpp">
+    <ClCompile Include="src\drm\ui\menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\drm\ui\menu.cpp">
+    <ClCompile Include="src\drm\environment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

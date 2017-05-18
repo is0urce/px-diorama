@@ -11,6 +11,8 @@
 #include "perception.hpp"
 #include "environment.hpp"
 
+#include <px/ui/panel.hpp>
+
 namespace px {
 
 	static const unsigned int gui_cell_width = 16;

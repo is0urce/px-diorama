@@ -6,6 +6,10 @@
 
 #include "es/unit_builder.hpp"
 #include "es/unit_component.hpp"
+#include "fn/generator.hpp"
+
+#include <px/ui/panel.hpp>
+#include <px/fn/bsp.hpp>
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/xml.hpp>
@@ -17,7 +21,7 @@
 namespace {
 	char const* quicksave_path = "quick.sav";
 	const float popup_speed = 0.2f;
-	const float movement_speed = 0.1f;
+	const float movement_speed = 5.0f;
 }
 
 namespace px {
@@ -428,5 +432,13 @@ namespace px {
 	void environment::popup(point2 location, std::string text, color tint, float size)
 	{
 		m_notifications[location].push_back({ text, tint, size });
+	}
+
+	void environment::emit_vfx(point2 location, std::string const& tag)
+	{
+		m_visuals.push_back({ location, m_factory->sprites()->make_unique(tag) });
+		auto & vfx = m_visuals.back();
+		vfx.sprite->connect(&vfx.transform);
+		vfx.sprite->activate();
 	}
 }

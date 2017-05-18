@@ -22,6 +22,10 @@ namespace px {
 		{
 			m_environment->popup(location, text, rgba, size);
 		}
+		void emit_vfx(point2 location, std::string const& tag)
+		{
+			m_environment->emit_vfx(location, tag);
+		}
 
 	public:
 		script_environment() noexcept

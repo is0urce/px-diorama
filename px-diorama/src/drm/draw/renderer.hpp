@@ -263,22 +263,10 @@ namespace px {
 					float dy = static_cast<float>(glyph.dy);
 					float x = popup.x;
 					float y = popup.y + stride;
-					glyphs.push_back({
-						{ x, y },
-						{ sx, sy },
-						tint });
-					glyphs.push_back({
-						{ x, y + 1 },
-						{ sx, dy },
-						tint });
-					glyphs.push_back({
-						{ x + 1, y + 1 },
-						{ dx, dy },
-						tint });
-					glyphs.push_back({
-						{ x + 1, y },
-						{ dx, sy },
-						tint });
+					glyphs.push_back({ { x, y },			{ sx, sy },	tint });
+					glyphs.push_back({ { x, y + 1 },		{ sx, dy },	tint });
+					glyphs.push_back({ { x + 1, y + 1 },	{ dx, dy }, tint });
+					glyphs.push_back({ { x + 1, y },		{ dx, sy }, tint });
 
 					stride += 1;
 				}
