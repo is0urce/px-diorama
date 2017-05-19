@@ -353,6 +353,9 @@ namespace px {
 			else if (auto player = dynamic_cast<player_component const*>(part.get())) {
 				archive(unit_component::player);
 			}
+			else if (auto body = dynamic_cast<body_component const*>(part.get())) {
+				archive(unit_component::body);
+			}
 			else {
 				archive(unit_component::undefined);
 			}
@@ -387,7 +390,10 @@ namespace px {
 			case unit_component::container:
 			case unit_component::storage:
 			case unit_component::body:
-				break;
+			{
+				builder.add_body();
+			}
+			break;
 			case unit_component::player:
 			{
 				builder.add_player();

@@ -22,9 +22,6 @@ namespace px {
 			typedef Effect effect_type;
 			typedef enhancement<effect_type> enhancement_type;
 
-		private:
-			std::vector<enhancement_type> m_effects;
-
 		public:
 
 			// manage
@@ -132,12 +129,22 @@ namespace px {
 				return false;
 			}
 
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_effects);
+			}
+
 			// compare
 
 			bool compare(enhancement_collection const& vs) const
 			{
 				return std::equal(m_effects.cbegin(), m_effects.cend(), vs.m_effects.cbegin(), vs.m_effects.cend(), [](const enhancement_type &l, const enhancement_type &r) { return l == r; });
 			}
+
+
+		private:
+			std::vector<enhancement_type> m_effects;
 		};
 
 		namespace

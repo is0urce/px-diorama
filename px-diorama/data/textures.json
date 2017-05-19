@@ -40,6 +40,11 @@
       "path": "data/img/m_h_rablings.png",
       "meta": "data/img/m_h_rablings.json"
     }
+        ,
+		{
+			"path": "data/img/e_slash.png",
+			"meta": "data/img/e_slash.json"
+		}
     ,
 		{
 			"path": "data/img/e_swipe.png",

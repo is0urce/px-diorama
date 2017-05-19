@@ -20,12 +20,6 @@ namespace px {
 				return{ t, 0x00, v0 };
 			}
 
-			template <typename Archive>
-			void serialize(Archive & archive)
-			{
-				archive(main_type, subtype, value0, value1, magnitude0, magnitude1, disabled, hidden);
-			}
-
 			enhancement & operator+=(enhancement const& rhs)
 			{
 				value0 += rhs.value0;
@@ -43,6 +37,12 @@ namespace px {
 				magnitude1 *= rhs.magnitude1;
 				subtype = rhs.subtype;
 				return *this;
+			}
+
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(main_type, subtype, value0, value1, magnitude0, magnitude1, disabled, hidden);
 			}
 
 		public:

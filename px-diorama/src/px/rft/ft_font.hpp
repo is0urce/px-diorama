@@ -36,6 +36,14 @@ namespace px
 			long bearing_hy;
 		};
 	public:
+		auto width() const noexcept
+		{
+			return m_size;
+		}
+		auto height() const noexcept
+		{
+			return m_size;
+		}
 		glyph const& operator[](unsigned int code)
 		{
 			auto it = m_map.find(code);
@@ -67,10 +75,15 @@ namespace px
 
 	public:
 		ft_font(const char* name, unsigned int size, unsigned int atlas_size)
-			: m_lib(), m_face(m_lib, name)
-			, m_width(atlas_size), m_height(atlas_size)
-			, m_pen_x(0), m_pen_y(0), m_max_height(0)
-			, m_dirty(true), m_version(0)
+			: m_face(m_lib, name)
+			, m_size(size)
+			, m_width(atlas_size)
+			, m_height(atlas_size)
+			, m_pen_x(0)
+			, m_pen_y(0)
+			, m_max_height(0)
+			, m_dirty(true)
+			, m_version(0)
 		{
 			m_face.pixel_size(size);
 			m_atlas.assign(m_width * m_height, 0); // black
@@ -140,6 +153,7 @@ namespace px
 		ft_face m_face;
 		std::map<unsigned int, glyph> m_map;
 		std::vector<unsigned char> m_atlas;
+		unsigned int m_size;
 		unsigned int m_width;
 		unsigned int m_height;
 		unsigned int m_pen_x;

@@ -39,10 +39,17 @@ namespace px
 				m_description = text;
 			}
 
+
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_name, m_tag, m_description);
+			}
+
 		private:
+			std::string m_tag;
 			std::string m_name;
 			std::string m_description;
-			std::string m_tag;
 		};
 
 		namespace

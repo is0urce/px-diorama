@@ -29,8 +29,8 @@
 namespace px {
 
 	namespace {
-		char const* grid_font_path = "data/fonts/DejaVuSansMono.ttf";
-		char const* popup_font_path = "data/fonts/DejaVuSansMono.ttf";
+		char const* grid_font_path = "data/fonts/DejaVuSans-Bold.ttf";
+		char const* popup_font_path = "data/fonts/DejaVuSans-Bold.ttf";
 
 		unsigned int grid_font_size = 18;	// size of fon
 		unsigned int grid_font_atlas = 512;	// internal size of font atlas
@@ -129,12 +129,19 @@ namespace px {
 			: m_width(width)
 			, m_height(height)
 			, m_ui_font(grid_font_path, grid_font_size, grid_font_atlas)
+			, m_popup_font(popup_font_path, popup_font_size, popup_font_atlas)
 		{
 			// create font texture
-			for (int i = 32; i != 256; ++i) m_ui_font.rasterize(i);
+			for (unsigned int i = 32; i != 256; ++i) {
+				m_ui_font.rasterize(i);
+				m_popup_font.rasterize(i);
+			}
 			unsigned int w, h;
-			void const* data = m_ui_font.download(w, h);
+			void const* data;
+			std::tie(data, w, h) = m_ui_font.download();
 			m_font_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_UNSIGNED_BYTE, data);
+			std::tie(data, w, h) = m_popup_font.download();
+			m_popup_texture.image2d(GL_RED, GL_RED, w, h, 0, GL_UNSIGNED_BYTE, data);
 
 			// setup rendering
 			create_pipeline();
@@ -218,6 +225,8 @@ namespace px {
 				grid.push_back({ { point.x() + 1, -point.y() - 1 }, back });
 			});
 
+			float mx = 1.0f / 64 / m_ui_font.width();
+			float my = 1.0f / 64 / m_ui_font.height();
 			canvas.codes().enumerate([&](auto const& point, auto code) {
 				glm::vec4 front_color(colors[point].R, colors[point].G, colors[point].B, colors[point].A);
 				auto const& glyph = m_ui_font[code];
@@ -225,12 +234,14 @@ namespace px {
 				float sy = static_cast<float>(glyph.sy);
 				float dx = static_cast<float>(glyph.dx);
 				float dy = static_cast<float>(glyph.dy);
-				float x = static_cast<float>(point.x());
-				float y = static_cast<float>(point.y());
-				glyphs.push_back({ { x + 0, -y - 1 }, { sx, sy }, front_color });
-				glyphs.push_back({ { x + 0, -y - 0 }, { sx, dy }, front_color });
-				glyphs.push_back({ { x + 1, -y - 0 }, { dx, dy }, front_color });
-				glyphs.push_back({ { x + 1, -y - 1 }, { dx, sy }, front_color });
+				float x = static_cast<float>(point.x()) + glyph.bearing_hx * mx;
+				float y = static_cast<float>(-point.y() - 1) + glyph.bearing_hy * my;
+				float w = glyph.width * mx;
+				float h = glyph.height * my;
+				glyphs.push_back({ { x + 0, y - h }, { sx, sy }, front_color });
+				glyphs.push_back({ { x + 0, y + 0 }, { sx, dy }, front_color });
+				glyphs.push_back({ { x + w, y + 0 }, { dx, dy }, front_color });
+				glyphs.push_back({ { x + w, y - h }, { dx, sy }, front_color });
 			});
 
 			m_ui_uniform.load<ui_uniform>(GL_STREAM_DRAW, { { 2.0f / canvas.width(), 2.0f / canvas.height() },{ -1.0f, 1.0f } });
@@ -367,6 +378,8 @@ namespace px {
 		gl_pass		m_ui_text_pass;
 
 		// popup notifications
+		ft_font		m_popup_font;
+		gl_texture	m_popup_texture;
 		gl_buffer	m_popup_buffer;
 		gl_vao		m_popup_geometry;
 		gl_pass		m_popup_pass;
