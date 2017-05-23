@@ -278,6 +278,7 @@
     <ClInclude Include="src\px\rgl\gl_buffer.hpp" />
     <ClInclude Include="src\px\rgl\rgl.hpp" />
     <ClInclude Include="src\drm\rl\actor.hpp" />
+    <ClInclude Include="src\drm\rl\character.hpp" />
     <ClInclude Include="src\px\rl\loot\item.hpp" />
     <ClInclude Include="src\px\rl\skill\skill.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_instance.hpp" />

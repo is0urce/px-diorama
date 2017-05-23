@@ -11,22 +11,25 @@ namespace px {
 
 	// values used by serizlizer, so they are set to some actual values to avoid versions conflicts
 	// use hex notation for binary readability
-	enum class unit_component : std::uint8_t
+	enum class unit_component : std::uint32_t
 	{
 		// core data
 		transform	= 'T',
 		sprite		= 'S',
+		animator	= 'A',
 		body		= 'B',
-		container	= 'C',
+		container	= 'I',
+		character	= 'C',
 
 		// useables
 		storage		= 's',
 		workshop    = 'w',
 
 		// controls
-		player		= '@',
+		player		= 'P',
+		npc			= 'M',
 
 		// unspecified component indicator used mostly for indicating components that is not serialized
-		undefined	= '!' // n
+		undefined	= '!'
 	};
 }

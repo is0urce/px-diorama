@@ -5,6 +5,8 @@
 
 #pragma once
 
+// base class for components in entity / component system
+
 namespace px {
 	namespace es {
 
@@ -17,34 +19,36 @@ namespace px {
 			}
 			void activate()
 			{
-				if (!m_active)
-				{
+				if (!m_active) {
 					activate_component();
 					m_active = true;
 				}
 			}
 			void deactivate()
 			{
-				if (m_active)
-				{
+				if (m_active) {
 					deactivate_component();
 					m_active = false;
 				}
 			}
 
 		public:
-			component()
-				: m_active(false)
-			{
-			}
 			virtual ~component()
 			{
 				deactivate();
 			}
+			component() noexcept
+				: m_active(false)
+			{
+			}
 
 		protected:
-			virtual void activate_component() {}
-			virtual void deactivate_component() {}
+			virtual void activate_component()
+			{
+			}
+			virtual void deactivate_component()
+			{
+			}
 
 		private:
 			bool m_active;

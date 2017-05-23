@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <px/common/assert.hpp>
+
 #include "skill_book.hpp"
 
 #include <vector>
@@ -31,7 +33,9 @@ namespace px
 			{
 				if (!m_book) throw std::runtime_error("px::rl::skill_set::add(name, slot) - book provider is null");
 	
-				if (auto * record = m_book->fetch(tag)) {
+				auto * record = m_book->fetch(tag);
+				px_assert(record);
+				if (record) {
 					m_skills.emplace_back(std::get<0>(*record), &std::get<1>(*record));
 				}
 			}
@@ -39,14 +43,16 @@ namespace px
 			{
 				if (!m_book) throw std::runtime_error("px::rl::skill_set::add(name, slot) - book provider is null");
 
-				if (auto * record = m_book->fetch(tag)) {
+				auto * record = m_book->fetch(tag);
+				px_assert(record);
+				if (record) {
 					m_skills[slot] = { std::get<0>(*record), &std::get<1>(*record) };
 				}
 			}
 			void invalidate_skills()
 			{
 				for (size_t i = 0, size = m_skills.size(); i != size; ++i) {
-					replace_skill(i, m_skills[i].state().name());
+					replace_skill(m_skills[i].state().tag(), i);
 				}
 			}
 			void clear_skills()
@@ -76,6 +82,13 @@ namespace px
 				for (auto & skill : m_skills) {
 					skill.state().cooldown_by(time);
 				}
+			}
+
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_skills);
+				invalidate_skills();
 			}
 
 		public:

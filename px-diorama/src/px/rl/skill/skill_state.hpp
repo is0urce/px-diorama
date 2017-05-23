@@ -20,36 +20,6 @@ namespace px
 			typedef int range_type;
 
 		public:
-			bool in_range(range_type distance) const noexcept
-			{
-				return distance >= m_min_range && (m_max_range < 0 || distance <= m_max_range);
-			}
-			bool is_cooldown() const noexcept
-			{
-				return m_timer != 0;
-			}
-			time_type cooldown_remaining() const noexcept
-			{
-				return m_timer;
-			}
-			void start_cooldown() noexcept
-			{
-				m_timer = m_cooldown;
-			}
-			void reset_cooldown() noexcept
-			{
-				m_timer = 0;
-			}
-			void cooldown_by(time_type by_time)
-			{
-				m_timer = (m_timer < by_time) ? 0 : (m_timer - by_time);
-			}
-
-			template <typename Archive>
-			void serialize(Archive & archive)
-			{
-				archive(m_cooldown, m_timer, m_cost, m_hostile, m_instant, m_min_range, m_max_range);
-			}
 
 			// attrubute get
 
@@ -57,9 +27,9 @@ namespace px
 			{
 				return m_cooldown;
 			}
-			bool instant() const noexcept
+			time_type duration() const noexcept
 			{
-				return m_instant;
+				return m_duration;
 			}
 			bool hostile() const noexcept
 			{
@@ -93,9 +63,9 @@ namespace px
 			{
 				m_cost = cost;
 			}
-			void set_instant(bool is_instant) noexcept
+			void set_duration(int turns) noexcept
 			{
-				m_instant = is_instant;
+				m_duration = turns;
 			}
 			void set_hostile(bool is_hostile) noexcept
 			{
@@ -111,26 +81,62 @@ namespace px
 				m_hostile = HostileFlag;
 			}
 
+			// aux
+
+			bool in_range(range_type distance) const noexcept
+			{
+				return distance >= m_min_range && (m_max_range < 0 || distance <= m_max_range);
+			}
+			bool is_cooldown() const noexcept
+			{
+				return m_timer != 0;
+			}
+			time_type cooldown_remaining() const noexcept
+			{
+				return m_timer;
+			}
+			void start_cooldown() noexcept
+			{
+				m_timer = m_cooldown;
+			}
+			void reset_cooldown() noexcept
+			{
+				m_timer = 0;
+			}
+			void cooldown_by(time_type by_time)
+			{
+				m_timer = (m_timer < by_time) ? 0 : (m_timer - by_time);
+			}
+
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(static_cast<entity &>(*this));
+				archive(m_cooldown, m_timer, m_duration, m_min_range, m_max_range, m_cost, m_hostile);
+			}
+
 		public:
 			skill_state()
 				: m_cooldown(0)
 				, m_timer(0)
-				, m_cost(0)
-				, m_hostile(false)
-				, m_instant(false)
+				, m_duration(0)
 				, m_min_range(-1)
 				, m_max_range(-1)
+				, m_cost(0)
+				, m_hostile(false)
 			{
 			}
 
 		private:
 			time_type	m_cooldown;		// remaining time to ready state
 			time_type	m_timer;		// cooldown duration
-			int			m_cost;			// resource required to use
-			bool		m_hostile;		// is considered as hostile by npc
-			bool		m_instant;		// is turn not passed after use
+			time_type	m_duration;		// turns to use
+
 			range_type	m_min_range;	// min use distance
 			range_type	m_max_range;	// max use distance
+
+			int			m_cost;			// resource required to use
+			bool		m_hostile;		// is considered as hostile by npc
 		};
 	}
 }

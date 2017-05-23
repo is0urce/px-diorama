@@ -152,7 +152,7 @@ namespace px {
 
 		if (auto * skill = character ? character->get_skill(action_index - 1) : nullptr) {
 
-			//int turns = skill->state().instant() ? 0 : 1;
+			//int turns = skill->state().duration();
 
 			turn_begin();
 			if (skill->targeted()) {
@@ -364,6 +364,10 @@ namespace px {
 				archive(unit_component::container);
 				archive(*container);
 			}
+			else if (auto character = dynamic_cast<character_component const*>(part.get())) {
+				archive(unit_component::character);
+				archive(*character);
+			}
 			else if (auto storage = dynamic_cast<storage_component const*>(part.get())) {
 				archive(unit_component::storage);
 			}
@@ -401,6 +405,10 @@ namespace px {
 			}
 			case unit_component::container: {
 				archive(*builder.add_container());
+				break;
+			}
+			case unit_component::character: {
+				archive(*builder.add_character());
 				break;
 			}
 			case unit_component::storage: {

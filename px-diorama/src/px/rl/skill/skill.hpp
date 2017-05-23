@@ -27,6 +27,11 @@ namespace px {
 			{
 				return m_state;
 			}
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_state);
+			}
 
 		public:
 			virtual ~skill()

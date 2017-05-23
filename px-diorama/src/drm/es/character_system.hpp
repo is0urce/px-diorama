@@ -69,7 +69,7 @@ namespace px {
 					std::string description = sandbox["description"].get_or<std::string>("");
 					bool targeted = sandbox["targeted"].get_or(false);
 					bool hostile = sandbox["hostile"].get_or(false);
-					bool instant = sandbox["instant"].get_or(false);
+					int duration = sandbox["duration"].get_or(0);
 					int cooldown = sandbox["cooldown"].get_or(0);
 					int cost = sandbox["cost"].get_or(0);
 					int min_range = sandbox["min_range"].get_or(-1);
@@ -79,7 +79,7 @@ namespace px {
 					props.set_name(name);
 					props.set_description(description);
 					props.set_hostile(hostile);
-					props.set_instant(instant);
+					props.set_duration(duration);
 					props.set_cooldown(cooldown);
 					props.set_cost(cost);
 					props.set_range(min_range, max_range);
