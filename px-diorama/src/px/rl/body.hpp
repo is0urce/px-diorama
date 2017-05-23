@@ -9,8 +9,6 @@
 #include <px/rl/entity.hpp>
 #include <px/rl/reputation_subject.hpp>
 
-#include "drm/rl/inventory.hpp"
-
 #include <memory>
 
 namespace px {
@@ -45,16 +43,22 @@ namespace px {
 
 			void clear_body()
 			{
-				m_inventory.clear();
 				m_hp.remove();
 				m_mp.remove();
 				clear_faction();
 			}
 
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				entity::serialize(archive);
+				reputation_subject::serialize(archive);
+				archive(m_hp, m_mp);
+			}
+
 		private:
 			resource m_hp;
 			resource m_mp;
-			inventory m_inventory;
 		};
 	}
 }

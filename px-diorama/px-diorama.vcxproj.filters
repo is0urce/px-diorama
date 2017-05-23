@@ -237,13 +237,7 @@
     <ClInclude Include="src\px\ui\text_alignment.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\rl\inventory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\drm\es\body_component.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\drm\rl\effect.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\rl\dlg\dialogue.hpp">
@@ -280,9 +274,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\sprite.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\drm\rl\character.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\es\container_system.hpp">
@@ -427,6 +418,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\px\common\coordinate_ext.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\effect.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\loot\inventory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\loot\item.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

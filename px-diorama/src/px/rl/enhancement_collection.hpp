@@ -36,13 +36,11 @@ namespace px {
 			}
 
 			// returns true if element removed
-			bool remove_first(effect_type e)
+			bool remove_first(effect_type efx_type)
 			{
 				bool done = false;
-				for (auto it = m_effects.begin(), last = m_effects.end(); it != last; ++it)
-				{
-					if (it->main_type == e)
-					{
+				for (auto it = m_effects.begin(), last = m_effects.end(); it != last; ++it)	{
+					if (it->main_type == efx_type) {
 						m_effects.erase(it);
 						done = true;
 						break;
@@ -139,7 +137,7 @@ namespace px {
 
 			bool compare(enhancement_collection const& vs) const
 			{
-				return std::equal(m_effects.cbegin(), m_effects.cend(), vs.m_effects.cbegin(), vs.m_effects.cend(), [](const enhancement_type &l, const enhancement_type &r) { return l == r; });
+				return std::equal(m_effects.cbegin(), m_effects.cend(), vs.m_effects.cbegin(), vs.m_effects.cend(), [](enhancement_type const& l, enhancement_type const & r) { return l == r; });
 			}
 
 

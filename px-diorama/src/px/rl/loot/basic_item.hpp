@@ -9,8 +9,6 @@
 #include <px/rl/enhancement_collection.hpp>
 #include <px/rl/entity.hpp>
 
-#include "drm/rl/effect.hpp"
-
 namespace px
 {
 	namespace rl
@@ -26,22 +24,28 @@ namespace px
 			typedef enhancement_collection<Effect> collection_type;
 
 		public:
-			bool can_stack(basic_item & with) const noexcept
+			// stack from itm
+			bool can_stack(basic_item const& from_item) const noexcept
 			{
-				if (&with == this) return false; // stacking into same item
-
-				if (full()) return false; // no space
-
-				return static_cast<entity>(*this) == static_cast<entity>(with)
-					&& static_cast<collection_type>(*this) == static_cast<collection_type>(with);
+				return &from_item != this
+					&& !full()
+					&& static_cast<entity const&>(*this) == static_cast<entity const&>(from_item)
+					&& static_cast<collection_type const&>(*this) == static_cast<collection_type const&>(from_item);
 			}
-			unsigned int try_stack_from(basic_item & with) noexcept
+			unsigned int try_stack(basic_item & from_item) noexcept
 			{
-				if (can_stack(with))
-				{
-					return stack_from(with);
+				if (can_stack(from_item)) {
+					return stack_from(from_item);
 				}
-				return with.count();
+				return from_item.count();
+			}
+
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(static_cast<entity&>(*this));
+				archive(static_cast<stack&>(*this));
+				archive(static_cast<collection_type&>(*this));
 			}
 		};
 	}

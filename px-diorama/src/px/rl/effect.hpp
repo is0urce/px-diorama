@@ -5,10 +5,12 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace px {
 	namespace rl {
 
-		enum class effect : unsigned int
+		enum class effect : int32_t
 		{
 			no_effect,
 

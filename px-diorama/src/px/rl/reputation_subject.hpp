@@ -40,6 +40,12 @@ namespace px
 				return reputation(with) > 0;
 			}
 
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_faction);
+			}
+
 		public:
 			reputation_subject(unsigned int faction_index) noexcept
 				: m_faction(faction_index)

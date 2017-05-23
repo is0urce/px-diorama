@@ -219,16 +219,16 @@ namespace px {
 
 			canvas.background().enumerate([&](auto const& point, color const& color) {
 				glm::vec4 back(color.R, color.G, color.B, color.A);
-				grid.push_back({ { point.x(), -point.y() - 1 }, back });
-				grid.push_back({ { point.x(), -point.y() }, back });
-				grid.push_back({ { point.x() + 1, -point.y() }, back });
-				grid.push_back({ { point.x() + 1, -point.y() - 1 }, back });
+				grid.push_back({ { point.x(), -point.y() - 1 },		back });
+				grid.push_back({ { point.x(), -point.y() },			back });
+				grid.push_back({ { point.x() + 1, -point.y() },		back });
+				grid.push_back({ { point.x() + 1, -point.y() - 1 },	back });
 			});
 
 			float mx = 1.0f / 64 / m_ui_font.width();
 			float my = 1.0f / 64 / m_ui_font.height();
 			canvas.codes().enumerate([&](auto const& point, auto code) {
-				glm::vec4 front_color(colors[point].R, colors[point].G, colors[point].B, colors[point].A);
+				glm::vec4 tint(colors[point].R, colors[point].G, colors[point].B, colors[point].A);
 				auto const& glyph = m_ui_font[code];
 				float sx = static_cast<float>(glyph.sx);
 				float sy = static_cast<float>(glyph.sy);
@@ -238,10 +238,10 @@ namespace px {
 				float y = static_cast<float>(-point.y() - 1) + glyph.bearing_hy * my;
 				float w = glyph.width * mx;
 				float h = glyph.height * my;
-				glyphs.push_back({ { x + 0, y - h }, { sx, sy }, front_color });
-				glyphs.push_back({ { x + 0, y + 0 }, { sx, dy }, front_color });
-				glyphs.push_back({ { x + w, y + 0 }, { dx, dy }, front_color });
-				glyphs.push_back({ { x + w, y - h }, { dx, sy }, front_color });
+				glyphs.push_back({ { x + 0, y - h }, { sx, sy }, tint });
+				glyphs.push_back({ { x + 0, y + 0 }, { sx, dy }, tint });
+				glyphs.push_back({ { x + w, y + 0 }, { dx, dy }, tint });
+				glyphs.push_back({ { x + w, y - h }, { dx, sy }, tint });
 			});
 
 			m_ui_uniform.load<ui_uniform>(GL_STREAM_DRAW, { { 2.0f / canvas.width(), 2.0f / canvas.height() },{ -1.0f, 1.0f } });

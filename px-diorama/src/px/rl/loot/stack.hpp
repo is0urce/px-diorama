@@ -14,20 +14,19 @@ namespace px
 		class stack
 		{
 		public:
-			// returns number of items failed to stack (due restrictions), if zero - everything is stacked
+			// returns number of items failed to stack (due restrictions)
+			// zero if everything is stacked
 			unsigned int stack_from(stack & with) noexcept
 			{
 				if (&with == this) return m_stack; // stacking onto same item has no point
 
 				unsigned int total = m_stack + with.m_stack;
 
-				if (m_max_stack == 0 || total <= m_max_stack)
-				{
+				if (m_max_stack == 0 || total <= m_max_stack) {
 					m_stack = total;
 					with.m_stack = 0;
 				}
-				else
-				{
+				else {
 					m_stack = m_max_stack;
 					with.m_stack -= total - m_stack;
 				}
@@ -51,11 +50,11 @@ namespace px
 			unsigned int increase(unsigned int n) noexcept
 			{
 				unsigned int total = m_stack + n;
-				return m_stack = total < m_max_stack || m_max_stack == 0 ? total : m_max_stack;
+				return m_stack = (total < m_max_stack || m_max_stack == 0) ? total : m_max_stack;
 			}
 			unsigned int decrease(unsigned int n) noexcept
 			{
-				return m_stack -= n < m_stack ? n : m_stack;
+				return m_stack -= (n < m_stack) ? n : m_stack;
 			}
 
 			unsigned int count() const noexcept

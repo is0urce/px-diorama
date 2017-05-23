@@ -45,7 +45,7 @@ namespace px
 			{
 				archive(m_enabled);
 				if (m_enabled) {
-					m_mar.serialize(archive);
+					archive(m_bar);
 				}
 			}
 

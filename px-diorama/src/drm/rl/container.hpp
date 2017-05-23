@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "drm/rl/inventory.hpp"
+#include <px/rl/loot/inventory.hpp>
 
 namespace px {
 	namespace rl {

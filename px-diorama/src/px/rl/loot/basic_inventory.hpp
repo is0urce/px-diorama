@@ -34,7 +34,7 @@ namespace px
 
 				// try to stack onto existing items
 				for (auto & stack : m_items) {
-					if (stack->try_stack_from(*item) == 0) break; // stacked fully onto existing item
+					if (stack->try_stack(*item) == 0) break; // stacked fully onto existing item
 				}
 
 				// add remaining quantity to end of the list
@@ -98,7 +98,7 @@ namespace px
 			bool enumerate_while(UnaryOperator && enum_fn) const
 			{
 				for (auto it = std::cbegin(m_items), last = std::cend(m_items); it != last; ++it) {
-					if (!std::forward<UnaryOperator>(enum_fn)(*it)) return false;
+					if (!enum_fn(*it)) return false;
 				}
 				return true;
 			}
@@ -106,9 +106,22 @@ namespace px
 			bool enumerate_while(UnaryOperator && enum_fn)
 			{
 				for (auto it = std::begin(m_items), last = std::end(m_items); it != last; ++it) {
-					if (!std::forward<UnaryOperator>(enum_fn)(*it)) return false;
+					if (!enum_fn(*it)) return false;
 				}
 				return true;
+			}
+
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				size_t size = m_items.size();
+				archive(size);
+				m_items.resize(size);
+				for (size_t i = 0; i != size; ++i) {
+					item_ptr & ptr = m_items[i];
+					if (!ptr) ptr = std::make_shared<item_type>();
+					archive(*ptr);
+				}
 			}
 
 		private:

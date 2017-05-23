@@ -1,22 +1,15 @@
 // name: inventory.hpp
 // type: c++ header
-// desc: template class definition
+// desc: class
 // auth: is0urce
 
 #pragma once
 
 #include <px/rl/loot/basic_inventory.hpp>
-#include <px/rl/loot/basic_item.hpp>
+#include <px/rl/loot/item.hpp>
 
 namespace px {
 	namespace rl {
-
-		class item
-			: public basic_item<effect>
-		{
-		public:
-			unsigned int ORE_POWER;
-		};
 
 		class inventory
 			: public basic_inventory<item>

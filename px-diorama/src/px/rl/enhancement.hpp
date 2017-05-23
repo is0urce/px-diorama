@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace px {
 	namespace rl {
 
@@ -13,11 +15,13 @@ namespace px {
 		{
 		public:
 			typedef Effect effect_type;
+			typedef uint32_t int_t;
+			typedef double float_t;
 
 		public:
-			static enhancement from_type(effect_type t, int v0)
+			static enhancement integer(effect_type general_type, int_t main_value)
 			{
-				return{ t, 0x00, v0 };
+				return enhancement{ general_type, main_value };
 			}
 
 			enhancement & operator+=(enhancement const& rhs)
@@ -45,24 +49,41 @@ namespace px {
 				archive(main_type, subtype, value0, value1, magnitude0, magnitude1, disabled, hidden);
 			}
 
+			enhancement()
+			{
+			}
+			enhancement(effect_type general_type, int_t main_value)
+				: main_type(general_type)
+				, subtype(0)
+				, value0(main_value)
+				, value1(main_value)
+				, magnitude0(0)
+				, magnitude1(0)
+				, disabled(false)
+				, hidden(false)
+			{
+			}
+			enhancement(effect_type general_type, float_t float_value)
+				: main_type(general_type)
+				, subtype(0)
+				, value0(0)
+				, value1(0)
+				, magnitude0(float_value)
+				, magnitude1(float_value)
+				, disabled(false)
+				, hidden(false)
+			{
+			}
+
 		public:
-
-			// type and subtype of enhancement
-
-			effect_type main_type;
-			unsigned int subtype; // can vary depending on main type, so use cast to int type
-
-			// power of enhancement
-
-			int value0;
-			int value1;
-			double magnitude0;
-			double magnitude1;
-
-			// flags
-
-			bool disabled; // it should not provide bonuses if this flag is set
-			bool hidden; // is it invisible to players
+			int_t			subtype;	// can vary depending on main type, so use cast to int type
+			int_t			value0;
+			int_t			value1;
+			float_t			magnitude0;
+			float_t			magnitude1;
+			bool			disabled;	// should not provide bonuses if this flag is set
+			bool			hidden;		// invisible to players
+			effect_type		main_type;	// type and subtype of enhancement
 		};
 
 		namespace

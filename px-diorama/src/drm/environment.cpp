@@ -1,9 +1,21 @@
 // name: environment.main
 
+#define SAVE_READABLE 0
+#define SAVE_BINARY 1
+
+#if SAVE_BINARY
+#include <cereal/archives/binary.hpp>
+#endif
+#if SAVE_READABLE
+#include <cereal/archives/xml.hpp>
+#endif
+
+#include <cereal/types/string.hpp>
+#include <cereal/types/vector.hpp>
+
 #include "environment.hpp"
 
 #include "perception.hpp"
-
 #include "es/unit_builder.hpp"
 #include "es/unit_component.hpp"
 #include "fn/generator.hpp"
@@ -11,15 +23,11 @@
 #include <px/ui/panel.hpp>
 #include <px/fn/bsp.hpp>
 
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/xml.hpp>
-#include <cereal/types/string.hpp>
 #include <json.hpp>
-
 #include <fstream>
 
 namespace {
-	char const* quicksave_path = "quick.sav";
+	char const* quicksave_path = "quicksave.sav";
 	const float popup_speed = 0.2f;
 	const float movement_speed = 5.0f;
 }
@@ -106,7 +114,7 @@ namespace px {
 		++m_turn;
 	}
 	template <typename Action>
-	void environment::turn(Action && intent_action, int time)
+	void environment::turn(Action && intent_action, int duration)
 	{
 		turn_begin();
 		intent_action();
@@ -186,10 +194,14 @@ namespace px {
 		transform->store_position();
 		body->health()->set(100);
 		body->set_name(name);
-		for (int i = 0; i != 30; ++i) {
+		body->set_tag(name);
+		body->set_description("mobile template");
+		for (int i = 0; i != 50; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("item #" + std::to_string(i));
-			itm->add(rl::item::enhancement_type::from_type(rl::effect::ore_power, i));
+			itm->set_tag("itm_ore");
+			itm->set_description("item template");
+			itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, i));
 			container->add(itm);
 		}
 		character->learn_skill("sk_v_teleport");
@@ -210,20 +222,8 @@ namespace px {
 		// units
 
 		spawn("m_snake", { 50, 48 });
-		spawn("m_h_rabling_harvester", { 50, 49 });
-		spawn("m_h_rabling_reaper", { 50, 50 });
-		spawn("m_h_rabling_shepard", { 50, 51 });
-
-		spawn("m", { 54, 47 });
-
-		spawn("p_table", { 56, 48 });
-		spawn("p_locker", { 60, 48 });
-		spawn("p_box", { 55, 51 });
-
-		spawn("p_bookshelf", { 54, 46 });
-		spawn("p_bookshelf", { 55, 46 });
-		spawn("p_bookshelf", { 56, 46 });
-		spawn("p_bookshelf", { 57, 46 });
+		
+		for (int i = 54; i != 60; ++i) spawn("p_bookshelf", { i, 46 });
 
 		// player
 		auto player = spawn("@", { 55, 46 });
@@ -287,20 +287,28 @@ namespace px {
 	}
 	void environment::save(std::string const& name)
 	{
-		std::ofstream output(name);
-
-		//cereal::XMLOutputArchive archive(output);
+#if SAVE_READABLE
+		std::ifstream input(name);
+		cereal::XMLOutputArchive archive(output);
+#endif
+#if SAVE_BINARY
+		std::ofstream output(name, std::ios::binary);
 		cereal::BinaryOutputArchive archive(output);
+#endif
 
 		archive(m_turn);
 		save_units(archive);
 	}
 	void environment::load(std::string const& name)
 	{
+#if SAVE_READABLE
 		std::ifstream input(name);
-
-		//cereal::XMLInputArchive archive(input);
+		cereal::XMLInputArchive archive(input);
+#endif
+#if SAVE_BINARY
+		std::ifstream input(name, std::ios::binary);
 		cereal::BinaryInputArchive archive(input);
+#endif
 
 		clear();
 
@@ -342,19 +350,25 @@ namespace px {
 		mobile.enumerate_components([&](auto const& part) {
 			if (auto transform = dynamic_cast<transform_component const*>(part.get())) {
 				archive(unit_component::transform);
-
 				archive(*transform);
 			}
 			else if (auto sprite = dynamic_cast<sprite_component const*>(part.get())) {
 				archive(unit_component::sprite);
-
 				archive(std::string(sprite->name));
-			}
-			else if (auto player = dynamic_cast<player_component const*>(part.get())) {
-				archive(unit_component::player);
 			}
 			else if (auto body = dynamic_cast<body_component const*>(part.get())) {
 				archive(unit_component::body);
+				archive(*body);
+			}
+			else if (auto container = dynamic_cast<container_component const*>(part.get())) {
+				archive(unit_component::container);
+				archive(*container);
+			}
+			else if (auto storage = dynamic_cast<storage_component const*>(part.get())) {
+				archive(unit_component::storage);
+			}
+			else if (auto player = dynamic_cast<player_component const*>(part.get())) {
+				archive(unit_component::player);
 			}
 			else {
 				archive(unit_component::undefined);
@@ -365,45 +379,41 @@ namespace px {
 	void environment::load_unit(Builder & builder, Archive & archive)
 	{
 		size_t total_components;
+		unit_component variant;
+
 		archive(total_components);
-
-		for (size_t i = 0; i != total_components; ++i)
-		{
-			unit_component variant;
+		for (size_t i = 0; i != total_components; ++i) {
 			archive(variant);
-
 			switch (variant) {
-			case unit_component::transform:
-			{
-				auto transform = builder.add_transform({});
-				archive(*transform); // should be disabled by default, so we can write to internal values
+			case unit_component::transform: {
+				archive(*builder.add_transform({})); // transform disabled by default, so we can write into internal state
+				break;
 			}
-			break;
-			case unit_component::sprite:
-			{
+			case unit_component::sprite: {
 				std::string tag;
 				archive(tag);
-
 				builder.add_sprite(tag);
+				break;
 			}
-			break;
-			case unit_component::container:
-			case unit_component::storage:
-			case unit_component::body:
-			{
-				builder.add_body();
+			case unit_component::body: {
+				archive(*builder.add_body());
+				break;
 			}
-			break;
-			case unit_component::player:
-			{
+			case unit_component::container: {
+				archive(*builder.add_container());
+				break;
+			}
+			case unit_component::storage: {
+				builder.add_storage();
+				break;
+			}
+			case unit_component::player: {
 				builder.add_player();
+				break;
 			}
-			break;
-			case unit_component::undefined:
-			{
-				// there was unserilized component, just skip it
+			case unit_component::undefined: {
+				break; // there was unserilized (temporary) component, just skip it
 			}
-			break;
 			default:
 				// component defined, but not supported (version conflict?)
 				throw std::runtime_error("px::environment::load_unit(builder, archive) - unknown component");

@@ -107,8 +107,8 @@ namespace px {
 				if (from && to) from->transfer(item, *to);
 			});
 
-			m_container->set_filter([](auto const& item) { return item->has_effect<rl::effect::ore_power>(); });
-			m_inventory->set_filter([](auto const& item) { return item->has_effect<rl::effect::ore_power>(); });
+			//m_container->set_filter([](auto const& item) { return item->has_effect<rl::effect::ore_power>(); });
+			//m_inventory->set_filter([](auto const& item) { return item->has_effect<rl::effect::ore_power>(); });
 
 			// inventory button
 			auto i_block = m_main->make<board>({ { 0.0, 0.0 },{ 1,1 },{ 1,1 },{ 0, 0 } }, color{ 1, 0.5,0, 1 });
