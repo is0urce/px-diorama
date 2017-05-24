@@ -221,7 +221,8 @@ namespace px {
 
 		// units
 
-		spawn("m_snake", { 50, 48 });
+		spawn("m_snail", { 50, 48 });
+		spawn("m_orc", { 51, 48 });
 		
 		for (int i = 54; i != 60; ++i) spawn("p_bookshelf", { i, 46 });
 
@@ -241,7 +242,10 @@ namespace px {
 			tile.transform.move(point);
 			tile.transform.store_position();
 
-			tile.ground = m_factory->sprites()->make_unique("#");
+			if (std::rand() % 3 == 0) {
+				tile.ground = m_factory->sprites()->make_unique("t_moss_wall");
+			}
+			else tile.ground = m_factory->sprites()->make_unique("t_dirt_wall");
 			tile.ground->connect(&tile.transform);
 			tile.ground->activate();
 
@@ -260,7 +264,7 @@ namespace px {
 
 			tile.ground.reset();
 
-			tile.wall = m_factory->sprites()->make_unique(".");
+			tile.wall = m_factory->sprites()->make_unique("t_dirt");
 			tile.wall->connect(&tile.transform);
 			tile.wall->activate();
 
@@ -288,7 +292,7 @@ namespace px {
 	void environment::save(std::string const& name)
 	{
 #if SAVE_READABLE
-		std::ifstream input(name);
+		std::ifstream output(name);
 		cereal::XMLOutputArchive archive(output);
 #endif
 #if SAVE_BINARY

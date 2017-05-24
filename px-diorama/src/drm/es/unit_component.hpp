@@ -23,13 +23,11 @@ namespace px {
 
 		// useables
 		storage		= 's',
-		workshop    = 'w',
+		workshop	= 'w',
 
 		// controls
 		player		= 'P',
 		npc			= 'M',
-
-		// unspecified component indicator used mostly for indicating components that is not serialized
-		undefined	= '!'
+		undefined	= '!' // unspecified component, used mostly for indicating components that is not serialized
 	};
 }
