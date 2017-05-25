@@ -32,12 +32,12 @@ end
 
 action = function(user, target)
 	local weapon_damage, variant, hit, critical = game:hit(user, target)
-	local result_damage = math.floor(weapon_damage * 1.0)
+	local result_damage = math.floor(weapon_damage * 2.0)
 
 	if hit then
 		target:damage(1)
-		game:popup(target:position(), weapon_damage, 0xffcc00, 1.0)
-		game:vfx(target:position(), "e_slash")
+		game:popup(target:position(), result_damage, 0xffcc00, 1.0)
+		game:vfx(target:position(), "e_swipe")
 		--game:vfx_projectile(user:position(), target:position(), "@")
 	end
 end

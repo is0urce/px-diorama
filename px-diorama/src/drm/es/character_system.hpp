@@ -10,8 +10,6 @@
 #include <px/common/assert.hpp>
 #include <px/es/basic_system.hpp>
 
-#include <px/rl/skill/skill_book.hpp>
-
 #pragma warning(push)
 #pragma warning(disable:4127) // warning C4127: conditional expression is constant
 #pragma warning(disable:4702) // warning C4702: unreachable code
@@ -154,7 +152,9 @@ namespace px {
 					, "position", &script_unit::position
 					, "dead", &script_unit::dead
 					, "damage", &script_unit::damage);
-				m_lua.new_usertype<point2>("point");
+				m_lua.new_usertype<point2>("point"
+					, "x", &point2::x
+					, "y", &point2::y);
 				m_lua.new_usertype<script_environment>("environment"
 					, "hit", &script_environment::hit
 					, "distance", &script_environment::distance
@@ -187,8 +187,10 @@ namespace px {
 			void load_skills()
 			{
 				load_skill("data/scripts/sk_v_teleport.lua");
-				load_skill("data/scripts/sk_s_smite.lua");
 				load_skill("data/scripts/sk_v_melee.lua");
+
+				load_skill("data/scripts/sk_s_smite.lua");
+				load_skill("data/scripts/sk_s_rend.lua");
 			}
 
 		private:

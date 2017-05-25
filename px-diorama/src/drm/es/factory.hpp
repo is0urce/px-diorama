@@ -22,9 +22,7 @@
 #include "character_component.hpp"
 #include "npc_system.hpp"
 
-#include <memory>
 #include <string>
-#include <stdexcept>
 
 namespace px {
 

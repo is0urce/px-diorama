@@ -37,12 +37,8 @@
       "meta": "data/img/m_humanoid.json"
     },
     {
-      "path": "data/img/e_slash.png",
-      "meta": "data/img/e_slash.json"
-    },
-    {
-      "path": "data/img/e_swipe.png",
-      "meta": "data/img/e_swipe.json"
+      "path": "data/img/e_melee.png",
+      "meta": "data/img/e_melee.json"
     }
   ]
 }

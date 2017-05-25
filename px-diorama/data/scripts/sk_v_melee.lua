@@ -36,6 +36,6 @@ action = function(user, target)
 	if hit then
 		target:damage(result_damage)
 		game:popup(target:position(), weapon_damage, 0xffcc00, result_damage)
-		game:vfx(target:position(), "e_swipe")
+		game:vfx(target:position(), "e_slash")
 	end
 end

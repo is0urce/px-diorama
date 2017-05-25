@@ -209,9 +209,10 @@ namespace px {
 			itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, i));
 			container->add(itm);
 		}
-		character->learn_skill("sk_v_teleport");
-		character->learn_skill("sk_s_smite");
 		character->learn_skill("sk_v_melee");
+		character->learn_skill("sk_s_smite");
+		character->learn_skill("sk_s_rend");
+		character->learn_skill("sk_v_teleport");
 
 		rl::item weapon;
 		weapon.set_name("weapon");
@@ -235,12 +236,26 @@ namespace px {
 		// units
 
 		spawn("m_snail", { 30, 49 });
-		spawn("m_orc", { 51, 48 });
-		
-		for (int i = 54; i != 60; ++i) spawn("p_bookshelf", { i, 46 });
+
+		//spawn("m_kobold", { 50, 48 });
+		//spawn("m_orc", { 51, 48 });
+		spawn("m_goblin", { 52, 48 });
+
+		//spawn("m_cobold", { 50, 50 });
+		//spawn("m_gnoll", { 51, 50 });
+		//spawn("m_minotaur", { 52, 50 });
+
+		for (int i = 54; i != 58; ++i) spawn("p_bookshelf", { i, 46 });
+		for (int i = 59; i != 61; ++i) spawn("p_bookshelf", { i, 46 });
+		spawn("p_bookshelf", { 54, 47 });
+		spawn("p_bookshelf", { 54, 48 });
+		spawn("p_bookshelf", { 54, 50 });
+		for (int i = 54; i != 61; ++i) spawn("p_bookshelf", { i, 51 });
+
+		spawn("p_box", { 58, 50});
 
 		// player
-		auto player = spawn("@", { 55, 46 });
+		auto player = spawn("@", { 55, 47 });
 
 		impersonate(player->transform());
 	}
