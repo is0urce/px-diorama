@@ -10,7 +10,7 @@
 namespace px {
 	namespace rl {
 
-		enum class effect : int32_t
+		enum class effect : uint32_t
 		{
 			no_effect,
 

@@ -5,10 +5,12 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace px {
 	namespace rl {
 
-		enum class equipment_slot : unsigned int
+		enum class equipment_slot : uint32_t
 		{
 			hand_main,
 			hand_off,

@@ -12,8 +12,6 @@
 
 namespace px {
 
-	class body_component;
-
 	class character_component final
 		: public es::component
 		, public es::link_dispatcher<character_component>

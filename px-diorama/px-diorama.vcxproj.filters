@@ -258,9 +258,6 @@
     <ClInclude Include="src\px\rl\resource.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\rl\equipment_slot.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\drm\rl\actor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -430,6 +427,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\rl\character.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\doll.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\rl\equipment_slot.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

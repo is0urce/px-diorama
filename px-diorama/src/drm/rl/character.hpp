@@ -27,7 +27,8 @@ namespace px {
 			typedef point2 const& area_type;
 
 			typedef skill<actor_type, actor_type, area_type> instance_type;
-			typedef skill_book<std::string, skill_functional<actor_type, actor_type, area_type>, instance_type::state_type> book_type;
+			typedef typename instance_type::state_type state_type;
+			typedef skill_book<std::string, skill_functional<actor_type, actor_type, area_type>, state_type> book_type;
 			typedef skill_set<instance_type, book_type> skillset_type;
 
 		public:

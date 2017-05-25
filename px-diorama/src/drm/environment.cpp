@@ -12,6 +12,7 @@
 
 #include <cereal/types/string.hpp>
 #include <cereal/types/vector.hpp>
+#include <cereal/types/map.hpp>
 
 #include "environment.hpp"
 
@@ -206,6 +207,13 @@ namespace px {
 		}
 		character->learn_skill("sk_v_teleport");
 		character->learn_skill("sk_s_smite");
+
+		rl::item weapon;
+		weapon.set_name("weapon");
+		weapon.set_tag("itm_wpn");
+		weapon.set_description("This is your weapon.");
+		weapon.add(rl::item::enhancement_type::integer(rl::effect::weapon_damage, 6));
+		body->equip(rl::equipment_slot::hand_main, weapon);
 
 		// add to scene
 		auto result = builder.assemble();

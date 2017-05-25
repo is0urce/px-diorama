@@ -279,6 +279,7 @@
     <ClInclude Include="src\px\rgl\rgl.hpp" />
     <ClInclude Include="src\drm\rl\actor.hpp" />
     <ClInclude Include="src\drm\rl\character.hpp" />
+    <ClInclude Include="src\px\rl\doll.hpp" />
     <ClInclude Include="src\px\rl\loot\item.hpp" />
     <ClInclude Include="src\px\rl\skill\skill.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_instance.hpp" />
@@ -298,7 +299,7 @@
     <ClInclude Include="src\px\rl\enhancement.hpp" />
     <ClInclude Include="src\px\rl\enhancement_collection.hpp" />
     <ClInclude Include="src\px\rl\entity.hpp" />
-    <ClInclude Include="src\drm\rl\equipment_slot.hpp" />
+    <ClInclude Include="src\px\rl\equipment_slot.hpp" />
     <ClInclude Include="src\px\rl\loot\inventory.hpp" />
     <ClInclude Include="src\px\rl\loot\basic_item.hpp" />
     <ClInclude Include="src\px\rl\st\map_stream.hpp" />
