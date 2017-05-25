@@ -24,24 +24,24 @@ namespace px {
 			, public doll<rl::equipment_slot, rl::item>
 		{
 		public:
-			typedef resource<int32_t> resource;
+			typedef resource<int32_t> resource_type;
 
 		public:
 
 			// resources
-			const resource& health() const noexcept
+			resource_type const& health() const noexcept
 			{
 				return m_hp;
 			}
-			resource& health() noexcept
+			resource_type & health() noexcept
 			{
 				return m_hp;
 			}
-			const resource& energy() const noexcept
+			resource_type const& energy() const noexcept
 			{
 				return m_mp;
 			}
-			resource& energy() noexcept
+			resource_type & energy() noexcept
 			{
 				return m_mp;
 			}
@@ -51,6 +51,7 @@ namespace px {
 				m_hp.remove();
 				m_mp.remove();
 				clear_faction();
+				strip();
 			}
 
 			template <typename Archive>
@@ -63,8 +64,8 @@ namespace px {
 			}
 
 		private:
-			resource m_hp;
-			resource m_mp;
+			resource_type m_hp;
+			resource_type m_mp;
 		};
 	}
 }

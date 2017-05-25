@@ -26,6 +26,10 @@ namespace px {
 			{
 				m_equipment.erase(slot);
 			}
+			void strip()
+			{
+				m_equipment.clear();
+			}
 			template <typename Operator>
 			void enumerate(Operator && fn)
 			{

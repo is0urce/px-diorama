@@ -8,6 +8,7 @@
 #include "drm/environment.hpp"
 
 #include <string>
+#include <tuple>
 
 namespace px {
 
@@ -29,6 +30,14 @@ namespace px {
 		void emit_projectile(point2 start, point2 end, std::string const& tag)
 		{
 			m_environment->emit_projectile(start, end, tag);
+		}
+		std::tuple<int, int, bool, bool> hit(script_unit const&, script_unit const&)
+		{
+			int magnitude = 5;
+			int variant = 1;
+			bool is_hit = true;
+			bool is_critical = true;
+			return std::tuple<int, int, bool, bool>{ magnitude, variant, is_hit, is_critical };
 		}
 
 	public:

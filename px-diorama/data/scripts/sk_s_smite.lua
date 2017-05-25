@@ -7,6 +7,7 @@ tag = "sk_s_smite"
 
 -- state attributes
 
+duration = 1
 hostile = true
 targeted = true
 min_range = 0
@@ -30,17 +31,13 @@ end
 -- action taken if skill is used
 
 action = function(user, target)
-	--local weapon_damage, weapon_damage_type, is_hit, is_crit = game.hit(user, target)
-	--local result_damage = math.floor(weapon_damage * 2.0)
-	--local hit = true
-	--local result_damage = 3;
+	local weapon_damage, variant, hit, critical = game:hit(user, target)
+	local result_damage = math.floor(weapon_damage * 1.0)
 
-	local weapon_damage = 1
-
-	--if hit then
-	target:damage(1)
-	game:popup(target:position(), weapon_damage, 0xffcc00, 1.0)
-	game:vfx(target:position(), "e_slash")
-	--game:vfx_projectile(user:position(), target:position(), "@")
-	--end
+	if hit then
+		target:damage(1)
+		game:popup(target:position(), weapon_damage, 0xffcc00, 1.0)
+		game:vfx(target:position(), "e_slash")
+		--game:vfx_projectile(user:position(), target:position(), "@")
+	end
 end

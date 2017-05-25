@@ -147,7 +147,7 @@ namespace px {
 		public:
 			character_system()
 			{
-				m_lua.open_libraries(sol::lib::base, sol::lib::package);
+				m_lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math);
 
 				m_lua.new_usertype<script_unit>("unit"
 					, "place", &script_unit::place
@@ -156,6 +156,7 @@ namespace px {
 					, "damage", &script_unit::damage);
 				m_lua.new_usertype<point2>("point");
 				m_lua.new_usertype<script_environment>("environment"
+					, "hit", &script_environment::hit
 					, "distance", &script_environment::distance
 					, "popup", &script_environment::popup
 					, "vfx", &script_environment::emit_vfx
@@ -187,6 +188,7 @@ namespace px {
 			{
 				load_skill("data/scripts/sk_v_teleport.lua");
 				load_skill("data/scripts/sk_s_smite.lua");
+				load_skill("data/scripts/sk_v_melee.lua");
 			}
 
 		private:

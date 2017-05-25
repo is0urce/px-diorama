@@ -207,6 +207,7 @@ namespace px {
 		}
 		character->learn_skill("sk_v_teleport");
 		character->learn_skill("sk_s_smite");
+		character->learn_skill("sk_v_melee");
 
 		rl::item weapon;
 		weapon.set_name("weapon");
