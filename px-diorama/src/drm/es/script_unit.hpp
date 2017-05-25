@@ -34,6 +34,10 @@ namespace px {
 		{
 			return m_body && m_body->health() && m_body->health()->empty();
 		}
+		bool valid() const
+		{
+			return m_body != nullptr;
+		}
 		void damage(int dmg)
 		{
 			if (m_body)	{
@@ -71,6 +75,13 @@ namespace px {
 		}
 
 		// special
+		transform_component * transform()
+		{
+			if (!m_transform) {
+				m_transform = m_body ? m_body->linked<transform_component>() : nullptr;
+			}
+			return m_transform;
+		}
 
 		// provide equality operator
 		bool operator==(script_unit & b)
@@ -83,15 +94,6 @@ namespace px {
 			: m_body(unit_body)
 			, m_transform(nullptr)
 		{
-		}
-
-	private:
-		transform_component * transform()
-		{
-			if (!m_transform) {
-				m_transform = m_body ? m_body->linked<transform_component>() : nullptr;
-			}
-			return m_transform;
 		}
 
 	private:

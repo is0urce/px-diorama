@@ -40,5 +40,10 @@
       "path": "data/img/e_melee.png",
       "meta": "data/img/e_melee.json"
     }
+    ,
+    {
+      "path": "data/img/e_zap.png",
+      "meta": "data/img/e_zap.json"
+    }
   ]
 }

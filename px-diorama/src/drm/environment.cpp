@@ -113,6 +113,11 @@ namespace px {
 	void environment::turn_end()
 	{
 		m_factory->npc()->fixed_update(1);
+		for (auto & vfx : m_visuals) {
+			if (vfx.link) {
+				vfx.transform.place(vfx.link->position());
+			}
+		}
 		++m_turn;
 	}
 	template <typename Action>
@@ -213,6 +218,7 @@ namespace px {
 		character->learn_skill("sk_s_smite");
 		character->learn_skill("sk_s_rend");
 		character->learn_skill("sk_s_flurry");
+		character->learn_skill("sk_i_pain");
 		character->learn_skill("sk_v_teleport");
 
 		rl::item weapon;
@@ -236,7 +242,7 @@ namespace px {
 
 		// units
 
-		spawn("m_snail", { 30, 49 });
+		spawn("m_snail", { 40, 49 });
 
 		//spawn("m_kobold", { 50, 48 });
 		//spawn("m_orc", { 51, 48 });
@@ -491,13 +497,17 @@ namespace px {
 		m_notifications[location].push_back({ text, tint, size });
 	}
 
-	void environment::emit_vfx(point2 location, std::string const& tag)
+	void environment::visual(std::string const& tag, point2 location)
 	{
-		emit_projectile(location, location, tag);
+		projectile(tag, location, location, nullptr);
 	}
-	void environment::emit_projectile(point2 start, point2 end, std::string const& tag)
+	void environment::projectile(std::string const& tag, point2 start, point2 end)
 	{
-		m_visuals.push_back({ { end, start }, m_factory->sprites()->make_unique(tag) });
+		projectile(tag, start, end, nullptr);
+	}
+	void environment::projectile(std::string const& tag, point2 start, point2 destination, transform_component const* follow)
+	{
+		m_visuals.push_back({ m_factory->sprites()->make_unique(tag),{ destination, start }, follow });
 		auto & vfx = m_visuals.back();
 
 		vfx.sprite->connect(&vfx.transform);

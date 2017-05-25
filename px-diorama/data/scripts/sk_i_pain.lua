@@ -34,6 +34,6 @@ action = function(user, target)
 	if hit then
 		target:damage(1)
 		game:popup(target:position(), result_damage, 0xffcc00, 1.0)
-		game:vfx_projectile(user:position(), target:position(), "@")
+		game:vfx_missile(user:position(), target, "e_zap")
 	end
 end

@@ -14,7 +14,8 @@ namespace px {
 
 	struct vfx
 	{
-		transform_component transform;
 		es::sprite_system::unique_ptr sprite;
+		transform_component transform;
+		transform_component const* link;
 	};
 }
