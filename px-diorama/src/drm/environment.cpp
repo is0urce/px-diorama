@@ -212,6 +212,7 @@ namespace px {
 		character->learn_skill("sk_v_melee");
 		character->learn_skill("sk_s_smite");
 		character->learn_skill("sk_s_rend");
+		character->learn_skill("sk_s_flurry");
 		character->learn_skill("sk_v_teleport");
 
 		rl::item weapon;

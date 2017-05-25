@@ -191,6 +191,7 @@ namespace px {
 
 				load_skill("data/scripts/sk_s_smite.lua");
 				load_skill("data/scripts/sk_s_rend.lua");
+				load_skill("data/scripts/sk_s_flurry.lua");
 			}
 
 		private:
