@@ -44,6 +44,11 @@ namespace px {
 			{
 				m_pool.enumerate(std::forward<Operator>(op));
 			}
+			template <typename Operator>
+			void enumerate(Operator && op)
+			{
+				m_pool.enumerate(std::forward<Operator>(op));
+			}
 			void clear()
 			{
 				m_pool.clear();

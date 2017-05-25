@@ -20,6 +20,7 @@
 #include "player_component.hpp"
 #include "workshop_component.hpp"
 #include "character_component.hpp"
+#include "npc_system.hpp"
 
 #include <memory>
 #include <string>
@@ -62,6 +63,10 @@ namespace px {
 		{
 			return px::make_shared<workshop_component>();
 		}
+		auto make_npc()
+		{
+			return m_npc.make_shared();
+		}
 
 		auto sprites()
 		{
@@ -74,6 +79,10 @@ namespace px {
 		auto characters()
 		{
 			return &m_characters;
+		}
+		auto npc()
+		{
+			return &m_npc;
 		}
 
 	public:
@@ -89,5 +98,6 @@ namespace px {
 		es::body_system			m_bodies;
 		es::container_system	m_containers;
 		es::character_system	m_characters;
+		es::npc_system			m_npc;
 	};
 }

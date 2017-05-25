@@ -193,6 +193,8 @@
     <ClInclude Include="src\drm\es\character_component.hpp" />
     <ClInclude Include="src\drm\es\character_system.hpp" />
     <ClInclude Include="src\drm\es\container_system.hpp" />
+    <ClInclude Include="src\drm\es\npc_component.hpp" />
+    <ClInclude Include="src\drm\es\npc_system.hpp" />
     <ClInclude Include="src\drm\es\player_component.hpp" />
     <ClInclude Include="src\drm\es\script_environment.hpp" />
     <ClInclude Include="src\drm\es\storage_component.hpp" />
@@ -329,7 +331,10 @@
     <None Include="data\controls.json" />
     <None Include="data\img\dirt32.json" />
     <None Include="data\img\gnome32.json" />
+    <None Include="data\img\m_beasts.json" />
+    <None Include="data\img\m_humanoid.json" />
     <None Include="data\img\m_snake32.json" />
+    <None Include="data\img\p_furniture.json" />
     <None Include="data\img\taurus32.json" />
     <None Include="data\img\wall32.json" />
     <None Include="data\scripts\sk_d_ambush.lua" />

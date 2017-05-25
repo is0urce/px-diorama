@@ -435,6 +435,12 @@
     <ClInclude Include="src\px\rl\equipment_slot.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\es\npc_component.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\es\npc_system.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -487,5 +493,8 @@
     <None Include="data\scripts\sk_s_rend.lua" />
     <None Include="data\scripts\sk_s_shield.lua" />
     <None Include="data\scripts\sk_s_smite.lua" />
+    <None Include="data\img\p_furniture.json" />
+    <None Include="data\img\m_humanoid.json" />
+    <None Include="data\img\m_beasts.json" />
   </ItemGroup>
 </Project>

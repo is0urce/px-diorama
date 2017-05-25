@@ -30,8 +30,23 @@ namespace px {
 			{
 				m_equipment.clear();
 			}
+			item_type & operator[](slot_type slot)
+			{
+				return m_equipment[slot];
+			}
+			item_type const& operator[](slot_type slot) const
+			{
+				return m_equipment[slot];
+			}
 			template <typename Operator>
 			void enumerate(Operator && fn)
+			{
+				for (auto & kv_pair : m_equipment) {
+					fn(kv_pair.second);
+				}
+			}
+			template <typename Operator>
+			void enumerate(Operator && fn) const
 			{
 				for (auto const& kv_pair : m_equipment) {
 					fn(kv_pair.second);

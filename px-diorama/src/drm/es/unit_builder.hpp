@@ -45,6 +45,10 @@ namespace px {
 		{
 			return m_character = m_factory->make_character();
 		}
+		auto add_npc()
+		{
+			return m_npc = m_factory->make_npc();
+		}
 
 		// combine
 		std::shared_ptr<unit> assemble()
@@ -102,6 +106,11 @@ namespace px {
 
 			if (m_storage && m_container)	m_storage->connect(m_container.get());
 			if (m_container && m_transform) m_container->connect(m_transform.get());
+
+			if (m_npc) {
+				if (m_transform)	m_npc->connect(m_transform.get());
+				if (m_character)	m_npc->connect(m_character.get());
+			}
 		}
 		template <typename Container>
 		void compose_unit(Container & product)
@@ -113,6 +122,7 @@ namespace px {
 			if (m_storage)		product.add(m_storage);
 			if (m_player)		product.add(m_player);
 			if (m_character)	product.add(m_character);
+			if (m_npc)			product.add(m_npc);
 		}
 
 	private:
@@ -125,5 +135,6 @@ namespace px {
 		shared_ptr<container_component>		m_container;
 		shared_ptr<storage_component>		m_storage;
 		shared_ptr<player_component>		m_player;
+		shared_ptr<npc_component>			m_npc;
 	};
 }

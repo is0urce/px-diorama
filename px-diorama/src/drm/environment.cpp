@@ -112,6 +112,7 @@ namespace px {
 	}
 	void environment::turn_end()
 	{
+		m_factory->npc()->fixed_update(1);
 		++m_turn;
 	}
 	template <typename Action>
@@ -191,6 +192,9 @@ namespace px {
 		auto storage = builder.add_storage();
 		auto character = builder.add_character();
 
+		if (name == "@") builder.add_player();
+		if (name == "m_snail") builder.add_npc();
+
 		// setup
 		transform->store_position();
 		body->health()->set(100);
@@ -230,7 +234,7 @@ namespace px {
 
 		// units
 
-		spawn("m_snail", { 50, 48 });
+		spawn("m_snail", { 30, 49 });
 		spawn("m_orc", { 51, 48 });
 		
 		for (int i = 54; i != 60; ++i) spawn("p_bookshelf", { i, 46 });
@@ -238,7 +242,6 @@ namespace px {
 		// player
 		auto player = spawn("@", { 55, 46 });
 
-		player->add(m_factory->make_player());
 		impersonate(player->transform());
 	}
 	void environment::generate_terrain()
