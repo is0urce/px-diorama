@@ -176,6 +176,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\lodepng.cpp" />
     <ClCompile Include="src\drm\environment.cpp" />
     <ClCompile Include="src\drm\es\storage_component.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
