@@ -11,7 +11,11 @@
 #define _USE_MATH_DEFINES // M_PI in cmath before it's included by anyone else
 #include <cmath>
 
+#pragma warning(push) // avoid comlile warnings
+#pragma warning(disable:4334) // warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+#pragma warning(disable:4267) // warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
 #include <lodepng.cpp>
+#pragma warning(pop)
 
 //#include <msdf/core/Bitmap.cpp>
 //#include <msdf/core/Contour.cpp>

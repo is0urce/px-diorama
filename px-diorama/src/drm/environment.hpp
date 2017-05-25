@@ -70,6 +70,8 @@ namespace px {
 	public:
 		~environment();
 		environment();
+		environment(environment const&) = delete;
+		environment & operator=(environment const&) = delete;
 
 	private:
 		void turn_begin();
