@@ -496,5 +496,6 @@
     <None Include="data\img\p_furniture.json" />
     <None Include="data\img\m_humanoid.json" />
     <None Include="data\img\m_beasts.json" />
+    <None Include="data\scripts\sk_i_pain.lua" />
   </ItemGroup>
 </Project>
