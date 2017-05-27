@@ -14,7 +14,7 @@
 #include "vfx.hpp"
 
 #include <px/common/coordinate.hpp>
-#include <px/common/coordinate_ext.hpp>
+#include <px/common/coordinate_ext.hpp> // lex_less
 
 #include <list>
 #include <map>
@@ -39,7 +39,7 @@ namespace px {
 		bool running() const noexcept;
 		void shutdown() noexcept;
 		void start();
-		void clear();
+		void end();
 		void impersonate(transform_component * player);
 		std::shared_ptr<unit> spawn(std::string const& name, point2 location);
 
@@ -98,7 +98,7 @@ namespace px {
 		std::map<point2, std::vector<notification>, lex_less> m_notifications;	// popups container
 
 		unsigned int						m_turn;				// current turn
-		terrain_chunk<tile>					m_map;				// terrain
+		terrain_chunk<tile_instance>		m_map;				// terrain
 		std::vector<std::shared_ptr<unit>>	m_units;			// scene
 		transform_component *				m_player;			// player transform
 

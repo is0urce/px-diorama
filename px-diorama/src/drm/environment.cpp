@@ -4,15 +4,11 @@
 #define SAVE_BINARY 1
 
 #if SAVE_BINARY
-#include <cereal/archives/binary.hpp>
+#define SAVE_ARCHIVE <cereal/archives/binary.hpp>
 #endif
 #if SAVE_READABLE
-#include <cereal/archives/xml.hpp>
+#define SAVE_ARCHIVE <cereal/archives/xml.hpp>
 #endif
-
-#include <cereal/types/string.hpp>
-#include <cereal/types/vector.hpp>
-#include <cereal/types/map.hpp>
 
 #include "environment.hpp"
 
@@ -20,11 +16,12 @@
 #include "es/unit_builder.hpp"
 #include "es/unit_component.hpp"
 
-#include "fn/generator.hpp"
-#include <px/fn/bsp.hpp>
-
 #include <px/ui/panel.hpp>
 
+#include SAVE_ARCHIVE
+#include <cereal/types/string.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/map.hpp>
 #include <json.hpp>
 #include <fstream>
 
@@ -38,7 +35,7 @@ namespace px {
 
 	environment::~environment()
 	{
-		clear();
+		end();
 		m_map.resize({ 0,0 });
 	}
 
@@ -57,11 +54,13 @@ namespace px {
 	{
 		return m_run;
 	}
+
 	void environment::shutdown() noexcept
 	{
 		m_run = false;
 	}
-	void environment::clear()
+
+	void environment::end()
 	{
 		m_units.clear();
 		impersonate(nullptr);
@@ -130,7 +129,6 @@ namespace px {
 			turn_end();
 		}
 	}
-
 	void environment::target(point2 relative_world_coordinates)
 	{
 		m_hover = relative_world_coordinates + (m_player ? m_player->position() : point2(0, 0));
@@ -236,12 +234,14 @@ namespace px {
 
 		return result;
 	}
+
 	void environment::start()
 	{
 		// terrain
 		m_map.assigns_sprites(m_factory->sprites());
 		m_map.resize({ 100, 100 });
 		m_map.generate();
+		m_map.dump("level0.dat");
 
 		// units
 
@@ -305,7 +305,7 @@ namespace px {
 		cereal::BinaryInputArchive archive(input);
 #endif
 
-		clear();
+		end();
 
 		archive(m_turn);
 		load_units(archive);
@@ -432,6 +432,7 @@ namespace px {
 	{
 		return m_ui.main();
 	}
+
 	void environment::expose_inventory(container_component * storage_container)
 	{
 		auto user_body = m_player ? m_player->linked<body_component>() : nullptr;

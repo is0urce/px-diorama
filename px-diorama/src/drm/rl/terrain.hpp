@@ -2,12 +2,13 @@
 
 #pragma once
 
+#include "configuration.hpp"
 #include "es/sprite_system.hpp"
-#include "drm/es/transform_component.hpp"
+#include "es/transform_component.hpp"
 
 #include "tile_prototype.hpp"
 #include "tile_library.hpp"
-#include "../configuration.hpp"
+#include "tile_instance.hpp"
 
 #include <px/common/assert.hpp>
 #include <px/common/matrix.hpp>
@@ -19,20 +20,11 @@
 #include "fn/generator.hpp"
 #include <px/fn/bsp.hpp>
 
+#include <cstdint>
+#include <fstream>
+#include <string>
+
 namespace px {
-
-	struct tile
-	{
-		// use transform on stack to avoid exessive management of simple anchor points
-		transform_component transform;
-
-		// two sprites to composite tiles
-		es::sprite_system::unique_ptr ground;
-		es::sprite_system::unique_ptr wall;
-
-		// attributes of a tile
-		rl::mass<rl::traverse> mass;
-	};
 
 	template <typename Tile>
 	class terrain_chunk
@@ -78,13 +70,28 @@ namespace px {
 			m_matrix.enumerate([&](auto const& point, auto & tile) {
 				switch (digged_map[point]) {
 				case 1: {
-					write(tile, 1);
+					setup(tile, 1);
 					break;
 				}
 				default:
-					write(tile, std::rand() % 3 == 0 ? 2 : 3);
+					setup(tile, std::rand() % 3 == 0 ? 2 : 3);
 					break;
 				}
+			});
+		}
+		void dump(std::string const& name) const
+		{
+			std::ofstream stream(name, std::ofstream::binary);
+			m_matrix.enumerate([&](auto const& /* position */, auto const& tile) {
+				stream.write(reinterpret_cast<char const*>(&tile.id), sizeof(tile.id));
+			});
+		}
+		void load(std::string const& name)
+		{
+			std::ifstream stream(name, std::ifstream::binary);
+			m_matrix.enumerate([&](auto const& /* position */, auto & tile) {
+				stream.read(reinterpret_cast<char *>(&tile.id), sizeof(tile.id));
+				invalidate(tile);
 			});
 		}
 
@@ -96,9 +103,9 @@ namespace px {
 		}
 
 	private:
-		void write(tile_type & tile, uint32_t id) const
+		void invalidate(tile_type & tile) const
 		{
-			auto & prototype = m_library.at(id);
+			auto & prototype = m_library.at(tile.id);
 
 			tile.mass = prototype.mass;
 
@@ -108,6 +115,11 @@ namespace px {
 				tile.ground->connect(&tile.transform);
 				tile.ground->activate();
 			}
+		}
+		void setup(tile_type & tile, uint32_t id) const
+		{
+			tile.id = id;
+			invalidate(tile);
 		}
 
 	private:
