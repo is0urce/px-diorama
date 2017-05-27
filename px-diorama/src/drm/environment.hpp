@@ -57,10 +57,7 @@ namespace px {
 		void expose_inventory(container_component * inventory);
 		void open_workshop(unsigned int workshop);
 		void popup(point2 location, std::string text, color tint, float size);
-		void visual(std::string const& tag, point2 location);
-		void projectile(std::string const& tag, point2 from, point2 destination);
-		void projectile(std::string const& tag, point2 from, transform_component * destination);
-		void projectile(std::string const& tag, point2 from, point2 destination, transform_component const* follow);
+		void visual(std::string const& tag, point2 from, point2 destination, transform_component const* follow);
 
 		// serialization
 

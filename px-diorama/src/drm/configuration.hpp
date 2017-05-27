@@ -11,5 +11,6 @@ namespace px {
 		char const* configuration_path = "data/config.json";
 		char const* keybindings_path = "data/controls.json";
 		char const* textureatlas_path = "data/textures.json";
+		char const* tiles_path = "data/tiles.json";
 	}
 }

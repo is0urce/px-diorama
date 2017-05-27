@@ -298,11 +298,13 @@ namespace px {
 
 			tile.ground.reset();
 
-			tile.wall = m_factory->sprites()->make_unique("t_dirt");
+			tile.wall = m_factory->sprites()->make_unique("t_moss");
 			tile.wall->connect(&tile.transform);
 			tile.wall->activate();
 
-			tile.mass.make_ground();
+			m_map.pset(point, 1);
+
+			//tile.mass.make_ground();
 		});
 	}
 
@@ -497,15 +499,7 @@ namespace px {
 		m_notifications[location].push_back({ text, tint, size });
 	}
 
-	void environment::visual(std::string const& tag, point2 location)
-	{
-		projectile(tag, location, location, nullptr);
-	}
-	void environment::projectile(std::string const& tag, point2 start, point2 end)
-	{
-		projectile(tag, start, end, nullptr);
-	}
-	void environment::projectile(std::string const& tag, point2 start, point2 destination, transform_component const* follow)
+	void environment::visual(std::string const& tag, point2 start, point2 destination, transform_component const* follow)
 	{
 		m_visuals.push_back({ m_factory->sprites()->make_unique(tag),{ destination, start }, follow });
 		auto & vfx = m_visuals.back();

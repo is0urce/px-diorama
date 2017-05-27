@@ -25,15 +25,15 @@ namespace px {
 		}
 		void emit_vfx(point2 location, std::string const& tag)
 		{
-			m_environment->visual(tag, location);
+			m_environment->visual(tag, location, location, nullptr);
 		}
 		void emit_projectile(point2 start, point2 end, std::string const& tag)
 		{
-			m_environment->projectile(tag, start, end);
+			m_environment->visual(tag, start, end, nullptr);
 		}
 		void emit_missile(point2 start, script_unit & target, std::string const& tag)
 		{
-			m_environment->projectile(tag, start, target.position(), target.transform());
+			m_environment->visual(tag, start, target.position(), target.transform());
 		}
 		std::tuple<int, int, bool, bool> hit(script_unit const&, script_unit const&)
 		{

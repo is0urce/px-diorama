@@ -1,8 +1,8 @@
 {
   "textures": [
     {
-      "path": "data/img/t_dirt.png",
-      "meta": "data/img/t_dirt.json"
+      "path": "data/img/t_ground.png",
+      "meta": "data/img/t_ground.json"
     },
     {
       "path": "data/img/t_dirt_wall.png",

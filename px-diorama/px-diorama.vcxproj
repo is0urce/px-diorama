@@ -206,6 +206,7 @@
     <ClInclude Include="src\drm\es\container_component.hpp" />
     <ClInclude Include="src\drm\rl\notification.hpp" />
     <ClInclude Include="src\drm\rl\recipe.hpp" />
+    <ClInclude Include="src\drm\rl\tile_library.hpp" />
     <ClInclude Include="src\drm\sprite.hpp" />
     <ClInclude Include="src\drm\es\sprite_component.hpp" />
     <ClInclude Include="src\drm\es\sprite_system.hpp" />
@@ -364,6 +365,7 @@
     <None Include="data\shaders\uitext.vert" />
     <None Include="data\skills.json" />
     <None Include="data\textures.json" />
+    <None Include="data\tiles.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

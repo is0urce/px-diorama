@@ -441,6 +441,9 @@
     <ClInclude Include="src\drm\es\npc_system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\rl\tile_library.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -497,5 +500,6 @@
     <None Include="data\img\m_humanoid.json" />
     <None Include="data\img\m_beasts.json" />
     <None Include="data\scripts\sk_i_pain.lua" />
+    <None Include="data\tiles.json" />
   </ItemGroup>
 </Project>

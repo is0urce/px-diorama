@@ -1,0 +1,10 @@
+{
+  "tiles": [
+    {
+      "id": 1,
+      "transparent": true,
+      "traversable": 1,
+      "background": "t_dirt"
+    }
+  ]
+}
