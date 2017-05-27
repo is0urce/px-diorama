@@ -20,12 +20,14 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace px {
 
 	class factory;
 	class perception;
+	class body_component;
 
 	class environment
 	{
@@ -52,10 +54,13 @@ namespace px {
 
 		ui::panel * ui() noexcept;
 		ui::panel const* ui() const noexcept;
+
+		// interaction
 		void expose_inventory(container_component * inventory);
 		void open_workshop(unsigned int workshop);
 		void popup(point2 location, std::string text, color tint, float size);
 		void visual(std::string const& tag, point2 from, point2 destination, transform_component const* follow);
+		std::tuple<int, int, bool, bool> hit(body_component const&, body_component const&) const;
 
 		// serialization
 

@@ -30,6 +30,7 @@ namespace px {
 				value1 += rhs.value1;
 				magnitude0 += rhs.magnitude0;
 				magnitude1 += rhs.magnitude1;
+				main_type = rhs.main_type;
 				subtype = rhs.subtype;
 				return *this;
 			}
@@ -39,6 +40,7 @@ namespace px {
 				value1 *= rhs.value1;
 				magnitude0 *= rhs.magnitude0;
 				magnitude1 *= rhs.magnitude1;
+				main_type = rhs.main_type;
 				subtype = rhs.subtype;
 				return *this;
 			}
@@ -50,6 +52,13 @@ namespace px {
 			}
 
 			enhancement()
+				: subtype(0)
+				, value0(0)
+				, value1(0)
+				, magnitude0(0)
+				, magnitude1(0)
+				, disabled(false)
+				, hidden(false)
 			{
 			}
 			enhancement(effect_type general_type, int_t main_value)
@@ -89,12 +98,12 @@ namespace px {
 		namespace
 		{
 			template <typename E>
-			bool operator==(enhancement<E> const& lh, enhancement<E> const& rh) noexcept
+			inline bool operator==(enhancement<E> const& lh, enhancement<E> const& rh) noexcept
 			{
 				return std::memcmp(&lh, &rh, sizeof(enhancement<E>)) == 0;
 			}
 			template <typename E>
-			bool operator!=(enhancement<E> const& lh, enhancement<E> const& rh) noexcept
+			inline bool operator!=(enhancement<E> const& lh, enhancement<E> const& rh) noexcept
 			{
 				return !operator=(lh, rh);
 			}

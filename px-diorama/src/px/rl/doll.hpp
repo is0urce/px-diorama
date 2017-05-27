@@ -34,9 +34,9 @@ namespace px {
 			{
 				return m_equipment[slot];
 			}
-			item_type const& operator[](slot_type slot) const
+			item_type const& at(slot_type slot) const
 			{
-				return m_equipment[slot];
+				return m_equipment.at(slot);
 			}
 			template <typename Operator>
 			void enumerate(Operator && fn)

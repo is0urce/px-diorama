@@ -75,6 +75,9 @@ namespace px {
 		}
 
 		// special
+		body_component * body() const noexcept {
+			return m_body;
+		}
 		transform_component * transform()
 		{
 			if (!m_transform) {

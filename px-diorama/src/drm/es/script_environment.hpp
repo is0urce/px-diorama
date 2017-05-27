@@ -35,13 +35,14 @@ namespace px {
 		{
 			m_environment->visual(tag, start, target.position(), target.transform());
 		}
-		std::tuple<int, int, bool, bool> hit(script_unit const&, script_unit const&)
+		std::tuple<int, int, bool, bool> hit(script_unit const& attacker, script_unit const& versus)
 		{
-			int magnitude = 5;
-			int variant = 1;
-			bool is_hit = true;
-			bool is_critical = true;
-			return std::tuple<int, int, bool, bool>{ magnitude, variant, is_hit, is_critical };
+			body_component * user = attacker.body();
+			body_component * vs = versus.body();
+
+			if (!user || !vs) return {};
+
+			return m_environment->hit(*user, *vs);	
 		}
 
 	public:

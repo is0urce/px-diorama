@@ -35,6 +35,7 @@ action = function(user, target)
 	local result_damage = math.floor(weapon_damage * 1.25)
 
 	if hit then
+		target:damage(result_damage)
 		game:popup(target:position(), result_damage, 0xffcc00, 1.0)
 		game:vfx(target:position(), "e_flurry")
 	end

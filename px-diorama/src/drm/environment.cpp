@@ -463,4 +463,15 @@ namespace px {
 		vfx.sprite->connect(&vfx.transform);
 		vfx.sprite->activate();
 	}
+	std::tuple<int, int, bool, bool> environment::hit(body_component const& attacker, body_component const& /* versus */) const
+	{
+		auto weapon_damage = attacker.at(rl::equipment_slot::hand_main).accumulate<rl::effect::weapon_damage>();
+
+		int magnitude = weapon_damage.value0;
+		int variant = weapon_damage.subtype;
+		bool is_hit = true;
+		bool is_critical = true;
+
+		return std::tuple<int, int, bool, bool>{ magnitude, variant, is_hit, is_critical };
+	}
 }
