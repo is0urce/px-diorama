@@ -243,14 +243,7 @@ namespace px {
 		// units
 
 		spawn("m_snail", { 40, 49 });
-
-		//spawn("m_kobold", { 50, 48 });
-		//spawn("m_orc", { 51, 48 });
 		spawn("m_goblin", { 52, 48 });
-
-		//spawn("m_cobold", { 50, 50 });
-		//spawn("m_gnoll", { 51, 50 });
-		//spawn("m_minotaur", { 52, 50 });
 
 		for (int i = 54; i != 58; ++i) spawn("p_bookshelf", { i, 46 });
 		for (int i = 59; i != 61; ++i) spawn("p_bookshelf", { i, 46 });
@@ -270,11 +263,10 @@ namespace px {
 	{
 		point2 range(100, 100);
 		m_map.resize(range);
+		m_map.assigns_sprites(m_factory->sprites());
+
 		rectangle(range).enumerate([this](auto const& point) {
 			auto & tile = m_map[point];
-
-			tile.transform.move(point);
-			tile.transform.store_position();
 
 			if (std::rand() % 3 == 0) {
 				tile.ground = m_factory->sprites()->make_unique("t_moss_wall");
@@ -292,19 +284,7 @@ namespace px {
 		matrix2<unsigned char> map(100, 100);
 		dig.rasterize(map);
 		map.enumerate([this](auto const& point, auto terrain_variant) {
-			auto & tile = m_map[point];
-
-			if (terrain_variant == 0) return;
-
-			tile.ground.reset();
-
-			tile.wall = m_factory->sprites()->make_unique("t_moss");
-			tile.wall->connect(&tile.transform);
-			tile.wall->activate();
-
-			m_map.pset(point, 1);
-
-			//tile.mass.make_ground();
+			if (terrain_variant == 1) m_map.pset(point, 1);
 		});
 	}
 

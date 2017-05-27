@@ -99,14 +99,12 @@ namespace px {
 			}
 		}
 		template <typename Operator>
-		void enumerate(Operator&& op)
+		void enumerate(Operator && op)
 		{
 			size_t index = 0;
-			for (unsigned int j = 0; j < H; ++j)
-			{
-				for (unsigned int i = 0; i < W; ++i)
-				{
-					std::forward<Operator>(op)(point2(static_cast<point2::component>(i), static_cast<point2::component>(j)), m_data[index]);
+			for (unsigned int j = 0; j < H; ++j) {
+				for (unsigned int i = 0; i < W; ++i) {
+					op(point2(static_cast<point2::component>(i), static_cast<point2::component>(j)), m_data[index]);
 					++index;
 				}
 			}
@@ -311,11 +309,9 @@ namespace px {
 		void enumerate(Operator && op)
 		{
 			size_t index = 0;
-			for (size_t j = 0; j < m_height; ++j)
-			{
-				for (size_t i = 0; i < m_width; ++i)
-				{
-					std::forward<Operator>(op)(point2(static_cast<point2::component>(i), static_cast<point2::component>(j)), m_data[index]);
+			for (size_t j = 0; j < m_height; ++j) {
+				for (size_t i = 0; i < m_width; ++i) {
+					op(point2(static_cast<point2::component>(i), static_cast<point2::component>(j)), m_data[index]);
 					++index;
 				}
 			}

@@ -17,12 +17,12 @@ namespace px {
 		Attributes mass;
 	};
 
-	// where Props is tile_props<Mass>
-	template <typename Tile>
+	// where Props is tile_props<mass<Layers>>
+	template <typename TilePrototype>
 	class tile_library
 	{
 	public:
-		typedef Tile tile_type;
+		typedef TilePrototype tile_type;
 		typedef decltype(tile_type{}.mass) mass_type;
 		typedef std::bitset<mass_type::traverse_layers> bitset_type;
 
@@ -48,6 +48,6 @@ namespace px {
 		}
 
 	private:
-		std::map<uint32_t, Tile> m_dictionary;
+		std::map<uint32_t, tile_type> m_dictionary;
 	};
 }

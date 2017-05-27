@@ -36,10 +36,6 @@ namespace px {
 		typedef Tile tile_type;
 
 	public:
-		void resize(point2 const& size)
-		{
-			m_matrix.resize(size);
-		}
 		bool traversable(point2 const& position) const noexcept
 		{
 			return m_matrix.contains(position) && m_matrix[position].mass.traversable();
@@ -50,7 +46,27 @@ namespace px {
 		}
 		void pset(point2 const& position, uint32_t id)
 		{
-			m_matrix[position].mass = m_library[id].mass;
+			auto & tile = m_matrix[position];
+			auto & prototype = m_library[id];
+			tile.mass = prototype.mass;
+
+			if (m_sprites) {
+				tile.ground = m_sprites->make_unique(prototype.background);
+				tile.ground->connect(&tile.transform);
+				tile.ground->activate();
+			}
+		}
+		void assigns_sprites(es::sprite_system * sprites)
+		{
+			m_sprites = sprites;
+		}
+		void resize(point2 const& range)
+		{
+			m_matrix.resize(range);
+			m_matrix.enumerate([this](auto const& point, auto & tile) {
+				tile.transform.move(point);
+				tile.transform.store_position();
+			});
 		}
 
 	public:
@@ -63,5 +79,6 @@ namespace px {
 	private:
 		matrix2<tile_type> m_matrix;
 		tile_library<tile_attributes<rl::mass<rl::traverse>>> m_library;
+		es::sprite_system * m_sprites;
 	};
 }
