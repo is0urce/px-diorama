@@ -207,6 +207,7 @@
     <ClInclude Include="src\drm\rl\notification.hpp" />
     <ClInclude Include="src\drm\rl\recipe.hpp" />
     <ClInclude Include="src\drm\rl\tile_library.hpp" />
+    <ClInclude Include="src\drm\rl\tile_prototype.hpp" />
     <ClInclude Include="src\drm\sprite.hpp" />
     <ClInclude Include="src\drm\es\sprite_component.hpp" />
     <ClInclude Include="src\drm\es\sprite_system.hpp" />

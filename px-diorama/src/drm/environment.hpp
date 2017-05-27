@@ -75,7 +75,6 @@ namespace px {
 	private:
 		void turn_begin();
 		void turn_end();
-		void generate_terrain();
 		transform_component * find_any(point2 const& position);
 
 		template <typename Action>

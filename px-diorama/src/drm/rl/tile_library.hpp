@@ -3,33 +3,29 @@
 #pragma once
 
 #include <bitset>
-#include <cstdint>
 #include <map>
-#include <string>
 
 namespace px {
 
-	template <typename Attributes>
-	struct tile_attributes
-	{
-		uint32_t id;
-		std::string background;
-		Attributes mass;
-	};
-
-	// where Props is tile_props<mass<Layers>>
+	// where Props is tile_prototype
 	template <typename TilePrototype>
 	class tile_library
 	{
 	public:
 		typedef TilePrototype tile_type;
+		typedef decltype(tile_type{}.id) id_type;
 		typedef decltype(tile_type{}.mass) mass_type;
+		typedef decltype(tile_type{}.background) sprite_type;
 		typedef std::bitset<mass_type::traverse_layers> bitset_type;
 
 	public:
-		tile_type const& operator[](uint32_t id) const
+		tile_type const& at(uint32_t id) const
 		{
 			return m_dictionary.at(id);
+		}
+		tile_type & operator[](uint32_t id)
+		{
+			return m_dictionary[id];
 		}
 		template <typename Document>
 		void load(Document && document)
@@ -37,8 +33,8 @@ namespace px {
 			for (auto const& node : document) {
 
 				// read
-				uint32_t id = node["id"];
-				std::string name = node["background"];
+				id_type id = node["id"];
+				sprite_type name = node["background"];
 				unsigned long long layers = node["traversable"];
 				bool transparent = node["transparent"];
 
@@ -48,6 +44,6 @@ namespace px {
 		}
 
 	private:
-		std::map<uint32_t, tile_type> m_dictionary;
+		std::map<id_type, tile_type> m_dictionary;
 	};
 }

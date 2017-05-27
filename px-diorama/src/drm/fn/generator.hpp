@@ -41,7 +41,7 @@ namespace px {
 			}
 
 			template <typename Random>
-			void generate(Random & rng, int min, int max, int border, int rooms)
+			void generate(Random && rng, int min, int max, int border, int rooms)
 			{
 				point2 center = map_bounds.range() / 2;
 				point2 range = random_range(rng, { min, min }, { max, max });

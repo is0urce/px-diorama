@@ -5,6 +5,18 @@
       "transparent": true,
       "traversable": 1,
       "background": "t_dirt"
+    },
+    {
+      "id": 2,
+      "transparent": false,
+      "traversable": 0,
+      "background": "t_dirt_wall"
+    },
+    {
+      "id": 3,
+      "transparent": false,
+      "traversable": 0,
+      "background": "t_moss_wall"
     }
   ]
 }

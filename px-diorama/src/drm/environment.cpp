@@ -19,10 +19,11 @@
 #include "perception.hpp"
 #include "es/unit_builder.hpp"
 #include "es/unit_component.hpp"
+
 #include "fn/generator.hpp"
+#include <px/fn/bsp.hpp>
 
 #include <px/ui/panel.hpp>
-#include <px/fn/bsp.hpp>
 
 #include <json.hpp>
 #include <fstream>
@@ -238,7 +239,9 @@ namespace px {
 	void environment::start()
 	{
 		// terrain
-		generate_terrain();
+		m_map.assigns_sprites(m_factory->sprites());
+		m_map.resize({ 100, 100 });
+		m_map.generate();
 
 		// units
 
@@ -258,34 +261,6 @@ namespace px {
 		auto player = spawn("@", { 55, 47 });
 
 		impersonate(player->transform());
-	}
-	void environment::generate_terrain()
-	{
-		point2 range(100, 100);
-		m_map.resize(range);
-		m_map.assigns_sprites(m_factory->sprites());
-
-		rectangle(range).enumerate([this](auto const& point) {
-			auto & tile = m_map[point];
-
-			if (std::rand() % 3 == 0) {
-				tile.ground = m_factory->sprites()->make_unique("t_moss_wall");
-			}
-			else tile.ground = m_factory->sprites()->make_unique("t_dirt_wall");
-			tile.ground->connect(&tile.transform);
-			tile.ground->activate();
-
-			tile.mass.make_wall();
-		});
-
-		std::mt19937 rng;
-		fn::dig_generator dig(100, 100);
-		dig.generate(rng, 4, 7, 1, 15);
-		matrix2<unsigned char> map(100, 100);
-		dig.rasterize(map);
-		map.enumerate([this](auto const& point, auto terrain_variant) {
-			if (terrain_variant == 1) m_map.pset(point, 1);
-		});
 	}
 
 	void environment::add_spritesheet(std::string const& path, bool reverse_y)
