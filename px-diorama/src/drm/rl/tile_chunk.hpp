@@ -27,7 +27,7 @@
 namespace px {
 
 	template <typename Tile>
-	class terrain_chunk
+	class tile_chunk
 	{
 	public:
 		typedef Tile tile_type;
@@ -96,7 +96,7 @@ namespace px {
 		}
 
 	public:
-		terrain_chunk()
+		tile_chunk()
 		{
 			auto config = nlohmann::json::parse(std::ifstream(tiles_path));
 			m_library.load(config["tiles"]);
@@ -105,7 +105,7 @@ namespace px {
 	private:
 		void invalidate(tile_type & tile) const
 		{
-			auto & prototype = m_library.at(tile.id);
+			auto const& prototype = m_library.at(tile.id);
 
 			tile.mass = prototype.mass;
 

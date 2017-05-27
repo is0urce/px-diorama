@@ -8,8 +8,8 @@
 #pragma once
 
 #include "es/unit.hpp"
-#include "rl/terrain.hpp"
 #include "rl/notification.hpp"
+#include "rl/tile_chunk.hpp"
 #include "ui/menu.hpp"
 #include "vfx.hpp"
 
@@ -40,12 +40,10 @@ namespace px {
 		void shutdown() noexcept;
 		void start();
 		void end();
-		void impersonate(transform_component * player);
-		std::shared_ptr<unit> spawn(std::string const& name, point2 location);
 
 		// actions
 
-		void target(point2 relative_world_coordinates);
+		void target(point2 relative_coordinates);
 		void step(point2 const& direction);
 		void use(unsigned int ability_index);
 		void activate(unsigned int mod);
@@ -73,6 +71,8 @@ namespace px {
 		environment & operator=(environment const&) = delete;
 
 	private:
+		void impersonate(transform_component * player);
+		std::shared_ptr<unit> spawn(std::string const& name, point2 location);
 		void turn_begin();
 		void turn_end();
 		transform_component * find_any(point2 const& position);
@@ -92,19 +92,18 @@ namespace px {
 	private:
 		std::unique_ptr<factory>			m_factory;			// for assembling units, release last
 
+		bool								m_run;				// if engine is working
+		unsigned int						m_turn;				// current turn
+		unsigned int						m_last_turn;		// last updated turn
+		double								m_last_time;		// last time of update
+
+		tile_chunk<tile_instance>			m_map;				// terrain
+		std::vector<std::shared_ptr<unit>>	m_units;			// scene
+		transform_component *				m_player;			// player transform
+
 		point2								m_hover;			// current hovered tile
 		ui::menu							m_ui;				// user interface
 		std::list<vfx>						m_visuals;			// visual effects container
 		std::map<point2, std::vector<notification>, lex_less> m_notifications;	// popups container
-
-		unsigned int						m_turn;				// current turn
-		terrain_chunk<tile_instance>		m_map;				// terrain
-		std::vector<std::shared_ptr<unit>>	m_units;			// scene
-		transform_component *				m_player;			// player transform
-
-		unsigned int						m_last_turn;		// last updated turn
-		double								m_last_time;		// last time of update
-
-		bool								m_run;				// if engine is working
 	};
 }

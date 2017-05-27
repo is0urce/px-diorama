@@ -241,7 +241,7 @@ namespace px {
 		m_map.assigns_sprites(m_factory->sprites());
 		m_map.resize({ 100, 100 });
 		m_map.generate();
-		m_map.dump("level0.dat");
+		m_map.dump("data/terrain/level0.dat");
 
 		// units
 
