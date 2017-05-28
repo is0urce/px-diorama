@@ -16,9 +16,10 @@ namespace px {
 			hand_off,
 			armor_helmet,
 			armor_chest,
+			accessory_bell,
 
 			min_value = hand_main,
-			max_value = armor_chest
+			max_value = accessory_bell
 		};
 	}
 }

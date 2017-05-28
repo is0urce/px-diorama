@@ -227,7 +227,7 @@ namespace px {
 		weapon.set_tag("itm_wpn");
 		weapon.set_description("This is your weapon.");
 		weapon.add(rl::item::enhancement_type::integer(rl::effect::weapon_damage, 6));
-		body->equip(rl::equipment_slot::hand_main, weapon);
+		body->equip(rl::equipment_slot::hand_main, std::move(weapon));
 
 		// add to scene
 		auto result = builder.assemble();
