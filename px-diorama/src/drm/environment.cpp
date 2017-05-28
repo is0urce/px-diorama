@@ -69,6 +69,7 @@ namespace px {
 	{
 		m_player = player;
 		m_factory->sprites()->assign_camera(m_player);
+		m_ui.assign_inventory(m_player ? m_player->linked<body_component, container_component>() : nullptr);
 	}
 	void environment::update(perception & view, double time)
 	{
@@ -205,11 +206,12 @@ namespace px {
 		body->set_name(name);
 		body->set_tag(name);
 		body->set_description("mobile template");
-		for (int i = 0; i != 50; ++i) {
+		for (int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("item #" + std::to_string(i));
 			itm->set_tag("itm_ore");
 			itm->set_description("item template");
+			itm->make_stacking();
 			itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, i));
 			container->add(itm);
 		}
