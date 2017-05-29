@@ -37,6 +37,11 @@ namespace px {
 				m_scroll = 0;
 			}
 
+			template <typename Format>
+			void set_format()
+			{
+				m_format = Format{};
+			}
 			void set_format(format_fn format)
 			{
 				if (!format) throw std::invalid_argument("px::inventory_list::set_format(format) - format is null");
