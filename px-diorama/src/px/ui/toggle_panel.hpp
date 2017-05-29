@@ -26,7 +26,7 @@ namespace px {
 			void assign_content(panel_ptr content, bool enabled) noexcept
 			{
 				assign_content(content);
-				content->set_toggle(enabled);
+				content->activate(enabled);
 			}
 			void clear_content() noexcept
 			{

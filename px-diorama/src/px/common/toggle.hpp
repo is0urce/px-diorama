@@ -34,7 +34,7 @@ namespace px {
 		{
 			m_switch = Initial;
 		}
-		void set_toggle(bool flag) noexcept
+		void activate(bool flag) noexcept
 		{
 			m_switch = flag;
 		}

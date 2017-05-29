@@ -1,13 +1,11 @@
-// name: inventory_list.hpp
+// name: list.hpp
 // type: c++
-// desc: class
+// desc: template class
 // auth: isource
 
 #pragma once
 
 #include <px/ui/panel.hpp>
-
-#include "drm/es/container_component.hpp"
 
 #include <functional>
 #include <stdexcept>
@@ -16,17 +14,19 @@
 namespace px {
 	namespace ui {
 
-		class inventory_list
+		template <typename Container>
+		class list
 			: public panel
 		{
 		public:
-			typedef std::shared_ptr<rl::item> element_type;
+			typedef Container container_type;
+			typedef typename Container::element_type element_type;
 			typedef std::function<void(element_type &)> click_fn;
 			typedef std::function<std::string(element_type const&)> format_fn;
 			typedef std::function<bool(element_type const&)> filter_fn;
 
 		public:
-			void assign_container(container_component * container) noexcept
+			void assign_container(container_type * container) noexcept
 			{
 				m_container = container;
 				m_scroll = 0;
@@ -55,16 +55,16 @@ namespace px {
 			{
 				m_click = click_action;
 			}
-			container_component * list()
+			container_type * assigned_container()
 			{
 				return m_container;
 			}
 
 		public:
-			virtual ~inventory_list()
+			virtual ~list()
 			{
 			}
-			inventory_list()
+			list()
 				: m_container(nullptr)
 				, m_color(0x000000)
 				, m_scroll(0)
@@ -97,7 +97,7 @@ namespace px {
 					int index = 0 - m_scroll;
 					m_container->enumerate([&](auto & item) {
 						if (m_filter(item)) {
-							if (selected == index) found = &item;
+							if (selected == index) found = std::addressof(item);
 							++index;
 						}
 					});
@@ -141,15 +141,15 @@ namespace px {
 			}
 
 		private:
-			container_component * m_container;
+			container_type *	m_container;
 
-			int			m_scroll;
+			int					m_scroll;
 
-			color		m_color;
+			color				m_color;
 
-			filter_fn	m_filter;
-			format_fn	m_format;	// item to string
-			click_fn	m_click;	// on click event callback
+			filter_fn			m_filter;
+			format_fn			m_format;	// item to string
+			click_fn			m_click;	// on click event callback
 		};
 	}
 }

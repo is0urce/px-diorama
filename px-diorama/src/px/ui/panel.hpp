@@ -49,7 +49,7 @@ namespace px {
 			{
 				return m_align;
 			}
-			void layout() noexcept
+			void layout()
 			{
 				m_bounds = layout_panel(m_parent);
 
@@ -86,16 +86,16 @@ namespace px {
 
 				m_unnamed.push_back(child);
 			}
-			void remove_all() noexcept
+			void clear() noexcept
 			{
-				remove_all_anonimous();
-				remove_all_tagged();
+				clear_anonimous();
+				clear_tagged();
 			}
-			void remove_all_anonimous() noexcept
+			void clear_anonimous() noexcept
 			{
 				m_unnamed.clear();
 			}
-			void remove_all_tagged() noexcept
+			void clear_tagged() noexcept
 			{
 				m_stack.clear();
 			}
@@ -110,19 +110,13 @@ namespace px {
 					std::end(m_unnamed));
 			}
 
-			panel & at(name_type const& tag)
+			panel_ptr & at(name_type const& tag)
 			{
-				auto find = m_stack.find(tag);
-				if (find == m_stack.end()) throw std::runtime_error("px::ui::panel::at(tag) - no item with this tag");
-
-				return *find->second;
+				return m_stack.at(tag);
 			}
-			panel const& at(name_type const& tag) const
+			panel_ptr const& at(name_type const& tag) const
 			{
-				auto find = m_stack.find(tag);
-				if (find == m_stack.end()) throw std::runtime_error("px::ui::panel::at(tag) - no item with this tag");
-
-				return *find->second;
+				return m_stack.at(tag);
 			}
 			template <typename SubPanel, typename ...Args>
 			auto make(alignment align, Args &&... args)
@@ -238,6 +232,11 @@ namespace px {
 				return processed;
 			}
 
+			panel_ptr & operator[](name_type const& tag)
+			{
+				return m_stack[tag];
+			}
+
 		public:
 			virtual ~panel()
 			{
@@ -256,16 +255,6 @@ namespace px {
 			}
 			panel(panel const&) = delete;
 			panel & operator=(panel const&) = delete;
-
-		public:
-			panel & operator[](name_type const& tag)
-			{
-				return *m_stack[tag];
-			}
-			panel const& operator[](name_type const& tag) const
-			{
-				return at(tag);
-			}
 
 		protected:
 			virtual bool hover_panel(point2 const& /* position */)

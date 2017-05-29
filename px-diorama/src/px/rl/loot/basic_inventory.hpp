@@ -8,6 +8,8 @@
 #include <vector>
 #include <stdexcept>
 
+#include <memory>
+
 namespace px
 {
 	namespace rl
@@ -17,7 +19,7 @@ namespace px
 		{
 		public:
 			typedef Item item_type;
-			typedef std::shared_ptr<item_type> item_ptr;
+			typedef std::shared_ptr<item_type> element_type;
 
 		public:
 			bool empty() const noexcept
@@ -28,7 +30,7 @@ namespace px
 			{
 				m_items.clear();
 			}
-			void add(item_ptr & item)
+			void add(element_type & item)
 			{
 				if (!item) throw std::invalid_argument("px::basic_inventory::add(item) - item is null");
 
@@ -42,7 +44,7 @@ namespace px
 					m_items.push_back(item);
 				}
 			}
-			void remove(item_ptr & item, unsigned int n)
+			void remove(element_type & item, unsigned int n)
 			{
 				for (auto it = std::begin(m_items), last = std::end(m_items); it != last; ++it) {
 					if (*it == item && item->decrease(n) == 0) {
@@ -51,11 +53,11 @@ namespace px
 					}
 				}
 			}
-			void remove(item_ptr & item)
+			void remove(element_type & item)
 			{
 				remove(item, 1);
 			}
-			void transfer(item_ptr & item, basic_inventory & destination)
+			void transfer(element_type & item, basic_inventory & destination)
 			{
 				if (&destination == this) return;
 
@@ -118,14 +120,14 @@ namespace px
 				archive(size);
 				m_items.resize(size);
 				for (size_t i = 0; i != size; ++i) {
-					item_ptr & ptr = m_items[i];
+					auto & ptr = m_items[i];
 					if (!ptr) ptr = std::make_shared<item_type>();
 					archive(*ptr);
 				}
 			}
 
 		private:
-			std::vector<item_ptr> m_items;
+			std::vector<element_type> m_items;
 		};
 	}
 }

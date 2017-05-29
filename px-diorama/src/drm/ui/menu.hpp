@@ -9,6 +9,8 @@
 
 #include <px/common/point.hpp>
 #include <px/common/rectangle.hpp>
+#include <px/rl/loot/inventory.hpp>
+#include <px/ui/list.hpp>
 
 #include <memory>
 
@@ -20,13 +22,14 @@ namespace px {
 	namespace ui {
 
 		class panel;
-
-		class inventory_list;
 		class recipe_list;
 		class target_panel;
 
 		class menu
 		{
+		public:
+			typedef list<rl::inventory> inventory_list;
+
 		public:
 			panel * main() noexcept;
 			panel const* main() const noexcept;
@@ -34,7 +37,6 @@ namespace px {
 			void lock_target(point2 absolute, transform_component const* pawn);
 
 			void assign_inventory(container_component * user);
-			void open_inventory(container_component * user);
 			void open_storage(container_component * storage, container_component * inspector);
 			void open_workshop(container_component * user);
 
@@ -48,6 +50,7 @@ namespace px {
 			menu& operator=(menu const&) = delete;
 
 		private:
+			void toggle_inventory();
 			void initialize();
 
 		private:
