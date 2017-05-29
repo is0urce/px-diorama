@@ -36,6 +36,10 @@ namespace px {
 			{
 				return m_panel.get_skill(slot);
 			}
+			size_t count_skills() const
+			{
+				return m_panel.size();
+			}
 			void learn_skill(std::string tag)
 			{
 				m_panel.learn_skill(tag);

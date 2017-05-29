@@ -21,11 +21,9 @@ namespace px {
 
 	namespace ui {
 
-		class panel;
-		class recipe_list;
-		class target_panel;
+		class status_panel;
 
-		class menu
+		class menu final
 		{
 		public:
 			typedef list<rl::inventory> inventory_list;
@@ -34,9 +32,10 @@ namespace px {
 			panel * main() noexcept;
 			panel const* main() const noexcept;
 
-			void lock_target(point2 absolute, transform_component const* pawn);
-
+			void assign_target(transform_component const* pawn, point2 absolute);
+			void assign_player(transform_component const* pawn);
 			void assign_inventory(container_component * user);
+
 			void open_storage(container_component * storage, container_component * inspector);
 			void open_workshop(container_component * user);
 
@@ -47,7 +46,7 @@ namespace px {
 			~menu();
 			menu();
 			menu(menu const&) = delete;
-			menu& operator=(menu const&) = delete;
+			menu & operator=(menu const&) = delete;
 
 		private:
 			void toggle_inventory();
@@ -61,7 +60,8 @@ namespace px {
 			inventory_list *		m_container;
 			inventory_list *		m_inspector;
 
-			target_panel *			m_target;
+			status_panel *			m_status;
+			status_panel *			m_target;
 		};
 	}
 }

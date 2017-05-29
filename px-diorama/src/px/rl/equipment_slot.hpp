@@ -12,13 +12,15 @@ namespace px {
 
 		enum class equipment_slot : uint32_t
 		{
-			hand_main,
-			hand_off,
+			weapon_main,
+			weapon_off,
+
 			armor_helmet,
 			armor_chest,
+
 			accessory_bell,
 
-			min_value = hand_main,
+			min_value = weapon_main,
 			max_value = accessory_bell
 		};
 	}

@@ -59,7 +59,7 @@ namespace px
 			{
 				m_skills.clear();
 			}
-			size_t skill_count() const
+			size_t size() const
 			{
 				return m_skills.size();
 			}

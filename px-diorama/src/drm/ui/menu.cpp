@@ -10,7 +10,7 @@
 #include <px/ui/toggle_panel.hpp>
 
 #include "recipe_list.hpp"
-#include "target_panel.hpp"
+#include "status_panel.hpp"
 #include "skill_panel.hpp"
 
 #include "drm/es/container_component.hpp"
@@ -101,9 +101,13 @@ namespace px {
 			(*m_main)["container_access"]->deactivate();
 			(*m_main)["inventory_access"]->deactivate();
 		}
-		void menu::lock_target(point2 absolute, transform_component const* pawn)
+		void menu::assign_target(transform_component const* pawn, point2 location)
 		{
-			m_target->lock(absolute, pawn);
+			m_target->lock(pawn, location);
+		}
+		void menu::assign_player(transform_component const* pawn)
+		{
+			m_status->lock_target(pawn);
 		}
 		void menu::toggle_inventory()
 		{
@@ -118,9 +122,9 @@ namespace px {
 
 		void menu::initialize()
 		{
-			// target status panel
-			auto target = m_main->make<target_panel>("target", { { 0.0, 1.0 },{ 1, -5 },{ -2, 4 },{ 1.0, 0.0 } });
-			m_target = target.get();
+			// status and target panel
+			auto status = m_main->make<status_panel>("status", { { 0.0, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } });
+			auto target = m_main->make<status_panel>("target", { { 0.5, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } });
 
 			// inventory panel block
 			auto inventory_block = m_main->make<panel>("inventory_access", { {0.5, 0.2}, {0, 0}, {0, 0}, {0.3, 0.6} });
@@ -161,6 +165,8 @@ namespace px {
 			//m_ui.make<ui::recipe_list>("recipes", { {0.0, 0.0}, {0,0}, {0,0}, {0.5,0.0} }, std::move(recipes));
 
 			// store typed links
+			m_status = status.get();
+			m_target = target.get();
 			m_container = container_list.get();
 			m_inspector = inspector_list.get();
 			m_inventory = player_list.get();

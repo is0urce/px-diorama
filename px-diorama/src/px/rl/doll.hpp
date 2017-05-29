@@ -26,6 +26,11 @@ namespace px {
 			{
 				m_equipment.erase(slot);
 			}
+			bool equipped(slot_type slot) const
+			{
+				auto find = m_equipment.find(slot);
+				return find != m_equipment.end();
+			}
 			void strip()
 			{
 				m_equipment.clear();

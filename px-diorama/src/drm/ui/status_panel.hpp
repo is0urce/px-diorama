@@ -1,4 +1,4 @@
-// name: target_panel.hpp
+// name: status_panel.hpp
 // type: c++
 // desc: class
 // auth: isource
@@ -7,17 +7,19 @@
 
 #include <px/ui/panel.hpp>
 
+#include <px/ui/bar.hpp>
+
 #include "drm/es/transform_component.hpp"
 #include "drm/es/body_component.hpp"
 
 namespace px {
 	namespace ui {
 
-		class target_panel
+		class status_panel
 			: public panel
 		{
 		public:
-			void lock(point2 position, transform_component const* target)
+			void lock(transform_component const* target, point2 position)
 			{
 				lock_position(position);
 				lock_target(target);
@@ -36,13 +38,26 @@ namespace px {
 			}
 
 		public:
-			virtual ~target_panel()
+			virtual ~status_panel()
 			{
 			}
-			target_panel()
+			status_panel()
 				: m_target(nullptr)
 				, m_position(0, 0)
 			{
+				make<bar>("hp", { { 0.0, 0.0 },{ 0, 0 },{ 0, 1 },{ 0.5, 0.0 } }, 0xff0000, 0x000000, [this]() {
+					double current = 0;
+					double maximum = 0;
+					auto * body = m_target ? m_target->linked<body_component>() : nullptr;
+					if (body) {
+						auto & health = body->health();
+						if (health) {
+							current = static_cast<double>(health->current());
+							maximum = static_cast<double>(health->maximum());
+						}
+					}
+					return std::tuple<double, double>(current, maximum);
+				});
 			}
 
 		protected:
@@ -52,8 +67,8 @@ namespace px {
 				auto * container = body ? body->linked<container_component>() : nullptr;
 
 				window.paint(color{ 1, 1, 1, 0.5 });
-				int line = 0;
-				window.print({ 0, line }, 0x000000, std::string("[") + std::to_string(m_position.x()) + std::string(", ") + std::to_string(m_position.y()) + std::string("]"));
+				int line = -1;
+				//window.print({ 0, line }, 0x000000, std::string("[") + std::to_string(m_position.x()) + std::string(", ") + std::to_string(m_position.y()) + std::string("]"));
 				if (body) {
 					window.print({ 0, ++line }, 0x000000, body->name());
 					auto & health = body->health();

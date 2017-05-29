@@ -69,6 +69,7 @@ namespace px {
 	{
 		m_player = player;
 		m_factory->sprites()->assign_camera(m_player);
+		m_ui.assign_player(m_player);
 		m_ui.assign_inventory(m_player ? m_player->linked<body_component, container_component>() : nullptr);
 	}
 	void environment::update(perception & view, double time)
@@ -133,8 +134,9 @@ namespace px {
 	void environment::target(point2 relative_world_coordinates)
 	{
 		m_hover = relative_world_coordinates + (m_player ? m_player->position() : point2(0, 0));
+		auto target = find_any(m_hover);
 
-		m_ui.lock_target(m_hover, find_any(m_hover));
+		m_ui.assign_target(target, m_hover);
 	}
 	void environment::step(point2 const& direction)
 	{
@@ -224,10 +226,8 @@ namespace px {
 
 		rl::item weapon;
 		weapon.set_name("weapon");
-		weapon.set_tag("itm_wpn");
-		weapon.set_description("This is your weapon.");
 		weapon.add(rl::item::enhancement_type::integer(rl::effect::weapon_damage, 6));
-		body->equip(rl::equipment_slot::hand_main, std::move(weapon));
+		body->equip(rl::equipment_slot::weapon_main, weapon);
 
 		// add to scene
 		auto result = builder.assemble();
@@ -467,12 +467,19 @@ namespace px {
 	}
 	std::tuple<int, int, bool, bool> environment::hit(body_component const& attacker, body_component const& /* versus */) const
 	{
-		auto weapon_damage = attacker.at(rl::equipment_slot::hand_main).accumulate<rl::effect::weapon_damage>();
+		int magnitude = 0;
+		int variant = 0;
+		bool is_hit = false;
+		bool is_critical = false;
 
-		int magnitude = weapon_damage.value0;
-		int variant = weapon_damage.subtype;
-		bool is_hit = true;
-		bool is_critical = true;
+		if (attacker.equipped(rl::equipment_slot::weapon_main)) {
+			auto damage_enhancement = attacker.at(rl::equipment_slot::weapon_main).accumulate<rl::effect::weapon_damage>();
+
+			magnitude = damage_enhancement.value0;
+			variant = damage_enhancement.subtype;
+			is_hit = true;
+			is_critical = true;
+		}
 
 		return std::tuple<int, int, bool, bool>{ magnitude, variant, is_hit, is_critical };
 	}
