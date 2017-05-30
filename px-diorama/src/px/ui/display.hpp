@@ -54,32 +54,27 @@ namespace px {
 			void print(point2 position, color const& front, canvas::code_type code)
 			{
 				position += m_bounds.start();
-				if (m_bounds.contains(position))
-				{
+				if (m_bounds.contains(position)) {
 					m_canvas->print(position, front, code);
 				}
 			}
 			void print(point2 position, color const& front, std::string const& text)
 			{
 				int space = m_bounds.width() - position.x();
-				if (space > 0)
-				{
+				if (space > 0) {
 					position += m_bounds.start();
-					if (m_bounds.contains(position))
-					{
+					if (m_bounds.contains(position)) {
 						m_canvas->print_n(position, front, text, space);
 					}
 				}
 			}
-			size_t print_n(point2 position, const color &front, std::string const& text, size_t max)
+			void print_n(point2 position, const color &front, std::string const& text, size_t max)
 			{
 				int space = m_bounds.width() - position.x();
-				if (space > 0)
-				{
+				if (space > 0) {
 					max = std::min(static_cast<int>(max), space);
 					position += m_bounds.start();
-					if (m_bounds.contains(position))
-					{
+					if (m_bounds.contains(position)) {
 						m_canvas->print_n(position, front, text, max);
 					}
 				}

@@ -71,6 +71,18 @@ namespace px {
 			case key::action5:
 				game.use(5);
 				break;
+			case key::action6:
+				game.use(6);
+				break;
+			case key::action7:
+				game.use(7);
+				break;
+			case key::action8:
+				game.use(8);
+				break;
+			case key::action9:
+				game.use(9);
+				break;
 			case key::quick_save:
 				game.save();
 				break;

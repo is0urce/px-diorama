@@ -62,15 +62,15 @@ namespace px {
 
 	void environment::end()
 	{
-		m_units.clear();
+		m_ui.break_links();
 		impersonate(nullptr);
+		m_units.clear();
 	}
 	void environment::impersonate(transform_component * player)
 	{
 		m_player = player;
 		m_factory->sprites()->assign_camera(m_player);
 		m_ui.assign_player(m_player);
-		m_ui.assign_inventory(m_player ? m_player->linked<body_component, container_component>() : nullptr);
 	}
 	void environment::update(perception & view, double time)
 	{
@@ -227,6 +227,7 @@ namespace px {
 		rl::item weapon;
 		weapon.set_name("weapon");
 		weapon.add(rl::item::enhancement_type::integer(rl::effect::weapon_damage, 6));
+		weapon.add(rl::item::enhancement_type::integer(rl::effect::equipment, static_cast<uint32_t>(rl::equipment_slot::weapon_main)));
 		body->equip(rl::equipment_slot::weapon_main, weapon);
 
 		// add to scene

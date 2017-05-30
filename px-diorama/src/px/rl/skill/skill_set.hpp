@@ -77,6 +77,10 @@ namespace px
 			{
 				return index < m_skills.size() ? &m_skills[index] : nullptr;
 			}
+			instance_type const* get_skill(size_t index) const
+			{
+				return index < m_skills.size() ? &m_skills[index] : nullptr;
+			}
 			void cooldown_by(unsigned int delta)
 			{
 				for (auto & skill : m_skills) {

@@ -23,6 +23,10 @@ namespace px {
 			{
 				return enhancement{ general_type, main_value };
 			}
+			static enhancement integer(effect_type general_type, int_t variation, int_t main_value, int_t complimentary_value)
+			{
+				return enhancement{ general_type, variation, main_value, complimentary_value };
+			}
 
 			enhancement & operator+=(enhancement const& rhs)
 			{
@@ -55,8 +59,8 @@ namespace px {
 				: subtype(0)
 				, value0(0)
 				, value1(0)
-				, magnitude0(0)
-				, magnitude1(0)
+				, magnitude0(1)
+				, magnitude1(1)
 				, disabled(false)
 				, hidden(false)
 			{
@@ -66,8 +70,19 @@ namespace px {
 				, subtype(0)
 				, value0(main_value)
 				, value1(main_value)
-				, magnitude0(0)
-				, magnitude1(0)
+				, magnitude0(1)
+				, magnitude1(1)
+				, disabled(false)
+				, hidden(false)
+			{
+			}
+			enhancement(effect_type general_type, int_t variation, int_t main_value, int_t complimentary_value)
+				: main_type(general_type)
+				, subtype(variation)
+				, value0(main_value)
+				, value1(complimentary_value)
+				, magnitude0(1)
+				, magnitude1(1)
 				, disabled(false)
 				, hidden(false)
 			{

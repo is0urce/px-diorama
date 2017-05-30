@@ -17,11 +17,13 @@
 namespace px {
 
 	class transform_component;
+	class body_component;
 	class container_component;
+	class character_component;
 
 	namespace ui {
 
-		class status_panel;
+		class target_panel;
 
 		class menu final
 		{
@@ -32,10 +34,10 @@ namespace px {
 			panel * main() noexcept;
 			panel const* main() const noexcept;
 
-			void assign_target(transform_component const* pawn, point2 absolute);
-			void assign_player(transform_component const* pawn);
-			void assign_inventory(container_component * user);
+			void assign_player(transform_component * pawn);
+			void assign_target(transform_component * pawn, point2 absolute);
 
+			void open_storage(container_component * storage);
 			void open_storage(container_component * storage, container_component * inspector);
 			void open_workshop(container_component * user);
 
@@ -54,14 +56,18 @@ namespace px {
 
 		private:
 			std::unique_ptr<panel>	m_main;
-			container_component *	m_player;
+
+			transform_component *	m_transform;
+			body_component *		m_body;
+			container_component *	m_storage;
+			character_component *	m_character;
 
 			inventory_list *		m_inventory;
 			inventory_list *		m_container;
 			inventory_list *		m_inspector;
 
-			status_panel *			m_status;
-			status_panel *			m_target;
+			target_panel *			m_status;
+			target_panel *			m_target;
 		};
 	}
 }

@@ -76,6 +76,7 @@ namespace px {
 					props.set_tag(tag);
 					props.set_name(name);
 					props.set_description(description);
+					props.set_alias(alias);
 					props.set_hostile(hostile);
 					props.set_duration(duration);
 					props.set_cooldown(cooldown);

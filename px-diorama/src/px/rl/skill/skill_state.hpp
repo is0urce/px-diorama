@@ -8,6 +8,7 @@
 #pragma once
 
 #include <px/rl/entity.hpp>
+#include <string>
 
 namespace px
 {
@@ -23,6 +24,10 @@ namespace px
 
 			// attrubute get
 
+			std::string alias() const
+			{
+				return m_alias;
+			}
 			time_type cooldown_duration() const noexcept
 			{
 				return m_cooldown;
@@ -50,6 +55,10 @@ namespace px
 
 			// attribute set
 
+			void set_alias(std::string short_name)
+			{
+				m_alias = short_name;
+			}
 			void set_range(range_type min_range, range_type max_range) noexcept
 			{
 				m_min_range = min_range;
@@ -137,6 +146,7 @@ namespace px
 
 			int			m_cost;			// resource required to use
 			bool		m_hostile;		// is considered as hostile by npc
+			std::string	m_alias;		// short name
 		};
 	}
 }

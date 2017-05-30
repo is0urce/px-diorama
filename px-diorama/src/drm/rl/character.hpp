@@ -36,6 +36,10 @@ namespace px {
 			{
 				return m_panel.get_skill(slot);
 			}
+			instance_type const* get_skill(size_t slot) const
+			{
+				return m_panel.get_skill(slot);
+			}
 			size_t count_skills() const
 			{
 				return m_panel.size();

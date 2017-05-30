@@ -20,7 +20,7 @@ namespace px {
 
 			// item specific props
 
-			equipment,
+			equipment, // subtype is slot
 			weight,
 			value,
 

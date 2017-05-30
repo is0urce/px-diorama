@@ -2,58 +2,27 @@
 
 #include "menu.hpp"
 
-#include <px/ui/panel.hpp>
+#include "../key.hpp"
+#include "../es/body_component.hpp"
+#include "../es/container_component.hpp"
 
+#include "item_functional.hpp"
+
+#include "recipe_list.hpp"
+#include "target_panel.hpp"
+#include "skill_panel.hpp"
+
+#include <px/ui/panel.hpp>
 #include <px/ui/board.hpp>
 #include <px/ui/text.hpp>
 #include <px/ui/button.hpp>
 #include <px/ui/toggle_panel.hpp>
-
-#include "recipe_list.hpp"
-#include "status_panel.hpp"
-#include "skill_panel.hpp"
-
-#include "drm/es/container_component.hpp"
-
-#include "drm/key.hpp"
 
 #include <string>
 #include <memory>
 
 namespace px {
 	namespace ui {
-
-		namespace {
-			template <typename List>
-			class item_transfer
-			{
-			public:
-				template <typename Item>
-				void operator()(Item & item)
-				{
-					auto * from = source->assigned_container();
-					auto * to = destination->assigned_container();
-					if (from && to) from->transfer(item, *to);
-				}
-				item_transfer(List from, List to)
-					: source(from)
-					, destination(to)
-				{
-				}
-				List source;
-				List destination;
-			};
-			struct item_name
-			{
-				template <typename Item>
-				std::string operator()(Item & item)
-				{
-					std::string result = item->name();
-					result += " x" + std::to_string(item->count());
-					return result;
-				}
-			};
-		}
 
 		menu::~menu()
 		{
@@ -72,15 +41,29 @@ namespace px {
 		{
 			return m_main.get();
 		}
+		void menu::assign_player(transform_component * pawn)
+		{
+			m_transform = pawn;
+			m_body = pawn ? pawn->linked<body_component>() : nullptr;
+			m_storage = m_body ? m_body->linked<container_component>() : nullptr;
+
+			m_status->lock_target(pawn);
+		}
+		void menu::assign_target(transform_component * pawn, point2 location)
+		{
+			m_target->lock(pawn, location);
+		}
 		void menu::break_links()
 		{
+			m_target->clear_target();
+			m_status->clear_target();
 			m_container->assign_container(nullptr);
 			m_inspector->assign_container(nullptr);
 			m_inventory->assign_container(nullptr);
 		}
-		void menu::assign_inventory(container_component * user)
+		void menu::open_storage(container_component * storage)
 		{
-			m_player = user;
+			open_storage(storage, m_storage);
 		}
 		void menu::open_storage(container_component * storage, container_component * inspector)
 		{
@@ -97,17 +80,8 @@ namespace px {
 		}
 		void menu::close_sheets()
 		{
-			break_links();
 			(*m_main)["container_access"]->deactivate();
 			(*m_main)["inventory_access"]->deactivate();
-		}
-		void menu::assign_target(transform_component const* pawn, point2 location)
-		{
-			m_target->lock(pawn, location);
-		}
-		void menu::assign_player(transform_component const* pawn)
-		{
-			m_status->lock_target(pawn);
 		}
 		void menu::toggle_inventory()
 		{
@@ -116,15 +90,17 @@ namespace px {
 
 			close_sheets();
 
-			m_inventory->assign_container(m_player);
+			m_inventory->assign_container(m_storage);
 			block->activate(!opened);
 		}
 
 		void menu::initialize()
 		{
 			// status and target panel
-			auto status = m_main->make<status_panel>("status", { { 0.0, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } });
-			auto target = m_main->make<status_panel>("target", { { 0.5, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } });
+			auto status = m_main->make<target_panel>({ { 0.0, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } });
+			auto target = m_main->make<target_panel>({ { 0.5, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } });
+
+			auto skills = m_main->make<skill_panel>({ { 0.0, 1.0 },{ 1, -2 },{ -2, 1 },{ 1.0, 0.0 } }, status.get(), target.get());
 
 			// inventory panel block
 			auto inventory_block = m_main->make<panel>("inventory_access", { {0.5, 0.2}, {0, 0}, {0, 0}, {0.3, 0.6} });
@@ -171,7 +147,7 @@ namespace px {
 			m_inspector = inspector_list.get();
 			m_inventory = player_list.get();
 
-			// setup
+			// end setup
 			close_sheets();
 		}
 	}

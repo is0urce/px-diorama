@@ -79,19 +79,20 @@ namespace px {
 			virtual void draw_panel(display & window) const override
 			{
 				auto str = m_text();
-				auto len = str.length();
+				int len = static_cast<int>(str.length());
+				int width = bounds().width();
 
-				size_t offset = 0;
+				int offset = 0;
 				switch (m_alignment) {
 				case text_alignment::center:
-					offset = len / 2;
+					offset = (width - len) / 2;
 					break;
 				case text_alignment::right:
-					offset = len;
+					offset = width - len;
 					break;
 				}
 
-				window.print({ 0 + static_cast<int>(offset), 0 }, m_color, str);
+				window.print({ offset, 0 }, m_color, str);
 			}
 
 		private:

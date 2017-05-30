@@ -450,10 +450,13 @@
     <ClInclude Include="src\drm\ui\skill_panel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\ui\status_panel.hpp">
+    <ClInclude Include="src\px\ui\bar.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\ui\bar.hpp">
+    <ClInclude Include="src\drm\ui\item_functional.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\ui\target_panel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
