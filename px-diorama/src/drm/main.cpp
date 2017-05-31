@@ -32,8 +32,11 @@ namespace px {
 			{
 				// load configuration
 				bindings<int, key> bindings;
-				unsigned int screen_width, screen_height, vsync;
-				bool border, fullscreen;
+				unsigned int screen_width;
+				unsigned int screen_height;
+				int vsync;
+				bool border;
+				bool fullscreen;
 				
 				try
 				{
@@ -43,7 +46,7 @@ namespace px {
 				}
 				catch (std::exception & exc)
 				{
-					throw std::runtime_error("error while loading bindings in=" + std::string(configuration_path) + " + what=" + std::string(exc.what()));
+					throw std::runtime_error("error while loading bindings in=" + std::string(configuration_path) + " what=" + std::string(exc.what()));
 				}
 				try
 				{
@@ -59,15 +62,15 @@ namespace px {
 				}
 				catch (std::exception & exc)
 				{
-					throw std::runtime_error("error while loading configuration in=" + std::string(configuration_path) + " + what=" + std::string(exc.what()));
+					throw std::runtime_error("error while loading configuration in=" + std::string(configuration_path) + " what=" + std::string(exc.what()));
 				}
 
 				// create window and context
 				glfw_instance instance;
-				glfwWindowHint(GLFW_DECORATED, border ? 1 : 0); // border
-
 				auto monitor = glfwGetPrimaryMonitor();
 				auto mode = glfwGetVideoMode(monitor);
+
+				glfwWindowHint(GLFW_DECORATED, border ? 1 : 0); // border
 				if (fullscreen)	{
 					glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 					glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
@@ -76,11 +79,8 @@ namespace px {
 					screen_width = mode->width;
 					screen_height = mode->height;
 				}
-				else {
-					monitor = nullptr;
-				}
 
-				glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", monitor, nullptr);
+				glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", fullscreen ? monitor : nullptr, nullptr);
 				glfwMakeContextCurrent(window);
 				glfwSwapInterval(vsync);
 				glewInit();	// initialize OpenGL extensions loader (need context first)
