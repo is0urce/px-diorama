@@ -22,7 +22,7 @@
 #include <cereal/types/string.hpp>
 #include <cereal/types/vector.hpp>
 #include <cereal/types/map.hpp>
-#include <json.hpp>
+
 #include <fstream>
 
 namespace {
@@ -264,15 +264,6 @@ namespace px {
 		auto player = spawn("@", { 55, 47 });
 
 		impersonate(player->transform());
-	}
-
-	void environment::add_spritesheet(std::string const& path, bool reverse_y)
-	{
-		std::ifstream input(path);
-		if (!input.is_open()) throw std::runtime_error("px::environment::add_sprite(path, bool) - file not exists, path=" + path);
-
-		auto document = nlohmann::json::parse(input);
-		m_factory->sprites()->add_atlas(document["meta"], reverse_y);
 	}
 
 	void environment::save()

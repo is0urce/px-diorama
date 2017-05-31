@@ -8,7 +8,7 @@
 #include <px/es/component.hpp>
 #include <px/es/link_dispatcher.hpp>
 
-#include "sprite.hpp"
+#include "../sprite.hpp"
 
 namespace px {
 

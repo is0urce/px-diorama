@@ -34,6 +34,7 @@ namespace px {
 				bindings<int, key> bindings(nlohmann::json::parse(std::ifstream(keybindings_path))["bindings"]);
 				unsigned int screen_width, screen_height, vsync;
 				bool border, fullscreen;
+				try
 				{
 					auto config = nlohmann::json::parse(std::ifstream(configuration_path));
 					screen_width = config["window"]["width"];
@@ -41,6 +42,10 @@ namespace px {
 					vsync = config["window"]["vsync"];
 					border = config["window"]["border"];
 					fullscreen = config["window"]["fullscreen"];
+				}
+				catch (std::exception & exc)
+				{
+					throw std::runtime_error("error while loading configuration path=" + std::string(configuration_path) + " + what=" + std::string(exc.what()));
 				}
 
 				// create window and context
@@ -66,25 +71,30 @@ namespace px {
 				glfwSwapInterval(vsync);
 				glewInit();	// initialize OpenGL extensions loader (need context first)
 
-				// create game logic structures
+				// load textures
 				renderer graphics(screen_width, screen_height);
-				shell game;
+				try
+				{
+					auto textures = nlohmann::json::parse(std::ifstream(textureatlas_path));
+					for (auto const& texture : textures["textures"]) {
+						std::string path = texture["path"];
 
-				// load data from configuration settings
-				auto textures = nlohmann::json::parse(std::ifstream(textureatlas_path));
-				for (auto const& texture : textures["textures"]) {
-					std::string path = texture["path"];
-					std::string atlas = texture["meta"];
+						std::vector<unsigned char> image;
+						unsigned int w, h;
+						auto error = lodepng::decode(image, w, h, path);
+						if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 
-					std::vector<unsigned char> image;
-					unsigned int w, h;
-					auto error = lodepng::decode(image, w, h, path);
-					if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
-
-					graphics.add_texture(w, h, image.data());
-					game.add_spritesheet(atlas, true);
+						graphics.add_texture(w, h, image.data());
+					}
 				}
-				textures.clear();
+				catch (std::exception & exc)
+				{
+					throw std::runtime_error("error while loading textures data, what= " + std::string(exc.what()));
+				}
+
+				// create game logic structures
+				shell game;
+				game.resize(screen_width, screen_height); // setup ui canvas
 
 				// setup callback procedures for window message handling
 				glfw_callback callback(window);
@@ -110,9 +120,6 @@ namespace px {
 				callback.on_scroll([&](auto /* window */, double horisontal, double vertical) {
 					game.scroll(horisontal, vertical);
 				});
-
-				// setup - ui canvas
-				game.resize(screen_width, screen_height);
 
 				// start
 				game.start();

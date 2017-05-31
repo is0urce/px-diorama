@@ -177,6 +177,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\environment.cpp" />
+    <ClCompile Include="src\drm\es\sprite_system.cpp" />
     <ClCompile Include="src\drm\es\storage_component.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
     <ClCompile Include="src\drm\main_extras.cpp" />

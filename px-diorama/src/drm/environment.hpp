@@ -33,8 +33,6 @@ namespace px {
 	{
 	public:
 
-		void add_spritesheet(std::string const& path, bool reverse_y);
-
 		// flow
 
 		void update(perception & view, double time);
