@@ -18,6 +18,8 @@
 #include "perception.hpp"
 #include "program.hpp"
 #include "blur.hpp"
+
+#include <px/common/assert.hpp>
 #include <px/rft/ft_font.hpp>
 #include <px/ui/canvas.hpp>
 
@@ -72,13 +74,15 @@ namespace px {
 
 			// g-pass
 			glUseProgram(m_batch);
-			if (auto const* batches_array = view.batches())
-			{
-				for (size_t i = 0, total = batches_array->size(); i != total; ++i) {
-					auto const& vertices = (*batches_array)[i];
-					if (vertices.size() != 0) {
-						m_batches[i].draw_arrays(GL_STREAM_DRAW, GL_QUADS, vertices.size(), vertices.data());
-					}
+			auto const* batches_array = view.batches();
+
+			px_assert(batches_array); // can have 0 size, but should exist
+			px_assert(batches_array->size() == m_batches.size()); // gpu textures = drawcalls of textures
+
+			for (size_t i = 0, total = batches_array->size(); i != total; ++i) {
+				auto const& vertices = (*batches_array)[i];
+				if (vertices.size() != 0) {
+					m_batches[i].draw_arrays(GL_STREAM_DRAW, GL_QUADS, vertices.size(), vertices.data());
 				}
 			}
 

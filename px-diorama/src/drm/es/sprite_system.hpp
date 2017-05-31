@@ -51,7 +51,7 @@ namespace px {
 
 		private:
 			void setup_component(sprite_component & element, std::string const& name);
-			void load(std::string const& textures);
+			void load(std::string const& textures, bool reverse_y);
 			void add_sprite(std::string const& name, unsigned int texture, float sx, float sy, float dx, float dy);
 
 		private:

@@ -31,12 +31,26 @@ namespace px {
 			try
 			{
 				// load configuration
-				bindings<int, key> bindings(nlohmann::json::parse(std::ifstream(keybindings_path))["bindings"]);
+				bindings<int, key> bindings;
 				unsigned int screen_width, screen_height, vsync;
 				bool border, fullscreen;
+				
 				try
 				{
-					auto config = nlohmann::json::parse(std::ifstream(configuration_path));
+					std::ifstream file(keybindings_path);
+					if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(keybindings_path));
+					bindings.load(nlohmann::json::parse(file)["bindings"]);
+				}
+				catch (std::exception & exc)
+				{
+					throw std::runtime_error("error while loading bindings in=" + std::string(configuration_path) + " + what=" + std::string(exc.what()));
+				}
+				try
+				{
+					std::ifstream file(configuration_path);
+					if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(configuration_path));
+					auto config = nlohmann::json::parse(file);
+
 					screen_width = config["window"]["width"];
 					screen_height = config["window"]["height"];
 					vsync = config["window"]["vsync"];
@@ -45,7 +59,7 @@ namespace px {
 				}
 				catch (std::exception & exc)
 				{
-					throw std::runtime_error("error while loading configuration path=" + std::string(configuration_path) + " + what=" + std::string(exc.what()));
+					throw std::runtime_error("error while loading configuration in=" + std::string(configuration_path) + " + what=" + std::string(exc.what()));
 				}
 
 				// create window and context
@@ -75,16 +89,20 @@ namespace px {
 				renderer graphics(screen_width, screen_height);
 				try
 				{
-					auto textures = nlohmann::json::parse(std::ifstream(textureatlas_path));
+					std::ifstream file(textureatlas_path);
+					if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(textureatlas_path));
+					auto textures = nlohmann::json::parse(file);
+
 					for (auto const& texture : textures["textures"]) {
 						std::string path = texture["path"];
 
 						std::vector<unsigned char> image;
-						unsigned int w, h;
-						auto error = lodepng::decode(image, w, h, path);
+						unsigned int texture_width;
+						unsigned int texture_height;
+						auto error = lodepng::decode(image, texture_width, texture_height, path);
 						if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
 
-						graphics.add_texture(w, h, image.data());
+						graphics.add_texture(texture_width, texture_height, image.data());
 					}
 				}
 				catch (std::exception & exc)

@@ -20,7 +20,7 @@ namespace px {
 		sprite_system::sprite_system()
 			: m_camera(nullptr)
 		{
-			load(textureatlas_path);
+			load(textureatlas_path, true);
 		}
 		void sprite_system::update(double delta_time)
 		{
@@ -70,15 +70,19 @@ namespace px {
 			static_cast<image&>(element) = img;
 			element.tint = color::white();
 		}
-		void sprite_system::load(std::string const& textures)
+		void sprite_system::load(std::string const& textures, bool reverse_y)
 		{
-			bool reverse_y = true;
-			auto texture_configuration = nlohmann::json::parse(std::ifstream(textures));
+			std::ifstream textures_stream(textures);
+			if (!textures_stream.is_open()) throw std::runtime_error("error opening file path=" + std::string(textures));
+			auto texture_configuration = nlohmann::json::parse(textures_stream);
 
 			for (auto const& texture : texture_configuration["textures"]) {
 
 				std::string atlas_path = texture["meta"];
-				auto atlas = nlohmann::json::parse(std::ifstream(atlas_path));
+
+				std::ifstream atlas_stream(atlas_path);
+				if (!textures_stream.is_open()) throw std::runtime_error("error opening file path=" + std::string(atlas_path));
+				auto atlas = nlohmann::json::parse(atlas_stream);
 
 				for (auto const& frame : atlas["meta"]) {
 					float sx = frame["sx"];

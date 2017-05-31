@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <tuple>
 #include <unordered_map>
 
 namespace px {
@@ -16,40 +17,45 @@ namespace px {
 		typedef SK sys_key;
 		typedef VK v_key;
 
-	private:
-		std::unordered_map<SK, VK> m_bindings;
-
 	public:
 		bindings()
 		{
 		}
 		template <typename Document>
-		bindings(Document && doc)
+		bindings(Document && document)
 		{
-			for (auto const& binding : std::forward<Document>(doc))
-			{
-				int action_index = binding["action"];
-				for (int key : binding["keys"])
-				{
+			load(std::forward<Document>(document));
+		}
+
+	public:
+		template <typename Document>
+		void load(Document && document)
+		{
+			for (auto const& binding : document) {
+				long long action_index = binding["action"];
+				for (long long key : binding["keys"]) {
 					bind(static_cast<SK>(key), static_cast<VK>(action_index));
 				}
 			}
 		}
-
-	public:
 		void bind(SK key, VK vkey)
 		{
 			m_bindings[key] = vkey;
 		}
-		bool find(SK key, VK& vkey) const
+		bool find(SK key, VK & vkey) const
 		{
 			auto i = m_bindings.find(key);
-			if (i != m_bindings.end())
-			{
+			if (i != m_bindings.end()) {
 				vkey = i->second;
 				return true;
 			}
 			return false;
+		}
+		std::tuple<VK, bool> find(SK key) const
+		{
+			auto it = m_bindings.find(key);
+			if (it = m_bindings.end()) return std::tuple<VK, bool>(VK{}, false);
+			return std::tuple<VK, bool>(it->second, true);
 		}
 		VK select(SK key, VK or_else) const
 		{
@@ -60,8 +66,10 @@ namespace px {
 		{
 			return m_bindings[key];
 		}
-
-
+		VK at(SK key) const
+		{
+			return m_bindings.at(key);
+		}
 		void bind(SK key1, SK key2, v_key vkey)
 		{
 			bind(key1, vkey);
@@ -73,5 +81,8 @@ namespace px {
 			bind(key2, vkey);
 			bind(key3, vkey);
 		}
+
+	private:
+		std::unordered_map<SK, VK> m_bindings;
 	};
 }
