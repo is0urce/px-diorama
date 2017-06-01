@@ -55,13 +55,15 @@ namespace px {
 				m_inventory = inventory_block->make<list<rl::inventory>>({ { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 1.0, 1.0 } }).get();
 				m_inventory->set_format<item_name>();
 				m_inventory->on_click([this](auto & item) {
-					if (!m_equipment) return;
-					bool equipment;
+					if (!m_equipment || !m_container) return;
+
+					bool is_equipment;
 					rl::item::enhancement_type enhancement;
-					std::tie(equipment, enhancement) = item->find<rl::effect::equipment>();
-					if (equipment) {
-						m_equipment->equip(static_cast<rl::equipment_slot>(enhancement.subtype), *item);
-						m_container->remove(item);
+					std::tie(is_equipment, enhancement) = item->find<rl::effect::equipment>();
+					rl::equipment_slot equipment_slot = static_cast<rl::equipment_slot>(enhancement.subtype);
+
+					if (is_equipment) {
+						equip(*m_equipment, *m_container, item, equipment_slot);
 					}
 				});
 
@@ -83,12 +85,30 @@ namespace px {
 				});
 				auto unequip_button = slot->make<button>(fill);
 				unequip_button->on_click([this, equipment_slot](int /* mouse_button */) {
-					if (m_equipment && m_equipment->equipped(equipment_slot)) {
-						m_container->add(std::make_shared<rl::item>(m_equipment->at(equipment_slot))); // copy constructor emplacement
-						m_equipment->unequip(rl::equipment_slot::weapon_main);
-					}
+					if (!m_equipment || !m_container) return;
+					unequip(*m_equipment, *m_container, equipment_slot);
 				});
 			}
+			static void equip(rl::doll<rl::equipment_slot, rl::item> & equipment, rl::inventory & container, std::shared_ptr<rl::item> item, rl::equipment_slot equipment_slot)
+			{
+				// remove current
+				if (equipment.equipped(equipment_slot)) {
+					container.add(std::make_shared<rl::item>(equipment.at(equipment_slot))); // copy constructor emplacement
+					equipment.unequip(equipment_slot);
+				}
+
+				// move to equipment
+				equipment.equip(equipment_slot, *item);
+				container.remove(item);
+			}
+			static void unequip(rl::doll<rl::equipment_slot, rl::item> & equipment, rl::inventory & container, rl::equipment_slot equipment_slot)
+			{
+				if (equipment.equipped(equipment_slot)) {
+					container.add(std::make_shared<rl::item>(equipment.at(equipment_slot))); // copy constructor emplacement
+					equipment.unequip(equipment_slot);
+				}
+			}
+
 		private:
 			list<rl::inventory> * m_inventory;
 			body_component * m_equipment;

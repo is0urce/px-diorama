@@ -17,6 +17,7 @@ namespace px {
 
 			armor_helmet,
 			armor_chest,
+			armor_greaves,
 
 			accessory_bell,
 
