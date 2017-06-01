@@ -33,7 +33,10 @@ namespace px {
 			std::string operator()(Item & item)
 			{
 				std::string result = item->name();
-				result += " x" + std::to_string(item->count());
+				auto count = item->count();
+				if (count != 1) {
+					result += " x" + std::to_string(count);
+				}
 				return result;
 			}
 		};

@@ -69,6 +69,8 @@ namespace px {
 				make_slot({ { 0.0, 0.0 },{ 0, 0 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::weapon_main, "!weapon");
 				make_slot({ { 0.0, 0.0 },{ 0, 2 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::armor_helmet, "!helmet");
 				make_slot({ { 0.0, 0.0 },{ 0, 4 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::armor_chest, "!armor");
+				make_slot({ { 0.0, 0.0 },{ 0, 6 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::armor_greaves, "!pants");
+				make_slot({ { 0.0, 0.0 },{ 0, 8 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::accessory_bell, "!bell");
 			}
 
 		private:

@@ -6,6 +6,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 
 namespace px {
 	namespace rl {
@@ -63,9 +64,8 @@ namespace px {
 			{
 				auto find = m_equipment.find(slot);
 				if (find != m_equipment.end()) {
-					container.add(std::make_shared<item_type>(find->second)); // store old
-
-					find->second = *item; // copy current
+					container.add(std::make_shared<item_type>(find->second));
+					find->second = *item; // replace
 				}
 				else {
 					m_equipment.emplace(slot, *item);
