@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <px/rl/doll.hpp>
+#include <px/rl/equipment.hpp>
 #include <px/rl/entity.hpp>
 #include <px/rl/equipment_slot.hpp>
 #include <px/rl/loot/item.hpp>
@@ -21,7 +21,7 @@ namespace px {
 		class body
 			: public entity
 			, public reputation_subject
-			, public doll<rl::equipment_slot, rl::item>
+			, public equipment<rl::equipment_slot, rl::item>
 		{
 		public:
 			typedef resource<int32_t> resource_type;
@@ -60,7 +60,7 @@ namespace px {
 				archive(static_cast<entity &>(*this));
 				archive(static_cast<reputation_subject &>(*this));
 				archive(m_hp, m_mp);
-				archive(static_cast<doll &>(*this));
+				archive(static_cast<equipment &>(*this));
 			}
 
 		private:

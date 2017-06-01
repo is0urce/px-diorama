@@ -1,4 +1,4 @@
-// name: doll.hpp
+// name: equipment.hpp
 // type: c++ header
 // desc: template class
 // auth: is0urce
@@ -12,7 +12,7 @@ namespace px {
 	namespace rl {
 
 		template <typename Slot, typename Item>
-		class doll
+		class equipment
 		{
 		public:
 			typedef Slot slot_type;
