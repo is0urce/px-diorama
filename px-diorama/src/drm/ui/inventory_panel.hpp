@@ -76,36 +76,28 @@ namespace px {
 			void make_slot(alignment subpanel_alignment, rl::equipment_slot equipment_slot, std::string unequipped_text)
 			{
 				auto slot = make<panel>(subpanel_alignment);
-				slot->make<board>("bg", fill, color{ 1, 1, 1, 0.5 });
+				slot->make<board>(fill, color{ 1, 1, 1, 0.5 });
 				slot->make<text>(fill, [this, equipment_slot, unequipped_text]() -> std::string {
-					if (m_equipment && m_equipment->equipped(equipment_slot)) {
-						return m_equipment->at(equipment_slot).name();
-					}
-					return unequipped_text;
+					return (m_equipment && m_equipment->equipped(equipment_slot)) ? m_equipment->at(equipment_slot).name() : unequipped_text;
 				});
-				auto unequip_button = slot->make<button>(fill);
-				unequip_button->on_click([this, equipment_slot](int /* mouse_button */) {
-					if (!m_equipment || !m_container) return;
-					unequip(*m_equipment, *m_container, equipment_slot);
+				slot->make<button>(fill, [this, equipment_slot](int /* mouse_button */) {
+					if (m_equipment && m_container) unequip(*m_equipment, *m_container, equipment_slot);
 				});
 			}
-			static void equip(rl::doll<rl::equipment_slot, rl::item> & equipment, rl::inventory & container, std::shared_ptr<rl::item> item, rl::equipment_slot equipment_slot)
+			static void equip(rl::doll<rl::equipment_slot, rl::item> & equipment, rl::inventory & container, std::shared_ptr<rl::item> item, rl::equipment_slot slot)
 			{
 				// remove current
-				if (equipment.equipped(equipment_slot)) {
-					container.add(std::make_shared<rl::item>(equipment.at(equipment_slot))); // copy constructor emplacement
-					equipment.unequip(equipment_slot);
-				}
+				unequip(equipment, container, slot);
 
 				// move to equipment
-				equipment.equip(equipment_slot, *item);
+				equipment.equip(slot, *item);
 				container.remove(item);
 			}
-			static void unequip(rl::doll<rl::equipment_slot, rl::item> & equipment, rl::inventory & container, rl::equipment_slot equipment_slot)
+			static void unequip(rl::doll<rl::equipment_slot, rl::item> & equipment, rl::inventory & container, rl::equipment_slot slot)
 			{
-				if (equipment.equipped(equipment_slot)) {
-					container.add(std::make_shared<rl::item>(equipment.at(equipment_slot))); // copy constructor emplacement
-					equipment.unequip(equipment_slot);
+				if (equipment.equipped(slot)) {
+					container.add(std::make_shared<rl::item>(equipment.at(slot))); // copy constructor emplacement
+					equipment.unequip(slot);
 				}
 			}
 
