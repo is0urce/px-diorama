@@ -44,6 +44,7 @@ namespace px {
 
 			void close_sheets();
 			void break_links();
+			void close_transactions();
 
 		public:
 			~menu();

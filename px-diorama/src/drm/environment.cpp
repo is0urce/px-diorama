@@ -62,6 +62,7 @@ namespace px {
 
 	void environment::end()
 	{
+		m_ui.close_transactions();
 		m_ui.break_links();
 		impersonate(nullptr);
 		m_units.clear();
@@ -284,6 +285,8 @@ namespace px {
 		std::ofstream output(name, std::ios::binary);
 		cereal::BinaryOutputArchive archive(output);
 #endif
+
+		m_ui.close_transactions();
 
 		archive(m_turn);
 		save_units(archive);

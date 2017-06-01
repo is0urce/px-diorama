@@ -67,6 +67,10 @@ namespace px {
 			m_target->clear_target();
 			m_status->clear_target();
 		}
+		void menu::close_transactions()
+		{
+			close_sheets();
+		}
 		void menu::open_storage(container_component * storage)
 		{
 			open_storage(storage, m_storage);
