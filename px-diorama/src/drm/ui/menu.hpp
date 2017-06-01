@@ -25,12 +25,10 @@ namespace px {
 
 		class target_panel;
 		class inventory_panel;
+		class storage_panel;
 
 		class menu final
 		{
-		public:
-			typedef list<rl::inventory> inventory_list;
-
 		public:
 			panel * main() noexcept;
 			panel const* main() const noexcept;
@@ -44,7 +42,7 @@ namespace px {
 
 			void close_sheets();
 			void break_links();
-			void close_transactions();
+			bool close_transactions();
 
 		public:
 			~menu();
@@ -61,15 +59,13 @@ namespace px {
 
 			transform_component *	m_transform;	// incarnation transform
 			body_component *		m_body;			// incarnation body (equipment)
-			container_component *	m_storage;		// incarnation container (inventory)
+			container_component *	m_container;		// incarnation container (inventory)
 			character_component *	m_character;	// incarnation character (skills)
-
-			inventory_list *		m_container;
-			inventory_list *		m_inspector;
 
 			target_panel *			m_status;		// incartation status
 			target_panel *			m_target;		// target status
 			inventory_panel *		m_inventory;	// inventory panel
+			storage_panel *			m_storage;		// storage panel for inspecting containers
 		};
 	}
 }

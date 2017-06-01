@@ -6,6 +6,7 @@
 #pragma once
 
 #include "../es/body_component.hpp"
+#include "../es/container_component.hpp"
 
 #include "item_functional.hpp"
 
@@ -38,6 +39,7 @@ namespace px {
 			{
 				m_equipment = nullptr;
 				m_container = nullptr;
+				m_inventory->detach_container();
 			}
 
 		public:
