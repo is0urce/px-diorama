@@ -30,7 +30,7 @@ namespace px
 			{
 				m_items.clear();
 			}
-			void add(element_type & item)
+			void add(element_type item)
 			{
 				if (!item) throw std::invalid_argument("px::basic_inventory::add(item) - item is null");
 

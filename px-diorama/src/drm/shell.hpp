@@ -17,6 +17,7 @@ namespace px {
 
 	static const unsigned int gui_cell_width = 16;
 	static const unsigned int gui_cell_height = 16;
+	static const unsigned int zoom_default = 2;
 
 	class shell
 		: public key_translator<shell>
@@ -63,7 +64,7 @@ namespace px {
 		}
 		void pixel_snap(unsigned int ppu = 32)
 		{
-			m_perception.set_scale(ppu * m_pixel_zoom * 2.0f / m_screen_width);
+			m_perception.set_scale(ppu * m_pixel_zoom * 2.0f / static_cast<float>(m_screen.x()));
 		}
 
 		perception const& view() const noexcept
@@ -76,15 +77,18 @@ namespace px {
 		}
 		void resize(unsigned int width, unsigned int height)
 		{
-			m_screen_width = width;
-			m_screen_height = height;
-			m_perception.canvas().resize(width / gui_cell_width, height / gui_cell_height);
+			m_screen = { static_cast<double>(width), static_cast<double>(height) };
+			m_cells = { static_cast<int>(width / gui_cell_width), static_cast<int>(height / gui_cell_height) };
+			m_perception.canvas().resize(m_cells);
 			pixel_snap();
 		}
 
 	public:
 		shell()
-			: m_pixel_zoom(2)
+			: m_pixel_zoom(zoom_default)
+			, m_hover(0, 0)
+			, m_screen(0, 0)
+			, m_cells(0, 0)
 		{
 			pixel_snap();
 		}
@@ -92,15 +96,15 @@ namespace px {
 	private:
 		point2 translate_gui(point2 pixel_coordinates) const
 		{
-			return pixel_coordinates / point2(gui_cell_width, gui_cell_height);
+			return (pixel_coordinates / m_screen * m_cells).floor();
 		}
 		point2 translate_world(point2 pixel_coordinates) const
 		{
-			vector2 position = pixel_coordinates / vector2(m_screen_width, m_screen_height); // (0, 1) screen space
+			vector2 position = pixel_coordinates / m_screen; // (0, 1) screen space
 
 			// (0, 1) -> (-1, +1) and reverse y
 			position.move(vector2{ -0.5, -0.5 });
-			position.multiply(vector2{ 2.0, -2.0 * m_screen_height / m_screen_width }); // account aspect
+			position.multiply(vector2{ 2.0, -2.0 * m_screen.y() / m_screen.x() }); // account aspect
 			
 			position /= m_perception.scale();
 
@@ -112,10 +116,8 @@ namespace px {
 
 		// ui transforms
 		point2 m_hover;
-		unsigned int m_screen_width;
-		unsigned int m_screen_height;
-		unsigned int m_ui_width;
-		unsigned int m_ui_height;
+		vector2 m_screen;
+		point2 m_cells;
 		int m_pixel_zoom;
 	};
 }

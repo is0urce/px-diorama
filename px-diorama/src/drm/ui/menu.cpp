@@ -109,10 +109,8 @@ namespace px {
 			auto status = m_main->make<target_panel>({ { 0.0, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } });
 			auto target = m_main->make<target_panel>({ { 0.5, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } });
 
-			auto skills = m_main->make<skill_panel>({ { 0.0, 1.0 },{ 1, -2 },{ -2, 1 },{ 1.0, 0.0 } }, status.get(), target.get());
-
-			// inventory panel block
-			m_inventory = m_main->make<inventory_panel>("inventory", { {0.5, 0.2}, { 0, 0 }, { 0, 0 }, { 0.3, 0.6 } }).get();
+			m_main->make<skill_panel>({ { 0.0, 1.0 },{ 1, -2 },{ -2, 1 },{ 1.0, 0.0 } }, status.get(), target.get());
+			m_inventory = m_main->make<inventory_panel>({ { 0.25, 0.2 },{ 0, 0 },{ 0, 0 },{ 0.5, 0.6 } }).get(); // inventory_panel
 
 			// inspect container panel block
 			auto container_block = m_main->make<panel>("container_access", { { 0.25, 0.0 },{ 0, 1 },{ 0, -2 },{ 0.5, 1.0 } });
@@ -122,8 +120,8 @@ namespace px {
 
 			container_list->on_click(item_transfer<inventory_list*>(container_list.get(), inspector_list.get()));
 			inspector_list->on_click(item_transfer<inventory_list*>(inspector_list.get(), container_list.get()));
-			container_list->set_filter([](auto const& item) { return item->has_effect<rl::effect::ore_power>(); });
-			inspector_list->set_filter([](auto const& item) { return item->has_effect<rl::effect::ore_power>(); });
+			//container_list->set_filter([](auto const& item) { return item->has_effect<rl::effect::ore_power>(); });
+			//inspector_list->set_filter([](auto const& item) { return item->has_effect<rl::effect::ore_power>(); });
 			container_list->set_format<item_name>();
 			inspector_list->set_format<item_name>();
 

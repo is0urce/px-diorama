@@ -43,6 +43,11 @@ namespace px {
 			{
 				return m_equipment.at(slot);
 			}
+			template <slot_type Slot>
+			item_type const& at() const
+			{
+				return m_equipment.at(Slot);
+			}
 			template <typename Operator>
 			void enumerate(Operator && fn)
 			{

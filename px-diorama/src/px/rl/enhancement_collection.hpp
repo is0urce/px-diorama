@@ -107,15 +107,14 @@ namespace px {
 			}
 
 			template <effect_type MainType>
-			std::pair<bool, enhancement_type> find_effect() const
+			std::pair<bool, enhancement_type> find() const
 			{
 				for (auto const& efx : m_effects) {
-					if (efx.main_type == MainType)
-					{
-						return{ true, e };
+					if (efx.main_type == MainType) {
+						return{ true, efx };
 					}
 				}
-				return{ false, {} };
+				return{ false, enhancement_type{} };
 			}
 
 			template <effect_type MainType>

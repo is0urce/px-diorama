@@ -22,9 +22,13 @@ namespace px
 		public:
 			void resize(size_t width, size_t height)
 			{
-				m_codes.resize(width, height);
-				m_front.resize(width, height);
-				m_back.resize(width, height);
+				resize({ static_cast<int>(width), static_cast<int>(height) });
+			}
+			void resize(point2 const& range)
+			{
+				m_codes.resize(range);
+				m_front.resize(range);
+				m_back.resize(range);
 			}
 			point2 range() const noexcept
 			{
