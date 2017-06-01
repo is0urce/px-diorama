@@ -1,5 +1,7 @@
 // name: item_functional.cpp
 
+#pragma once
+
 #include <string>
 
 namespace px {

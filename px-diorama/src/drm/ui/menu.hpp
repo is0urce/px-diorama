@@ -24,6 +24,7 @@ namespace px {
 	namespace ui {
 
 		class target_panel;
+		class inventory_panel;
 
 		class menu final
 		{
@@ -34,7 +35,7 @@ namespace px {
 			panel * main() noexcept;
 			panel const* main() const noexcept;
 
-			void assign_player(transform_component * pawn);
+			void assign_incarnation(transform_component * pawn);
 			void assign_target(transform_component * pawn, point2 absolute);
 
 			void open_storage(container_component * storage);
@@ -55,19 +56,19 @@ namespace px {
 			void initialize();
 
 		private:
-			std::unique_ptr<panel>	m_main;
+			std::unique_ptr<panel>	m_main;			// hierarchy root
 
-			transform_component *	m_transform;
-			body_component *		m_body;
-			container_component *	m_storage;
-			character_component *	m_character;
+			transform_component *	m_transform;	// incarnation transform
+			body_component *		m_body;			// incarnation body (equipment)
+			container_component *	m_storage;		// incarnation container (inventory)
+			character_component *	m_character;	// incarnation character (skills)
 
-			inventory_list *		m_inventory;
 			inventory_list *		m_container;
 			inventory_list *		m_inspector;
 
-			target_panel *			m_status;
-			target_panel *			m_target;
+			target_panel *			m_status;		// incartation status
+			target_panel *			m_target;		// target status
+			inventory_panel *		m_inventory;	// inventory panel
 		};
 	}
 }

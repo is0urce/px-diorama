@@ -70,7 +70,7 @@ namespace px {
 	{
 		m_player = player;
 		m_factory->sprites()->assign_camera(m_player);
-		m_ui.assign_player(m_player);
+		m_ui.assign_incarnation(m_player);
 	}
 	void environment::update(perception & view, double time)
 	{

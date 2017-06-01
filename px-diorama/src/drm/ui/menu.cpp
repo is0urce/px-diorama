@@ -6,11 +6,12 @@
 #include "../es/body_component.hpp"
 #include "../es/container_component.hpp"
 
-#include "item_functional.hpp"
-
+#include "inventory_panel.hpp"
 #include "recipe_list.hpp"
 #include "target_panel.hpp"
 #include "skill_panel.hpp"
+
+#include "item_functional.hpp"
 
 #include <px/ui/panel.hpp>
 #include <px/ui/board.hpp>
@@ -29,6 +30,11 @@ namespace px {
 		}
 		menu::menu()
 			: m_main(std::make_unique<panel>())
+			, m_inventory(nullptr)
+			, m_status(nullptr)
+			, m_target(nullptr)
+			, m_container(nullptr)
+			, m_inspector(nullptr)
 		{
 			initialize();
 		}
@@ -41,7 +47,7 @@ namespace px {
 		{
 			return m_main.get();
 		}
-		void menu::assign_player(transform_component * pawn)
+		void menu::assign_incarnation(transform_component * pawn)
 		{
 			m_transform = pawn;
 			m_body = pawn ? pawn->linked<body_component>() : nullptr;
@@ -55,11 +61,11 @@ namespace px {
 		}
 		void menu::break_links()
 		{
-			m_target->clear_target();
-			m_status->clear_target();
+			m_inventory->break_links();
 			m_container->assign_container(nullptr);
 			m_inspector->assign_container(nullptr);
-			m_inventory->assign_container(nullptr);
+			m_target->clear_target();
+			m_status->clear_target();
 		}
 		void menu::open_storage(container_component * storage)
 		{
@@ -80,18 +86,21 @@ namespace px {
 		}
 		void menu::close_sheets()
 		{
+			px_assert(m_inventory);
+
+			m_inventory->deactivate();
 			(*m_main)["container_access"]->deactivate();
-			(*m_main)["inventory_access"]->deactivate();
 		}
 		void menu::toggle_inventory()
 		{
-			auto & block = (*m_main)["inventory_access"];
-			bool opened = block->active();
+			px_assert(m_inventory);
+
+			bool opened = m_inventory->active();
 
 			close_sheets();
 
-			m_inventory->assign_container(m_storage);
-			block->activate(!opened);
+			m_inventory->assign_container(m_body, m_storage);
+			m_inventory->activate(!opened);
 		}
 
 		void menu::initialize()
@@ -103,11 +112,7 @@ namespace px {
 			auto skills = m_main->make<skill_panel>({ { 0.0, 1.0 },{ 1, -2 },{ -2, 1 },{ 1.0, 0.0 } }, status.get(), target.get());
 
 			// inventory panel block
-			auto inventory_block = m_main->make<panel>("inventory_access", { {0.5, 0.2}, {0, 0}, {0, 0}, {0.3, 0.6} });
-			inventory_block->make<board>("background", fill, color{ 1, 1, 1, 0.5 });
-			auto label = inventory_block->make<text>("label", { { 0.0, 0.0 },{ 0, 0 },{ 0, 1 },{ 1.0, 0.0 } }, "Inventory");
-			auto player_list = inventory_block->make<inventory_list>({ { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 1.0, 1.0 } });
-			player_list->set_format<item_name>();
+			m_inventory = m_main->make<inventory_panel>("inventory", { {0.5, 0.2}, { 0, 0 }, { 0, 0 }, { 0.3, 0.6 } }).get();
 
 			// inspect container panel block
 			auto container_block = m_main->make<panel>("container_access", { { 0.25, 0.0 },{ 0, 1 },{ 0, -2 },{ 0.5, 1.0 } });
@@ -145,7 +150,6 @@ namespace px {
 			m_target = target.get();
 			m_container = container_list.get();
 			m_inspector = inspector_list.get();
-			m_inventory = player_list.get();
 
 			// end setup
 			close_sheets();

@@ -215,6 +215,7 @@
     <ClInclude Include="src\drm\fn\generator.hpp" />
     <ClInclude Include="src\drm\rl\tile_chunk.hpp" />
     <ClInclude Include="src\drm\rl\tile_instance.hpp" />
+    <ClInclude Include="src\drm\ui\inventory_panel.hpp" />
     <ClInclude Include="src\drm\ui\item_functional.hpp" />
     <ClInclude Include="src\drm\ui\skill_panel.hpp" />
     <ClInclude Include="src\px\ui\bar.hpp" />
