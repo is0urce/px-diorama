@@ -60,10 +60,9 @@ namespace px {
 					bool is_equipment;
 					rl::item::enhancement_type enhancement;
 					std::tie(is_equipment, enhancement) = item->find<rl::effect::equipment>();
-					rl::equipment_slot equipment_slot = static_cast<rl::equipment_slot>(enhancement.subtype);
 
 					if (is_equipment) {
-						equip(*m_equipment, *m_container, item, equipment_slot);
+						m_equipment->equip(*m_container, item, static_cast<rl::equipment_slot>(enhancement.subtype));
 					}
 				});
 
@@ -81,24 +80,8 @@ namespace px {
 					return (m_equipment && m_equipment->equipped(equipment_slot)) ? m_equipment->at(equipment_slot).name() : unequipped_text;
 				});
 				slot->make<button>(fill, [this, equipment_slot](int /* mouse_button */) {
-					if (m_equipment && m_container) unequip(*m_equipment, *m_container, equipment_slot);
+					if (m_equipment && m_container) m_equipment->unequip(*m_container, equipment_slot);
 				});
-			}
-			static void equip(rl::doll<rl::equipment_slot, rl::item> & equipment, rl::inventory & container, std::shared_ptr<rl::item> item, rl::equipment_slot slot)
-			{
-				// remove current
-				unequip(equipment, container, slot);
-
-				// move to equipment
-				equipment.equip(slot, *item);
-				container.remove(item);
-			}
-			static void unequip(rl::doll<rl::equipment_slot, rl::item> & equipment, rl::inventory & container, rl::equipment_slot slot)
-			{
-				if (equipment.equipped(slot)) {
-					container.add(std::make_shared<rl::item>(equipment.at(slot))); // copy constructor emplacement
-					equipment.unequip(slot);
-				}
 			}
 
 		private:
