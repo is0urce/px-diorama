@@ -44,7 +44,7 @@ namespace px {
 			{
 				return m_align;
 			}
-			void layout(rectangle const& parent_bounds) noexcept
+			void layout(rectangle const& parent_bounds)
 			{
 				m_bounds = layout_panel(parent_bounds);
 
@@ -332,7 +332,6 @@ namespace px {
 			name_type	m_name;
 			alignment	m_align;
 			rectangle	m_bounds;
-			rectangle	m_parent_bounds;
 			panel *		m_parent;
 
 			bool		m_focus;
