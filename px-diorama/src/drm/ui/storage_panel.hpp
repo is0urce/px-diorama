@@ -31,7 +31,7 @@ namespace px {
 				m_storage->assign_container(storage);
 				m_inspector->assign_container(inspector);
 			}
-			void break_links()
+			void break_links() noexcept
 			{
 				m_storage->detach_container();
 				m_inspector->detach_container();

@@ -35,7 +35,7 @@ namespace px {
 				m_container = container;
 				m_inventory->assign_container(container);
 			}
-			void break_links()
+			void break_links() noexcept
 			{
 				m_equipment = nullptr;
 				m_container = nullptr;

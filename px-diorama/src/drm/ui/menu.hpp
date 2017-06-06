@@ -7,10 +7,8 @@
 
 #pragma once
 
-#include <px/common/point.hpp>
-#include <px/common/rectangle.hpp>
-#include <px/rl/loot/inventory.hpp>
-#include <px/ui/list.hpp>
+#include <px/common/assert.hpp>
+#include <px/ui/panel.hpp>
 
 #include <memory>
 
@@ -26,23 +24,25 @@ namespace px {
 		class target_panel;
 		class inventory_panel;
 		class storage_panel;
+		class workshop_panel;
 
 		class menu final
 		{
 		public:
-			panel * main() noexcept;
-			panel const* main() const noexcept;
+			panel * main() px_noexcept;
+			panel const* main() const px_noexcept;
 
-			void assign_incarnation(transform_component * pawn);
-			void assign_target(transform_component * pawn, point2 absolute);
+			void assign_incarnation(transform_component * pawn) noexcept;
+			void assign_target(transform_component * pawn, point2 absolute) noexcept;
 
 			void open_storage(container_component * storage);
 			void open_storage(container_component * storage, container_component * inspector);
 			void open_workshop(container_component * user);
 
 			void close_sheets();
-			void break_links();
 			bool close_transactions();
+
+			void break_links() noexcept;
 
 		public:
 			~menu();
@@ -59,13 +59,14 @@ namespace px {
 
 			transform_component *	m_transform;	// incarnation transform
 			body_component *		m_body;			// incarnation body (equipment)
-			container_component *	m_container;		// incarnation container (inventory)
+			container_component *	m_container;	// incarnation container (inventory)
 			character_component *	m_character;	// incarnation character (skills)
 
 			target_panel *			m_status;		// incartation status
 			target_panel *			m_target;		// target status
 			inventory_panel *		m_inventory;	// inventory panel
 			storage_panel *			m_storage;		// storage panel for inspecting containers
+			workshop_panel *		m_workshop;		// workshop crafting
 		};
 	}
 }

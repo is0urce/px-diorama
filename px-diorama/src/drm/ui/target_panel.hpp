@@ -19,20 +19,20 @@ namespace px {
 			: public panel
 		{
 		public:
-			void lock(transform_component * target, point2 position)
+			void lock(transform_component * target, point2 position) noexcept
 			{
 				lock_position(position);
 				lock_target(target);
 			}
-			void lock_target(transform_component * target)
+			void lock_target(transform_component * target) noexcept
 			{
 				m_target = target;
 			}
-			void lock_position(point2 position)
+			void lock_position(point2 position) noexcept
 			{
 				m_position = position;
 			}
-			void clear_target()
+			void clear_target() noexcept
 			{
 				m_target = nullptr;
 			}
