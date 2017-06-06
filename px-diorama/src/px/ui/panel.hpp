@@ -40,23 +40,24 @@ namespace px {
 			{
 				return m_bounds.range();
 			}
-			void layout(rectangle rect) noexcept
-			{
-				m_parent = rect;
-				layout();
-			}
 			alignment align() const noexcept
 			{
 				return m_align;
 			}
-			void layout()
+			void layout(rectangle const& parent_bounds) noexcept
 			{
-				m_bounds = layout_panel(m_parent);
+				m_bounds = layout_panel(parent_bounds);
 
 				// process to subpanels
 				action([this](auto & subpanel) {
 					subpanel->layout(m_bounds);
 				});
+			}
+			void layout()
+			{
+				if (m_parent) {
+					layout(m_parent->m_bounds);
+				}
 			}
 			bool focused() const noexcept
 			{
@@ -64,23 +65,22 @@ namespace px {
 			}
 
 			// creation
-			void add(name_type name, alignment align, panel_ptr child)
+			void add(name_type name, panel_ptr child)
 			{
-				if (!child) throw std::runtime_error("px::ui::panel::add(name, align, child) - child is null");
+				if (!child) throw std::runtime_error("px::ui::panel::add(name, child) - child is null");
 
 				child->m_name = name;
-				child->m_align = align;
+				child->m_parent = this;
 
 				child->layout(m_bounds);
 
 				m_stack[name] = child;
 			}
-			void add(alignment align, panel_ptr child)
+			void add(panel_ptr child)
 			{
-				if (!child) throw std::runtime_error("px::ui::panel::add(align, child) - child is null");
+				if (!child) throw std::runtime_error("px::ui::panel::add(child) - child is null");
 
-				child->m_name = "";
-				child->m_align = align;
+				child->m_parent = this;
 
 				child->layout(m_bounds);
 
@@ -122,14 +122,16 @@ namespace px {
 			auto make(alignment align, Args &&... args)
 			{
 				auto result = std::make_shared<SubPanel>(std::forward<Args>(args)...);
-				add(align, result);
+				result->m_align = align;
+				add(result);
 				return result;
 			}
 			template <typename SubPanel, typename ...Args>
 			auto make(name_type name, alignment align, Args &&... args)
 			{
 				auto result = std::make_shared<SubPanel>(std::forward<Args>(args)...);
-				add(name, align, result);
+				result->m_align = align;
+				add(name, result);
 				return result;
 			}
 			void set_alignment(alignment align) noexcept
@@ -250,7 +252,10 @@ namespace px {
 			{
 			}
 			panel(name_type tag, alignment align)
-				: m_name(tag), m_align(align)
+				: m_name(tag)
+				, m_align(align)
+				, m_parent(nullptr)
+				, m_focus(false)
 			{
 			}
 			panel(panel const&) = delete;
@@ -324,12 +329,13 @@ namespace px {
 			}
 
 		private:
-			name_type m_name;
-			alignment m_align;
-			rectangle m_bounds;
-			rectangle m_parent;
+			name_type	m_name;
+			alignment	m_align;
+			rectangle	m_bounds;
+			rectangle	m_parent_bounds;
+			panel *		m_parent;
 
-			bool m_focus;
+			bool		m_focus;
 
 			std::vector<std::shared_ptr<panel>> m_unnamed;
 			std::map<name_type, std::shared_ptr<panel>> m_stack;
