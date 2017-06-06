@@ -19,7 +19,7 @@ namespace px
 		{
 		public:
 			typedef Item item_type;
-			typedef std::shared_ptr<item_type> element_type;
+			typedef std::shared_ptr<item_type> value_type;
 
 		public:
 			bool empty() const noexcept
@@ -30,7 +30,7 @@ namespace px
 			{
 				m_items.clear();
 			}
-			void add(element_type item)
+			void add(value_type item)
 			{
 				if (!item) throw std::invalid_argument("px::basic_inventory::add(item) - item is null");
 
@@ -44,7 +44,7 @@ namespace px
 					m_items.push_back(item);
 				}
 			}
-			void remove(element_type & item, unsigned int n)
+			void remove(value_type & item, unsigned int n)
 			{
 				for (auto it = std::begin(m_items), last = std::end(m_items); it != last; ++it) {
 					if (*it == item && item->decrease(n) == 0) {
@@ -53,11 +53,11 @@ namespace px
 					}
 				}
 			}
-			void remove(element_type & item)
+			void remove(value_type & item)
 			{
 				remove(item, 1);
 			}
-			void transfer(element_type & item, basic_inventory & destination)
+			void transfer(value_type & item, basic_inventory & destination)
 			{
 				if (&destination == this) return;
 
@@ -127,7 +127,7 @@ namespace px
 			}
 
 		private:
-			std::vector<element_type> m_items;
+			std::vector<value_type> m_items;
 		};
 	}
 }

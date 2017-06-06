@@ -7,7 +7,7 @@
 
 #include <px/ui/panel.hpp>
 
-#include "drm/rl/recipe.hpp"
+#include "drm/rl/kraft/recipe.hpp"
 
 #include <list>
 
@@ -22,6 +22,10 @@ namespace px {
 			{
 			}
 			recipe_list(std::list<recipe> list) : m_recipes(list)
+			{
+			}
+			recipe_list(std::list<recipe> && list)
+				: m_recipes(std::forward<std::list<recipe>>(list))
 			{
 			}
 

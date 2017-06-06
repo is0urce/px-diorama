@@ -20,7 +20,7 @@ namespace px {
 		{
 		public:
 			typedef Container container_type;
-			typedef typename Container::element_type element_type;
+			typedef typename Container::value_type element_type;
 			typedef std::function<void(element_type &)> click_fn;
 			typedef std::function<std::string(element_type const&)> format_fn;
 			typedef std::function<bool(element_type const&)> filter_fn;
