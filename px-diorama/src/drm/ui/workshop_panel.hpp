@@ -18,7 +18,6 @@
 #include <px/ui/panel.hpp>
 #include <px/ui/text.hpp>
 
-#include <list>
 #include <memory>
 #include <vector>
 
@@ -29,7 +28,7 @@ namespace px {
 			: public panel
 		{
 		public:
-			typedef enumerable<std::list<rl::recipe>> recipes_type;
+			typedef enumerable<std::vector<rl::recipe>> recipes_type;
 
 		public:
 			void assign_container(container_component * user_container) noexcept
@@ -100,11 +99,23 @@ namespace px {
 			}
 			void recipe_set(rl::recipe const& recipe)
 			{
-				make_slots(recipe.ingredient_count);
+				recipe_clear(); // clear previous
+
+				make_slots(recipe.ingredient_count); // prepare slots
+
+				// apply filter
+				m_inventory->set_filter([](auto const& item) {
+					return item->value<rl::effect::ore_power>() != 0;
+				});
 			}
 			void recipe_clear()
 			{
-				make_slots(0);
+				make_slots(0); // close slots
+
+				// reset filter
+				m_inventory->set_filter([](auto const& /*item*/) {
+					return true;
+				});
 			}
 			void recipe_craft()
 			{
