@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "target_panel.hpp"
+
 #include <px/common/assert.hpp>
 #include <px/ui/panel.hpp>
 #include "../es/character_component.hpp"

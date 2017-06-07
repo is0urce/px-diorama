@@ -82,6 +82,11 @@ namespace px
 				return m_max_stack != 1;
 			}
 
+			void set_current_stack(unsigned int n) noexcept
+			{
+				m_stack = n;
+			}
+
 			// unlimited max size
 			void make_stacking() noexcept
 			{

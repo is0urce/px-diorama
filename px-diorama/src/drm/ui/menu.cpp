@@ -5,11 +5,10 @@
 #include "../key.hpp"
 #include "../es/body_component.hpp"
 
-#include "storage_panel.hpp"
 #include "inventory_panel.hpp"
-#include "recipe_list.hpp"
-#include "target_panel.hpp"
 #include "skill_panel.hpp"
+#include "storage_panel.hpp"
+#include "target_panel.hpp"
 #include "workshop_panel.hpp"
 
 #include "item_functional.hpp"
@@ -71,6 +70,7 @@ namespace px {
 		{
 			m_inventory->break_links();
 			m_storage->break_links();
+			m_workshop->break_links();
 			m_target->clear_target();
 			m_status->clear_target();
 		}
@@ -92,10 +92,11 @@ namespace px {
 			m_storage->assign_containers(storage, inspector);
 			m_storage->activate();
 		}
-		void menu::open_workshop(container_component * /* user */)
+		void menu::open_workshop(container_component * user)
 		{
 			close_sheets();
 
+			m_workshop->assign_container(user);
 			m_workshop->activate();
 		}
 		void menu::close_sheets()

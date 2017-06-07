@@ -21,11 +21,11 @@ namespace px {
 			virtual ~recipe_list()
 			{
 			}
-			recipe_list(std::list<recipe> list) : m_recipes(list)
+			recipe_list(std::list<rl::recipe> list) : m_recipes(list)
 			{
 			}
-			recipe_list(std::list<recipe> && list)
-				: m_recipes(std::forward<std::list<recipe>>(list))
+			recipe_list(std::list<rl::recipe> && list)
+				: m_recipes(std::forward<std::list<rl::recipe>>(list))
 			{
 			}
 
@@ -51,7 +51,7 @@ namespace px {
 			}
 
 		private:
-			std::list<recipe> m_recipes;
+			std::list<rl::recipe> m_recipes;
 		};
 	}
 }

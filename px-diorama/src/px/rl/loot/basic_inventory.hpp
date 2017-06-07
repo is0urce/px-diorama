@@ -57,11 +57,32 @@ namespace px
 			{
 				remove(item, 1);
 			}
+			value_type take(value_type & item, unsigned int n)
+			{
+				value_type result;
+
+				for (auto iterator = std::begin(m_items), last = std::end(m_items); iterator != last; ++iterator) {
+					if (*iterator == item) {
+						unsigned int current = (*iterator)->count();
+						result = std::make_shared<item_type>(**iterator);
+						result->set_current_stack(current > n ? n : current);
+
+						// remove item if stack is depleted
+						if ((*iterator)->decrease(n) == 0) {
+							m_items.erase(iterator);
+						}
+
+						break;
+					}
+				}
+				return result;
+			}
+
 			void transfer(value_type & item, basic_inventory & destination)
 			{
 				if (&destination == this) return;
 
-				for (auto it = std::begin(m_items), last = std::end(m_items); it != last;++it) {
+				for (auto it = std::begin(m_items), last = std::end(m_items); it != last; ++it) {
 					if (*it == item) {
 						destination.add(item);
 						m_items.erase(it);
@@ -91,7 +112,7 @@ namespace px
 			template <typename UnaryOperator>
 			void enumerate(UnaryOperator && enum_fn)
 			{
-				for (auto & item : m_items)	{
+				for (auto & item : m_items) {
 					enum_fn(item);
 				}
 			}
