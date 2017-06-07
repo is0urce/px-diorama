@@ -291,9 +291,6 @@
     <ClInclude Include="src\drm\environment.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\ui\recipe_list.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\drm\es\useable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

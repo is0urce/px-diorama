@@ -7,8 +7,9 @@
 
 #include "item_functional.hpp"
 
-#include "recipe_list.hpp"
+#include "drm/rl/kraft/recipe.hpp"
 
+#include <px/common/enumerable.hpp>
 #include <px/rl/loot/inventory.hpp>
 
 #include <px/ui/board.hpp>
@@ -17,8 +18,7 @@
 #include <px/ui/panel.hpp>
 #include <px/ui/text.hpp>
 
-#include <px/ui/panel.hpp>
-
+#include <list>
 #include <memory>
 #include <vector>
 
@@ -60,7 +60,7 @@ namespace px {
 				// recipes
 				load_recipes();
 
-				auto recipe_list = make<list<recipes_type>>(fill);
+				auto recipe_list = make<list<recipes_type>>("recipes", fill);
 				recipe_list->assign_container(&m_recipes);
 				recipe_list->set_format([](auto const& recipe) { return recipe.name; });
 				recipe_list->on_click([this](auto const& recipe) {
