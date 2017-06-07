@@ -30,13 +30,13 @@ namespace px {
 		struct item_name
 		{
 			template <typename Item>
-			std::string operator()(Item & item)
+			std::string operator()(Item && item)
 			{
 				return format(std::forward<Item>(item));
 			}
 
 			template <typename Item>
-			static std::string format(Item & item)
+			static std::string format(Item && item)
 			{
 				std::string result;
 				if (item) {

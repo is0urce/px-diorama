@@ -61,7 +61,15 @@ namespace px {
 
 				m_slots = make<panel>(fill).get();
 
-				make_slots(10);
+				// button
+				auto k_block = make<board>({ { 0.25, 0.8 },{ -1,0 },{ 1, 1 },{ 0.5, 0.0 } }, color{ 1, 0.5,0, 1 });
+				auto k_press = k_block->make<button>(fill);
+
+				auto txt = k_block->make<text>(fill, "CRAFT");
+				txt->set_alignment(text_alignment::center);
+				k_press->on_click([this](int /* mouse_button */) {
+					make_slots(2);
+				});
 			}
 
 		private:
@@ -71,6 +79,7 @@ namespace px {
 				px_assert(total >= 0);
 
 				m_slots->clear_anonimous(); // clear previous
+				m_slots_data.clear();
 
 				for (int i = 0; i != total; ++i) {
 
@@ -79,12 +88,13 @@ namespace px {
 					m_slots_data.push_back(slot_data);
 
 					// ui
-					auto k_block = m_slots->make<board>({ { 0.0, 0.0 },{ 2,1 + i * 2 },{ 15, 1 },{ 0, 0 } }, color{ 1, 0.5,0, 1 });
-					auto slot_press = k_block->make<button>(fill);
+					auto slot_block = m_slots->make<board>({ { 0.0, 0.0 },{ 2,1 + i * 2 },{ 15, 1 },{ 0, 0 } }, color{ 1, 0.5,0, 1 });
+					auto slot_press = slot_block->make<button>(fill);
 
-					k_block->make<text>(fill, [slot_data]()->std::string {
+					auto txt = slot_block->make<text>(fill, [slot_data]()->std::string {
 						return (*slot_data) ? item_name::format(*slot_data) : "-- empty --";
 					});
+					txt->set_alignment(text_alignment::center);
 					slot_press->on_click([this, i](int /* mouse_button */) {
 						remove_ingredient(i);
 					});
