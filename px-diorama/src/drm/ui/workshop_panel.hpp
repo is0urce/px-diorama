@@ -45,7 +45,7 @@ namespace px {
 			void close_transactions()
 			{
 				remove_ingredients();
-				make_slots(0);
+				recipe_clear();
 			}
 
 		public:
@@ -64,7 +64,7 @@ namespace px {
 				recipe_list->assign_container(&m_recipes);
 				recipe_list->set_format([](auto const& recipe) { return recipe.name; });
 				recipe_list->on_click([this](auto const& recipe) {
-					make_slots(recipe.ingredient_count);
+					recipe_set(recipe);
 				});
 
 				// slots
@@ -87,6 +87,7 @@ namespace px {
 
 				craft_text->set_alignment(text_alignment::center);
 				craft_press->on_click([this](int /* mouse_button */) {
+					recipe_craft();
 				});
 			}
 
@@ -96,6 +97,26 @@ namespace px {
 				m_recipes.push_back({ "sword", rl::recipe_category::weapon, rl::ingredient::ore, 8 });
 				m_recipes.push_back({ "mace", rl::recipe_category::weapon, rl::ingredient::ore, 6 });
 				m_recipes.push_back({ "dagger", rl::recipe_category::weapon, rl::ingredient::ore, 4 });
+			}
+			void recipe_set(rl::recipe const& recipe)
+			{
+				make_slots(recipe.ingredient_count);
+			}
+			void recipe_clear()
+			{
+				make_slots(0);
+			}
+			void recipe_craft()
+			{
+				size_t size = m_ingredients.size();
+				bool complete = size != 0;
+				for (size_t i = 0; i != size; ++i) {
+					complete = complete && m_ingredients[i];
+				}
+
+				if (complete) {
+					// do an actual crafting
+				}
 			}
 			void make_slots(int total)
 			{
