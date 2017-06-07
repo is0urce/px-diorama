@@ -1,9 +1,7 @@
-// name: toggle.hpp
+// name: toggle_panel.hpp
 // type: c++
 // desc: class
 // auth: isource
-
-// button widget
 
 #pragma once
 
