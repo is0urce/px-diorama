@@ -474,6 +474,9 @@
     <ClInclude Include="src\px\common\enumerable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\serialization.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -488,10 +491,13 @@
     <ClCompile Include="src\drm\ui\menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\drm\environment.cpp">
+    <ClCompile Include="src\drm\es\sprite_system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\drm\es\sprite_system.cpp">
+    <ClCompile Include="src\drm\environment-io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\drm\environment-main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

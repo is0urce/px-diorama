@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "es/unit.hpp"
 #include "rl/notification.hpp"
 #include "rl/tile_chunk.hpp"
 #include "ui/menu.hpp"
@@ -16,7 +15,6 @@
 #include <px/common/coordinate.hpp>
 #include <px/common/coordinate_ext.hpp> // lex_less
 
-#include <list>
 #include <map>
 #include <memory>
 #include <string>
@@ -27,10 +25,17 @@ namespace px {
 
 	class factory;
 	class perception;
+
+	class container_component;
 	class body_component;
+	class transform_component;
+	class unit;
 
 	class environment
 	{
+	public:
+		typedef std::shared_ptr<unit> unit_ptr;
+
 	public:
 
 		// flow
@@ -46,7 +51,7 @@ namespace px {
 		void target(point2 relative_coordinates);
 		void step(point2 const& direction);
 		void use(unsigned int ability_index);
-		void activate(unsigned int mod);
+		void activate(unsigned int modifier);
 
 		// user interface
 
@@ -63,9 +68,9 @@ namespace px {
 		// serialization
 
 		void save();
-		void save(std::string const& name);
+		void save(std::string const& save_name);
 		void load();
-		void load(std::string const& name);
+		void load(std::string const& save_name);
 
 	public:
 		~environment();
@@ -74,39 +79,35 @@ namespace px {
 		environment & operator=(environment const&) = delete;
 
 	private:
-		void impersonate(transform_component * player);
-		std::shared_ptr<unit> spawn(std::string const& name, point2 location);
-		void turn_begin();
-		void turn_end();
-		transform_component * find_any(point2 const& position);
-
 		template <typename Action>
 		void turn(Action && intent_action, int time);
+		void turn_begin();
+		void turn_end();
+		void impersonate(transform_component * player);
+		transform_component * find_any(point2 const& position);
 
-		template <typename Archive>
-		void save_units(Archive & archive) const;
-		template <typename Archive>
-		void load_units(Archive & archive);
-		template <typename Archive>
-		void save_unit(unit const& mobile, Archive & archive) const;
-		template <typename Archive, typename Builder>
-		void load_unit(Builder & builder, Archive & archive);
+		//void export_unit(unit const& mobile, std::string const& depot) const;
+		//unit_ptr import_unit(std::string const& depot) const;
+
+		unit_ptr create_dummy(std::string const& unit_name, point2 location);
+		//unit_ptr create(std::string const& depot_name);
+		void spawn(unit_ptr unit);
 
 	private:
-		std::unique_ptr<factory>			m_factory;			// for assembling units, release last
+		std::unique_ptr<factory>	m_factory;			// for assembling units, release last
 
-		bool								m_run;				// if engine is working
-		unsigned int						m_turn;				// current turn
-		unsigned int						m_last_turn;		// last updated turn
-		double								m_last_time;		// last time of update
+		bool						m_run;				// if engine is working
+		unsigned int				m_turn;				// current turn
+		unsigned int				m_last_turn;		// last updated turn
+		double						m_last_time;		// last time of update
 
-		tile_chunk<tile_instance>			m_map;				// terrain
-		std::vector<std::shared_ptr<unit>>	m_units;			// scene
-		transform_component *				m_player;			// player transform
+		tile_chunk<tile_instance>	m_map;				// terrain
+		std::vector<unit_ptr>		m_units;			// scene
+		transform_component *		m_player;			// player transform
 
-		point2								m_hover;			// current hovered tile
-		ui::menu							m_ui;				// user interface
-		std::list<vfx>						m_visuals;			// visual effects container
+		point2						m_hover;			// current hovered tile
+		ui::menu					m_ui;				// user interface
+		std::vector<vfx>			m_visuals;			// visual effects container
 		std::map<point2, std::vector<notification>, lex_less> m_notifications;	// popups container
 	};
 }

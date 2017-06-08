@@ -79,16 +79,16 @@ namespace px {
 				}
 			});
 		}
-		void dump(std::string const& name) const
+		void store(std::string const& depot_name) const
 		{
-			std::ofstream stream(name, std::ofstream::binary);
+			std::ofstream stream(depot_name, std::ofstream::binary);
 			m_matrix.enumerate([&](auto const& /* position */, auto const& tile) {
 				stream.write(reinterpret_cast<char const*>(&tile.id), sizeof(tile.id));
 			});
 		}
-		void load(std::string const& name)
+		void load(std::string const& depot_name)
 		{
-			std::ifstream stream(name, std::ifstream::binary);
+			std::ifstream stream(depot_name, std::ifstream::binary);
 			m_matrix.enumerate([&](auto const& /* position */, auto & tile) {
 				stream.read(reinterpret_cast<char *>(&tile.id), sizeof(tile.id));
 				invalidate(tile);
