@@ -1,6 +1,6 @@
 // name: rectangle_test.cpp
 
-#include "catch.hpp"
+#include "../test.hpp"
 
 #include <px/common/rectangle.hpp>
 

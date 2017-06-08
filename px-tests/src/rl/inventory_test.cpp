@@ -1,6 +1,6 @@
 // name: inventory_test.cpp
 
-#include "catch.hpp"
+#include "../test.hpp"
 
 #include <px/rl/loot/inventory.hpp>
 

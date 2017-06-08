@@ -1,6 +1,6 @@
 // name: matrix_test.cpp
 
-#include "catch.hpp"
+#include "../test.hpp"
 
 #include <px/common/point.hpp>
 #include <px/common/vector.hpp>

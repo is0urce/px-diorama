@@ -1,6 +1,6 @@
 // name: qtree_test.cpp
 
-#include "catch.hpp"
+#include "../test.hpp"
 
 #include <px/common/qtree.hpp>
 

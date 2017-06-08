@@ -1,6 +1,6 @@
 // name: pool_chain_tests.cpp
 
-#include "catch.hpp"
+#include "../test.hpp"
 
 #include <px/common/pool_chain.hpp>
 

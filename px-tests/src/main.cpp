@@ -4,7 +4,7 @@
 // desc: entry point generated there
 
 #define CATCH_CONFIG_RUNNER // providing own main
-#include <catch.hpp>
+#include "test.hpp"
 
 //int _tmain(int argc, _TCHAR* argv[])
 int main(int argc, char const* const argv[])

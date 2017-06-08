@@ -1,6 +1,6 @@
 // name: intrusive_test.cpp
 
-#include "catch.hpp"
+#include "../test.hpp"
 
 #include <px/common/intrusive_ptr.hpp>
 

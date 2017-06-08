@@ -214,3 +214,7 @@ ModelManifest.xml
 #more vs stuff
 *.VC.opendb
 *.VC.db
+/px-diorama/data
+/px-diorama/data
+/px-diorama/data/doc/food.txt
+/px-diorama/include
