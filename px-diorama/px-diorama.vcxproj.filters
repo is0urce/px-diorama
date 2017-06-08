@@ -477,6 +477,9 @@
     <ClInclude Include="src\drm\serialization.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\rl\kraft\workshop.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
