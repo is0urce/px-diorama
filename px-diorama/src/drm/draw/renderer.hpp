@@ -31,8 +31,8 @@
 namespace px {
 
 	namespace {
-		char const* grid_font_path = "data/fonts/DejaVuSans-Bold.ttf";
-		char const* popup_font_path = "data/fonts/DejaVuSans-Bold.ttf";
+		char const* grid_font_path = "data/fonts/DejaVuSansMono.ttf";
+		char const* popup_font_path = "data/fonts/DejaVuSansMono.ttf";
 
 		unsigned int grid_font_size = 18;	// size of fon
 		unsigned int grid_font_atlas = 512;	// internal size of font atlas

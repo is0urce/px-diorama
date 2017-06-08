@@ -40,9 +40,8 @@ TEST_CASE("matrix", "[matrix]")
 	px::matrix2<int> c(w, h, element);
 	px::matrix2<int> e(w, h, generator);
 
-	REQUIRE_NOTHROW(px::matrix2<int> f1(0, h));
-	REQUIRE_NOTHROW(px::matrix2<int> f2(w, 0));
-
+//	REQUIRE_NOTHROW(px::matrix2<int> f1(0, h));
+//	REQUIRE_NOTHROW(px::matrix2<int> f2(w, 0));
 
 	REQUIRE(static_cast<int>(a.width()) == w);
 	REQUIRE(static_cast<int>(a.height()) == h);

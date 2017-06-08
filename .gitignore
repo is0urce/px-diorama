@@ -214,3 +214,6 @@ ModelManifest.xml
 #more vs stuff
 *.VC.opendb
 *.VC.db
+/px-diorama/data
+/px-diorama/include
+/px-diorama/lib
