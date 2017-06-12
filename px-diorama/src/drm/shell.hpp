@@ -85,12 +85,14 @@ namespace px {
 
 	public:
 		shell()
+			: shell(0, 0)
+		{
+		}
+		shell(int screen_width, int screen_height)
 			: m_pixel_zoom(zoom_default)
 			, m_hover(0, 0)
-			, m_screen(0, 0)
-			, m_cells(0, 0)
 		{
-			pixel_snap();
+			resize(screen_width, screen_height);
 		}
 
 	private:

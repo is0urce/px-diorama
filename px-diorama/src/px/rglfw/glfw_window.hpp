@@ -14,11 +14,7 @@ namespace px
 	class glfw_window final
 	{
 	public:
-		operator bool() const
-		{
-			return m_window && !glfwWindowShouldClose(m_window);
-		}
-		operator GLFWwindow * () const noexcept
+		GLFWwindow * window() const noexcept
 		{
 			return m_window;
 		}
@@ -32,8 +28,27 @@ namespace px
 			glfwPollEvents();
 			return !glfwWindowShouldClose(m_window);
 		}
+		operator bool() const
+		{
+			return m_window && !glfwWindowShouldClose(m_window);
+		}
+		operator GLFWwindow * () const noexcept
+		{
+			return m_window;
+		}
+		void swap(glfw_window & that)
+		{
+			std::swap(m_window, that.m_window);
+		}
 
 	public:
+		~glfw_window()
+		{
+			if (m_window)
+			{
+				glfwDestroyWindow(m_window);
+			}
+		}
 		glfw_window() noexcept
 			: m_window(nullptr)
 		{
@@ -42,13 +57,14 @@ namespace px
 			: m_window(window)
 		{
 		}
-		~glfw_window()
+		glfw_window(glfw_window && that)
+			: glfw_window()
 		{
-			if (m_window)
-			{
-				glfwDestroyWindow(m_window);
-			}
+			swap(that);
 		}
+		glfw_window(glfw_window const&) = delete;
+		glfw_window & operator=(glfw_window const&) = delete;
+
 	private:
 		GLFWwindow * m_window;
 	};

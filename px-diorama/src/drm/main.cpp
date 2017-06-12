@@ -7,22 +7,63 @@
 #include <GL/glew.h>
 #include <px/rglfw/rglfw.hpp>
 
-#include <lodepng.h>
-#include <json.hpp>
-#include <date/date.h>
-
 #include "configuration.hpp"
 #include "shell.hpp"
 #include "draw/renderer.hpp"
+#include "key.hpp"
 
 #include <px/common/logger.hpp>
 #include <px/common/timer.hpp>
 #include <px/common/bindings.hpp>
 
+#include <lodepng.h>
+#include <json.hpp>
+#include <date/date.h>
+
 #include <stdexcept>
 #include <string>
 
 namespace px {
+
+	glfw_window create_window(configuration & config)
+	{
+		auto monitor = glfwGetPrimaryMonitor();
+		auto mode = glfwGetVideoMode(monitor);
+
+		glfwWindowHint(GLFW_DECORATED, config.border ? 1 : 0); // border
+		if (config.fullscreen) {
+			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+			config.screen_width = mode->width;
+			config.screen_height = mode->height;
+		}
+
+		glfw_window window = glfwCreateWindow(config.screen_width, config.screen_height, "press-x-diorama", config.fullscreen ? monitor : nullptr, nullptr);
+		glfwMakeContextCurrent(window);
+		glfwSwapInterval(config.vsync);
+
+		return window;
+	}
+	void load_textures(renderer & graphics, std::string const& atlas_path)
+	{
+		std::ifstream file(atlas_path);
+		if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(atlas_path));
+		auto textures = nlohmann::json::parse(file);
+
+		for (auto const& texture : textures["textures"]) {
+			std::string path = texture["texture"];
+
+			std::vector<unsigned char> image;
+			unsigned int texture_width;
+			unsigned int texture_height;
+			auto error = lodepng::decode(image, texture_width, texture_height, path);
+			if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
+
+			graphics.add_texture(texture_width, texture_height, image.data());
+		}
+	}
 
 	int run_application()
 	{
@@ -30,19 +71,14 @@ namespace px {
 		{
 			try
 			{
-				// load configuration
-				bindings<int, key> bindings;
-				unsigned int screen_width;
-				unsigned int screen_height;
-				int vsync;
-				bool border;
-				bool fullscreen;
-				
+				// configuration
+				bindings<int, key> binds;
+				configuration config;		
 				try
 				{
 					std::ifstream file(keybindings_path);
 					if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(keybindings_path));
-					bindings.load(nlohmann::json::parse(file)["bindings"]);
+					binds.load(nlohmann::json::parse(file)["bindings"]);
 				}
 				catch (std::exception & exc)
 				{
@@ -52,79 +88,34 @@ namespace px {
 				{
 					std::ifstream file(configuration_path);
 					if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(configuration_path));
-					auto config = nlohmann::json::parse(file);
-
-					screen_width = config["window"]["width"];
-					screen_height = config["window"]["height"];
-					vsync = config["window"]["vsync"];
-					border = config["window"]["border"];
-					fullscreen = config["window"]["fullscreen"];
+					config.load(nlohmann::json::parse(file));
 				}
 				catch (std::exception & exc)
 				{
 					throw std::runtime_error("error while loading configuration in=" + std::string(configuration_path) + " what=" + std::string(exc.what()));
 				}
 
-				// create window and context
+				// graphics setup
+				// order is important, window context first, gl extensions second, renderer state last
 				glfw_instance instance;
-				auto monitor = glfwGetPrimaryMonitor();
-				auto mode = glfwGetVideoMode(monitor);
+				glfw_window window = create_window(config);
+				glewInit();	// OpenGL extensions
+				renderer graphics(config.screen_width, config.screen_height);
+				load_textures(graphics, textureatlas_path);
 
-				glfwWindowHint(GLFW_DECORATED, border ? 1 : 0); // border
-				if (fullscreen)	{
-					glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-					glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-					glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-					glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-					screen_width = mode->width;
-					screen_height = mode->height;
-				}
-
-				glfw_window window = glfwCreateWindow(screen_width, screen_height, "press-x-diorama", fullscreen ? monitor : nullptr, nullptr);
-				glfwMakeContextCurrent(window);
-				glfwSwapInterval(vsync);
-				glewInit();	// initialize OpenGL extensions loader (need context first)
-
-				// load textures
-				renderer graphics(screen_width, screen_height);
-				try
-				{
-					std::ifstream file(textureatlas_path);
-					if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(textureatlas_path));
-					auto textures = nlohmann::json::parse(file);
-
-					for (auto const& texture : textures["textures"]) {
-						std::string path = texture["texture"];
-
-						std::vector<unsigned char> image;
-						unsigned int texture_width;
-						unsigned int texture_height;
-						auto error = lodepng::decode(image, texture_width, texture_height, path);
-						if (error) throw std::runtime_error(std::string("png decoder error in'") + path + "' code#" + std::to_string(error) + std::string(": message=") + std::string(lodepng_error_text(error)));
-
-						graphics.add_texture(texture_width, texture_height, image.data());
-					}
-				}
-				catch (std::exception & exc)
-				{
-					throw std::runtime_error("error while loading textures data, what= " + std::string(exc.what()));
-				}
-
-				// create game logic structures
-				shell game;
-				game.resize(screen_width, screen_height); // setup ui canvas
+				shell game(config.screen_width, config.screen_height);
 
 				// setup callback procedures for window message handling
 				glfw_callback callback(window);
 				callback.on_resize([&](auto /* window */, int widht, int height) {
-					screen_width = widht;
-					screen_height = height;
+					config.screen_width = widht;
+					config.screen_height = height;
 
-					graphics.resize(screen_width, screen_height);
-					game.resize(screen_width, screen_height);
+					graphics.resize(config.screen_width, config.screen_height);
+					game.resize(config.screen_width, config.screen_height);
 				});
 				callback.on_key([&](auto /* window */, int os_key, int /* scancode */, int action, int /* mods */) {
-					if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(bindings.select(os_key, key::not_valid));
+					if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(binds.select(os_key, key::not_valid));
 				});
 				callback.on_text([&](auto /* window */, unsigned int codepoint) {
 					game.text(codepoint);
@@ -138,9 +129,6 @@ namespace px {
 				callback.on_scroll([&](auto /* window */, double horisontal, double vertical) {
 					game.scroll(horisontal, vertical);
 				});
-
-				// start
-				game.start();
 
 				// main loop
 				timer<glfw_time> time;

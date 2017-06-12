@@ -32,6 +32,7 @@ namespace px {
 		, m_last_time(0)
 	{
 		m_factory->characters()->provide_environment(this);
+		start();
 	}
 
 	bool environment::running() const noexcept
