@@ -59,6 +59,7 @@ namespace px {
 		ui::panel const* ui() const noexcept;
 
 		// interaction
+
 		void expose_inventory(container_component * inventory);
 		void open_workshop(unsigned int workshop);
 		void popup(point2 location, std::string text, color tint, float size);
@@ -71,6 +72,14 @@ namespace px {
 		void save(std::string const& save_name);
 		void load();
 		void load(std::string const& save_name);
+
+		// units
+
+		void spawn(unit_ptr unit);
+		unit_ptr create_dummy(std::string const& unit_name, point2 location);
+		void export_unit(unit const& mobile, std::string const& blueprint_name) const;
+		unit_ptr import_unit(std::string const& blueprint_name);
+		unit_ptr import_unit(std::string const& blueprint_name, point2 location);
 
 	public:
 		~environment();
@@ -85,13 +94,6 @@ namespace px {
 		void turn_end();
 		void impersonate(transform_component * player);
 		transform_component * find_any(point2 const& position);
-
-		//void export_unit(unit const& mobile, std::string const& depot) const;
-		//unit_ptr import_unit(std::string const& depot) const;
-
-		unit_ptr create_dummy(std::string const& unit_name, point2 location);
-		//unit_ptr create(std::string const& depot_name);
-		void spawn(unit_ptr unit);
 
 	private:
 		std::unique_ptr<factory>	m_factory;			// for assembling units, release last

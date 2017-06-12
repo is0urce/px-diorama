@@ -15,6 +15,12 @@ namespace px {
 
 	namespace {
 		char const* quicksave_path = "quicksave.sav";
+		char const* blueprints_path = "data/blueprints/";
+
+		std::string depot_filename(std::string const& blueprint_name)
+		{
+			return std::string(blueprints_path) + blueprint_name;
+		}
 
 		template <typename Archive>
 		inline void save_unit(unit const& mobile, Archive & archive)
@@ -157,5 +163,35 @@ namespace px {
 			// set as a player, if this componen was used 
 			if (builder.is_player()) impersonate(mobile->transform());
 		}
+	}
+
+	void environment::export_unit(unit const& mobile, std::string const& blueprint_name) const
+	{
+		// make archives
+		std::ofstream output(depot_filename(blueprint_name), SAVE_OUTPUT_MODE);
+		SAVE_OUTPUT_ARCHIVE archive(output);
+
+		save_unit(mobile, archive);
+	}
+	environment::unit_ptr environment::import_unit(std::string const& blueprint_name)
+	{
+		std::ifstream input(depot_filename(blueprint_name), SAVE_INPUT_MODE);
+		SAVE_INPUT_ARCHIVE archive(input);
+
+		unit_builder builder(*m_factory);
+		load_unit(builder, archive);
+		return builder.assemble();
+	}
+	environment::unit_ptr environment::import_unit(std::string const& blueprint_name, point2 location)
+	{
+		std::ifstream input(depot_filename(blueprint_name), SAVE_INPUT_MODE);
+		SAVE_INPUT_ARCHIVE archive(input);
+
+		unit_builder builder(*m_factory);
+		load_unit(builder, archive);
+
+		builder.current_transform()->move(location);
+
+		return builder.assemble();
 	}
 }

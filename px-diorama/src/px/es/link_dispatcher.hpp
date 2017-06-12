@@ -37,13 +37,7 @@ namespace px {
 			}
 
 			template <typename T, typename D>
-			D * linked() noexcept
-			{
-				auto t = linked<T>();
-				return t ? t->linked<D>() : nullptr;
-			}
-			template <typename T, typename D>
-			D const* linked() const noexcept
+			D * linked() const noexcept
 			{
 				auto t = linked<T>();
 				return t ? t->linked<D>() : nullptr;

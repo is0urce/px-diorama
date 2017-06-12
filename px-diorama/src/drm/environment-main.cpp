@@ -174,7 +174,7 @@ namespace px {
 		}
 	}
 
-	void environment::spawn(std::shared_ptr<unit> mobile)
+	void environment::spawn(unit_ptr mobile)
 	{
 		mobile->enable();
 		m_units.push_back(mobile);
@@ -190,11 +190,11 @@ namespace px {
 		// units
 
 		spawn(create_dummy("m_snail", { 40, 49 }));
-		spawn(create_dummy("m_goblin", { 52, 48 }));
+		spawn(create_dummy("m_mermaid", { 52, 48 }));
 
 		for (int i = 54; i != 58; ++i) spawn(create_dummy("p_bookshelf", { i, 46 }));
 		for (int i = 59; i != 61; ++i) spawn(create_dummy("p_bookshelf", { i, 46 }));
-		spawn(create_dummy("t_dirt", { 54, 47 }));
+		spawn(create_dummy("p_bookshelf", { 54, 47 }));
 		spawn(create_dummy("p_bookshelf", { 54, 48 }));
 		spawn(create_dummy("p_bookshelf", { 54, 50 }));
 		for (int i = 54; i != 61; ++i) spawn(create_dummy("p_bookshelf", { i, 51 }));
@@ -202,7 +202,7 @@ namespace px {
 		spawn(create_dummy("p_box", { 58, 50}));
 
 		// player
-		auto player = create_dummy("@", { 55, 47 });
+		auto player = create_dummy("m_gnome", { 55, 47 });
 		spawn(player);
 
 		impersonate(player->transform());
@@ -219,9 +219,13 @@ namespace px {
 
 	void environment::expose_inventory(container_component * storage_container)
 	{
-		auto user_body = m_player ? m_player->linked<body_component>() : nullptr;
-		auto user_container = user_body ? user_body->linked<container_component>() : nullptr;
-		m_ui.open_storage(storage_container, user_container);
+		auto container = m_player ? m_player->linked<body_component, container_component>() : nullptr;
+		m_ui.open_storage(storage_container, container);
+	}
+	void environment::open_workshop(unsigned int /* workshop */)
+	{
+		auto container = m_player ? m_player->linked<body_component, container_component>() : nullptr;
+		m_ui.open_workshop(container);
 	}
 
 	transform_component * environment::find_any(point2 const& position)
@@ -277,7 +281,7 @@ namespace px {
 		auto storage = builder.add_storage();
 		auto character = builder.add_character();
 
-		if (name == "@") builder.add_player();
+		if (name == "m_gnome") builder.add_player();
 		if (name == "m_snail") builder.add_npc();
 
 		// setup

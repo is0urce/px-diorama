@@ -8,6 +8,7 @@
 #include <px/rglfw/rglfw.hpp>
 
 #include "configuration.hpp"
+#include "settings.hpp"
 #include "shell.hpp"
 #include "draw/renderer.hpp"
 #include "key.hpp"

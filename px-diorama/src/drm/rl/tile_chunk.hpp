@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "configuration.hpp"
+#include "settings.hpp"
 #include "es/sprite_system.hpp"
 #include "es/transform_component.hpp"
 

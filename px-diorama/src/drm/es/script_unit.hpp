@@ -94,8 +94,12 @@ namespace px {
 
 	public:
 		script_unit(body_component * unit_body)
+			: script_unit(unit_body, nullptr)
+		{
+		}
+		script_unit(body_component * unit_body, transform_component * unit_transform)
 			: m_body(unit_body)
-			, m_transform(nullptr)
+			, m_transform(unit_transform)
 		{
 		}
 

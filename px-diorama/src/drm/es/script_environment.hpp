@@ -7,6 +7,7 @@
 #include "script_unit.hpp"
 #include "drm/environment.hpp"
 
+#include <px/common/assert.hpp>
 #include <string>
 #include <tuple>
 
@@ -43,6 +44,16 @@ namespace px {
 			if (!user || !vs) return {};
 
 			return m_environment->hit(*user, *vs);	
+		}
+		script_unit spawn(std::string const& blueprint_name, point2 location)
+		{
+			px_assert(m_environment);
+
+			auto unit = m_environment->import_unit(blueprint_name, location);
+			m_environment->spawn(unit);
+			auto transform = unit->transform();
+			auto body = transform ? transform->linked<body_component>() : nullptr;
+			return script_unit(body, transform);
 		}
 
 	public:

@@ -36,7 +36,7 @@ namespace px
 		{
 			return m_window;
 		}
-		void swap(glfw_window & that)
+		void swap(glfw_window & that) noexcept
 		{
 			std::swap(m_window, that.m_window);
 		}

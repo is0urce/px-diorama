@@ -6,7 +6,7 @@
 #include "sprite_system.hpp"
 
 #include "transform_component.hpp"
-#include "../configuration.hpp"
+#include "drm/settings.hpp"
 
 #include <px/common/assert.hpp>
 
