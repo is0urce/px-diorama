@@ -78,13 +78,13 @@ namespace px {
 
 			for (auto const& texture : texture_configuration["textures"]) {
 
-				std::string atlas_path = texture["meta"];
+				std::string atlas_path = texture["atlas"];
 
 				std::ifstream atlas_stream(atlas_path);
 				if (!textures_stream.is_open()) throw std::runtime_error("error opening file path=" + std::string(atlas_path));
 				auto atlas = nlohmann::json::parse(atlas_stream);
 
-				for (auto const& frame : atlas["meta"]) {
+				for (auto const& frame : atlas["atlas"]) {
 					float sx = frame["sx"];
 					float sy = frame["sy"];
 					float dx = frame["dx"];

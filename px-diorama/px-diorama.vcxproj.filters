@@ -522,7 +522,6 @@
     <None Include="data\shaders\uitext.vert" />
     <None Include="data\img\m_snake32.json" />
     <None Include="data\controls.json" />
-    <None Include="data\textures.json" />
     <None Include="data\skills.json" />
     <None Include="data\scripts\panacea.lua" />
     <None Include="data\scripts\i_damage.lua" />
@@ -538,9 +537,6 @@
     <None Include="data\scripts\sk_s_rend.lua" />
     <None Include="data\scripts\sk_s_shield.lua" />
     <None Include="data\scripts\sk_s_smite.lua" />
-    <None Include="data\img\p_furniture.json" />
-    <None Include="data\img\m_humanoid.json" />
-    <None Include="data\img\m_beasts.json" />
     <None Include="data\scripts\sk_i_pain.lua" />
     <None Include="data\tiles.json" />
   </ItemGroup>

@@ -193,7 +193,7 @@ namespace px {
 
 		for (int i = 54; i != 58; ++i) spawn(create_dummy("p_bookshelf", { i, 46 }));
 		for (int i = 59; i != 61; ++i) spawn(create_dummy("p_bookshelf", { i, 46 }));
-		spawn(create_dummy("p_bookshelf", { 54, 47 }));
+		spawn(create_dummy("t_dirt", { 54, 47 }));
 		spawn(create_dummy("p_bookshelf", { 54, 48 }));
 		spawn(create_dummy("p_bookshelf", { 54, 50 }));
 		for (int i = 54; i != 61; ++i) spawn(create_dummy("p_bookshelf", { i, 51 }));

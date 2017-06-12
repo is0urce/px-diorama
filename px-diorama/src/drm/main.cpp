@@ -94,7 +94,7 @@ namespace px {
 					auto textures = nlohmann::json::parse(file);
 
 					for (auto const& texture : textures["textures"]) {
-						std::string path = texture["path"];
+						std::string path = texture["texture"];
 
 						std::vector<unsigned char> image;
 						unsigned int texture_width;

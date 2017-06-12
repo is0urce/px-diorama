@@ -18,6 +18,7 @@
 #include "perception.hpp"
 #include "program.hpp"
 #include "blur.hpp"
+#include "../configuration.hpp"
 
 #include <px/common/assert.hpp>
 #include <px/rft/ft_font.hpp>
@@ -31,14 +32,6 @@
 namespace px {
 
 	namespace {
-		char const* grid_font_path = "data/fonts/DejaVuSansMono.ttf";
-		char const* popup_font_path = "data/fonts/DejaVuSansMono.ttf";
-
-		unsigned int grid_font_size = 18;	// size of fon
-		unsigned int grid_font_atlas = 512;	// internal size of font atlas
-
-		unsigned int popup_font_size = 18;
-		unsigned int popup_font_atlas = 512;
 
 		float pi = 3.14f;
 		float pi_2 = pi * 2;
