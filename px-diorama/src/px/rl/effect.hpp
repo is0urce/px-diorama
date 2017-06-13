@@ -28,6 +28,8 @@ namespace px {
 			armor_resist,
 
 			ore_power,
+			reagent_power,
+			essence,
 
 			not_valid,
 			max_value = not_valid

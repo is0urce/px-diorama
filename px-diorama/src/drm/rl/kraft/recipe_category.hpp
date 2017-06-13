@@ -12,7 +12,8 @@ namespace px {
 		enum class recipe_category : unsigned char
 		{
 			weapon,
-			armor
+			armor,
+			potion
 		};
 	}
 }

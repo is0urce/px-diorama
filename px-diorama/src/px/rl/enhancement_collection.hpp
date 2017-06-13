@@ -21,6 +21,7 @@ namespace px {
 		public:
 			typedef Effect effect_type;
 			typedef enhancement<effect_type> enhancement_type;
+			typedef typename enhancement_type::int_t int_t;
 
 		public:
 
@@ -83,6 +84,16 @@ namespace px {
 				return start;
 			}
 
+			template <effect_type MainType, int_t SubType>
+			enhancement_type accumulate(enhancement_type accumulator) const
+			{
+				for (auto const& efx : m_effects) {
+					if (efx.main_type == MainType && efx.subtype == SubType) {
+						accumulator += efx;
+					}
+				}
+				return accumulator;
+			}
 			template <effect_type MainType>
 			enhancement_type accumulate(enhancement_type accumulator) const
 			{
@@ -98,6 +109,11 @@ namespace px {
 			enhancement_type accumulate() const
 			{
 				return accumulate<MainType>(enhancement_type{});
+			}
+			template <effect_type MainType, int_t SubType>
+			enhancement_type accumulate() const
+			{
+				return accumulate<MainType, SubType>(enhancement_type{});
 			}
 
 			template <effect_type MainType>

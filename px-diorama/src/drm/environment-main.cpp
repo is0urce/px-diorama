@@ -293,9 +293,9 @@ namespace px {
 		for (int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("mossairum");
-			itm->set_tag("it_ore_mossairum");
 			itm->make_stacking();
-			itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, i));
+			itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, 1));
+			itm->add(rl::item::enhancement_type::integer(rl::effect::essence, 1024));
 			container->add(itm);
 		}
 		character->learn_skill("sk_v_melee");

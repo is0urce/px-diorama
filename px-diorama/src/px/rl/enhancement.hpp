@@ -21,11 +21,11 @@ namespace px {
 		public:
 			static enhancement integer(effect_type general_type, int_t main_value)
 			{
-				return enhancement{ general_type, main_value };
+				return enhancement(general_type, main_value);
 			}
 			static enhancement integer(effect_type general_type, int_t variation, int_t main_value, int_t complimentary_value)
 			{
-				return enhancement{ general_type, variation, main_value, complimentary_value };
+				return enhancement(general_type, variation, main_value, complimentary_value);
 			}
 
 			enhancement & operator+=(enhancement const& rhs)

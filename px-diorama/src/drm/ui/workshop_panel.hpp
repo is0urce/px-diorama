@@ -123,9 +123,22 @@ namespace px {
 				make_slots(recipe.ingredient_count); // prepare slots
 
 				// apply filter
-				m_inventory->set_filter([](auto const& item) {
-					return item->value<rl::effect::ore_power>() != 0;
-				});
+				switch (recipe.category)
+				{
+				case rl::recipe_category::weapon:
+				case rl::recipe_category::armor: {
+					m_inventory->set_filter([](auto const& item) {
+						return item->value<rl::effect::ore_power>() != 0;
+					});
+					break;
+				}
+				default: {
+					m_inventory->set_filter([](auto const& /*item*/) {
+						return false;
+					});
+					break;
+				}
+				}
 			}
 			void recipe_clear()
 			{
@@ -150,19 +163,9 @@ namespace px {
 					ingredients[i] = m_ingredients[i].get();
 				}
 
-				if (complete) {
+				if (m_current && complete) {
 
-					std::shared_ptr<rl::item> craft_result;
-					switch (m_current->category)
-					{
-					case rl::recipe_category::weapon: {
-						craft_result = rl::craft::make_weapon(m_current->base_item, ingredients);
-						break;
-					}
-					default:
-						px_assert(0);
-						break;
-					}
+					std::shared_ptr<rl::item> craft_result = rl::craft::make(*m_current, ingredients);
 
 					if (craft_result) {
 						m_container->add(craft_result);
@@ -179,11 +182,9 @@ namespace px {
 				m_ingredients.resize(total);
 				m_slots->clear_anonimous(); // clear ui hierarchy
 
-				int half_width = m_slots->bounds().width() / 2;
-
 				for (int i = 0; i < total; ++i) {
 
-					auto slot_block = m_slots->make<board>({ { 0.5, 0.0 },{ -half_width, 1 + i * 2 },{ 15, 1 },{ 0, 0 } }, color{ 1, 0.5,0, 1 });
+					auto slot_block = m_slots->make<board>({ { 0.5, 0.0 },{ -8, 1 + i * 2 },{ 16, 1 },{ 0, 0 } }, color{ 1, 0.5,0, 1 });
 					auto slot_press = slot_block->make<button>(fill);
 
 					auto txt = slot_block->make<text>(fill, [this, i]() {
