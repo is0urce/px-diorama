@@ -292,9 +292,8 @@ namespace px {
 		body->set_description("mobile template");
 		for (int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
-			itm->set_name("item #" + std::to_string(i));
-			itm->set_tag("itm_ore");
-			itm->set_description("item template");
+			itm->set_name("mossairum");
+			itm->set_tag("it_ore_mossairum");
 			itm->make_stacking();
 			itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, i));
 			container->add(itm);

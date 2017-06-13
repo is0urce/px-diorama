@@ -477,10 +477,10 @@
     <ClInclude Include="src\drm\serialization.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\rl\kraft\workshop.hpp">
+    <ClInclude Include="src\drm\settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\settings.hpp">
+    <ClInclude Include="src\drm\rl\kraft\craft.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

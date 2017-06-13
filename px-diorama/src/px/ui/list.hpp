@@ -6,6 +6,7 @@
 #pragma once
 
 #include <px/ui/panel.hpp>
+#include <px/ui/text_alignment.hpp>
 
 #include <functional>
 #include <stdexcept>
@@ -64,6 +65,10 @@ namespace px {
 			{
 				return m_container;
 			}
+			void set_text_alignment(text_alignment align)
+			{
+				m_text_alignment = align;
+			}
 
 		public:
 			virtual ~list()
@@ -72,6 +77,7 @@ namespace px {
 			list()
 				: m_container(nullptr)
 				, m_color(0x000000)
+				, m_text_alignment(text_alignment::left)
 				, m_scroll(0)
 				, m_format([](auto const&) { return typeid(element_type).name(); })
 				, m_filter([](auto const&) { return true; })
@@ -84,9 +90,26 @@ namespace px {
 				if (m_container && m_format)
 				{
 					int index = 0 - m_scroll;
+
+					int write_width = bounds().width();
 					m_container->enumerate([&](auto const& item) {
 						if (m_filter(item)) {
-							window.print({ 0, 0 + index }, m_color, m_format(item));
+
+							auto str = m_format(item);
+							int text_length = static_cast<int>(str.length());
+
+
+							int text_offset = 0;
+							switch (m_text_alignment) {
+							case text_alignment::center:
+								text_offset = (write_width - text_length) / 2;
+								break;
+							case text_alignment::right:
+								text_offset = write_width - text_length;
+								break;
+							}
+
+							window.print({ text_offset, 0 + index }, m_color, str);
 							++index;
 						}
 					});
@@ -151,6 +174,7 @@ namespace px {
 			int					m_scroll;
 
 			color				m_color;
+			text_alignment		m_text_alignment;
 
 			filter_fn			m_filter;
 			format_fn			m_format;	// item to string

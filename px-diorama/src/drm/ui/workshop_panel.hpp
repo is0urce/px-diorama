@@ -8,6 +8,7 @@
 #include "item_functional.hpp"
 
 #include "drm/rl/kraft/recipe.hpp"
+#include "drm/rl/kraft/craft.hpp"
 
 #include <px/common/enumerable.hpp>
 #include <px/rl/loot/inventory.hpp>
@@ -59,18 +60,23 @@ namespace px {
 				// recipes
 				load_recipes();
 
-				auto recipe_list = make<list<recipes_type>>("recipes", fill);
+				auto recipe_block = make<panel>({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.33, 0.5 } });
+				recipe_block->make<board>(fill, color{ 1.0, 1.0, 1.0, 0.5 });
+				auto recipe_list = recipe_block->make<list<recipes_type>>(fill);
 				recipe_list->assign_container(&m_recipes);
 				recipe_list->set_format([](auto const& recipe) { return recipe.name; });
+				recipe_list->set_text_alignment(text_alignment::right);
 				recipe_list->on_click([this](auto const& recipe) {
 					recipe_set(recipe);
 				});
 
 				// slots
-				m_slots = make<panel>(fill).get();
+				auto slots_block = make<panel>({ { 0.33, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.33, 0.5 } });
+				slots_block->make<board>(fill, color{ 1.0, 1.0, 0.0, 0.5 });
+				m_slots = slots_block->make<panel>(fill).get();
 
 				// inventory
-				auto inventory_block = make<panel>({ { 0.5, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.5, 1.0 } });
+				auto inventory_block = make<panel>({ { 0.66, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.33, 0.5 } });
 				inventory_block->make<board>(fill, color{ 1.0, 1.0, 1.0, 0.5 });
 				inventory_block->make<text>({ { 0.0, 0.0 },{ 0, 0 },{ 0, 1 },{ 1.0, 0.0 } }, "Inventory");
 				m_inventory = inventory_block->make<list<rl::inventory>>({ { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 1.0, 1.0 } }).get();
@@ -86,21 +92,34 @@ namespace px {
 
 				craft_text->set_alignment(text_alignment::center);
 				craft_press->on_click([this](int /* mouse_button */) {
-					recipe_craft();
+					craft();
 				});
 			}
 
 		private:
 			void load_recipes()
 			{
-				m_recipes.push_back({ "sword", rl::recipe_category::weapon, rl::ingredient::ore, 8 });
-				m_recipes.push_back({ "mace", rl::recipe_category::weapon, rl::ingredient::ore, 6 });
-				m_recipes.push_back({ "dagger", rl::recipe_category::weapon, rl::ingredient::ore, 4 });
+				rl::item base_sword;
+				base_sword.set_name("sword");
+				base_sword.add(rl::item::enhancement_type::integer(rl::effect::equipment, static_cast<uint32_t>(rl::equipment_slot::weapon_main)));
+
+				rl::item base_mace;
+				base_mace.set_name("mace");
+				base_mace.add(rl::item::enhancement_type::integer(rl::effect::equipment, static_cast<uint32_t>(rl::equipment_slot::weapon_main)));
+
+				rl::item base_dagger;
+				base_dagger.set_name("dagger");
+				base_dagger.add(rl::item::enhancement_type::integer(rl::effect::equipment, static_cast<uint32_t>(rl::equipment_slot::weapon_main)));
+
+				m_recipes.push_back({ "sword", rl::recipe_category::weapon, rl::ingredient::ore, 8, base_sword });
+				m_recipes.push_back({ "mace", rl::recipe_category::weapon, rl::ingredient::ore, 6, base_mace });
+				m_recipes.push_back({ "dagger", rl::recipe_category::weapon, rl::ingredient::ore, 4, base_dagger });
 			}
 			void recipe_set(rl::recipe const& recipe)
 			{
 				recipe_clear(); // clear previous
 
+				m_current = &recipe;
 				make_slots(recipe.ingredient_count); // prepare slots
 
 				// apply filter
@@ -110,6 +129,7 @@ namespace px {
 			}
 			void recipe_clear()
 			{
+				m_current = nullptr;
 				make_slots(0); // close slots
 
 				// reset filter
@@ -117,16 +137,37 @@ namespace px {
 					return true;
 				});
 			}
-			void recipe_craft()
+			void craft()
 			{
 				size_t size = m_ingredients.size();
+
+				std::vector<rl::item const*> ingredients;
+				ingredients.assign(size, nullptr);
+
 				bool complete = size != 0;
 				for (size_t i = 0; i != size; ++i) {
 					complete = complete && m_ingredients[i];
+					ingredients[i] = m_ingredients[i].get();
 				}
 
 				if (complete) {
-					// do an actual crafting
+
+					std::shared_ptr<rl::item> craft_result;
+					switch (m_current->category)
+					{
+					case rl::recipe_category::weapon: {
+						craft_result = rl::craft::make_weapon(m_current->base_item, ingredients);
+						break;
+					}
+					default:
+						px_assert(0);
+						break;
+					}
+
+					if (craft_result) {
+						m_container->add(craft_result);
+						m_ingredients.assign(size, nullptr);
+					}
 				}
 			}
 			void make_slots(int total)
@@ -138,9 +179,11 @@ namespace px {
 				m_ingredients.resize(total);
 				m_slots->clear_anonimous(); // clear ui hierarchy
 
+				int half_width = m_slots->bounds().width() / 2;
+
 				for (int i = 0; i < total; ++i) {
 
-					auto slot_block = m_slots->make<board>({ { 0.0, 0.0 },{ 2,1 + i * 2 },{ 15, 1 },{ 0, 0 } }, color{ 1, 0.5,0, 1 });
+					auto slot_block = m_slots->make<board>({ { 0.5, 0.0 },{ -half_width, 1 + i * 2 },{ 15, 1 },{ 0, 0 } }, color{ 1, 0.5,0, 1 });
 					auto slot_press = slot_block->make<button>(fill);
 
 					auto txt = slot_block->make<text>(fill, [this, i]() {
@@ -199,6 +242,7 @@ namespace px {
 			std::vector<std::shared_ptr<rl::item>> m_ingredients;
 
 			recipes_type			m_recipes;
+			rl::recipe const*		m_current;
 		};
 	}
 }

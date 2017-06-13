@@ -208,7 +208,7 @@
     <ClInclude Include="src\drm\es\container_component.hpp" />
     <ClInclude Include="src\drm\rl\kraft\ingredient.hpp" />
     <ClInclude Include="src\drm\rl\kraft\recipe_category.hpp" />
-    <ClInclude Include="src\drm\rl\kraft\workshop.hpp" />
+    <ClInclude Include="src\drm\rl\kraft\craft.hpp" />
     <ClInclude Include="src\drm\rl\notification.hpp" />
     <ClInclude Include="src\drm\rl\kraft\recipe.hpp" />
     <ClInclude Include="src\drm\rl\tile_library.hpp" />
