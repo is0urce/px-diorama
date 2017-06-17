@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <stdexcept>
 #include <tuple>
 #include <unordered_map>
 
@@ -29,13 +30,29 @@ namespace px {
 
 	public:
 		template <typename Document>
+		static bindings from_document(Document && document)
+		{
+			bindings result;
+			result.load(std::forward<Document>(document));
+			return result;
+		}
+
+	public:
+		template <typename Document>
 		void load(Document && document)
 		{
-			for (auto const& binding : document) {
-				long long action_index = binding["action"];
-				for (long long key : binding["keys"]) {
-					bind(static_cast<SK>(key), static_cast<VK>(action_index));
+			try
+			{
+				for (auto const& binding : document) {
+					long long action_index = binding["action"];
+					for (long long key : binding["keys"]) {
+						bind(static_cast<SK>(key), static_cast<VK>(action_index));
+					}
 				}
+			}
+			catch (std::exception & exc)
+			{
+				throw std::runtime_error("error while loading bindings, what=" + std::string(exc.what()));
 			}
 		}
 		void bind(SK key, VK vkey)

@@ -483,6 +483,9 @@
     <ClInclude Include="src\drm\rl\kraft\craft.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\drm\ui\performance_panel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">

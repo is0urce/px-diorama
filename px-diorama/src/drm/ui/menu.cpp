@@ -10,6 +10,7 @@
 #include "storage_panel.hpp"
 #include "target_panel.hpp"
 #include "workshop_panel.hpp"
+#include "performance_panel.hpp"
 
 #include "item_functional.hpp"
 
@@ -129,6 +130,8 @@ namespace px {
 
 		void menu::initialize()
 		{
+			m_main->make<performance_panel>(fill);
+
 			// status info
 			m_status = m_main->make<target_panel>({ { 0.0, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } }).get(); // status and target panel
 			m_target = m_main->make<target_panel>({ { 0.5, 1.0 },{ 1, -5 },{ -2, 4 },{ 0.5, 0.0 } }).get();

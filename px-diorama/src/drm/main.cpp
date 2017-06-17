@@ -26,6 +26,12 @@
 
 namespace px {
 
+	auto load_document(std::string const& document_depot)
+	{
+		std::ifstream file(document_depot);
+		if (!file.is_open()) throw std::runtime_error("error opening file path=" + document_depot);
+		return nlohmann::json::parse(file);
+	}
 	glfw_window create_window(configuration & config)
 	{
 		auto monitor = glfwGetPrimaryMonitor();
@@ -77,19 +83,15 @@ namespace px {
 				configuration config;		
 				try
 				{
-					std::ifstream file(keybindings_path);
-					if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(keybindings_path));
-					binds.load(nlohmann::json::parse(file)["bindings"]);
+					binds.load(load_document(keybindings_path)["bindings"]);
 				}
 				catch (std::exception & exc)
 				{
-					throw std::runtime_error("error while loading bindings in=" + std::string(configuration_path) + " what=" + std::string(exc.what()));
+					throw std::runtime_error("error while loading bindings in=" + std::string(keybindings_path) + " what=" + std::string(exc.what()));
 				}
 				try
 				{
-					std::ifstream file(configuration_path);
-					if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(configuration_path));
-					config.load(nlohmann::json::parse(file));
+					config.load(load_document(configuration_path));
 				}
 				catch (std::exception & exc)
 				{
@@ -101,6 +103,7 @@ namespace px {
 				glfw_instance instance;
 				glfw_window window = create_window(config);
 				glewInit();	// OpenGL extensions
+
 				renderer graphics(config.screen_width, config.screen_height);
 				load_textures(graphics, textureatlas_path);
 

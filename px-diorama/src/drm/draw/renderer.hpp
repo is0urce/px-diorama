@@ -209,17 +209,17 @@ namespace px {
 			auto const& colors = canvas.colors();
 			size_t grid_size = colors.size();
 
-			std::vector<grid_vertex> grid;
-			std::vector<glyph_vertex> glyphs;
-			grid.reserve(grid_size * 4);
-			glyphs.reserve(grid_size * 4);
+			m_ui_grid.clear();
+			m_ui_glyph.clear();
+			m_ui_grid.reserve(grid_size * 4);
+			m_ui_glyph.reserve(grid_size * 4);
 
 			canvas.background().enumerate([&](auto const& point, color const& color) {
 				glm::vec4 back(color.R, color.G, color.B, color.A);
-				grid.push_back({ { point.x(), -point.y() - 1 },		back });
-				grid.push_back({ { point.x(), -point.y() },			back });
-				grid.push_back({ { point.x() + 1, -point.y() },		back });
-				grid.push_back({ { point.x() + 1, -point.y() - 1 },	back });
+				m_ui_grid.push_back({ { point.x(), -point.y() - 1 },		back });
+				m_ui_grid.push_back({ { point.x(), -point.y() },			back });
+				m_ui_grid.push_back({ { point.x() + 1, -point.y() },		back });
+				m_ui_grid.push_back({ { point.x() + 1, -point.y() - 1 },	back });
 			});
 
 			float mx = 1.0f / 64 / m_ui_font.width();
@@ -235,16 +235,16 @@ namespace px {
 				float y = static_cast<float>(-point.y() - 1) + glyph.bearing_hy * my;
 				float w = glyph.width * mx;
 				float h = glyph.height * my;
-				glyphs.push_back({ { x + 0, y - h }, { sx, sy }, tint });
-				glyphs.push_back({ { x + 0, y + 0 }, { sx, dy }, tint });
-				glyphs.push_back({ { x + w, y + 0 }, { dx, dy }, tint });
-				glyphs.push_back({ { x + w, y - h }, { dx, sy }, tint });
+				m_ui_glyph.push_back({ { x + 0, y - h }, { sx, sy }, tint });
+				m_ui_glyph.push_back({ { x + 0, y + 0 }, { sx, dy }, tint });
+				m_ui_glyph.push_back({ { x + w, y + 0 }, { dx, dy }, tint });
+				m_ui_glyph.push_back({ { x + w, y - h }, { dx, sy }, tint });
 			});
 
 			m_ui_uniform.load<ui_uniform>(GL_STREAM_DRAW, { { 2.0f / canvas.width(), 2.0f / canvas.height() },{ -1.0f, 1.0f } });
 
-			m_ui_solid_buffer.load(GL_STREAM_DRAW, grid.size() * sizeof(grid_vertex), grid.data());
-			m_ui_text_buffer.load(GL_STREAM_DRAW, glyphs.size() * sizeof(glyph_vertex), glyphs.data());
+			m_ui_solid_buffer.load(GL_STREAM_DRAW, m_ui_grid.size() * sizeof(grid_vertex), m_ui_grid.data());
+			m_ui_text_buffer.load(GL_STREAM_DRAW, m_ui_glyph.size() * sizeof(glyph_vertex), m_ui_glyph.data());
 		}
 		void prepare_popups(std::vector<popup> const& popups)
 		{
@@ -373,6 +373,8 @@ namespace px {
 		gl_vao		m_ui_text_geometry;
 		gl_pass		m_ui_solid_pass;
 		gl_pass		m_ui_text_pass;
+		std::vector<grid_vertex> m_ui_grid;
+		std::vector<glyph_vertex> m_ui_glyph;
 
 		// popup notifications
 		ft_font		m_popup_font;

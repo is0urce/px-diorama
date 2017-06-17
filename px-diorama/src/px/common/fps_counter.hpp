@@ -13,6 +13,7 @@ namespace px {
 	{
 	public:
 		typedef Timer timer_type;
+		typedef typename timer_type::precision_type interval_type;
 
 	public:
 		const float interval = 0.2f;
@@ -27,7 +28,7 @@ namespace px {
 		}
 
 	public:
-		auto measure() const noexcept
+		interval_type fps() const noexcept
 		{
 			return m_fps;
 		}
@@ -37,8 +38,7 @@ namespace px {
 			auto current = m_timer->measure();
 			auto delta = current - m_last;
 
-			if (delta > interval)
-			{
+			if (delta > interval) {
 				// calculate fps
 				m_fps = m_frames / delta;
 
