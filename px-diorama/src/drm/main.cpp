@@ -23,6 +23,10 @@
 
 #include <stdexcept>
 #include <string>
+#include <sstream>
+
+char const* const application_name = "press-x-diorama";
+char const* const log_path = "log.txt";
 
 namespace px {
 
@@ -47,7 +51,7 @@ namespace px {
 			config.screen_height = mode->height;
 		}
 
-		glfw_window window = glfwCreateWindow(config.screen_width, config.screen_height, "press-x-diorama", config.fullscreen ? monitor : nullptr, nullptr);
+		glfw_window window = glfwCreateWindow(config.screen_width, config.screen_height, application_name, config.fullscreen ? monitor : nullptr, nullptr);
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(config.vsync);
 
@@ -55,12 +59,9 @@ namespace px {
 	}
 	void load_textures(renderer & graphics, std::string const& atlas_path)
 	{
-		std::ifstream file(atlas_path);
-		if (!file.is_open()) throw std::runtime_error("error opening file path=" + std::string(atlas_path));
-		auto textures = nlohmann::json::parse(file);
-
-		for (auto const& texture : textures["textures"]) {
-			std::string path = texture["texture"];
+		auto document = load_document(atlas_path);
+		for (auto const& node : document["textures"]) {
+			std::string path = node["texture"];
 
 			std::vector<unsigned char> image;
 			unsigned int texture_width;
@@ -72,74 +73,78 @@ namespace px {
 		}
 	}
 
+	void main_loop()
+	{
+		// configuration
+		bindings<int, key> binds;
+		configuration config;
+		try
+		{
+			binds.load(load_document(keybindings_path)["bindings"]);
+		}
+		catch (std::exception const& exc)
+		{
+			throw std::runtime_error("error while loading bindings in=" + std::string(keybindings_path) + " what=" + std::string(exc.what()));
+		}
+		try
+		{
+			config.load(load_document(configuration_path));
+		}
+		catch (std::exception const& exc)
+		{
+			throw std::runtime_error("error while loading configuration in=" + std::string(configuration_path) + " what=" + std::string(exc.what()));
+		}
+
+		// graphics setup
+		// order is important: windows manager, window & context, gl extensions, renderer
+		glfw_instance instance;
+		glfw_window window = create_window(config);
+		glewInit();	// OpenGL extensions
+		renderer graphics(config.screen_width, config.screen_height);
+		load_textures(graphics, textureatlas_path);
+
+		shell game(config.screen_width, config.screen_height);
+
+		// setup callback procedures for window message handling
+		glfw_callback callback(window);
+		callback.on_resize([&](auto /* window */, int widht, int height) {
+			config.screen_width = widht;
+			config.screen_height = height;
+
+			graphics.resize(config.screen_width, config.screen_height);
+			game.resize(config.screen_width, config.screen_height);
+		});
+		callback.on_key([&](auto /* window */, int os_key, int /* scancode */, int action, int /* mods */) {
+			if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(binds.select(os_key, key::not_valid));
+		});
+		callback.on_text([&](auto /* window */, unsigned int codepoint) {
+			game.text(codepoint);
+		});
+		callback.on_click([&](auto /* window */, int button, int action, int /* mods */) {
+			if (action == GLFW_PRESS) game.click(button);
+		});
+		callback.on_hover([&](auto /* window */, double x, double y) {
+			game.hover(static_cast<int>(x), static_cast<int>(y));
+		});
+		callback.on_scroll([&](auto /* window */, double horisontal, double vertical) {
+			game.scroll(horisontal, vertical);
+		});
+
+		// main loop
+		timer<glfw_time> time;
+		while (window.process() && game.running()) {
+			game.frame(time);
+			graphics.render(game.view());
+		}
+	}
+
 	int run_application()
 	{
 		try
 		{
 			try
 			{
-				// configuration
-				bindings<int, key> binds;
-				configuration config;		
-				try
-				{
-					binds.load(load_document(keybindings_path)["bindings"]);
-				}
-				catch (std::exception & exc)
-				{
-					throw std::runtime_error("error while loading bindings in=" + std::string(keybindings_path) + " what=" + std::string(exc.what()));
-				}
-				try
-				{
-					config.load(load_document(configuration_path));
-				}
-				catch (std::exception & exc)
-				{
-					throw std::runtime_error("error while loading configuration in=" + std::string(configuration_path) + " what=" + std::string(exc.what()));
-				}
-
-				// graphics setup
-				// order is important, window context first, gl extensions second, renderer state last
-				glfw_instance instance;
-				glfw_window window = create_window(config);
-				glewInit();	// OpenGL extensions
-
-				renderer graphics(config.screen_width, config.screen_height);
-				load_textures(graphics, textureatlas_path);
-
-				shell game(config.screen_width, config.screen_height);
-
-				// setup callback procedures for window message handling
-				glfw_callback callback(window);
-				callback.on_resize([&](auto /* window */, int widht, int height) {
-					config.screen_width = widht;
-					config.screen_height = height;
-
-					graphics.resize(config.screen_width, config.screen_height);
-					game.resize(config.screen_width, config.screen_height);
-				});
-				callback.on_key([&](auto /* window */, int os_key, int /* scancode */, int action, int /* mods */) {
-					if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(binds.select(os_key, key::not_valid));
-				});
-				callback.on_text([&](auto /* window */, unsigned int codepoint) {
-					game.text(codepoint);
-				});
-				callback.on_click([&](auto /* window */, int button, int action, int /* mods */) {
-					if (action == GLFW_PRESS) game.click(button);
-				});
-				callback.on_hover([&](auto /* window */, double x, double y) {
-					game.hover(static_cast<int>(x), static_cast<int>(y));
-				});
-				callback.on_scroll([&](auto /* window */, double horisontal, double vertical) {
-					game.scroll(horisontal, vertical);
-				});
-
-				// main loop
-				timer<glfw_time> time;
-				while (window.process() && game.running()) {
-					game.frame(time);
-					graphics.render(game.view());
-				}
+				main_loop();
 			}
 			catch (std::exception & exc)
 			{
@@ -150,22 +155,23 @@ namespace px {
 				throw std::exception("unhandled exception");
 			}
 		}
-		catch (std::exception & exc)
+		catch (std::exception const& exc)
 		{
 			auto now = std::chrono::system_clock::now();
 			auto today = date::floor<date::days>(now);
 
-			std::stringstream ss;
-			ss << date::year_month_day(today) << " " << date::make_time(now - today) << " UTC, exception thrown, what=\"" << exc.what() << "\"";
+			std::stringstream text;
+			text << date::year_month_day(today) << " " << date::make_time(now - today) << " UTC, exception thrown, what=\"" << exc.what() << "\"";
 
-			logger logger;
-			logger.write(ss.str());
+			logger out(log_path);
+			out.write_line(text.str());
 			return -1;
 		}
 		return 0;
 	}
 }
 
+// entry point
 int main()
 {
 	return px::run_application();

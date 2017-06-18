@@ -12,7 +12,7 @@ namespace px {
 	class logger
 	{
 	public:
-		void write(std::string const& text)
+		void write_line(std::string const& text)
 		{
 			std::lock_guard<std::mutex> lock(m_mutex);
 			open();
@@ -22,7 +22,7 @@ namespace px {
 
 	public:
 		logger(std::string file)
-			: m_name(file), m_opened(false)
+			: m_name(file)
 		{
 		}
 		logger() : logger("log.txt")
@@ -36,20 +36,17 @@ namespace px {
 	private:
 		void open()
 		{
-			if (!m_opened)
-			{
-				m_stream.open(m_name, std::ios::out | std::ios::app);
+			if (!m_stream.is_open()) {
+				m_stream.open(m_name, std::ios_base::out | std::ios_base::app);
 			}
 		}
 		void close()
 		{
 			m_stream.close();
-			m_opened = false;
 		}
 
 	private:
 		std::string m_name;
-		bool m_opened;
 		std::ofstream m_stream;
 		std::mutex m_mutex;
 	};
