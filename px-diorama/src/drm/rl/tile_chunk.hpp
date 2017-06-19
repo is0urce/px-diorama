@@ -1,4 +1,7 @@
-// name: terrain.hpp
+// name: tile_chunk.hpp
+// type: c++
+// auth: is0ruce
+// desc: class template
 
 #pragma once
 
@@ -15,13 +18,13 @@
 #include <px/rl/mass.hpp>
 #include <px/rl/traverse.hpp>
 
-#include <json.hpp>
+#include "depot.hpp"
 
 #include <px/fn/dig_generator.hpp>
 #include <px/fn/cellular_automata.hpp>
 
-#include <cstdint>
 #include <fstream>
+#include <cstdint>
 #include <string>
 
 namespace px {
@@ -37,15 +40,15 @@ namespace px {
 		{
 			return m_matrix.contains(position) && m_matrix[position].mass.traversable();
 		}
-		tile_type const& operator[](point2 const& position) const
+		tile_type const& operator[](point2 const& relative) const
 		{
-			return m_matrix[position];
+			return m_matrix[relative];
 		}
-		void pset(point2 const& position, uint32_t id)
+		void pset(point2 const& relative, uint32_t id)
 		{
-			write(m_matrix[position], id);
+			write(m_matrix[relative], id);
 		}
-		void assigns_sprites(es::sprite_system * sprites)
+		void assigns_sprites(es::sprite_system * sprites) noexcept
 		{
 			m_sprites = sprites;
 		}
@@ -66,7 +69,7 @@ namespace px {
 
 			std::mt19937 rng;
 			fn::cellular_automata<unsigned char, 100, 100> automata([&](size_t /*x*/, size_t /*y*/) -> unsigned char { return rng() % 2; });
-			automata.mutate(4, static_cast<unsigned char>(0)
+			automata.mutate<unsigned char>(4, 0
 				, [](auto acc, auto cell) -> unsigned char { return acc + cell; }
 				, [](auto x) -> unsigned char { return (x >= 5) ? 1 : 0; });
 
@@ -105,9 +108,9 @@ namespace px {
 
 	public:
 		tile_chunk()
+			: m_sprites(nullptr)
 		{
-			auto config = nlohmann::json::parse(std::ifstream(tiles_path));
-			m_library.load(config["tiles"]);
+			m_library.load(depot::load_document(tiles_path)["tiles"]);
 		}
 
 	private:
@@ -116,12 +119,16 @@ namespace px {
 			auto const& prototype = m_library.at(tile.id);
 
 			tile.mass = prototype.mass;
-
 			px_assert(m_sprites);
 			if (m_sprites) {
-				tile.ground = m_sprites->make_unique(prototype.background);
-				tile.ground->connect(&tile.transform);
-				tile.ground->activate();
+				if (!tile.ground || tile.ground->name != prototype.background) {
+					tile.ground = m_sprites->make_unique(prototype.background);
+					px_assert(tile.ground);
+					if (tile.ground) {
+						tile.ground->connect(&tile.transform);
+						tile.ground->activate();
+					}
+				}
 			}
 		}
 		void setup(tile_type & tile, uint32_t id) const

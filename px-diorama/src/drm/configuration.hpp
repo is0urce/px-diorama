@@ -23,7 +23,7 @@ namespace px {
 				border = document["window"]["border"];
 				fullscreen = document["window"]["fullscreen"];
 			}
-			catch (std::exception & exc)
+			catch (std::exception const& exc)
 			{
 				throw std::runtime_error("error while loading configuration, what=" + std::string(exc.what()));
 			}

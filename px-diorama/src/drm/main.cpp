@@ -30,7 +30,7 @@ char const* const log_path = "log.txt";
 
 namespace px {
 
-	glfw_window create_window(configuration & config)
+	glfw_window setup_window(configuration & config)
 	{
 		auto monitor = glfwGetPrimaryMonitor();
 		auto mode = glfwGetVideoMode(monitor);
@@ -46,8 +46,10 @@ namespace px {
 		}
 
 		glfw_window window = glfwCreateWindow(config.screen_width, config.screen_height, application_name, config.fullscreen ? monitor : nullptr, nullptr);
-		glfwMakeContextCurrent(window);
+		glfwMakeContextCurrent(window); // context
 		glfwSwapInterval(config.vsync);
+
+		glewInit();	// OpenGL extensions, after context
 
 		return window;
 	}
@@ -93,11 +95,9 @@ namespace px {
 		configuration config;
 		load_configuration(binds, config);
 
-		// graphics setup
-		// order is important: windows manager, window & context, gl extensions, renderer
+		// graphics setup, order is important: windows manager instance, window with context / extensions, renderer
 		glfw_instance instance;
-		glfw_window window = create_window(config);
-		glewInit();	// OpenGL extensions
+		glfw_window window = setup_window(config);
 		renderer graphics(config.screen_width, config.screen_height);
 		load_data(graphics, textureatlas_path);
 
@@ -108,6 +108,8 @@ namespace px {
 		callback.on_resize([&](auto /* window */, int widht, int height) {
 			graphics.resize(widht, height);
 			game.resize(widht, height);
+			config.screen_width = widht;
+			config.screen_height = height;
 		});
 		callback.on_key([&](auto /* window */, int os_key, int /* scancode */, int action, int /* mods */) {
 			if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(binds.select(os_key, key::not_valid));
@@ -125,7 +127,7 @@ namespace px {
 			game.scroll(horisontal, vertical);
 		});
 
-		// main loop
+		// game loop
 		timer<glfw_time> time;
 		while (window.process() && game.running()) {
 			game.frame(time);
@@ -147,7 +149,7 @@ namespace px {
 			}
 			catch (...)
 			{
-				throw std::exception("unhandled exception");
+				throw std::runtime_error("unhandled exception");
 			}
 		}
 		catch (std::exception const& exc)

@@ -9,6 +9,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <px/common/assert.hpp>
+
 namespace px
 {
 	class glfw_window final
@@ -20,10 +22,14 @@ namespace px
 		}
 		void make_current()
 		{
+			px_assert(m_window);
+
 			glfwMakeContextCurrent(m_window);
 		}
 		bool process()
 		{
+			px_assert(m_window);
+
 			glfwSwapBuffers(m_window);
 			glfwPollEvents();
 			return !glfwWindowShouldClose(m_window);
