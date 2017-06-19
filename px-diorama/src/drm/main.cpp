@@ -7,6 +7,7 @@
 #include <GL/glew.h>
 #include <px/rglfw/rglfw.hpp>
 
+#include "depot.hpp"
 #include "configuration.hpp"
 #include "settings.hpp"
 #include "shell.hpp"
@@ -18,7 +19,6 @@
 #include <px/common/bindings.hpp>
 
 #include <lodepng.h>
-#include <json.hpp>
 #include <date/date.h>
 
 #include <stdexcept>
@@ -30,12 +30,6 @@ char const* const log_path = "log.txt";
 
 namespace px {
 
-	auto load_document(std::string const& document_depot)
-	{
-		std::ifstream file(document_depot);
-		if (!file.is_open()) throw std::runtime_error("error opening file path=" + document_depot);
-		return nlohmann::json::parse(file);
-	}
 	glfw_window create_window(configuration & config)
 	{
 		auto monitor = glfwGetPrimaryMonitor();
@@ -57,9 +51,9 @@ namespace px {
 
 		return window;
 	}
-	void load_textures(renderer & graphics, std::string const& atlas_path)
+	void load_data(renderer & graphics, std::string const& atlas_path)
 	{
-		auto document = load_document(atlas_path);
+		auto document = depot::load_document(atlas_path);
 		for (auto const& node : document["textures"]) {
 			std::string path = node["texture"];
 
@@ -72,15 +66,11 @@ namespace px {
 			graphics.add_texture(texture_width, texture_height, image.data());
 		}
 	}
-
-	void main_loop()
+	void load_configuration(bindings<int, key> & binds, configuration & config)
 	{
-		// configuration
-		bindings<int, key> binds;
-		configuration config;
 		try
 		{
-			binds.load(load_document(keybindings_path)["bindings"]);
+			binds.load(depot::load_document(keybindings_path)["bindings"]);
 		}
 		catch (std::exception const& exc)
 		{
@@ -88,12 +78,20 @@ namespace px {
 		}
 		try
 		{
-			config.load(load_document(configuration_path));
+			config.load(depot::load_document(configuration_path));
 		}
 		catch (std::exception const& exc)
 		{
 			throw std::runtime_error("error while loading configuration in=" + std::string(configuration_path) + " what=" + std::string(exc.what()));
 		}
+	}
+
+	void main_loop()
+	{
+		// configuration
+		bindings<int, key> binds;
+		configuration config;
+		load_configuration(binds, config);
 
 		// graphics setup
 		// order is important: windows manager, window & context, gl extensions, renderer
@@ -101,18 +99,15 @@ namespace px {
 		glfw_window window = create_window(config);
 		glewInit();	// OpenGL extensions
 		renderer graphics(config.screen_width, config.screen_height);
-		load_textures(graphics, textureatlas_path);
+		load_data(graphics, textureatlas_path);
 
 		shell game(config.screen_width, config.screen_height);
 
 		// setup callback procedures for window message handling
 		glfw_callback callback(window);
 		callback.on_resize([&](auto /* window */, int widht, int height) {
-			config.screen_width = widht;
-			config.screen_height = height;
-
-			graphics.resize(config.screen_width, config.screen_height);
-			game.resize(config.screen_width, config.screen_height);
+			graphics.resize(widht, height);
+			game.resize(widht, height);
 		});
 		callback.on_key([&](auto /* window */, int os_key, int /* scancode */, int action, int /* mods */) {
 			if (action == GLFW_PRESS || action == GLFW_REPEAT) game.press(binds.select(os_key, key::not_valid));

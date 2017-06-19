@@ -70,6 +70,9 @@ namespace px
 		auto& scroll() noexcept { return m_scroll; }
 
 	public:
+		~glfw_callback()
+		{
+		}
 		glfw_callback(GLFWwindow * window)
 			: m_window(window)
 		{
@@ -83,9 +86,9 @@ namespace px
 			&glfw_on_hover;
 			&glfw_on_scroll;
 		}
-		~glfw_callback()
-		{
-		}
+		glfw_callback(glfw_callback const&) = delete;
+		glfw_callback & operator=(glfw_callback const&) = delete;
+
 	private:
 		GLFWwindow * m_window;
 		std::function<void(GLFWwindow *, int, int)> m_resize; // width x height

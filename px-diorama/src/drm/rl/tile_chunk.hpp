@@ -61,16 +61,17 @@ namespace px {
 		{
 			point2 range = m_matrix.range();
 
-			fn::dig_generator dig(range.x(), range.y());
-			dig.generate(std::mt19937{}, 4, 7, 1, 15);
+			//fn::dig_generator dig(range.x(), range.y());
+			//dig.generate(std::mt19937{}, 4, 7, 1, 15);
 
-			fn::cellular_automata<unsigned char, 100, 100> automata([](size_t /*x*/, size_t /*y*/) -> unsigned char { return std::rand() % 2; });
+			std::mt19937 rng;
+			fn::cellular_automata<unsigned char, 100, 100> automata([&](size_t /*x*/, size_t /*y*/) -> unsigned char { return rng() % 2; });
 			automata.mutate(4, static_cast<unsigned char>(0)
 				, [](auto acc, auto cell) -> unsigned char { return acc + cell; }
 				, [](auto x) -> unsigned char { return (x >= 5) ? 1 : 0; });
 
-			matrix2<unsigned char> digged_map(range);
-			dig.rasterize(digged_map);
+			//matrix2<unsigned char> digged_map(range);
+			//dig.rasterize(digged_map);
 
 			m_matrix.enumerate([&](auto const& point, auto & tile) {
 				switch (automata->at(point)) {

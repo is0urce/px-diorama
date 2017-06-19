@@ -58,7 +58,7 @@ namespace px {
 		{
 			return contains(position.x(), position.y());
 		}
-		bool contains(size_t x, size_t y) const noexcept
+		constexpr bool contains(size_t x, size_t y) const noexcept
 		{
 			return x >= 0 && x < W && y >= 0 && y < H;
 		}
@@ -249,11 +249,11 @@ namespace px {
 			std::swap(m_data, that.m_data);
 		}
 
-		size_t width() const
+		size_t width() const noexcept
 		{
 			return m_width;
 		}
-		size_t height() const
+		size_t height() const noexcept
 		{
 			return m_height;
 		}
@@ -261,11 +261,11 @@ namespace px {
 		{
 			return point2(static_cast<point2::component>(m_width), static_cast<point2::component>(m_height));
 		}
-		size_t size() const
+		size_t size() const noexcept
 		{
 			return m_width * m_height;
 		}
-		bool empty()
+		bool empty() const noexcept
 		{
 			return m_width == 0 || m_height == 0;
 		}

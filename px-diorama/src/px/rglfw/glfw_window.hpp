@@ -40,14 +40,18 @@ namespace px
 		{
 			std::swap(m_window, that.m_window);
 		}
+		void close()
+		{
+			if (m_window) {
+				glfwDestroyWindow(m_window);
+				m_window = nullptr;
+			}
+		}
 
 	public:
 		~glfw_window()
 		{
-			if (m_window)
-			{
-				glfwDestroyWindow(m_window);
-			}
+			close();
 		}
 		glfw_window() noexcept
 			: m_window(nullptr)
@@ -64,6 +68,14 @@ namespace px
 		}
 		glfw_window(glfw_window const&) = delete;
 		glfw_window & operator=(glfw_window const&) = delete;
+		glfw_window & operator=(GLFWwindow * window)
+		{
+			if (m_window != window) {
+				close();
+				m_window = window;
+			}
+			return *this;
+		}
 
 	private:
 		GLFWwindow * m_window;
