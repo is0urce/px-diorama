@@ -26,7 +26,7 @@ namespace px {
 		, public rl::body
 	{
 	public:
-		void assign_useable(useable * use)
+		void assign_useable(useable * use) noexcept
 		{
 			m_useable = use;
 		}

@@ -1,8 +1,17 @@
+// name: dig_generator.hpp
+// type: c++
+// auth: is0urce
+// desc: map generator
+
+// creates linked collection of rooms
+
 #pragma once
 
 #include <px/common/rectangle.hpp>
 #include <px/common/matrix.hpp>
 
+#include <px/fn/surface.hpp>
+#include <px/fn/room.hpp>
 #include <px/fn/room_aux.hpp>
 
 #include <algorithm>
@@ -14,14 +23,6 @@ namespace px {
 
 		class dig_generator
 		{
-		public:
-			enum class tile : unsigned char { room, corridor };
-			struct room
-			{
-				rectangle bounds;
-				tile data;
-			};
-
 		public:
 			void rasterize(matrix2<unsigned char> & map)
 			{
@@ -43,15 +44,16 @@ namespace px {
 			template <typename Random>
 			void generate(Random && rng, int min, int max, int border, int rooms)
 			{
-				point2 center = map_bounds.range() / 2;
+				point2 center = m_bounds.range() / 2;
 				point2 range = random_range(rng, { min, min }, { max, max });
 
-				rectangle start(center - range / 2, range);
-				m_rooms.push_back(room{ start, tile::room });
+				rectangle start_bounds(center - range / 2, range);
+				m_rooms.push_back({ start_bounds, surface::room });
 
-				while (rooms > 0)
-				{
-					if (generate_room(rng, min, max, border)) --rooms;
+				while (rooms > 0) {
+					if (generate_room(rng, min, max, border)) {
+						--rooms;
+					}
 				}
 			}
 
@@ -59,7 +61,7 @@ namespace px {
 			bool generate_room(Random & rng, int min, int max, int border)
 			{
 				// select room
-				auto start = random_item_filtered(rng, m_rooms, [](auto const& room) { return room.data == tile::room; });
+				auto start = random_item_filtered(rng, m_rooms, [](auto const& room) { return room.surface == surface::room; });
 
 				// random point in room
 				point2 from = random_point(rng, start.bounds);
@@ -117,8 +119,8 @@ namespace px {
 				rectangle corridor = rectangle::from_corners(from, end + normal);
 
 				// add
-				m_rooms.push_back(room{ candidate, tile::room });
-				m_rooms.push_back(room{ corridor, tile::corridor });
+				m_rooms.push_back(room{ candidate, surface::room });
+				m_rooms.push_back(room{ corridor, surface::corridor });
 
 				return true;
 			}
@@ -129,18 +131,18 @@ namespace px {
 			{
 			}
 			dig_generator(unsigned int width, unsigned int height)
-				: map_bounds({ 0, 0 }, { static_cast<int>(width), static_cast<int>(height) })
+				: m_bounds({ 0, 0 }, { static_cast<int>(width), static_cast<int>(height) })
 			{
 			}
 
 		private:
-			bool intersect_existing(rectangle bounds) const
+			bool intersect_existing(rectangle const& bounds) const
 			{
 				return std::any_of(std::begin(m_rooms), std::end(m_rooms), [&](auto const& room) { return room.bounds.intersects(bounds); });
 			}
 
 		private:
-			rectangle map_bounds;
+			rectangle m_bounds;
 			std::vector<room> m_rooms;
 		};
 	}

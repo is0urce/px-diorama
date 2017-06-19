@@ -6,41 +6,39 @@
 
 #include <px/common/point.hpp>
 
+#include <algorithm>
 #include <array>
 #include <vector>
 #include <stdexcept>
 
 namespace px {
 
-	template <typename Element, unsigned int...> class matrix2;
+	template <typename Element, size_t...> class matrix2;
 
 	// matrix with fixed sizes
 
-	template <typename Element, unsigned int W, unsigned int H>
+	template <typename Element, size_t W, size_t H>
 	class matrix2<Element, W, H>
 	{
 	public:
-		typedef Element element;
-
-	private:
-		std::array<element, W * H> m_data;
+		typedef Element element_type;
 
 	public:
-		constexpr unsigned int width() const
+		constexpr size_t width() const
 		{
 			return W;
 		}
-		constexpr unsigned int height() const
+		constexpr size_t height() const
 		{
 			return H;
 		}
-		constexpr unsigned int size() const
+		constexpr size_t size() const
 		{
 			return W * H;
 		}
 		constexpr point2 range() const
 		{
-			return point2(W, H);
+			return point2(static_cast<int>(W), static_cast<int>(H));
 		}
 
 		void swap(matrix2 & that)
@@ -49,9 +47,7 @@ namespace px {
 		}
 		void copy(matrix2 const& that)
 		{
-			for (size_t i = 0, len = W * H; i != len; ++i) {
-				m_data[i] = that.m_data[i];
-			}
+			std::copy(that.m_data[0], that.m_data[W * H], m_data[0]);
 		}
 
 		bool contains(coordinate<int, 2> const& position) const
@@ -62,12 +58,12 @@ namespace px {
 		{
 			return contains(position.x(), position.y());
 		}
-		bool contains(unsigned int x, unsigned int y) const
+		bool contains(size_t x, size_t y) const noexcept
 		{
 			return x >= 0 && x < W && y >= 0 && y < H;
 		}
 
-		void fill(element const& e)
+		void fill(element_type const& e)
 		{
 			m_data.fill(e);
 		}
@@ -75,8 +71,8 @@ namespace px {
 		void fill(Generator op)
 		{
 			size_t index = 0;
-			for (unsigned int j = 0; j != H; ++j) {
-				for (unsigned int i = 0; i != W; ++i) {
+			for (size_t j = 0; j != H; ++j) {
+				for (size_t i = 0; i != W; ++i) {
 					m_data[index] = op(i, j);
 					++index;
 				}
@@ -86,8 +82,8 @@ namespace px {
 		void enumerate(Operator && op)
 		{
 			size_t index = 0;
-			for (unsigned int j = 0; j != H; ++j) {
-				for (unsigned int i = 0; i != W; ++i) {
+			for (size_t j = 0; j != H; ++j) {
+				for (size_t i = 0; i != W; ++i) {
 					op(point2(static_cast<point2::component>(i), static_cast<point2::component>(j)), m_data[index]);
 					++index;
 				}
@@ -96,81 +92,81 @@ namespace px {
 
 		// querry functions: operator[] not throws, at() throws, select returns default (outer) if out of range
 		// specialized point2 acessors for easy querry with bracket-initialized points
-		template<typename Component>
-		const element& operator[](coordinate<Component, 2> key) const
+		template <typename Component>
+		element_type const& operator[](coordinate<Component, 2> key) const
 		{
 			return m_data[key.get<1>() * W + key.get<0>()];
 		}
-		template<typename Component>
-		element& operator[](coordinate<Component, 2> key)
+		template <typename Component>
+		element_type & operator[](coordinate<Component, 2> key)
 		{
 			return m_data[key.get<1>() * W + key.get<0>()];
 		}
-		const element& operator[](point2 key) const
+		element_type const& operator[](point2 key) const
 		{
 			return m_data[key.y() * W + key.x()];
 		}
-		element& operator[](point2 key)
+		element_type & operator[](point2 key)
 		{
 			return m_data[key.y() * W + key.x()];
 		}
 
 		template<typename Component>
-		const element& at(coordinate<Component, 2> key) const
+		element_type const& at(coordinate<Component, 2> key) const
 		{
 			if (!contains(key)) throw std::runtime_error("px::matrix<e,w,h>::at() - out of range");
 			return operator[](key);
 		}
 		template<typename Component>
-		element& at(coordinate<Component, 2> key)
+		element_type & at(coordinate<Component, 2> key)
 		{
 			if (!contains(key)) throw std::runtime_error("px::matrix<e,w,h>::at() - out of range");
 			return operator[](key);
 		}
-		const element& at(point2 key) const
+		element_type const& at(point2 key) const
 		{
 			if (!contains(key)) throw std::runtime_error("px::matrix<e,w,h>::at(point) - position out of range");
 			return operator[](key);
 		}
-		element& at(point2 key)
+		element_type & at(point2 key)
 		{
 			if (!contains(key)) throw std::runtime_error("px::matrix<e,w,h>::at(point) - out of range");
 			return operator[](key);
 		}
-		const element& at(unsigned int x, unsigned int y) const
+		element_type const& at(size_t x, size_t y) const
 		{
 			if (!contains(x, y)) throw std::runtime_error("px::matrix<e,w,h>::at() - out of range");
 			return m_data[y * W + x];
 		}
-		element& at(unsigned int x, unsigned int y)
+		element_type & at(size_t x, size_t y)
 		{
 			if (!contains(x, y)) throw std::runtime_error("px::matrix<e,w,h>::at() - out of range");
 			return m_data[y * W + x];
 		}
 
 		template<typename Component>
-		const element& select(coordinate<Component, 2> key, const element& outer) const
+		element_type const& select(coordinate<Component, 2> key, element_type const& outer) const
 		{
 			return contains(key) ? operator[](key) : outer;
 		}
 		template<typename Component>
-		element& select(coordinate<Component, 2> key, element& outer)
+		element_type & select(coordinate<Component, 2> key, element_type & outer)
 		{
 			return contains(key) ? operator[](key) : outer;
 		}
-		const element& select(point2 key, const element& outer) const
+		element_type const& select(point2 key, element_type const& outer) const
 		{
 			return contains(key) ? operator[](key) : outer;
 		}
-		element& select(point2 key, element& outer)
+		element_type & select(point2 key, element_type & outer)
 		{
 			return contains(key) ? operator[](key) : outer;
 		}
-		const element& select(unsigned int x, unsigned int y, const element& outer) const
+		element_type const& select(unsigned int x, unsigned int y, element_type const& outer) const
 		{
 			return contains(x, y) ? m_data[y * W + x];
 		}
-		element& select(unsigned int x, unsigned int y, element& outer)
+		element_type & select(unsigned int x, unsigned int y, element_type & outer)
 		{
 			return contains(x, y) ? m_data[y * W + x];
 		}
@@ -180,7 +176,7 @@ namespace px {
 		matrix2()
 		{
 		}
-		matrix2(element const& initial)
+		matrix2(element_type const& initial)
 		{
 			fill(initial);
 		}
@@ -189,6 +185,9 @@ namespace px {
 		{
 			fill(std::forward<Generator>(op));
 		}
+
+	private:
+		std::array<element_type, W * H> m_data;
 	};
 
 	// matrix with varying size
@@ -198,10 +197,6 @@ namespace px {
 	{
 	public:
 		typedef Element element;
-	private:
-		std::vector<element> m_data;
-		size_t m_width;
-		size_t m_height;
 
 	public:
 		matrix2()
@@ -409,5 +404,10 @@ namespace px {
 		{
 			return contains(x, y) ? m_data[y * m_width + x];
 		}
+
+	private:
+		std::vector<element> m_data;
+		size_t m_width;
+		size_t m_height;
 	};
 }

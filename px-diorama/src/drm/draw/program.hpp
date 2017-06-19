@@ -6,10 +6,10 @@
 #include <px/rgl/gl_shader.hpp>
 #include <px/rgl/gl_program.hpp>
 
-#include <stdexcept>
 #include <fstream>
-#include <string>
 #include <sstream>
+#include <stdexcept>
+#include <string>
 
 namespace px {
 
@@ -32,17 +32,17 @@ namespace px {
 		{
 			vertex = gl_shader(GL_VERTEX_SHADER, read_file(vertex_name).c_str());
 		}
-		catch (std::runtime_error const& exc)
+		catch (std::exception const& exc)
 		{
-			throw std::runtime_error("px::compile_program(name) in '" + vertex_name + "' error=" + exc.what());
+			throw std::runtime_error("px::compile_program(name) in vertex shader '" + vertex_name + "' error=" + exc.what());
 		}
 		try
 		{
 			fragment = gl_shader(GL_FRAGMENT_SHADER, read_file(fragment_name).c_str());
 		}
-		catch (std::runtime_error const& exc)
+		catch (std::exception const& exc)
 		{
-			throw std::runtime_error("px::compile_program(name) in '" + fragment_name + "' error=" + exc.what());
+			throw std::runtime_error("px::compile_program(name) in fragment shader '" + fragment_name + "' error=" + exc.what());
 		}
 		return gl_program(vertex, fragment);
 	}
@@ -53,12 +53,10 @@ namespace px {
 	inline gl_program compile_program(std::string const& name, std::vector<std::string> uniforms, std::vector<std::string> textures)
 	{
 		auto program = compile_program(name);
-		for (size_t i = 0, size = uniforms.size(); i != size; ++i)
-		{
+		for (size_t i = 0, size = uniforms.size(); i != size; ++i) {
 			program.uniform_block(uniforms[i].c_str(), static_cast<GLuint>(i));
 		}
-		for (size_t i = 0, size = textures.size(); i != size; ++i)
-		{
+		for (size_t i = 0, size = textures.size(); i != size; ++i) {
 			program.uniform(textures[i].c_str(), static_cast<GLuint>(i));
 		}
 		return program;

@@ -195,9 +195,6 @@
     <ClInclude Include="src\drm\vertex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\fn\generator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\fn\room_aux.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -484,6 +481,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\ui\performance_panel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\fn\dig_generator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\fn\surface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\fn\room.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\fn\cellular_automata.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

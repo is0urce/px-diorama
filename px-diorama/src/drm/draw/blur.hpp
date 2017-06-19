@@ -29,8 +29,7 @@ namespace px {
 	public:
 		void draw_arrays(GLenum e, GLsizei count)
 		{
-			for (size_t i = 0; i != Stages; ++i)
-			{
+			for (size_t i = 0; i != Stages; ++i) {
 				m_stages[i].pass.draw_arrays(e, count);
 			}
 		}
@@ -56,12 +55,13 @@ namespace px {
 			float bokeh,
 			std::array<float, Stages> const& angles
 			)
-			: m_width(width), m_height(height)
+			: m_width(width)
+			, m_height(height)
 		{
 			auto dx = 1.0f / m_width; // one pixel
 			auto dy = 1.0f / m_height;
-			for (size_t i = 0; i != Stages; ++i)
-			{
+			for (size_t i = 0; i != Stages; ++i) {
+
 				// uniform
 				m_stages[i].block = { GL_UNIFORM_BUFFER };
 
@@ -93,21 +93,17 @@ namespace px {
 			// first iteration
 			first[0] = 1;
 
-			for (int k = 0; k != SampleRange; ++k)
-			{
-				for (int i = 0, end = k + 1; i != end; ++i)
-				{
+			for (size_t k = 0; k != SampleRange; ++k) {
+				for (size_t i = 0, end = k + 1; i != end; ++i) {
 					second[i] = first[i] + (((i + 1) == end) ? 0 : first[i + 1]);
 				}
-				for (int i = 0, end = k + 2; i != end; ++i)
-				{
+				for (size_t i = 0, end = k + 2; i != end; ++i) {
 					first[i] = (i == 0 ? second[0] : second[i - 1]) + (i + 1 == end ? 0 : second[i]);
 				}
 			}
 
 			auto total = std::pow(2.0f, 2 * SampleRange);
-			for (size_t i = 0; i <= SampleRange; ++i)
-			{
+			for (size_t i = 0; i <= SampleRange; ++i) {
 				multipliers[i].value0 = first[i] / static_cast<float>(total);
 			}
 		}
