@@ -20,7 +20,7 @@ namespace px {
 	environment::~environment()
 	{
 		end();
-		m_map.resize({ 0,0 });
+		m_terrain.clear();
 	}
 
 	environment::environment()
@@ -130,7 +130,7 @@ namespace px {
 
 		point2 destination = m_player->position() + direction;
 
-		if (!m_map.traversable(destination)) return;
+		if (!m_terrain.traversable(destination)) return;
 
 		auto blocking = find_any(destination);
 
@@ -183,9 +183,8 @@ namespace px {
 	void environment::start()
 	{
 		// terrain
-		m_map.assigns_sprites(m_factory->sprites());
-		m_map.resize({ 100, 100 });
-		m_map.generate();
+		m_terrain.assigns_sprites(m_factory->sprites());
+		m_terrain.generate({ 0, 0 });
 
 		// units
 

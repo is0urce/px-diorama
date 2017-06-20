@@ -9,17 +9,25 @@ namespace px {
 
 	namespace {
 
-		char const* configuration_path = "data/config.json";
-		char const* keybindings_path = "data/controls.json";
-		char const* textureatlas_path = "data/textures.json";
-		char const* tiles_path = "data/tiles.json";
+		// config
+
+		char const* const configuration_path = "data/config.json";
+		char const* const keybindings_path = "data/controls.json";
+		char const* const textureatlas_path = "data/textures.json";
+		char const* const tiles_path = "data/tiles.json";
 
 		// fonts
-		char const* grid_font_path = "data/fonts/DejaVuSansMono.ttf";
-		char const* popup_font_path = "data/fonts/DejaVuSansMono.ttf";
-		unsigned int grid_font_size = 18;	// size of font
-		unsigned int grid_font_atlas = 512;	// internal size of font atlas
-		unsigned int popup_font_size = 18;
-		unsigned int popup_font_atlas = 512;
+
+		char const* const grid_font_path = "data/fonts/DejaVuSansMono.ttf";
+		char const* const popup_font_path = "data/fonts/DejaVuSansMono.ttf";
+		const unsigned int grid_font_size = 18;	// size of font
+		const unsigned int grid_font_atlas = 512;	// internal size of font atlas
+		const unsigned int popup_font_size = 18;
+		const unsigned int popup_font_atlas = 512;
+
+		// world
+
+		const size_t cell_width = 100;
+		const size_t cell_height = cell_width;
 	}
 }

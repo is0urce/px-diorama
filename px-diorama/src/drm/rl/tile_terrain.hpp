@@ -2,21 +2,27 @@
 
 #pragma once
 
-#include "es/sprite_system.hpp"
-#include "es/transform_component.hpp"
+#include "settings.hpp"
 
-#include "tile_chunk.hpp"
+#include "tile_prototype.hpp"
+#include "tile_library.hpp"
+#include "tile_instance.hpp"
+
+#include "terrain_stream.hpp"
 
 #include <px/common/assert.hpp>
 #include <px/common/matrix.hpp>
 #include <px/rl/mass.hpp>
 #include <px/rl/traverse.hpp>
 
+#include <px/fn/dig_generator.hpp>
+#include <px/fn/cellular_automata.hpp>
+
 #include "depot.hpp"
 
 #include <fstream>
-#include <cstdint>
 #include <string>
+#include <memory>
 
 namespace px {
 
@@ -25,45 +31,101 @@ namespace px {
 	{
 	public:
 		typedef Tile tile_type;
+		typedef stream<matrix2<tile_type, cell_width, cell_height>> chunk_type;
+		typedef matrix2<std::unique_ptr<chunk_type>, 3, 3> sheet_type;
 
 	public:
 		bool traversable(point2 const& absolute) const noexcept
 		{
-			return m_chunk.traversable(absolute);
+			return m_chunk && (*m_chunk)->at(absolute).mass.traversable();
 		}
 		tile_type const& operator[](point2 const& absolute) const
 		{
-			return m_chunk[absolute];
+			px_assert(m_chunk);
+			return (*m_chunk)->at(absolute);
 		}
 		void pset(point2 const& absolute, uint32_t id)
 		{
-			write(m_chunk[absolute], id);
+			setup(m_chunk[absolute], id);
 		}
-		void assigns_sprites(es::sprite_system * sprites) noexcept
+		void assigns_sprites(es::sprite_system * sprites) px_noexcept
 		{
+			px_assert(sprites);
 			m_sprites = sprites;
 		}
-		//void store(std::string const& depot_name) const
-		//{
-		//	std::ofstream stream(depot_name, std::ofstream::binary);
-		//	m_matrix.enumerate([&](auto const& /* position */, auto const& tile) {
-		//		stream.write(reinterpret_cast<char const*>(&tile.id), sizeof(tile.id));
-		//	});
-		//}
-		//void load(std::string const& depot_name)
-		//{
-		//	std::ifstream stream(depot_name, std::ifstream::binary);
-		//	m_matrix.enumerate([&](auto const& /* position */, auto & tile) {
-		//		stream.read(reinterpret_cast<char *>(&tile.id), sizeof(tile.id));
-		//		invalidate(tile);
-		//	});
-		//}
+		void store(point2 const& cell) const
+		{
+			std::string depot_name = "level.map";
+			std::ofstream stream(depot_name, std::ofstream::binary);
+
+			px_assert(m_chunk);
+			if (m_chunk) {
+				(*m_chunk)->enumerate([&](auto const& /* position */, auto const& tile) {
+					stream.write(reinterpret_cast<char const*>(&tile.id), sizeof(tile.id));
+				});
+			}
+
+		}
+		void load(point2 const& cell)
+		{
+			std::string depot_name = "level.map";
+			std::ifstream stream(depot_name, std::ifstream::binary);
+
+			px_assert(m_chunk);
+			if (m_chunk) {
+				(*m_chunk)->enumerate([&](auto const& /* position */, auto & tile) {
+					stream.read(reinterpret_cast<char *>(&tile.id), sizeof(tile.id));
+					invalidate(tile);
+				});
+			}
+		}
+		void generate(point2 const& cell)
+		{
+			px_assert(m_chunk);
+
+			//fn::dig_generator dig(range.x(), range.y());
+			//dig.generate(std::mt19937{}, 4, 7, 1, 15);
+
+			std::mt19937 rng;
+			fn::cellular_automata<unsigned char, cell_width, cell_height> automata([&](size_t /*x*/, size_t /*y*/) -> unsigned char { return rng() % 2; });
+			automata.mutate<unsigned char>(4, 0, [](auto acc, auto cell) -> unsigned char { return acc + cell; }, [](auto x) -> unsigned char { return (x >= 5) ? 1 : 0; });
+
+			//matrix2<unsigned char> digged_map(range);
+			//dig.rasterize(digged_map);
+
+			(*m_chunk).load([&](auto & map) {
+				map.enumerate([&](auto const& relative, auto & tile) {
+					switch (automata->at(relative)) {
+					case 1: {
+						setup(tile, (std::rand() % 3 == 0) ? 2 : 3);
+						break;
+					}
+					default:
+						setup(tile, 1);
+						break;
+					}
+				});
+			});
+
+			point2 offset = cell * point2(cell_width, cell_height);
+			(*m_chunk)->enumerate([&](auto const& relative, auto & tile) {
+				tile.transform.move(relative + offset);
+				tile.transform.store_position();
+			});
+		}
+		void clear()
+		{
+			(*m_chunk)->enumerate([&](auto const& /*relative*/, auto & tile) {
+				tile.ground.release();
+			});
+		}
 
 	public:
 		tile_terrain()
 			: m_sprites(nullptr)
 		{
 			m_library.load(depot::load_document(tiles_path)["tiles"]);
+			m_chunk = std::make_unique<chunk_type>();
 		}
 
 	private:
@@ -91,7 +153,7 @@ namespace px {
 		}
 
 	private:
-		tile_chunk<tile_type> m_chunk;
+		std::unique_ptr<chunk_type> m_chunk;
 		tile_library<tile_prototype<rl::mass<rl::traverse>>> m_library;
 		es::sprite_system * m_sprites;
 	};

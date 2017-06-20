@@ -8,7 +8,7 @@
 #pragma once
 
 #include "rl/notification.hpp"
-#include "rl/tile_chunk.hpp"
+#include "rl/tile_terrain.hpp"
 #include "ui/menu.hpp"
 #include "vfx.hpp"
 
@@ -103,7 +103,8 @@ namespace px {
 		unsigned int				m_last_turn;		// last updated turn
 		double						m_last_time;		// last time of update
 
-		tile_chunk<tile_instance>	m_map;				// terrain
+		//tile_chunk<tile_instance>	m_map;				// terrain
+		tile_terrain<tile_instance>	m_terrain;
 		std::vector<unit_ptr>		m_units;			// scene
 		transform_component *		m_player;			// player transform
 

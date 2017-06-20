@@ -3,7 +3,7 @@
 #pragma once
 
 #include "es/sprite_system.hpp"
-#include "../es/transform_component.hpp"
+#include "es/transform_component.hpp"
 
 #include <px/rl/mass.hpp>
 #include <px/rl/traverse.hpp>

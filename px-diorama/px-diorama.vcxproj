@@ -212,6 +212,8 @@
     <ClInclude Include="src\drm\rl\kraft\craft.hpp" />
     <ClInclude Include="src\drm\rl\notification.hpp" />
     <ClInclude Include="src\drm\rl\kraft\recipe.hpp" />
+    <ClInclude Include="src\drm\rl\terrain_sheet.hpp" />
+    <ClInclude Include="src\drm\rl\terrain_stream.hpp" />
     <ClInclude Include="src\drm\rl\tile_library.hpp" />
     <ClInclude Include="src\drm\rl\tile_prototype.hpp" />
     <ClInclude Include="src\drm\rl\tile_terrain.hpp" />
