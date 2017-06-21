@@ -153,7 +153,7 @@ namespace px {
 	private:
 		tile_type m_border;
 		//std::unique_ptr<chunk_type> m_chunk;
-		tile_surface<tile_type, cell_width, cell_height, 0> m_surface;
+		tile_surface<tile_type, cell_width, cell_height, 1> m_surface;
 		tile_library<tile_prototype<rl::mass<rl::traverse>>> m_library;
 		es::sprite_system * m_sprites;
 	};

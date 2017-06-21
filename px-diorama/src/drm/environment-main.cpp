@@ -136,12 +136,14 @@ namespace px {
 
 		if (!m_terrain.traversable(destination)) return;
 
-		auto blocking = find_any(destination);
+		transform_component * blocking = find_any(destination);
 
 		if (!blocking) {
-			m_terrain.focus({ 0, 0 });
 			turn_begin();
+
+			m_terrain.focus(destination);
 			m_player->place(destination);
+
 			turn_end();
 		}
 	}
@@ -205,7 +207,7 @@ namespace px {
 		spawn(create_dummy("p_box", { 58, 50}));
 
 		// player
-		auto player = create_dummy("m_gnome", { 55, 47 });
+		auto player = create_dummy("m_gnome", { 5, 5 });
 		spawn(player);
 
 		impersonate(player->transform());

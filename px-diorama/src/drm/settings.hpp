@@ -27,7 +27,7 @@ namespace px {
 
 		// world
 
-		const size_t cell_width = 100;
+		const size_t cell_width = 10;
 		const size_t cell_height = cell_width;
 	}
 }
