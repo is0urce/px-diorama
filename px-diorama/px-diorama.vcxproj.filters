@@ -357,18 +357,6 @@
     <ClInclude Include="src\px\rl\skill\skill.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\st\astar.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\st\map_stream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\st\shadowcasting.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\px\rl\st\tile.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\drm\es\character_system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -504,6 +492,12 @@
     <ClInclude Include="src\px\common\stream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\px\space\a_star.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\space\shadowcasting.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\drm\main.cpp">
@@ -563,5 +557,8 @@
     <None Include="data\scripts\sk_s_smite.lua" />
     <None Include="data\scripts\sk_i_pain.lua" />
     <None Include="data\tiles.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\terrain\readme.txt" />
   </ItemGroup>
 </Project>

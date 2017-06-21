@@ -33,7 +33,8 @@ namespace px {
 	{
 	public:
 		typedef Tile tile_type;
-		typedef stream<matrix2<tile_type, cell_width, cell_height>> chunk_type;
+		typedef tile_prototype<rl::mass<rl::traverse>> blueprint_type;
+		typedef tile_surface<tile_type, cell_width, cell_height, 1> surface_type;
 
 	public:
 		bool traversable(point2 const& absolute) const noexcept
@@ -55,29 +56,21 @@ namespace px {
 		}
 		void store(point2 const& cell) const
 		{
-		//	std::string depot_name = "level.map";
-		//	std::ofstream stream(depot_name, std::ofstream::binary);
+			auto const* chunk = m_surface.get_chunk(cell);
 
-		//	px_assert(m_chunk);
-		//	if (m_chunk) {
-		//		(*m_chunk)->enumerate([&](auto const& /* position */, auto const& tile) {
-		//			stream.write(reinterpret_cast<char const*>(&tile.id), sizeof(tile.id));
-		//		});
-		//	}
-
+			px_assert(m_chunk);
+			if (chunk) {
+				store(cell, *chunk);
+			}
 		}
 		void load(point2 const& cell)
 		{
-		//	std::string depot_name = "level.map";
-		//	std::ifstream stream(depot_name, std::ifstream::binary);
+			auto * chunk = m_surface.get_chunk(cell);
 
-		//	px_assert(m_chunk);
-		//	if (m_chunk) {
-		//		(*m_chunk)->enumerate([&](auto const& /* position */, auto & tile) {
-		//			stream.read(reinterpret_cast<char *>(&tile.id), sizeof(tile.id));
-		//			invalidate(tile);
-		//		});
-		//	}
+			px_assert(m_chunk);
+			if (m_chunk) {
+				load(cell, *chunk);
+			}
 		}
 		void generate_chunk(point2 const& cell, matrix2<tile_type, cell_width, cell_height> & map)
 		{
@@ -117,13 +110,18 @@ namespace px {
 				});
 			});
 		}
+		void dump()
+		{
+			m_surface.enumerate([&](point2 cell, auto const& map) {
+				store(cell, map);
+			});
+		}
 
 	public:
 		tile_terrain()
 			: m_sprites(nullptr)
 		{
 			m_library.load(depot::load_document(tiles_path)["tiles"]);
-			//m_chunk = std::make_unique<chunk_type>();
 		}
 
 	private:
@@ -149,12 +147,38 @@ namespace px {
 			tile.id = id;
 			invalidate(tile);
 		}
+		std::string depot_name(point2 const& cell) const
+		{
+			return std::string(terrain_directory) + "level_" + std::to_string(cell.x()) + "_" + std::to_string(cell.y()) + ".map";
+		}
+		template <typename Matrix>
+		void store(point2 const& cell, Matrix const& map) const
+		{
+			std::string name = depot_name(cell);
+			std::ofstream stream(name, std::ofstream::binary);
+			if (!stream.is_open()) throw std::runtime_error("px::tile_terrain::store(...) - can't open file " + name);
+
+			map.enumerate([&](auto const& /* position */, auto const& tile) {
+				stream.write(reinterpret_cast<char const*>(&tile.id), sizeof(tile.id));
+			});
+		}
+		template <typename Matrix>
+		void load(point2 const& cell, Matrix & map)
+		{
+			std::string name = depot_name(cell);
+			std::ifstream stream(name, std::ifstream::binary);
+			if (!stream.is_open()) throw std::runtime_error("px::tile_terrain::store(...) - can't open file " + name);
+
+			map.enumerate([&](auto const& /* position */, auto & tile) {
+				stream.read(reinterpret_cast<char *>(&tile.id), sizeof(tile.id));
+				invalidate(tile);
+			});
+		}
 
 	private:
-		tile_type m_border;
-		//std::unique_ptr<chunk_type> m_chunk;
-		tile_surface<tile_type, cell_width, cell_height, 1> m_surface;
-		tile_library<tile_prototype<rl::mass<rl::traverse>>> m_library;
-		es::sprite_system * m_sprites;
+		tile_type											m_border;
+		tile_library<blueprint_type>						m_library;
+		tile_surface<tile_type, cell_width, cell_height, 1>	m_surface;
+		es::sprite_system *									m_sprites;
 	};
 }

@@ -143,6 +143,7 @@ namespace px {
 
 			m_terrain.focus(destination);
 			m_player->place(destination);
+			m_terrain.dump();
 
 			turn_end();
 		}
@@ -269,10 +270,10 @@ namespace px {
 			magnitude = damage_enhancement.value0;
 			variant = damage_enhancement.subtype;
 			is_hit = true;
-			is_critical = true;
+			is_critical = false;
 		}
 
-		return std::tuple<int, int, bool, bool>{ magnitude, variant, is_hit, is_critical };
+		return { magnitude, variant, is_hit, is_critical };
 	}
 
 	std::shared_ptr<unit> environment::create_dummy(std::string const& name, point2 location)

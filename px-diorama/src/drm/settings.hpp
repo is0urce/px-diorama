@@ -16,6 +16,8 @@ namespace px {
 		char const* const textureatlas_path = "data/textures.json";
 		char const* const tiles_path = "data/tiles.json";
 
+		char const* const terrain_directory = "data/terrain/";
+
 		// fonts
 
 		char const* const grid_font_path = "data/fonts/DejaVuSansMono.ttf";

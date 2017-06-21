@@ -1,4 +1,4 @@
-// name: astar.h
+// name: a_star.hpp
 // type: c++ header
 // desc: pathfinding
 // auth: is0urce
@@ -15,7 +15,7 @@
 
 namespace px
 {
-	class astar
+	class a_star
 	{
 	private:
 		struct coord;

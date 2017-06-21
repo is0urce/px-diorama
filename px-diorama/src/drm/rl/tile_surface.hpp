@@ -9,6 +9,7 @@
 #include <px/common/point.hpp>
 #include <px/common/vector.hpp>
 #include <px/common/stream.hpp>
+#include <px/common/rectangle.hpp>
 
 #include <memory>
 #include <tuple>
@@ -26,10 +27,14 @@ namespace px {
 		typedef matrix2<stream_ptr, Range * 2 + 1, Range * 2 + 1> sheets_type;
 
 	public:
+		rectangle bounds() const
+		{
+			return rectangle((m_focus - point2(Range, Range)) * point2(W, H), point2((Range * 2 + 1) * W, (Range * 2 + 1) * H));
+		}
 		void focus(point2 const& world_location)
 		{
 			point2 focus;
-			std::tie(focus, std::ignore) = divide(world_location, point2(W, H));
+			std::tie(focus, std::ignore) = divide(world_location);
 
 			// shift maps
 			if (m_focus != focus) {
@@ -49,32 +54,40 @@ namespace px {
 				m_focus = focus;
 			}
 		}
-		std::tuple<chunk_type *, point2> get_chunk(point2 const& absolute)
+		point2 focus() const noexcept
 		{
-			point2 div;
-			point2 mod;
-			std::tie(div, mod) = translate(absolute);
-
-			stream_type * stream = m_terrain.contains(div) ? m_terrain[div].get() : nullptr;
-			chunk_type * chunk = (stream && stream->loaded()) ? stream->get() : nullptr;
-			return { chunk, mod };
+			return m_focus;
 		}
-		std::tuple<chunk_type const*, point2> get_chunk(point2 const& absolute) const
+		std::tuple<chunk_type *, point2> select_chunk(point2 absolute)
 		{
-			point2 div;
-			point2 mod;
-			std::tie(div, mod) = translate(absolute);
+			point2 cell;
+			point2 remainder;
+			std::tie(cell, remainder) = divide(absolute);
 
-			stream_type const* stream = m_terrain.contains(div) ? m_terrain[div].get() : nullptr;
-			chunk_type const* chunk = (stream && stream->loaded()) ? stream->get() : nullptr;
-			return { chunk, mod };
+			return { chunk_by_index(cell_to_index(cell)), remainder };
+		}
+		std::tuple<chunk_type const*, point2> select_chunk(point2 absolute) const
+		{
+			point2 cell;
+			point2 remainder;
+			std::tie(cell, remainder) = divide(absolute);
+
+			return { chunk_by_index(cell_to_index(cell)), remainder };
+		}
+		chunk_type * get_chunk(point2 cell)
+		{
+			return chunk_by_index(cell_to_index(cell));
+		}
+		chunk_type const* get_chunk(point2 cell) const
+		{
+			return chunk_by_index(cell_to_index(cell));
 		}
 
-		tile_type const& get_or(point2 const& absolute, tile_type const& or_else) const
+		tile_type const& get_or(point2 absolute, tile_type const& or_else) const
 		{
 			chunk_type const* chunk;
 			point2 mod;
-			std::tie(chunk, mod) = get_chunk(absolute);
+			std::tie(chunk, mod) = select_chunk(absolute);
 
 			return chunk ? (*chunk)[mod] : or_else;
 		}
@@ -88,17 +101,29 @@ namespace px {
 		template <typename Operator>
 		void load(Operator && fn)
 		{
-			m_terrain.enumerate([&](point2 const& relative_cell, stream_ptr & stream) {
+			m_terrain.enumerate([&](point2 const& index, stream_ptr & stream) {
 				if (!stream) {
 					stream = std::make_unique<stream_type>();
-					fn(relative_cell + m_focus - point2(Range, Range), *stream);
+					fn(index_to_cell(index), *stream);
 				}
 			});
 		}
 		void wait()
 		{
 			m_terrain.enumerate([&](point2 const& /* relative_cell */, stream_ptr & stream) {
-				if (stream) stream->wait();
+				if (stream) {
+					stream->wait();
+				}
+			});
+		}
+
+		template <typename Operator>
+		void enumerate(Operator && fn) const
+		{
+			m_terrain.enumerate([&](point2 const& index, stream_ptr const& stream) {
+				if (stream && stream->loaded()) {
+					fn(index_to_cell(index), *(stream->get()));
+				}
 			});
 		}
 
@@ -115,13 +140,34 @@ namespace px {
 			point2 mod = a - div * b;
 			return { div, mod };
 		}
-		std::tuple<point2, point2> translate(point2 a) const
+		static std::tuple<point2, point2> divide(point2 a)
 		{
-			point2 relative;
-			std::tie(a, relative) = divide(a, point2(W, H));
-			a += point2(Range, Range);
-			a -= m_focus;
-			return { a, relative };
+			return divide(a, point2(W, H));
+		}
+
+		point2 cell_to_index(point2 cell) const
+		{
+			cell -= m_focus;
+			cell += point2(Range, Range);
+			return cell;
+		}
+		point2 index_to_cell(point2 index) const
+		{
+			index += m_focus;
+			index -= point2(Range, Range);
+			return index;
+		}
+		chunk_type const* chunk_by_index(point2 index)
+		{
+			stream_type * stream = m_terrain.contains(index) ? m_terrain[index].get() : nullptr;
+			chunk_type * chunk = (stream && stream->loaded()) ? stream->get() : nullptr;
+			return chunk;
+		}
+		chunk_type const* chunk_by_index(point2 index) const
+		{
+			stream_type const* stream = m_terrain.contains(index) ? m_terrain[index].get() : nullptr;
+			chunk_type const* chunk = (stream && stream->loaded()) ? stream->get() : nullptr;
+			return chunk;
 		}
 
 	private:

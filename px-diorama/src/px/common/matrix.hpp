@@ -78,8 +78,20 @@ namespace px {
 				}
 			}
 		}
+
 		template <typename Operator>
 		void enumerate(Operator && op)
+		{
+			size_t index = 0;
+			for (size_t j = 0; j != H; ++j) {
+				for (size_t i = 0; i != W; ++i) {
+					op(point2(static_cast<point2::component>(i), static_cast<point2::component>(j)), m_data[index]);
+					++index;
+				}
+			}
+		}
+		template <typename Operator>
+		void enumerate(Operator && op) const
 		{
 			size_t index = 0;
 			for (size_t j = 0; j != H; ++j) {

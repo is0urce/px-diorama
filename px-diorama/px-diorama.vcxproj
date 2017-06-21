@@ -309,7 +309,7 @@
     <ClInclude Include="src\px\rl\skill\skill.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_instance.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_impact.hpp" />
-    <ClInclude Include="src\px\rl\st\astar.hpp" />
+    <ClInclude Include="src\px\space\a_star.hpp" />
     <ClInclude Include="src\px\rl\bar.hpp" />
     <ClInclude Include="src\px\rl\loot\basic_inventory.hpp" />
     <ClInclude Include="src\px\rl\loot\stack.hpp" />
@@ -327,16 +327,14 @@
     <ClInclude Include="src\px\rl\equipment_slot.hpp" />
     <ClInclude Include="src\px\rl\loot\inventory.hpp" />
     <ClInclude Include="src\px\rl\loot\basic_item.hpp" />
-    <ClInclude Include="src\px\rl\st\map_stream.hpp" />
     <ClInclude Include="src\px\rl\mass.hpp" />
     <ClInclude Include="src\px\rl\resource.hpp" />
-    <ClInclude Include="src\px\rl\st\shadowcasting.hpp" />
+    <ClInclude Include="src\px\space\shadowcasting.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_functional.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_state.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_book.hpp" />
     <ClInclude Include="src\px\rl\skill\skill_set.hpp" />
     <ClInclude Include="src\px\rl\reputation_subject.hpp" />
-    <ClInclude Include="src\px\rl\st\tile.hpp" />
     <ClInclude Include="src\px\rl\traverse.hpp" />
     <ClInclude Include="src\px\rl\traverse_options.hpp" />
     <ClInclude Include="src\px\ui\alignment.hpp" />
@@ -384,6 +382,9 @@
     <None Include="data\shaders\uitext.vert" />
     <None Include="data\skills.json" />
     <None Include="data\tiles.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\terrain\readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
