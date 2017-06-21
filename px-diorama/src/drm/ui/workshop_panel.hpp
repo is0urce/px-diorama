@@ -7,8 +7,8 @@
 
 #include "item_functional.hpp"
 
-#include "drm/rl/kraft/recipe.hpp"
-#include "drm/rl/kraft/craft.hpp"
+#include "drm/rl/craft/recipe.hpp"
+#include "drm/rl/craft/crafting.hpp"
 
 #include <px/common/enumerable.hpp>
 #include <px/rl/loot/inventory.hpp>
@@ -165,7 +165,7 @@ namespace px {
 
 				if (m_current && complete) {
 
-					std::shared_ptr<rl::item> craft_result = rl::craft::make(*m_current, ingredients);
+					std::shared_ptr<rl::item> craft_result = rl::crafting::make(*m_current, ingredients);
 
 					if (craft_result) {
 						m_container->add(craft_result);

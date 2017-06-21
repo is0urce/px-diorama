@@ -1,4 +1,7 @@
-// name: terrain_stream.hpp
+// name: stream.hpp
+// type: c++
+// auth: is0urce
+// desc: template class
 
 #pragma once
 
@@ -57,13 +60,13 @@ namespace px {
 		{
 			return &m_data;
 		}
-		data_type const& data() const
+		data_type const* get() const
 		{
-			return m_data;
+			return &m_data;
 		}
-		data_type & data()
+		data_type * get()
 		{
-			return m_data;
+			return &m_data;
 		}
 
 	public:
@@ -102,7 +105,7 @@ namespace px {
 
 	private:
 		data_type			m_data;
-		volatile bool		m_loaded;	// map loaded
+		volatile bool		m_loaded;	// flag set is data loaded
 		std::thread			m_thread;
 		std::exception_ptr	exc_ptr;
 	};

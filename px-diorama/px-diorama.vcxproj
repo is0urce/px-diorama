@@ -207,13 +207,13 @@
     <ClInclude Include="src\drm\es\workshop_component.hpp" />
     <ClInclude Include="src\drm\rl\container.hpp" />
     <ClInclude Include="src\drm\es\container_component.hpp" />
-    <ClInclude Include="src\drm\rl\kraft\ingredient.hpp" />
-    <ClInclude Include="src\drm\rl\kraft\recipe_category.hpp" />
-    <ClInclude Include="src\drm\rl\kraft\craft.hpp" />
+    <ClInclude Include="src\drm\rl\craft\ingredient.hpp" />
+    <ClInclude Include="src\drm\rl\craft\recipe_category.hpp" />
+    <ClInclude Include="src\drm\rl\craft\crafting.hpp" />
     <ClInclude Include="src\drm\rl\notification.hpp" />
-    <ClInclude Include="src\drm\rl\kraft\recipe.hpp" />
-    <ClInclude Include="src\drm\rl\terrain_sheet.hpp" />
-    <ClInclude Include="src\drm\rl\terrain_stream.hpp" />
+    <ClInclude Include="src\drm\rl\craft\recipe.hpp" />
+    <ClInclude Include="src\drm\rl\tile_surface.hpp" />
+    <ClInclude Include="src\px\common\stream.hpp" />
     <ClInclude Include="src\drm\rl\tile_library.hpp" />
     <ClInclude Include="src\drm\rl\tile_prototype.hpp" />
     <ClInclude Include="src\drm\rl\tile_terrain.hpp" />
@@ -224,7 +224,6 @@
     <ClInclude Include="src\drm\es\sprite_system.hpp" />
     <ClInclude Include="src\px\fn\cellular_automata.hpp" />
     <ClInclude Include="src\px\fn\dig_generator.hpp" />
-    <ClInclude Include="src\drm\rl\tile_chunk.hpp" />
     <ClInclude Include="src\drm\rl\tile_instance.hpp" />
     <ClInclude Include="src\drm\ui\inventory_panel.hpp" />
     <ClInclude Include="src\drm\ui\item_functional.hpp" />

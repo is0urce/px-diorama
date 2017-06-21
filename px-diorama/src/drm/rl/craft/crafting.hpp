@@ -16,7 +16,7 @@
 namespace px {
 	namespace rl {
 
-		class craft
+		class crafting
 		{
 		public:
 			static int essence_percent(std::set<int> const& essences)

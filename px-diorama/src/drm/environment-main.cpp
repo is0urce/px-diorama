@@ -57,6 +57,10 @@ namespace px {
 		m_player = player;
 		m_factory->sprites()->assign_camera(m_player);
 		m_ui.assign_incarnation(m_player);
+
+		if (m_player) {
+			m_terrain.focus(player->position());
+		}
 	}
 	void environment::update(perception & view, double time)
 	{
@@ -135,6 +139,7 @@ namespace px {
 		auto blocking = find_any(destination);
 
 		if (!blocking) {
+			m_terrain.focus({ 0, 0 });
 			turn_begin();
 			m_player->place(destination);
 			turn_end();
@@ -184,7 +189,6 @@ namespace px {
 	{
 		// terrain
 		m_terrain.assigns_sprites(m_factory->sprites());
-		m_terrain.generate({ 0, 0 });
 
 		// units
 

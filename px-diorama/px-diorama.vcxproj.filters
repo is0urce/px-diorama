@@ -429,9 +429,6 @@
     <ClInclude Include="src\drm\rl\tile_instance.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\rl\tile_chunk.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\ui\list.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -456,15 +453,6 @@
     <ClInclude Include="src\drm\ui\workshop_panel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\rl\kraft\recipe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\drm\rl\kraft\ingredient.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\drm\rl\kraft\recipe_category.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\px\common\enumerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -475,9 +463,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\settings.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\drm\rl\kraft\craft.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\ui\performance_panel.hpp">
@@ -501,10 +486,22 @@
     <ClInclude Include="src\drm\rl\tile_terrain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\rl\terrain_sheet.hpp">
+    <ClInclude Include="src\drm\rl\tile_surface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\rl\terrain_stream.hpp">
+    <ClInclude Include="src\drm\rl\craft\crafting.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\craft\ingredient.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\craft\recipe.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\rl\craft\recipe_category.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\px\common\stream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

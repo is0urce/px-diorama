@@ -1,7 +1,7 @@
 // name: tile_prototype.hpp
 // type: c++
 // auth: is0urce
-// desc: struct declaration
+// desc: struct
 
 #pragma once
 

@@ -1,4 +1,7 @@
 // name: tile_instance.hpp
+// type: c++
+// auth: is0urce
+// desc: struct
 
 #pragma once
 

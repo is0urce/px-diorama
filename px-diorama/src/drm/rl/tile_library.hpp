@@ -1,7 +1,11 @@
 // name: tile_library.hpp
+// type: c++
+// auth: is0urce
+// type: template class
 
 #pragma once
 
+#include <cstdint>
 #include <bitset>
 #include <map>
 
