@@ -40,20 +40,13 @@ namespace px
 			void make_blocking(traverse_options const& opts) { m_traversable &= opts.m_traversable; }
 			void make_traversable(traverse_options const& layer_options, bool val)
 			{
-				if (val)
-				{
+				if (val) {
 					m_traversable |= layer_options.m_traversable.layers;
 				}
-				else
-				{
+				else {
 					m_traversable &= ~layer_options.m_traversable.layers;
 				}
 			}
-
-			//static constexpr size_t traverse_layers() noexcept
-			//{
-			//	return Size;
-			//}
 
 		public:
 			traverse_options()

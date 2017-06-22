@@ -47,7 +47,10 @@ namespace px {
 		}
 		void pset(point2 const& absolute, uint32_t id)
 		{
-			//setup(m_chunk[absolute], id);
+			auto & tile = m_surface.get_or(absolute, m_border);
+			if (&tile != &m_border) {
+				setup(tile, id);
+			}
 		}
 		void assigns_sprites(es::sprite_system * sprites) px_noexcept
 		{
@@ -91,7 +94,7 @@ namespace px {
 			});
 
 			point2 offset = cell * point2(cell_width, cell_height);
-			map.enumerate([&](auto const& relative, auto & tile) {
+			map.enumerate([offset](point2 const& relative, auto & tile) {
 				tile.transform.move(relative + offset);
 				tile.transform.store_position();
 			});
@@ -103,7 +106,7 @@ namespace px {
 		void focus(point2 const& absolute_world)
 		{
 			m_surface.focus(absolute_world);
-			m_surface.load([&](point2 const absolute_cell, auto & stream) {
+			m_surface.load([this](point2 const absolute_cell, auto & stream) {
 
 				stream.load([this, absolute_cell](auto & map) {
 					generate_chunk(absolute_cell, map);
@@ -112,7 +115,7 @@ namespace px {
 		}
 		void dump()
 		{
-			m_surface.enumerate([&](point2 cell, auto const& map) {
+			m_surface.enumerate([this](point2 cell, auto const& map) {
 				store(cell, map);
 			});
 		}
@@ -149,13 +152,15 @@ namespace px {
 		}
 		std::string depot_name(point2 const& cell) const
 		{
-			return std::string(terrain_directory) + "level_" + std::to_string(cell.x()) + "_" + std::to_string(cell.y()) + ".map";
+			int x_bias = 500 + cell.x();
+			int y_bias = 500 + cell.y();
+			return std::string(terrain_directory) + "level_" + std::to_string(x_bias) + "_" + std::to_string(y_bias) + ".map";
 		}
 		template <typename Matrix>
 		void store(point2 const& cell, Matrix const& map) const
 		{
 			std::string name = depot_name(cell);
-			std::ofstream stream(name, std::ofstream::binary);
+			std::ofstream stream(name, std::ios_base::binary);
 			if (!stream.is_open()) throw std::runtime_error("px::tile_terrain::store(...) - can't open file " + name);
 
 			map.enumerate([&](auto const& /* position */, auto const& tile) {
@@ -166,8 +171,8 @@ namespace px {
 		void load(point2 const& cell, Matrix & map)
 		{
 			std::string name = depot_name(cell);
-			std::ifstream stream(name, std::ifstream::binary);
-			if (!stream.is_open()) throw std::runtime_error("px::tile_terrain::store(...) - can't open file " + name);
+			std::ifstream stream(name, std::ios_base::binary);
+			if (!stream.is_open()) throw std::runtime_error("px::tile_terrain::load(...) - can't open file " + name);
 
 			map.enumerate([&](auto const& /* position */, auto & tile) {
 				stream.read(reinterpret_cast<char *>(&tile.id), sizeof(tile.id));

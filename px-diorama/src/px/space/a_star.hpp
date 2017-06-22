@@ -20,14 +20,19 @@ namespace px
 	private:
 		struct coord;
 		typedef std::shared_ptr<coord> coord_ptr;
-		struct coord : public point2
+		struct coord
+			: public point2
 		{
 		public:
 			double g_score;
 			double f_score;
 			coord_ptr came_from;
 		public:
-			coord(point2 p, double traversed, double heu, coord_ptr prev) : point2(p), g_score(traversed), f_score(traversed + heu), came_from(prev)
+			coord(point2 p, double traversed, double heu, coord_ptr prev)
+				: point2(p)
+				, g_score(traversed)
+				, f_score(traversed + heu)
+				, came_from(prev)
 			{
 			}
 		};
@@ -42,8 +47,8 @@ namespace px
 
 		struct lexicographical_less
 		{
-			template <typename _LPtr, typename _RPtr>
-			bool operator() (const _LPtr lhs, const _RPtr rhs) const
+			template <typename LPtr, typename RPtr>
+			bool operator() (const LPtr lhs, const RPtr rhs) const
 			{
 				return lhs->x() < rhs->x() || lhs->x() == rhs->x() && lhs->y() < rhs->y();
 			}
@@ -88,8 +93,8 @@ namespace px
 
 	public:
 		// _TPr - traversable predicate bool(point)
-		template <typename _TPr>
-		static auto find(point2 start, point2 finish, _TPr traversable, unsigned int steps)
+		template <typename Predicate>
+		static auto find(point2 start, point2 finish, Predicate traversable, unsigned int steps)
 		{
 			std::list<point2> path;
 			std::multiset<coord_ptr, score_less> open;
