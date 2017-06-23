@@ -7,6 +7,10 @@
 
 #include "settings.hpp"
 
+#include "terrain_generator.hpp"
+
+#include "depot.hpp"
+
 #include "tile_prototype.hpp"
 #include "tile_library.hpp"
 #include "tile_instance.hpp"
@@ -17,13 +21,8 @@
 #include <px/rl/mass.hpp>
 #include <px/rl/traverse.hpp>
 
-#include <px/fn/cellular_automata.hpp>
-
-#include "depot.hpp"
-
 #include <fstream>
 #include <memory>
-#include <random>
 #include <string>
 
 namespace px {
@@ -77,24 +76,12 @@ namespace px {
 		}
 		void generate_chunk(point2 const& cell, matrix2<tile_type, cell_width, cell_height> & map)
 		{
-			std::mt19937 rng;
-			fn::cellular_automata<unsigned char, cell_width, cell_height> automata([&](size_t /*x*/, size_t /*y*/) -> unsigned char { return rng() % 2; });
-			automata.mutate<unsigned char>(4, 0, [](auto acc, auto cell) -> unsigned char { return acc + cell; }, [](auto x) -> unsigned char { return (x >= 5) ? 1 : 0; });
-
-			map.enumerate([&](auto const& relative, auto & tile) {
-				switch (automata->at(relative)) {
-				case 1: {
-					setup(tile, (std::rand() % 3 == 0) ? 2 : 3);
-					break;
-				}
-				default:
-					setup(tile, 1);
-					break;
-				}
-			});
+			auto terrain_data = terrain_generator<cell_width, cell_height>::generate_cavern();
 
 			point2 offset = cell * point2(cell_width, cell_height);
-			map.enumerate([offset](point2 const& relative, auto & tile) {
+			map.enumerate([&](point2 const& relative, auto & tile) {
+
+				setup(tile, terrain_data[relative]);
 				tile.transform.move(relative + offset);
 				tile.transform.store_position();
 			});
