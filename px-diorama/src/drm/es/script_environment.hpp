@@ -46,7 +46,7 @@ namespace px {
 
 			return m_environment->hit(*user, *vs);	
 		}
-		script_unit spawn(std::string const& blueprint_tag, point2 const& location)
+		script_unit spawn(std::string const& blueprint_tag, point2 location)
 		{
 			transform_component * transform = nullptr;
 			body_component * body = nullptr;

@@ -163,7 +163,9 @@ namespace px {
 			spawn(mobile);
 
 			// set as a player, if this componen was used 
-			if (builder.is_player()) impersonate(mobile->transform());
+			if (builder.has_player()) {
+				impersonate(mobile->transform());
+			}
 		}
 	}
 
@@ -198,7 +200,10 @@ namespace px {
 		unit_builder builder(*m_factory);
 		load_unit(builder, archive);
 
-		builder.current_transform()->move(location);
+		if (transform_component * transform = builder.transform()) {
+			transform->place(location);
+			transform->store_position();
+		}
 
 		return builder.assemble();
 	}

@@ -202,6 +202,7 @@ namespace px {
 				load_skill("data/scripts/sk_i_pain.lua");
 
 				load_skill("data/scripts/sk_o_export.lua");
+				load_skill("data/scripts/sk_o_import.lua");
 			}
 
 		private:

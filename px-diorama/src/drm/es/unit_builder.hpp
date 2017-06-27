@@ -62,15 +62,19 @@ namespace px {
 		}
 
 		// fetch part status
-		bool is_player() const
+		bool has_player() const
 		{
 			return m_player;
 		}
-
-		// fetch current transform part
-		auto current_transform()
+		bool has_transform() const
 		{
 			return m_transform;
+		}
+
+		// fetch current transform part
+		transform_component * transform()
+		{
+			return m_transform.get();
 		}
 
 	public:

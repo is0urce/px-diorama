@@ -95,7 +95,7 @@ namespace px {
 		void clear()
 		{
 			m_terrain.enumerate([&](point2 const& /* relative_cell */, stream_ptr & stream) {
-				stream.release();
+				stream->reset();
 			});
 		}
 		template <typename Operator>

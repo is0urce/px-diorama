@@ -3,7 +3,7 @@
 -- auth: is0urce
 -- desc: skill script
 
--- editor mode: exports targeted objects
+-- editor mode: spawn object
 
 tag = "sk_o_import"
 
@@ -11,8 +11,8 @@ tag = "sk_o_import"
 
 targeted = false
 
-name = "Export"
-description = "Exports objects in targeted area"
+name = "import"
+description = "Spawn object"
 
 -- returns true if skill can be used
 
@@ -23,5 +23,5 @@ end
 -- action taken if skill is used
 
 action = function(user, target)
-	game:import("m_skeleton", target:position())
+	game:spawn("m_snail", target)
 end

@@ -107,8 +107,8 @@ namespace px {
 
 		tile_terrain<tile_instance>	m_terrain;			// terrain
 		std::vector<unit_ptr>		m_units;			// scene
-		transform_component *		m_player;			// player transform
 
+		transform_component *		m_player;			// player transform
 		point2						m_hover;			// current hovered tile
 		ui::menu					m_ui;				// user interface
 		std::vector<vfx>			m_visuals;			// visual effects container
