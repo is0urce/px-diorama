@@ -36,6 +36,7 @@ namespace px {
 		{
 			m_environment->visual(tag, start, target.position(), target.transform());
 		}
+
 		std::tuple<int, int, bool, bool> hit(script_unit const& attacker, script_unit const& versus)
 		{
 			body_component * user = attacker.body();
@@ -54,6 +55,11 @@ namespace px {
 			auto transform = unit->transform();
 			auto body = transform ? transform->linked<body_component>() : nullptr;
 			return script_unit(body, transform);
+		}
+
+		void mass_export(point2 const& location)
+		{
+			m_environment->mass_export(location);
 		}
 
 	public:

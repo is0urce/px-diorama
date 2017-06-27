@@ -1,4 +1,4 @@
--- name: blink.lua
+-- name: sk_i_blink.lua
 -- type: lua script
 -- auth: is0urce
 -- desc: skill script

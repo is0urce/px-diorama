@@ -1,4 +1,4 @@
--- name: melee.lua
+-- name: sk_i_pain.lua
 -- type: lua script
 -- auth: is0urce
 -- desc: skill script

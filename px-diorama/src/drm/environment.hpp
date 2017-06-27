@@ -81,6 +81,7 @@ namespace px {
 		void export_unit(unit const& mobile, std::string const& blueprint_name) const;
 		unit_ptr import_unit(std::string const& blueprint_name);
 		unit_ptr import_unit(std::string const& blueprint_name, point2 location);
+		size_t mass_export(point2 const& location);
 
 	public:
 		~environment();

@@ -560,6 +560,7 @@
     <None Include="data\scripts\sk_s_smite.lua" />
     <None Include="data\scripts\sk_i_pain.lua" />
     <None Include="data\tiles.json" />
+    <None Include="data\scripts\sk_o_export.lua" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\terrain\readme.txt" />

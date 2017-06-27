@@ -1,4 +1,4 @@
--- name: fireball.lua
+-- name: sk_i_fireball.lua
 -- type: lua script
 -- auth: is0urce
 -- desc: skill script

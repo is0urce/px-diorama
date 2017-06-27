@@ -194,4 +194,18 @@ namespace px {
 
 		return builder.assemble();
 	}
+	size_t environment::mass_export(point2 const& position)
+	{
+		size_t exported = 0;
+		for (auto const& unit : m_units) {
+			auto * transform = unit->transform();
+			auto * body = transform->linked<body_component>();
+
+			if (transform && body && transform->position() == position) {
+				export_unit(*unit, body->tag());
+				++exported;
+			}
+		}
+		return exported;
+	}
 }
