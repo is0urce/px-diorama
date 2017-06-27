@@ -201,8 +201,9 @@ namespace px {
 			auto * transform = unit->transform();
 			auto * body = transform->linked<body_component>();
 
-			if (transform && body && transform->position() == position) {
-				export_unit(*unit, body->tag());
+			if (transform && transform->position() == position) {
+				std::string name = body ? body->tag() : std::string("unnamed") + std::to_string(exported);
+				export_unit(*unit, name);
 				++exported;
 			}
 		}
