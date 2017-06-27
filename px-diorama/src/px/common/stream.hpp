@@ -39,8 +39,8 @@ namespace px {
 		{
 			wait();
 			m_loaded = false;
-			// function closure by value
-			m_thread = std::thread([fn, this]() {
+			// function closure taken by value
+			m_thread = std::thread([this, fn]() {
 				try
 				{
 					fn(m_data);
@@ -68,6 +68,14 @@ namespace px {
 		{
 			return &m_data;
 		}
+		data_type const& userdata() const
+		{
+			return m_data;
+		}
+		data_type & userdata()
+		{
+			return m_data;
+		}
 
 	public:
 		~stream()
@@ -89,7 +97,7 @@ namespace px {
 			}
 			m_loaded = true;
 		}
-		void exception_check()
+		void exception_check() const
 		{
 			if (exc_ptr) {
 				try

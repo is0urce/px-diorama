@@ -56,14 +56,39 @@ namespace px {
 			px_assert(sprites);
 			m_sprites = sprites;
 		}
-		void store(point2 const& cell) const
+		void generate_chunk(point2 const& cell, matrix2<tile_type, cell_width, cell_height> & map)
 		{
-			auto const* chunk = m_surface.get_chunk(cell);
+			auto terrain_data = terrain_generator<cell_width, cell_height>::generate_cavern();
 
-			px_assert(m_chunk);
-			if (chunk) {
-				store(cell, *chunk);
-			}
+			point2 offset = cell * point2(cell_width, cell_height);
+			map.enumerate([&](point2 const& relative, auto & tile) {
+				setup(tile, terrain_data[relative]);
+				tile.transform.move(relative + offset);
+				tile.transform.store_position();
+			});
+		}
+		void clear()
+		{
+			m_surface.clear();
+		}
+		void wait()
+		{
+			m_surface.wait();
+		}
+		void focus(point2 const& absolute_world)
+		{
+			m_surface.focus(absolute_world);
+			m_surface.load([this](point2 const absolute_cell, auto & stream) {
+				stream.load_stream([this, absolute_cell](auto & map) {
+					generate_chunk(absolute_cell, map);
+				});
+			});
+		}
+		void dump()
+		{
+			m_surface.enumerate([this](point2 cell, auto const& map) {
+				store(cell, map);
+			});
 		}
 		void load(point2 const& cell)
 		{
@@ -74,37 +99,14 @@ namespace px {
 				load(cell, *chunk);
 			}
 		}
-		void generate_chunk(point2 const& cell, matrix2<tile_type, cell_width, cell_height> & map)
+		void store(point2 const& cell) const
 		{
-			auto terrain_data = terrain_generator<cell_width, cell_height>::generate_cavern();
+			auto const* chunk = m_surface.get_chunk(cell);
 
-			point2 offset = cell * point2(cell_width, cell_height);
-			map.enumerate([&](point2 const& relative, auto & tile) {
-
-				setup(tile, terrain_data[relative]);
-				tile.transform.move(relative + offset);
-				tile.transform.store_position();
-			});
-		}
-		void clear()
-		{
-			m_surface.clear();
-		}
-		void focus(point2 const& absolute_world)
-		{
-			m_surface.focus(absolute_world);
-			m_surface.load([this](point2 const absolute_cell, auto & stream) {
-
-				stream.load([this, absolute_cell](auto & map) {
-					generate_chunk(absolute_cell, map);
-				});
-			});
-		}
-		void dump()
-		{
-			m_surface.enumerate([this](point2 cell, auto const& map) {
-				store(cell, map);
-			});
+			px_assert(m_chunk);
+			if (chunk) {
+				store(cell, *chunk);
+			}
 		}
 
 	public:

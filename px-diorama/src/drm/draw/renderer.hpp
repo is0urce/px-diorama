@@ -73,6 +73,12 @@ namespace px {
 			px_assert(batches_array->size() == m_batches.size()); // gpu textures = drawcalls of textures
 
 			for (size_t i = 0, total = batches_array->size(); i != total; ++i) {
+				//if (i == 0)
+				//{
+				//	m_batches[i].pass.bind();
+				//	glClearColor(1, 1, 0, 1);
+				//	glClear(GL_COLOR_BUFFER_BIT);
+				//}
 				auto const& vertices = (*batches_array)[i];
 				if (vertices.size() != 0) {
 					m_batches[i].draw_arrays(GL_STREAM_DRAW, GL_QUADS, vertices.size(), vertices.data());

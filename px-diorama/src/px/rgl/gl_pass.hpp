@@ -59,16 +59,13 @@ namespace px {
 		{
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_framebuffer);
 			glViewport(0, 0, m_width, m_height);
-			if (m_vao != 0)
-			{
+			if (m_vao != 0) {
 				glBindVertexArray(m_vao);
 			}
-			for (auto const& uniform : m_uniforms)
-			{
+			for (auto const& uniform : m_uniforms) {
 				glBindBufferBase(GL_UNIFORM_BUFFER, uniform.binding, uniform.element);
 			}
-			for (auto const& texture : m_textures)
-			{
+			for (auto const& texture : m_textures) {
 				glActiveTexture(GL_TEXTURE0 + texture.binding);
 				glBindTexture(GL_TEXTURE_2D, texture.element);
 			}

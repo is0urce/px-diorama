@@ -12,6 +12,8 @@
 
 #include <px/common/pool_chain.hpp>
 
+#include <mutex>
+
 namespace px {
 	namespace es {
 
@@ -29,14 +31,17 @@ namespace px {
 		public:
 			shared_ptr make_shared()
 			{
+				std::lock_guard<std::mutex> mutex_guard(m_mutex);
 				return m_pool.make_shared();
 			}
 			unique_ptr make_unique()
 			{
+				std::lock_guard<std::mutex> mutex_guard(m_mutex);
 				return  m_pool.make_unique();
 			}
 			std_ptr make_std()
 			{
+				std::lock_guard<std::mutex> mutex_guard(m_mutex);
 				return m_pool.make_std();
 			}
 			template <typename Operator>
@@ -51,6 +56,7 @@ namespace px {
 			}
 			void clear()
 			{
+				std::lock_guard<std::mutex> mutex_guard(m_mutex);
 				m_pool.clear();
 			}
 
@@ -60,7 +66,8 @@ namespace px {
 			}
 
 		private:
-			pool_type m_pool;
+			pool_type	m_pool;
+			std::mutex	m_mutex;
 		};
 	}
 }

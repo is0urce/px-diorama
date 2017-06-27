@@ -141,9 +141,10 @@ namespace px {
 		if (!blocking) {
 			turn_begin();
 
+			m_terrain.wait();
 			m_terrain.focus(destination);
 			m_player->place(destination);
-			m_terrain.dump();
+			//m_terrain.dump();
 
 			turn_end();
 		}
