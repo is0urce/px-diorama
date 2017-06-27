@@ -311,6 +311,7 @@ namespace px {
 		character->learn_skill("sk_s_flurry");
 		character->learn_skill("sk_i_pain");
 		character->learn_skill("sk_v_teleport");
+		character->learn_skill("sk_o_export");
 
 		rl::item weapon;
 		weapon.set_name("weapon");

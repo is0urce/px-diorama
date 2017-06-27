@@ -386,6 +386,7 @@
     <None Include="data\tiles.json" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="data\blueprints\readme.txt" />
     <Text Include="data\terrain\readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

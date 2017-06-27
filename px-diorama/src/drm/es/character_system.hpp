@@ -162,7 +162,8 @@ namespace px {
 					, "popup", &script_environment::popup
 					, "vfx", &script_environment::emit_vfx
 					, "vfx_projectile", &script_environment::emit_projectile
-					, "vfx_missile", &script_environment::emit_missile);
+					, "vfx_missile", &script_environment::emit_missile
+					, "mass_export", &script_environment::mass_export);
 
 				provide_environment(nullptr);
 
@@ -195,6 +196,8 @@ namespace px {
 				load_skill("data/scripts/sk_s_rend.lua");
 				load_skill("data/scripts/sk_s_flurry.lua");
 				load_skill("data/scripts/sk_i_pain.lua");
+
+				load_skill("data/scripts/sk_o_export.lua");
 			}
 
 		private:

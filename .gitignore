@@ -216,6 +216,7 @@ ModelManifest.xml
 *.VC.db
 /px-diorama/data/img
 /px-diorama/data/fonts
+/px-diorama/data/blueprints
 /px-diorama/data/terrain
 /px-diorama/include
 /px-diorama/lib

@@ -14,12 +14,13 @@
 namespace px {
 
 	namespace {
-		char const* quicksave_path = "quicksave.sav";
-		char const* blueprints_path = "data/blueprints/";
+		char const* const quicksave_path = "quicksave.sav";
+		char const* const blueprints_path = "data/blueprints/";
+		char const* const blueprint_extension = ".dat";
 
-		std::string depot_filename(std::string const& blueprint_name)
+		std::string depot_filename(std::string const& blueprint_tag)
 		{
-			return std::string(blueprints_path) + blueprint_name;
+			return std::string(blueprints_path) + blueprint_tag + std::string(blueprint_extension);
 		}
 
 		template <typename Archive>

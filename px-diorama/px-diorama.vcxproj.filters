@@ -564,5 +564,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\terrain\readme.txt" />
+    <Text Include="data\blueprints\readme.txt" />
   </ItemGroup>
 </Project>

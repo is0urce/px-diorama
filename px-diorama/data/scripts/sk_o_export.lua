@@ -3,7 +3,7 @@
 -- auth: is0urce
 -- desc: skill script
 
--- editor mode: exports selected object
+-- editor mode: exports targeted objects
 
 tag = "sk_o_export"
 
@@ -12,7 +12,7 @@ tag = "sk_o_export"
 targeted = true
 
 name = "Export"
-description = "Exports target"
+description = "Exports objects in targeted area"
 
 -- returns true if skill can be used
 
@@ -23,5 +23,5 @@ end
 -- action taken if skill is used
 
 action = function(user, target)
-	game:export_unit(target:position())
+	game:mass_export(target:position())
 end
