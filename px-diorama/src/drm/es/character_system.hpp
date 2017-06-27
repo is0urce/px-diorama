@@ -152,10 +152,12 @@ namespace px {
 					, "place", &script_unit::place
 					, "position", &script_unit::position
 					, "dead", &script_unit::dead
-					, "damage", &script_unit::damage);
+					, "damage", &script_unit::damage
+					);
 				m_lua.new_usertype<point2>("point"
 					, "x", &point2::x
-					, "y", &point2::y);
+					, "y", &point2::y
+					);
 				m_lua.new_usertype<script_environment>("environment"
 					, "hit", &script_environment::hit
 					, "distance", &script_environment::distance
@@ -163,7 +165,9 @@ namespace px {
 					, "vfx", &script_environment::emit_vfx
 					, "vfx_projectile", &script_environment::emit_projectile
 					, "vfx_missile", &script_environment::emit_missile
-					, "mass_export", &script_environment::mass_export);
+					, "mass_export", &script_environment::mass_export
+					, "spawn", &script_environment::spawn
+					);
 
 				provide_environment(nullptr);
 

@@ -561,6 +561,7 @@
     <None Include="data\scripts\sk_i_pain.lua" />
     <None Include="data\tiles.json" />
     <None Include="data\scripts\sk_o_export.lua" />
+    <None Include="data\scripts\sk_o_import.lua" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\terrain\readme.txt" />

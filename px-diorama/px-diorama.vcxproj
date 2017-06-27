@@ -363,6 +363,7 @@
     <None Include="data\scripts\sk_d_vial.lua" />
     <None Include="data\scripts\sk_i_pain.lua" />
     <None Include="data\scripts\sk_o_export.lua" />
+    <None Include="data\scripts\sk_o_import.lua" />
     <None Include="data\scripts\sk_s_charge.lua" />
     <None Include="data\scripts\sk_s_execute.lua" />
     <None Include="data\scripts\sk_s_flurry.lua" />

@@ -146,6 +146,7 @@ namespace px {
 
 		// make archives
 		std::ifstream input(name, SAVE_INPUT_MODE);
+		if (!input.is_open()) throw std::runtime_error("px::environment::load() - file error, name=" + name);
 		SAVE_INPUT_ARCHIVE archive(input);
 
 		// load game state
@@ -176,7 +177,10 @@ namespace px {
 	}
 	environment::unit_ptr environment::import_unit(std::string const& blueprint_name)
 	{
-		std::ifstream input(depot_filename(blueprint_name), SAVE_INPUT_MODE);
+		std::string name = depot_filename(blueprint_name);
+
+		std::ifstream input(name, SAVE_INPUT_MODE);
+		if (!input.is_open()) throw std::runtime_error("px::environment::import_unit() - file error, name=" + name);
 		SAVE_INPUT_ARCHIVE archive(input);
 
 		unit_builder builder(*m_factory);
@@ -185,7 +189,10 @@ namespace px {
 	}
 	environment::unit_ptr environment::import_unit(std::string const& blueprint_name, point2 location)
 	{
-		std::ifstream input(depot_filename(blueprint_name), SAVE_INPUT_MODE);
+		std::string name = depot_filename(blueprint_name);
+
+		std::ifstream input(name, SAVE_INPUT_MODE);
+		if (!input.is_open()) throw std::runtime_error("px::environment::import_unit() - file error, name=" + name);
 		SAVE_INPUT_ARCHIVE archive(input);
 
 		unit_builder builder(*m_factory);

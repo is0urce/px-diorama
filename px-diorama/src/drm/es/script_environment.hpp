@@ -46,14 +46,21 @@ namespace px {
 
 			return m_environment->hit(*user, *vs);	
 		}
-		script_unit spawn(std::string const& blueprint_name, point2 location)
+		script_unit spawn(std::string const& blueprint_tag, point2 const& location)
 		{
+			transform_component * transform = nullptr;
+			body_component * body = nullptr;
 			px_assert(m_environment);
 
-			auto unit = m_environment->import_unit(blueprint_name, location);
-			m_environment->spawn(unit);
-			auto transform = unit->transform();
-			auto body = transform ? transform->linked<body_component>() : nullptr;
+			try {
+				auto unit_ptr = m_environment->import_unit(blueprint_tag, location);
+				transform = unit_ptr ? unit_ptr->transform() : nullptr;
+				body = transform ? transform->linked<body_component>() : nullptr;
+				m_environment->spawn(unit_ptr);
+			}
+			catch (...)
+			{
+			}
 			return script_unit(body, transform);
 		}
 
