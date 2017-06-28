@@ -72,9 +72,9 @@ namespace px {
 		}
 
 		// fetch current transform part
-		transform_component * transform()
+		auto transform()
 		{
-			return m_transform.get();
+			return m_transform;
 		}
 
 	public:

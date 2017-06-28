@@ -200,7 +200,7 @@ namespace px {
 		unit_builder builder(*m_factory);
 		load_unit(builder, archive);
 
-		if (transform_component * transform = builder.transform()) {
+		if (auto transform = builder.transform()) {
 			transform->place(location);
 			transform->store_position();
 		}

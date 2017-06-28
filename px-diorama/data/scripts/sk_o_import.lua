@@ -16,12 +16,13 @@ description = "Spawn object"
 
 -- returns true if skill can be used
 
-condition = function(user, target)
+condition = function(user, location)
 	return true
 end
 
 -- action taken if skill is used
 
-action = function(user, target)
-	game:spawn("m_snail", target)
+action = function(user, location)
+	game:spawn("m_snail", location)
+	game:pset(3, location)
 end

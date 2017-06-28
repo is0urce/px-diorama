@@ -91,11 +91,19 @@ namespace px {
 
 			return chunk ? (*chunk)[mod] : or_else;
 		}
+		tile_type & get_or(point2 absolute, tile_type & or_else)
+		{
+			chunk_type * chunk;
+			point2 mod;
+			std::tie(chunk, mod) = select_chunk(absolute);
+
+			return chunk ? (*chunk)[mod] : or_else;
+		}
 
 		void clear()
 		{
 			m_terrain.enumerate([&](point2 const& /* relative_cell */, stream_ptr & stream) {
-				stream->reset();
+				stream.reset();
 			});
 		}
 		template <typename Operator>
@@ -157,7 +165,7 @@ namespace px {
 			index -= point2(Range, Range);
 			return index;
 		}
-		chunk_type const* chunk_by_index(point2 index)
+		chunk_type * chunk_by_index(point2 index)
 		{
 			stream_type * stream = m_terrain.contains(index) ? m_terrain[index].get() : nullptr;
 			chunk_type * chunk = (stream && stream->loaded()) ? stream->get() : nullptr;

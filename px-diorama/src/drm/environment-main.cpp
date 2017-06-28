@@ -13,6 +13,7 @@
 namespace {
 	const float popup_speed = 0.2f;
 	const float movement_speed = 5.0f;
+	const float crop_far = 15.0f;
 }
 
 namespace px {
@@ -30,6 +31,7 @@ namespace px {
 		, m_last_turn(0)
 		, m_last_time(0)
 	{
+		m_factory->sprites()->set_cropping(crop_far);
 		m_factory->characters()->provide_environment(this);
 		start();
 	}
@@ -320,5 +322,10 @@ namespace px {
 		body->equip(rl::equipment_slot::weapon_main, weapon);
 
 		return builder.assemble();
+	}
+
+	environment::terrain_type & environment::terrain()
+	{
+		return m_terrain;
 	}
 }

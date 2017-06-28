@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "body_component.hpp"
-#include "transform_component.hpp"
+#include "es/body_component.hpp"
+#include "es/transform_component.hpp"
 
 namespace px {
 

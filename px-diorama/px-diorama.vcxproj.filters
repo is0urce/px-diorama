@@ -360,12 +360,6 @@
     <ClInclude Include="src\drm\es\character_system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\es\script_unit.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\drm\es\script_environment.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\drm\draw\popup.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -499,6 +493,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\drm\rl\terrain_generator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\script\script_unit.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\script\script_environment.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drm\script\script.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

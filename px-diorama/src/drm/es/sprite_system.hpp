@@ -45,6 +45,7 @@ namespace px {
 			void update(double delta_time);
 			void assign_camera(transform_component const* camera) noexcept;
 			arrays_type const& batches() const noexcept;
+			void set_cropping(float far) noexcept;
 
 		public:
 			sprite_system();
@@ -58,6 +59,7 @@ namespace px {
 			std::map<std::string, image>	m_meta;		// name -> texture dirctionary
 			arrays_type						m_batches;	// vertex data for rendering
 			transform_component const*		m_camera;	// central camera position
+			float							m_far;		// cropping
 		};
 	}
 }

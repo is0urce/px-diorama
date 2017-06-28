@@ -19,9 +19,11 @@ namespace px {
 
 		sprite_system::sprite_system()
 			: m_camera(nullptr)
+			, m_far(0)
 		{
 			load(textureatlas_path, true);
 		}
+
 		void sprite_system::update(double delta_time)
 		{
 			vector2 camera_position = m_camera ? m_camera->interpolate(delta_time) : vector2{ 0, 0 };
@@ -35,25 +37,35 @@ namespace px {
 			enumerate([&](auto const& sprite) {
 				if (!sprite.active()) return; // continue
 
-				transform_component * transform = sprite.linked<transform_component>();
+				transform_component const* transform = sprite.linked<transform_component>();
 
 				px_assert(transform);
 
 				if (!transform) return;
 
 				vector2 pos = transform->interpolate(delta_time) - camera_position;
-				float sx = static_cast<float>(pos.x()) - sprite.tx; // center offset
-				float sy = static_cast<float>(pos.y()) - sprite.ty;
-				float dx = sx + sprite.mx; // precalculated magnitudes
-				float dy = sy + sprite.my;
+				float x = static_cast<float>(pos.x());
+				float y = static_cast<float>(pos.y());
 
-				auto & vertices = m_batches[sprite.texture];
+				if (m_far == 0 || std::abs(x) < m_far && std::abs(y) < m_far) {
 
-				vertices.push_back({ { sx, dy },{ sprite.sx, sprite.dy } });
-				vertices.push_back({ { sx, sy },{ sprite.sx, sprite.sy } });
-				vertices.push_back({ { dx, sy },{ sprite.dx, sprite.sy } });
-				vertices.push_back({ { dx, dy },{ sprite.dx, sprite.dy } });
+					float sx = x - sprite.tx; // center offset
+					float sy = y - sprite.ty;
+					float dx = sx + sprite.mx; // precalculated magnitudes
+					float dy = sy + sprite.my;
+
+					auto & vertices = m_batches[sprite.texture];
+
+					vertices.push_back({ { sx, dy },{ sprite.sx, sprite.dy } });
+					vertices.push_back({ { sx, sy },{ sprite.sx, sprite.sy } });
+					vertices.push_back({ { dx, sy },{ sprite.dx, sprite.sy } });
+					vertices.push_back({ { dx, dy },{ sprite.dx, sprite.dy } });
+				}
 			});
+		}
+		void sprite_system::set_cropping(float far) noexcept
+		{
+			m_far = far;
 		}
 		void sprite_system::assign_camera(transform_component const* camera) noexcept
 		{

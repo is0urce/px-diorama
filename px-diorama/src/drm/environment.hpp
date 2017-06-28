@@ -36,6 +36,7 @@ namespace px {
 	{
 	public:
 		typedef std::shared_ptr<unit> unit_ptr;
+		typedef tile_terrain<tile_instance> terrain_type;
 
 	public:
 
@@ -83,6 +84,10 @@ namespace px {
 		unit_ptr import_unit(std::string const& blueprint_name, point2 location);
 		size_t mass_export(point2 const& location);
 
+		// terrain
+
+		terrain_type & terrain();
+
 	public:
 		~environment();
 		environment();
@@ -105,7 +110,7 @@ namespace px {
 		unsigned int				m_last_turn;		// last updated turn
 		double						m_last_time;		// last time of update
 
-		tile_terrain<tile_instance>	m_terrain;			// terrain
+		terrain_type				m_terrain;			// terrain
 		std::vector<unit_ptr>		m_units;			// scene
 
 		transform_component *		m_player;			// player transform

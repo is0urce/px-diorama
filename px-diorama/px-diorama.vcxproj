@@ -199,7 +199,8 @@
     <ClInclude Include="src\drm\es\npc_component.hpp" />
     <ClInclude Include="src\drm\es\npc_system.hpp" />
     <ClInclude Include="src\drm\es\player_component.hpp" />
-    <ClInclude Include="src\drm\es\script_environment.hpp" />
+    <ClInclude Include="src\drm\script\script.hpp" />
+    <ClInclude Include="src\drm\script\script_environment.hpp" />
     <ClInclude Include="src\drm\es\storage_component.hpp" />
     <ClInclude Include="src\drm\es\unit_persistency.hpp" />
     <ClInclude Include="src\drm\es\useable.hpp" />
@@ -243,7 +244,7 @@
     <ClInclude Include="src\drm\ui\target_panel.hpp" />
     <ClInclude Include="src\drm\es\unit_component.hpp" />
     <ClInclude Include="src\drm\vertex.hpp" />
-    <ClInclude Include="src\drm\es\script_unit.hpp" />
+    <ClInclude Include="src\drm\script\script_unit.hpp" />
     <ClInclude Include="src\drm\vfx.hpp" />
     <ClInclude Include="src\px\common\colors.hpp" />
     <ClInclude Include="src\px\common\coordinate_ext.hpp" />

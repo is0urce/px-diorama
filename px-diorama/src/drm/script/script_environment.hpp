@@ -20,6 +20,7 @@ namespace px {
 		{
 			return a.king_distance(b);
 		}
+
 		void popup(point2 location, std::string text, int rgba, float size)
 		{
 			m_environment->popup(location, text, color(rgba), size);
@@ -46,7 +47,8 @@ namespace px {
 
 			return m_environment->hit(*user, *vs);	
 		}
-		script_unit spawn(std::string const& blueprint_tag, point2 location)
+
+		script_unit spawn(std::string const& blueprint_tag, point2 const& location)
 		{
 			transform_component * transform = nullptr;
 			body_component * body = nullptr;
@@ -63,10 +65,14 @@ namespace px {
 			}
 			return script_unit(body, transform);
 		}
-
 		void mass_export(point2 const& location)
 		{
 			m_environment->mass_export(location);
+		}
+
+		void pset(uint32_t tile_index, point2 const& location)
+		{
+			m_environment->terrain().pset(location, tile_index);
 		}
 
 	public:
