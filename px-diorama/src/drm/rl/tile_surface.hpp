@@ -11,6 +11,7 @@
 #include <px/common/stream.hpp>
 #include <px/common/rectangle.hpp>
 
+#include <functional>
 #include <memory>
 #include <tuple>
 
@@ -25,6 +26,7 @@ namespace px {
 		typedef stream<chunk_type> stream_type;
 		typedef std::unique_ptr<stream_type> stream_ptr;
 		typedef matrix2<stream_ptr, Range * 2 + 1, Range * 2 + 1> sheets_type;
+		typedef std::function<void(point2 const&)> callback_type;
 
 	public:
 		rectangle bounds() const
@@ -51,12 +53,33 @@ namespace px {
 					}
 				});
 
+				// unload events
+				if (m_leave_event) {
+					origin.enumerate([&](point2 index, auto const& stream_ptr) {
+						if (stream_ptr) {
+							m_leave_event(index_to_cell(index));
+						}
+					});
+				}
+
 				m_focus = focus;
+
+				// load events
+				if (m_enter_event) {
+					m_terrain.enumerate([&](point2 index, auto const& stream_ptr) {
+						if (!stream_ptr) {
+							m_enter_event(index_to_cell(index));
+						}
+					});
+				}
 			}
 		}
 		point2 focus() const noexcept
 		{
 			return m_focus;
+		}
+		stream_ptr & get_stream(point2 absolute_cell) {
+			return m_terrain[cell_to_index(absolute_cell)];
 		}
 		std::tuple<chunk_type *, point2> select_chunk(point2 absolute)
 		{
@@ -111,8 +134,13 @@ namespace px {
 		{
 			m_terrain.enumerate([&](point2 const& index, stream_ptr & stream) {
 				if (!stream) {
+					point2 cell = index_to_cell(index);
 					stream = std::make_unique<stream_type>();
-					fn(index_to_cell(index), *stream);
+
+					fn(cell, *stream);
+					if (m_loading_event) {
+						m_loading_event(cell);
+					}
 				}
 			});
 		}
@@ -133,6 +161,19 @@ namespace px {
 					fn(index_to_cell(index), *(stream->get()));
 				}
 			});
+		}
+
+		void on_enter(callback_type load_fn)
+		{
+			m_load_event = load_fn;
+		}
+		void on_leave(callback_type unload_fn)
+		{
+			m_unload_event = unload_fn;
+		}
+		void on_loading(callback_type loading_fn)
+		{
+			m_loading_event = loading_fn;
 		}
 
 	public:
@@ -179,7 +220,10 @@ namespace px {
 		}
 
 	private:
-		sheets_type	m_terrain;
-		point2		m_focus;
+		sheets_type		m_terrain;
+		point2			m_focus;
+		callback_type	m_enter_event;
+		callback_type	m_leave_event;
+		callback_type	m_loading_event;
 	};
 }

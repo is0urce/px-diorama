@@ -14,13 +14,15 @@
 namespace px {
 
 	namespace {
-		char const* const quicksave_path = "quicksave.sav";
-		char const* const blueprints_path = "data/blueprints/";
-		char const* const blueprint_extension = ".dat";
 
-		std::string depot_filename(std::string const& blueprint_tag)
+
+		std::string depot_blueprint(std::string const& blueprint_tag)
 		{
-			return std::string(blueprints_path) + blueprint_tag + std::string(blueprint_extension);
+			return std::string(blueprint_directory) + blueprint_tag + std::string(blueprint_extension);
+		}
+		std::string depot_scene(std::string const& save_directory, point2 const& cell)
+		{
+			return save_directory + "scene_" + std::to_string(cell.x()) + "_" + std::to_string(cell.y());
 		}
 
 		template <typename Archive>
@@ -114,13 +116,14 @@ namespace px {
 
 	void environment::save()
 	{
-		save(quicksave_path);
+		save_game(std::string(quicksave_name) + std::string(save_extension));
 	}
 	void environment::load()
 	{
-		load(quicksave_path);
+		load_game(std::string(quicksave_name) + std::string(save_extension));
 	}
-	void environment::save(std::string const& name)
+
+	void environment::save_game(std::string const& name)
 	{
 		// finish current activities
 		m_ui.close_transactions();
@@ -139,7 +142,7 @@ namespace px {
 			save_unit(*unit, archive);
 		}
 	}
-	void environment::load(std::string const& name)
+	void environment::load_game(std::string const& name)
 	{
 		// finish current activities
 		end();
@@ -169,20 +172,39 @@ namespace px {
 		}
 	}
 
+	void environment::save_scene(point2 const& cell)
+	{
+		// finish current activities
+		m_ui.close_transactions();
+
+		std::string path = depot_scene(blueprint_directory, cell);
+
+		// make archives
+		std::ofstream output(path, SAVE_OUTPUT_MODE);
+		SAVE_OUTPUT_ARCHIVE archive(output);
+
+		// units
+		size_t size = m_units.size();
+		archive(size);
+		for (auto const& unit : m_units) {
+			save_unit(*unit, archive);
+		}
+	}
+
 	void environment::export_unit(unit const& mobile, std::string const& blueprint_name) const
 	{
 		// make archives
-		std::ofstream output(depot_filename(blueprint_name), SAVE_OUTPUT_MODE);
+		std::ofstream output(depot_blueprint(blueprint_name), SAVE_OUTPUT_MODE);
 		SAVE_OUTPUT_ARCHIVE archive(output);
 
 		save_unit(mobile, archive);
 	}
 	environment::unit_ptr environment::import_unit(std::string const& blueprint_name)
 	{
-		std::string name = depot_filename(blueprint_name);
+		std::string path = depot_blueprint(blueprint_name);
 
-		std::ifstream input(name, SAVE_INPUT_MODE);
-		if (!input.is_open()) throw std::runtime_error("px::environment::import_unit() - file error, name=" + name);
+		std::ifstream input(path, SAVE_INPUT_MODE);
+		if (!input.is_open()) throw std::runtime_error("px::environment::import_unit() - file error, name=" + path);
 		SAVE_INPUT_ARCHIVE archive(input);
 
 		unit_builder builder(*m_factory);
@@ -191,10 +213,10 @@ namespace px {
 	}
 	environment::unit_ptr environment::import_unit(std::string const& blueprint_name, point2 location)
 	{
-		std::string name = depot_filename(blueprint_name);
+		std::string path = depot_blueprint(blueprint_name);
 
-		std::ifstream input(name, SAVE_INPUT_MODE);
-		if (!input.is_open()) throw std::runtime_error("px::environment::import_unit() - file error, name=" + name);
+		std::ifstream input(path, SAVE_INPUT_MODE);
+		if (!input.is_open()) throw std::runtime_error("px::environment::import_unit() - file error, name=" + path);
 		SAVE_INPUT_ARCHIVE archive(input);
 
 		unit_builder builder(*m_factory);

@@ -199,6 +199,7 @@
     <ClInclude Include="src\drm\es\npc_component.hpp" />
     <ClInclude Include="src\drm\es\npc_system.hpp" />
     <ClInclude Include="src\drm\es\player_component.hpp" />
+    <ClInclude Include="src\drm\save.hpp" />
     <ClInclude Include="src\drm\script\script.hpp" />
     <ClInclude Include="src\drm\script\script_environment.hpp" />
     <ClInclude Include="src\drm\es\storage_component.hpp" />

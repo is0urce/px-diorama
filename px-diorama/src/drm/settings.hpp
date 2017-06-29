@@ -16,7 +16,15 @@ namespace px {
 		char const* const textureatlas_path = "data/textures.json";
 		char const* const tiles_path = "data/tiles.json";
 
+		char const* const blueprint_directory = "data/blueprints/";
 		char const* const terrain_directory = "data/terrain/";
+		char const* const save_directory = "data/save";
+
+		char const* const save_extension = ".sav";
+		char const* const terrain_extension = ".dat";
+		char const* const blueprint_extension = ".dat";
+
+		char const* const quicksave_name = "quicksave";
 
 		// fonts
 
@@ -29,7 +37,7 @@ namespace px {
 
 		// world
 
-		const size_t cell_width = 100;
+		const size_t cell_width = 10;
 		const size_t cell_height = cell_width;
 	}
 }

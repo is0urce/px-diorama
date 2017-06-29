@@ -270,7 +270,7 @@ namespace px {
 		{
 			if (m_pointer) m_ctrl->increment();
 		}
-		shared_ptr(T * ptr)
+		explicit shared_ptr(T * ptr)
 			: shared_ptr(ptr, new dissolve_control_block<T>())
 		{
 		}
@@ -293,11 +293,11 @@ namespace px {
 			shared_ptr(rhs).swap(*this);
 			return *this;
 		}
-		shared_ptr & operator=(T * rhs) noexcept
-		{
-			shared_ptr(rhs).swap(*this);
-			return *this;
-		}
+		//shared_ptr & operator=(T * rhs) noexcept
+		//{
+		//	shared_ptr(rhs).swap(*this);
+		//	return *this;
+		//}
 
 		// downcast
 		template <typename Sub>

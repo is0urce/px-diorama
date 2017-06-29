@@ -197,17 +197,10 @@ namespace px {
 
 		// units
 
-		spawn(create_dummy("m_snail", { 40, 49 }));
-		spawn(create_dummy("m_mermaid", { 52, 48 }));
-
-		for (int i = 54; i != 58; ++i) spawn(create_dummy("p_bookshelf", { i, 46 }));
-		for (int i = 59; i != 61; ++i) spawn(create_dummy("p_bookshelf", { i, 46 }));
-		spawn(create_dummy("p_bookshelf", { 54, 47 }));
-		spawn(create_dummy("p_bookshelf", { 54, 48 }));
-		spawn(create_dummy("p_bookshelf", { 54, 50 }));
-		for (int i = 54; i != 61; ++i) spawn(create_dummy("p_bookshelf", { i, 51 }));
-
-		spawn(create_dummy("p_box", { 58, 50}));
+		spawn(create_dummy("m_snail", { 0, 9 }));
+		spawn(create_dummy("m_mermaid", { 12, 8 }));
+		spawn(create_dummy("p_bookshelf", { 1, 1 }));
+		spawn(create_dummy("p_box", { 8, 0 }));
 
 		// player
 		auto player = create_dummy("m_gnome", { 5, 5 });

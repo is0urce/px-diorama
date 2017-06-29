@@ -71,9 +71,11 @@ namespace px {
 		// serialization
 
 		void save();
-		void save(std::string const& save_name);
 		void load();
-		void load(std::string const& save_name);
+		void save_game(std::string const& save_name);
+		void load_game(std::string const& save_name);
+		void save_scene(point2 const& cell);
+		void load_scene(point2 const& cell);
 
 		// units
 
