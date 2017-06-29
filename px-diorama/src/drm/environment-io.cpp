@@ -182,11 +182,12 @@ namespace px {
 		archive(m_turn);
 
 		// units
-		size_t total_units;
-		archive(total_units);
-		for (size_t i = 0; i != total_units; ++i) {
+		size_t size;
+		archive(size);
+		for (size_t i = 0; i != size; ++i) {
 			unit_builder builder(*m_factory);
 			load_unit(builder, archive);
+
 			auto mobile = builder.assemble();
 
 			spawn(mobile);
@@ -201,11 +202,10 @@ namespace px {
 	void environment::archive_scene(point2 const& cell)
 	{
 		std::string name = m_save.depot_scene(cell);
+		px_assert(!m_save.has_scene(name));
 
 		auto output = output_stream(name);
 		SAVE_OUTPUT_ARCHIVE archive(output);
-
-		px_assert(!m_save.has_scene(name));
 
 		rectangle bounds = scene_bounds(cell);
 		auto serialized_predicate = [bounds](auto & mobile_ptr) {
@@ -235,9 +235,26 @@ namespace px {
 		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), serialized_predicate), m_units.end());
 		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), temporary_predicate), m_units.end());
 	}
-	void environment::restore_scene(point2 const& /*cell*/)
+	void environment::restore_scene(point2 const& cell)
 	{
+		std::string name = m_save.depot_scene(cell);
+		px_assert(m_save.has_scene(name));
 
+		auto input = input_stream(name);
+		SAVE_INPUT_ARCHIVE archive(input);
+
+		// units
+		size_t size;
+		archive(size);
+		for (size_t i = 0; i != size; ++i) {
+
+			unit_builder builder(*m_factory);
+			load_unit(builder, archive);
+
+			spawn(builder.assemble());
+		}
+
+		m_save.clear_scene(name);
 	}
 
 	void environment::export_unit(unit const& mobile, std::string const& blueprint_name) const
