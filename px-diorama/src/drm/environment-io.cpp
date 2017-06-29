@@ -27,6 +27,20 @@ namespace px {
 			return std::string(blueprint_directory) + blueprint_tag + std::string(blueprint_extension);
 		}
 
+		template <unit_persistency Persistency, typename Pointer>
+		bool scene_predicate(Pointer & mobile_ptr, rectangle const& bounds) {
+
+			px_assert(mobile_ptr);
+
+			if (mobile_ptr->persistency() == Persistency) {
+				transform_component * transform = mobile_ptr->transform();
+				px_assert(transform);
+				return transform && bounds.contains(transform->position());
+			}
+
+			return false;
+		}
+
 		std::ifstream input_stream(std::string const& name) {
 			std::ifstream input(name, SAVE_INPUT_MODE);
 			if (!input.is_open()) throw std::runtime_error("px::environment-io::input_stream() - file error, name=" + name);
@@ -36,19 +50,6 @@ namespace px {
 			std::ofstream output(name, SAVE_OUTPUT_MODE);
 			if (!output.is_open()) throw std::runtime_error("px::environment-io::output_stream() - file error, name=" + name);
 			return output;
-		}
-		template <typename Pointer>
-		bool is_serializing(Pointer & mobile_ptr, rectangle const& bounds) {
-
-			px_assert(mobile_ptr);
-
-			if (mobile_ptr->persistency() != unit_persistency::serialized) return false;
-
-			transform_component * transform = mobile_ptr->transform();
-
-			px_assert(transform);
-
-			return transform && bounds.contains(transform->position());
 		}
 
 		template <typename Archive>
@@ -206,36 +207,33 @@ namespace px {
 
 		px_assert(!m_save.has_scene(name));
 
-		auto predicate = [bounds = scene_bounds(cell)](auto & mobile_ptr) {
-			px_assert(mobile_ptr);
-
-			if (mobile_ptr->persistency() != unit_persistency::serialized) {
-				transform_component * transform = mobile_ptr->transform();
-				px_assert(transform);
-				return transform && bounds.contains(transform->position());
-			}
-
-			return false;
+		rectangle bounds = scene_bounds(cell);
+		auto serialized_predicate = [bounds](auto & mobile_ptr) {
+			return scene_predicate<unit_persistency::serialized>(mobile_ptr, bounds);
+		};
+		auto temporary_predicate = [bounds](auto & mobile_ptr) {
+			return scene_predicate<unit_persistency::temporary>(mobile_ptr, bounds);
 		};
 
 		// finish current activities
 
-		m_ui.close_transactions(); 
+		m_ui.close_transactions();
 
 		// serialize
 
-		size_t size = std::count_if(m_units.begin(), m_units.end(), predicate);
+		size_t size = std::count_if(m_units.begin(), m_units.end(), serialized_predicate);
 		archive(size);
 
 		for (auto & unit : m_units) {
-			if (predicate(unit)) {
+			if (serialized_predicate(unit)) {
 				save_unit(*unit, archive);
 			}
 		}
 
-		// remove archived objects from array
-		// also throw away temporaries
-		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), [&](auto & mobile_ptr) { return predicate(mobile_ptr) || mobile_ptr->persistency() == unit_persistency::temporary; }), m_units.end());
+		// remove archived objects from array, also throw away temporaries
+
+		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), serialized_predicate), m_units.end());
+		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), temporary_predicate), m_units.end());
 	}
 	void environment::restore_scene(point2 const& /*cell*/)
 	{
