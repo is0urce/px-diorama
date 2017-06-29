@@ -75,8 +75,8 @@ namespace px {
 		void load();
 		void save_game(std::string const& save_name);
 		void load_game(std::string const& save_name);
-		void save_scene(point2 const& cell);
-		void load_scene(point2 const& cell);
+		void archive_scene(point2 const& cell);
+		void restore_scene(point2 const& cell);
 
 		// units
 

@@ -34,9 +34,9 @@ namespace px {
 		{
 			return m_directory.string();
 		}
-		void clear()
+		void clear_all()
 		{
-			fs::remove(m_directory);
+			fs::remove_all(m_directory);
 		}
 		void create()
 		{
@@ -44,16 +44,24 @@ namespace px {
 		}
 		void reset()
 		{
-			clear();
+			clear_all();
 			create();
 		}
-		bool has_scene(std::string depot_name)
+		bool has_scene(std::string const& depot_name) const
 		{
 			return fs::exists(depot_name);
 		}
-		bool has_meta()
+		bool has_meta() const
 		{
 			return fs::exists(depot_meta());
+		}
+		bool clear_scene(std::string const& depot_name)
+		{
+			return fs::remove(depot_name);
+		}
+		bool clear_meta()
+		{
+			return fs::remove(depot_meta());
 		}
 
 	public:
@@ -64,7 +72,7 @@ namespace px {
 		}
 
 	private:
-		std::string depot_scene(std::string scene_name) const
+		std::string depot_scene(std::string const& scene_name) const
 		{
 			fs::path path = scene_name;
 			path.replace_extension(save_extension);

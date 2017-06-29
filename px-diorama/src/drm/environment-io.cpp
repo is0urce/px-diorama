@@ -9,16 +9,46 @@
 #include "es/unit_builder.hpp"
 #include "es/unit_component.hpp"
 
+#include <algorithm>
 #include <fstream>
+#include <memory>
 
 namespace px {
 
 	namespace {
 
+		rectangle scene_bounds(point2 const& cell)
+		{
+			return rectangle(cell * point2(cell_width, cell_height), point2(cell_width, cell_height));
+		}
 
 		std::string depot_blueprint(std::string const& blueprint_tag)
 		{
 			return std::string(blueprint_directory) + blueprint_tag + std::string(blueprint_extension);
+		}
+
+		std::ifstream input_stream(std::string const& name) {
+			std::ifstream input(name, SAVE_INPUT_MODE);
+			if (!input.is_open()) throw std::runtime_error("px::environment-io::input_stream() - file error, name=" + name);
+			return input;
+		}
+		std::ofstream output_stream(std::string const& name) {
+			std::ofstream output(name, SAVE_OUTPUT_MODE);
+			if (!output.is_open()) throw std::runtime_error("px::environment-io::output_stream() - file error, name=" + name);
+			return output;
+		}
+		template <typename Pointer>
+		bool is_serializing(Pointer & mobile_ptr, rectangle const& bounds) {
+
+			px_assert(mobile_ptr);
+
+			if (mobile_ptr->persistency() != unit_persistency::serialized) return false;
+
+			transform_component * transform = mobile_ptr->transform();
+
+			px_assert(transform);
+
+			return transform && bounds.contains(transform->position());
 		}
 
 		template <typename Archive>
@@ -125,7 +155,7 @@ namespace px {
 		m_ui.close_transactions();
 
 		// make archives
-		std::ofstream output(name, SAVE_OUTPUT_MODE);
+		auto output = output_stream(name);
 		SAVE_OUTPUT_ARCHIVE archive(output);
 
 		// save game state
@@ -144,8 +174,7 @@ namespace px {
 		end();
 
 		// make archives
-		std::ifstream input(name, SAVE_INPUT_MODE);
-		if (!input.is_open()) throw std::runtime_error("px::environment::load() - file error, name=" + name);
+		auto input = input_stream(name);
 		SAVE_INPUT_ARCHIVE archive(input);
 
 		// load game state
@@ -168,51 +197,72 @@ namespace px {
 		}
 	}
 
-	void environment::save_scene(point2 const& cell)
+	void environment::archive_scene(point2 const& cell)
 	{
-		// finish current activities
-		m_ui.close_transactions();
+		std::string name = m_save.depot_scene(cell);
 
-		std::string path = m_save.depot_scene(cell);
-
-		// make archives
-		std::ofstream output(path, SAVE_OUTPUT_MODE);
+		auto output = output_stream(name);
 		SAVE_OUTPUT_ARCHIVE archive(output);
 
-		// units
-		size_t size = m_units.size();
+		px_assert(!m_save.has_scene(name));
+
+		auto predicate = [bounds = scene_bounds(cell)](auto & mobile_ptr) {
+			px_assert(mobile_ptr);
+
+			if (mobile_ptr->persistency() != unit_persistency::serialized) {
+				transform_component * transform = mobile_ptr->transform();
+				px_assert(transform);
+				return transform && bounds.contains(transform->position());
+			}
+
+			return false;
+		};
+
+		// finish current activities
+
+		m_ui.close_transactions(); 
+
+		// serialize
+
+		size_t size = std::count_if(m_units.begin(), m_units.end(), predicate);
 		archive(size);
-		for (auto const& unit : m_units) {
-			save_unit(*unit, archive);
+
+		for (auto & unit : m_units) {
+			if (predicate(unit)) {
+				save_unit(*unit, archive);
+			}
 		}
+
+		// remove archived objects from array
+		// also throw away temporaries
+		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), [&](auto & mobile_ptr) { return predicate(mobile_ptr) || mobile_ptr->persistency() == unit_persistency::temporary; }), m_units.end());
+	}
+	void environment::restore_scene(point2 const& /*cell*/)
+	{
+
 	}
 
 	void environment::export_unit(unit const& mobile, std::string const& blueprint_name) const
 	{
 		// make archives
-		std::ofstream output(depot_blueprint(blueprint_name), SAVE_OUTPUT_MODE);
+		auto output = output_stream(depot_blueprint(blueprint_name));
 		SAVE_OUTPUT_ARCHIVE archive(output);
 
 		save_unit(mobile, archive);
 	}
 	environment::unit_ptr environment::import_unit(std::string const& blueprint_name)
 	{
-		std::string path = depot_blueprint(blueprint_name);
-
-		std::ifstream input(path, SAVE_INPUT_MODE);
-		if (!input.is_open()) throw std::runtime_error("px::environment::import_unit() - file error, name=" + path);
+		auto input = input_stream(depot_blueprint(blueprint_name));
 		SAVE_INPUT_ARCHIVE archive(input);
 
 		unit_builder builder(*m_factory);
 		load_unit(builder, archive);
+
 		return builder.assemble();
 	}
 	environment::unit_ptr environment::import_unit(std::string const& blueprint_name, point2 location)
 	{
-		std::string path = depot_blueprint(blueprint_name);
-
-		std::ifstream input(path, SAVE_INPUT_MODE);
-		if (!input.is_open()) throw std::runtime_error("px::environment::import_unit() - file error, name=" + path);
+		auto input = input_stream(depot_blueprint(blueprint_name));
 		SAVE_INPUT_ARCHIVE archive(input);
 
 		unit_builder builder(*m_factory);
@@ -225,6 +275,7 @@ namespace px {
 
 		return builder.assemble();
 	}
+
 	size_t environment::mass_export(point2 const& position)
 	{
 		size_t exported = 0;
