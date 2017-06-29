@@ -20,10 +20,6 @@ namespace px {
 		{
 			return std::string(blueprint_directory) + blueprint_tag + std::string(blueprint_extension);
 		}
-		std::string depot_scene(std::string const& save_directory, point2 const& cell)
-		{
-			return save_directory + "scene_" + std::to_string(cell.x()) + "_" + std::to_string(cell.y());
-		}
 
 		template <typename Archive>
 		inline void save_unit(unit const& mobile, Archive & archive)
@@ -177,7 +173,7 @@ namespace px {
 		// finish current activities
 		m_ui.close_transactions();
 
-		std::string path = depot_scene(blueprint_directory, cell);
+		std::string path = m_save.depot_scene(cell);
 
 		// make archives
 		std::ofstream output(path, SAVE_OUTPUT_MODE);

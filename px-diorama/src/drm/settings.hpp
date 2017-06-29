@@ -24,6 +24,7 @@ namespace px {
 		char const* const terrain_extension = ".dat";
 		char const* const blueprint_extension = ".dat";
 
+		char const* const current_repository = "current";
 		char const* const quicksave_name = "quicksave";
 
 		// fonts

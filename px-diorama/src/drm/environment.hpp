@@ -9,6 +9,7 @@
 
 #include "rl/notification.hpp"
 #include "rl/tile_terrain.hpp"
+#include "repository.hpp"
 
 #include "ui/menu.hpp"
 #include "vfx.hpp"
@@ -112,6 +113,7 @@ namespace px {
 		unsigned int				m_last_turn;		// last updated turn
 		double						m_last_time;		// last time of update
 
+		repository					m_save;				// save directory
 		terrain_type				m_terrain;			// terrain
 		std::vector<unit_ptr>		m_units;			// scene
 
