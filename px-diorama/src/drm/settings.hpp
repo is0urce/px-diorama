@@ -17,15 +17,14 @@ namespace px {
 		char const* const tiles_path = "data/tiles.json";
 
 		char const* const blueprint_directory = "data/blueprints/";
-		char const* const terrain_directory = "data/terrain/";
-		char const* const save_directory = "data/save";
-
-		char const* const save_extension = ".sav";
-		char const* const terrain_extension = ".dat";
 		char const* const blueprint_extension = ".dat";
+		char const* const terrain_directory = "data/terrain/";
+		char const* const terrain_extension = ".dat";
 
+		char const* const save_directory = "data/save";
 		char const* const current_repository = "current";
 		char const* const quicksave_name = "quicksave";
+		char const* const save_extension = ".sav";
 
 		// fonts
 

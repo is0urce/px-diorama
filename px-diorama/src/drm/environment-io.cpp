@@ -153,7 +153,7 @@ namespace px {
 
 	void environment::save(std::string const& save_name)
 	{
-		// finish current activities
+		// finish ongoing transactions
 		m_ui.close_transactions();
 
 		// save
@@ -161,17 +161,17 @@ namespace px {
 		save_main();
 
 		// dump on disc
-		repository quicksave(save_name);
-		m_repository.save(quicksave);
+		repository destination(save_name);
+		m_repository.save(destination);
 	}
 	void environment::load(std::string const& save_name)
 	{
-		// finish current activities
+		// end current game
 		end();
 
 		// copy to this repository
-		repository quicksave(save_name);
-		m_repository.load(quicksave);
+		repository source(save_name);
+		m_repository.load(source);
 
 		// load
 		load_meta();
