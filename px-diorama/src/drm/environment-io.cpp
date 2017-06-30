@@ -17,7 +17,8 @@ namespace px {
 
 	namespace {
 
-		rectangle scene_bounds(point2 const& cell)
+		// returns bounds of a cell
+		rectangle cell_bounds(point2 const& cell)
 		{
 			return rectangle(cell * point2(cell_width, cell_height), point2(cell_width, cell_height));
 		}
@@ -143,24 +144,64 @@ namespace px {
 
 	void environment::save()
 	{
-		save_game(std::string(quicksave_name) + std::string(save_extension));
+		save(quicksave_name);
 	}
 	void environment::load()
 	{
-		load_game(std::string(quicksave_name) + std::string(save_extension));
+		load(quicksave_name);
 	}
 
-	void environment::save_game(std::string const& name)
+	void environment::save(std::string const& save_name)
 	{
 		// finish current activities
 		m_ui.close_transactions();
 
+		// save
+		save_meta();
+		save_main();
+
+		// dump on disc
+		repository quicksave(save_name);
+		m_repository.save(quicksave);
+	}
+	void environment::load(std::string const& save_name)
+	{
+		// finish current activities
+		end();
+
+		// copy to this repository
+		repository quicksave(save_name);
+		m_repository.load(quicksave);
+
+		// load
+		load_meta();
+		load_main();
+	}
+
+	void environment::save_meta()
+	{
 		// make archives
-		auto output = output_stream(name);
+		auto output = output_stream(m_repository.depot_meta());
 		SAVE_OUTPUT_ARCHIVE archive(output);
 
 		// save game state
 		archive(m_turn);
+	}
+	void environment::load_meta()
+	{
+		// make archives
+		auto input = input_stream(m_repository.depot_meta());
+		SAVE_INPUT_ARCHIVE archive(input);
+
+		// load game state
+		archive(m_turn);
+	}
+
+	void environment::save_main()
+	{
+		// make archives
+		auto output = output_stream(m_repository.depot_main());
+		SAVE_OUTPUT_ARCHIVE archive(output);
 
 		// units
 		size_t size = m_units.size();
@@ -169,17 +210,11 @@ namespace px {
 			save_unit(*unit, archive);
 		}
 	}
-	void environment::load_game(std::string const& name)
+	void environment::load_main()
 	{
-		// finish current activities
-		end();
-
 		// make archives
-		auto input = input_stream(name);
+		auto input = input_stream(m_repository.depot_main());
 		SAVE_INPUT_ARCHIVE archive(input);
-
-		// load game state
-		archive(m_turn);
 
 		// units
 		size_t size;
@@ -201,23 +236,25 @@ namespace px {
 
 	void environment::archive_scene(point2 const& cell)
 	{
-		std::string name = m_save.depot_scene(cell);
-		px_assert(!m_save.has_scene(name));
+		std::string	scene_path = m_repository.depot_scene(cell);
+		px_assert(!m_repository.has_scene(scene_path));
 
-		auto output = output_stream(name);
+		auto output = output_stream(scene_path);
 		SAVE_OUTPUT_ARCHIVE archive(output);
-
-		rectangle bounds = scene_bounds(cell);
-		auto serialized_predicate = [bounds](auto & mobile_ptr) {
-			return scene_predicate<unit_persistency::serialized>(mobile_ptr, bounds);
-		};
-		auto temporary_predicate = [bounds](auto & mobile_ptr) {
-			return scene_predicate<unit_persistency::temporary>(mobile_ptr, bounds);
-		};
 
 		// finish current activities
 
 		m_ui.close_transactions();
+
+		// lambdas
+
+		rectangle scene_bounds = cell_bounds(cell);
+		auto serialized_predicate = [scene_bounds](auto & mobile_ptr) {
+			return scene_predicate<unit_persistency::serialized>(mobile_ptr, scene_bounds);
+		};
+		auto temporary_predicate = [scene_bounds](auto & mobile_ptr) {
+			return scene_predicate<unit_persistency::temporary>(mobile_ptr, scene_bounds);
+		};
 
 		// serialize
 
@@ -237,10 +274,10 @@ namespace px {
 	}
 	void environment::restore_scene(point2 const& cell)
 	{
-		std::string name = m_save.depot_scene(cell);
-		px_assert(m_save.has_scene(name));
+		std::string scene_name = m_repository.depot_scene(cell);
+		px_assert(m_repository.has_scene(scene_name));
 
-		auto input = input_stream(name);
+		auto input = input_stream(scene_name);
 		SAVE_INPUT_ARCHIVE archive(input);
 
 		// units
@@ -254,8 +291,10 @@ namespace px {
 			spawn(builder.assemble());
 		}
 
-		m_save.clear_scene(name);
+		m_repository.clear_scene(scene_name);
 	}
+
+	// UNIT EXPORT-IMPORT
 
 	void environment::export_unit(unit const& mobile, std::string const& blueprint_name) const
 	{
@@ -290,7 +329,6 @@ namespace px {
 
 		return builder.assemble();
 	}
-
 	size_t environment::mass_export(point2 const& position)
 	{
 		size_t exported = 0;

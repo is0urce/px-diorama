@@ -73,10 +73,8 @@ namespace px {
 
 		void save();
 		void load();
-		void save_game(std::string const& save_name);
-		void load_game(std::string const& save_name);
-		void archive_scene(point2 const& cell);
-		void restore_scene(point2 const& cell);
+		void save(std::string const& save_name);
+		void load(std::string const& save_name);
 
 		// units
 
@@ -105,6 +103,13 @@ namespace px {
 		void impersonate(transform_component * player);
 		transform_component * find_any(point2 const& position);
 
+		void save_main(); // save main scene
+		void load_main(); // load main scene
+		void save_meta(); // save misc states
+		void load_meta(); // load misc states
+		void archive_scene(point2 const& cell); // move scene to repository
+		void restore_scene(point2 const& cell); // restore scene from repository
+
 	private:
 		std::unique_ptr<factory>	m_factory;			// for assembling units, release last
 
@@ -113,7 +118,7 @@ namespace px {
 		unsigned int				m_last_turn;		// last updated turn
 		double						m_last_time;		// last time of update
 
-		repository					m_save;				// save directory
+		repository					m_repository;		// save directory of current game
 		terrain_type				m_terrain;			// terrain
 		std::vector<unit_ptr>		m_units;			// scene
 

@@ -214,9 +214,10 @@ ModelManifest.xml
 #more vs stuff
 *.VC.opendb
 *.VC.db
-/px-diorama/data/img
-/px-diorama/data/fonts
 /px-diorama/data/blueprints
+/px-diorama/data/fonts
+/px-diorama/data/img
+/px-diorama/data/save
 /px-diorama/data/terrain
 /px-diorama/include
 /px-diorama/lib

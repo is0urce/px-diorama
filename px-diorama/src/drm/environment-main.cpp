@@ -30,11 +30,13 @@ namespace px {
 		, m_turn(1)
 		, m_last_turn(0)
 		, m_last_time(0)
-		, m_save(current_repository)
+		, m_repository(current_repository)
 	{
 		m_factory->sprites()->set_cropping(crop_far);
 		m_factory->characters()->provide_environment(this);
 		start();
+
+		m_repository.reset();
 	}
 
 	bool environment::running() const noexcept
