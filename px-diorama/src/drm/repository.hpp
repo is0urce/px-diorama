@@ -65,11 +65,11 @@ namespace px {
 			return depot_name("meta");
 		}
 
-		bool has_scene(std::string const& depot_name) const
+		bool has_scene(std::string const& scene_path) const
 		{
-			return exists(depot_name);
+			return exists(scene_path);
 		}
-		bool has_main()
+		bool has_main() const
 		{
 			return exists(depot_main());
 		}
@@ -92,31 +92,57 @@ namespace px {
 		}
 
 	public:
-		repository(std::string const& name)
+		repository(std::string const& name, repository const* base)
 			: m_directory(save_directory / fs::path(name))
+			, m_base(base)
+		{
+			if (!exists()) {
+				create();
+			}
+		}
+		repository(std::string const& name)
+			: repository(name, nullptr)
 		{
 		}
 
 	private:
+		std::string scene_path(std::string const& scene_name) const
+		{
+			fs::path filename(scene_name);
+			filename.replace_extension(save_extension);
+			return (m_directory / filename).string();
+		}
 		std::string depot_name(std::string const& scene_name) const
 		{
-			fs::path path = scene_name;
-			path.replace_extension(save_extension);
-			return (m_directory / path).string();
+			auto current_path = scene_path(scene_name);
+
+			// fallback to base
+			if (m_base && !exists(current_path)) {
+				pull(current_path, scene_name, *m_base);
+			}
+
+			return current_path;
 		}
-		bool exists(std::string const& name) const
+		void pull(std::string const& current_path, std::string const& scene_name, repository const& base) const
 		{
-			return fs::exists(name);
+			auto base_path = base.scene_path(scene_name);
+			if (base.exists(base_path)) {
+				fs::copy(base_path, current_path);
+			}
 		}
-		bool clear(std::string const& name) const
+		bool exists(std::string const& path) const
 		{
-			return fs::remove(name);
+			return fs::exists(path);
+		}
+		bool clear(std::string const& path) const
+		{
+			return fs::remove(path);
 		}
 		static void move(repository & source, repository & destination)
 		{
 			destination.reset();
 
-			for (auto & entry : fs::directory_iterator(source.m_directory)) {
+			for (auto const& entry : fs::directory_iterator(source.m_directory)) {
 				fs::path path = entry.path();
 				fs::rename(path, destination.m_directory / path.filename());
 			}
@@ -125,7 +151,7 @@ namespace px {
 		{
 			destination.reset();
 
-			for (auto & entry : fs::directory_iterator(source.m_directory)) {
+			for (auto const& entry : fs::directory_iterator(source.m_directory)) {
 				fs::path path = entry.path();
 				fs::copy_file(path, destination.m_directory / path.filename(), fs::copy_options::overwrite_existing);
 			}
@@ -133,5 +159,6 @@ namespace px {
 
 	private:
 		fs::path m_directory;
+		repository const* m_base;
 	};
 }

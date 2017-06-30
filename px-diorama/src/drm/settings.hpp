@@ -22,9 +22,10 @@ namespace px {
 		char const* const terrain_extension = ".dat";
 
 		char const* const save_directory = "data/save";
-		char const* const current_repository = "current";
-		char const* const quicksave_name = "quicksave";
 		char const* const save_extension = ".sav";
+		char const* const current_repository = "current";
+		char const* const quicksave_repository = "quicksave";
+		char const* const base_repository = "base";
 
 		// fonts
 

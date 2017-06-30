@@ -144,11 +144,11 @@ namespace px {
 
 	void environment::save()
 	{
-		save(quicksave_name);
+		save(quicksave_repository);
 	}
 	void environment::load()
 	{
-		load(quicksave_name);
+		load(quicksave_repository);
 	}
 
 	void environment::save(std::string const& save_name)
@@ -237,7 +237,6 @@ namespace px {
 	void environment::archive_scene(point2 const& cell)
 	{
 		std::string	scene_path = m_repository.depot_scene(cell);
-		px_assert(!m_repository.has_scene(scene_path));
 
 		auto output = output_stream(scene_path);
 		SAVE_OUTPUT_ARCHIVE archive(output);
@@ -275,7 +274,6 @@ namespace px {
 	void environment::restore_scene(point2 const& cell)
 	{
 		std::string scene_name = m_repository.depot_scene(cell);
-		px_assert(m_repository.has_scene(scene_name));
 
 		auto input = input_stream(scene_name);
 		SAVE_INPUT_ARCHIVE archive(input);

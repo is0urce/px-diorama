@@ -118,7 +118,9 @@ namespace px {
 		unsigned int				m_last_turn;		// last updated turn
 		double						m_last_time;		// last time of update
 
+		repository					m_base;				// repository of base game setup
 		repository					m_repository;		// save directory of current game
+
 		terrain_type				m_terrain;			// terrain
 		std::vector<unit_ptr>		m_units;			// scene
 
