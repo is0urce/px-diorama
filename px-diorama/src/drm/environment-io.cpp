@@ -140,7 +140,45 @@ namespace px {
 				}
 			}
 		}
+
+		template <typename Operator>
+		void load_units(std::string const& path, factory & factory, Operator && execution)
+		{
+			auto input = input_stream(path);
+			SAVE_INPUT_ARCHIVE archive(input);
+
+			// units
+			size_t size;
+			archive(size);
+
+			for (size_t i = 0; i != size; ++i) {
+
+				unit_builder builder(factory);
+				load_unit(builder, archive);
+
+				execution(builder);
+			}
+		}
+
+		template <typename Container, typename Predicate>
+		void save_units(std::string const& path, Container & container, Predicate && predicate)
+		{
+			auto output = output_stream(path);
+			SAVE_OUTPUT_ARCHIVE archive(output);
+
+			// serialize
+
+			size_t size = std::count_if(container.begin(), container.end(), predicate);
+			archive(size);
+
+			for (auto & unit : container) {
+				if (predicate(unit)) {
+					save_unit(*unit, archive);
+				}
+			}
+		}
 	}
+
 
 	void environment::save()
 	{
@@ -199,97 +237,44 @@ namespace px {
 
 	void environment::save_main()
 	{
-		// make archives
-		auto output = output_stream(m_repository.depot_main());
-		SAVE_OUTPUT_ARCHIVE archive(output);
-
-		// units
-		size_t size = m_units.size();
-		archive(size);
-		for (auto const& unit : m_units) {
-			save_unit(*unit, archive);
-		}
+		save_units(m_repository.depot_main(), m_units, [](auto const& /* mobile_ptr */) { return true; });
 	}
 	void environment::load_main()
 	{
-		// make archives
-		auto input = input_stream(m_repository.depot_main());
-		SAVE_INPUT_ARCHIVE archive(input);
+		transform_component * player = nullptr;
 
-		// units
-		size_t size;
-		archive(size);
-		for (size_t i = 0; i != size; ++i) {
-			unit_builder builder(*m_factory);
-			load_unit(builder, archive);
+		load_units(m_repository.depot_main(), *m_factory, [&](auto & builder) {
 
 			auto mobile = builder.assemble();
-
 			spawn(mobile);
 
 			// set as a player, if this componen was used 
 			if (builder.has_player()) {
-				impersonate(mobile->transform());
+				player = mobile->transform();
 			}
-		}
+		});
+
+		impersonate(player);
 	}
 
 	void environment::archive_scene(point2 const& cell)
 	{
-		std::string	scene_path = m_repository.depot_scene(cell);
-
-		auto output = output_stream(scene_path);
-		SAVE_OUTPUT_ARCHIVE archive(output);
-
-		// finish current activities
-
-		m_ui.close_transactions();
-
-		// lambdas
+		m_ui.close_transactions(); // finish ongoing transactions (possible with subjects in scene)
 
 		rectangle scene_bounds = cell_bounds(cell);
-		auto serialized_predicate = [scene_bounds](auto & mobile_ptr) {
-			return scene_predicate<unit_persistency::serialized>(mobile_ptr, scene_bounds);
-		};
-		auto temporary_predicate = [scene_bounds](auto & mobile_ptr) {
-			return scene_predicate<unit_persistency::temporary>(mobile_ptr, scene_bounds);
-		};
+		auto serialized_predicate = [scene_bounds](auto & mobile_ptr) {	return scene_predicate<unit_persistency::serialized>(mobile_ptr, scene_bounds);	};
+		auto temporary_predicate = [scene_bounds](auto & mobile_ptr) { return scene_predicate<unit_persistency::temporary>(mobile_ptr, scene_bounds); };
 
-		// serialize
+		save_units(m_repository.depot_scene(cell), m_units, serialized_predicate); // serialization
 
-		size_t size = std::count_if(m_units.begin(), m_units.end(), serialized_predicate);
-		archive(size);
-
-		for (auto & unit : m_units) {
-			if (serialized_predicate(unit)) {
-				save_unit(*unit, archive);
-			}
-		}
-
-		// remove archived objects from array, also throw away temporaries
-
-		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), serialized_predicate), m_units.end());
-		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), temporary_predicate), m_units.end());
+		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), serialized_predicate), m_units.end());	// remove archived objects from array
+		m_units.erase(std::remove_if(m_units.begin(), m_units.end(), temporary_predicate), m_units.end());	// also throw away temporaries
 	}
 	void environment::restore_scene(point2 const& cell)
 	{
-		std::string scene_name = m_repository.depot_scene(cell);
-
-		auto input = input_stream(scene_name);
-		SAVE_INPUT_ARCHIVE archive(input);
-
-		// units
-		size_t size;
-		archive(size);
-		for (size_t i = 0; i != size; ++i) {
-
-			unit_builder builder(*m_factory);
-			load_unit(builder, archive);
-
+		load_units(m_repository.depot_scene(cell), *m_factory, [&](auto & builder) {
 			spawn(builder.assemble());
-		}
-
-		m_repository.clear_scene(scene_name);
+		});
 	}
 
 	// UNIT EXPORT-IMPORT
