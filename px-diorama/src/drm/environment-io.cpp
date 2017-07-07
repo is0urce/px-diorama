@@ -83,6 +83,9 @@ namespace px {
 				else if (auto storage = dynamic_cast<storage_component const*>(part.get())) {
 					archive(unit_component::storage);
 				}
+				else if (auto deposit = dynamic_cast<deposit_component const*>(part.get())) {
+					archive(unit_component::deposit);
+				}
 				else if (auto player = dynamic_cast<player_component const*>(part.get())) {
 					archive(unit_component::player);
 				}
@@ -125,6 +128,10 @@ namespace px {
 				}
 				case unit_component::storage: {
 					builder.add_storage();
+					break;
+				}
+				case unit_component::deposit: {
+					builder.add_deposit();
 					break;
 				}
 				case unit_component::player: {

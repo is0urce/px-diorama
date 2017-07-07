@@ -21,20 +21,11 @@ namespace px {
 		, public es::link<container_component>
 	{
 	public:
-		bool depleted() const noexcept;
-
-	public:
 		virtual ~deposit_component();
 		deposit_component();
 
 	protected:
 		virtual bool is_useable(body_component const* user, environment const& shell) const override;
 		virtual void use_useable(body_component * user, environment & shell) override;
-
-	private:
-		void deplete();
-
-	private:
-		bool m_depleted;
 	};
 }

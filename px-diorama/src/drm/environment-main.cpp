@@ -111,31 +111,32 @@ namespace px {
 	void environment::turn_begin()
 	{
 		m_notifications.clear();
-
 		m_vfx->clear();
 		for (auto & unit : m_units) {
-			auto * transform = unit->transform();
+			transform_component * transform = unit->transform();
 			if (transform) transform->store_position();
 		}
 	}
 	void environment::turn_end()
 	{
-		m_factory->npc()->fixed_update(1);
 		for (auto & vfx : *m_vfx) {
 			if (vfx.link) {
 				vfx.transform.place(vfx.link->position());
 			}
 		}
-		++m_turn;
+	}
+	void environment::turn_pass(unsigned int pass_turns)
+	{
+		m_factory->npc()->fixed_update(pass_turns);
+		m_turn += pass_turns;
 	}
 	template <typename Action>
 	void environment::turn(Action && intent_action, int duration)
 	{
 		turn_begin();
 		intent_action();
-		for (int i = 0; i < time; ++i) {
-			turn_end();
-		}
+		turn_end();
+		turn_pass(duration);
 	}
 	void environment::target(point2 relative_world_coordinates)
 	{
@@ -163,6 +164,7 @@ namespace px {
 			//m_terrain.dump();
 
 			turn_end();
+			turn_pass(1);
 		}
 	}
 	void environment::use(unsigned int action_index)
@@ -172,20 +174,24 @@ namespace px {
 
 		if (auto * skill = character ? character->get_skill(action_index - 1) : nullptr) {
 
-			//int turns = skill->state().duration();
+			bool skill_used = false;
+			int duration = skill->state().duration();
 
 			turn_begin();
 			if (skill->targeted()) {
-				auto * transform = find_any(m_hover);
-				auto * target = transform ? transform->linked<body_component>() : nullptr;
+				transform_component * transform = find_any(m_hover);
+				body_component * target = transform ? transform->linked<body_component>() : nullptr;
 
-				skill->try_use(user, target);
-
+				skill_used = skill->try_use(user, target);
 			}
 			else {
-				skill->try_use(user, m_hover);
+				skill_used = skill->try_use(user, m_hover);
 			}
 			turn_end();
+
+			if (skill_used && duration > 0) {
+				turn_pass(duration);
+			}
 		}
 	}
 	void environment::activate(unsigned int /* mod */)
@@ -288,11 +294,9 @@ namespace px {
 		// create
 		unit_builder builder(m_factory.get());
 		auto transform = builder.add_transform(location);
-		auto body = builder.add_body();
 		auto sprite = builder.add_sprite(name);
+		auto body = builder.add_body();
 		auto container = builder.add_container();
-		auto storage = builder.add_storage();
-		auto deposit = builder.add_deposit();
 		auto character = builder.add_character();
 
 		if (name == "m_gnome") builder.add_player();
@@ -303,7 +307,6 @@ namespace px {
 		body->health()->set(100);
 		body->set_name(name);
 		body->set_tag(name);
-		body->set_description("mobile template");
 		for (int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("iron");
@@ -337,7 +340,7 @@ namespace px {
 
 	void environment::loot(body_component * user, container_component * inventory)
 	{
-		container_component * bag = user->linked<container_component>();
+		container_component * bag = user ? user->linked<container_component>() : nullptr;
 
 		if (inventory && bag) {
 			inventory->transfer(*bag);

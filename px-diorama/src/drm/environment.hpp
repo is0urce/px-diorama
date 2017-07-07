@@ -104,6 +104,7 @@ namespace px {
 		void turn(Action && intent_action, int time);
 		void turn_begin();
 		void turn_end();
+		void turn_pass(unsigned int turns);
 		void impersonate(transform_component * player);
 		transform_component * find_any(point2 const& position);
 

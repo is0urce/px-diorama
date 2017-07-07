@@ -14,11 +14,11 @@ namespace px {
 	enum class unit_component : std::uint32_t
 	{
 		// core data
-		transform	= 'T',
+		transform	= 'T',	// location
 		sprite		= 'S',
 		animator	= 'A',
 		body		= 'B',
-		container	= 'I',
+		container	= 'I',	// inventory
 		character	= 'C',
 		light		= 'L',
 		sound		= 'W',
