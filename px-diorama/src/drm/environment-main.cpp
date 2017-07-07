@@ -8,6 +8,9 @@
 #include "es/factory.hpp"
 #include "es/unit_builder.hpp"
 
+#include "rl/tile_terrain.hpp"
+#include "vfx.hpp"
+
 #include <px/ui/panel.hpp>
 
 namespace {
@@ -25,6 +28,8 @@ namespace px {
 
 	environment::environment()
 		: m_factory(std::make_unique<factory>())
+		, m_terrain(std::make_unique<terrain_type>())
+		, m_vfx(std::make_unique<std::vector<vfx>>())
 		, m_player(nullptr)
 		, m_run(true)
 		, m_turn(1)
@@ -33,8 +38,13 @@ namespace px {
 		, m_base(base_repository)
 		, m_repository(current_repository, &m_base)
 	{
+		// factory
 		m_factory->sprites()->set_cropping(crop_far);
 		m_factory->characters()->provide_environment(this);
+
+		// terrain
+		m_terrain->assigns_sprites(m_factory->sprites());
+
 		start();
 
 		m_repository.reset();
@@ -64,7 +74,7 @@ namespace px {
 		m_ui.assign_incarnation(m_player);
 
 		if (m_player) {
-			m_terrain.focus(player->position());
+			m_terrain->focus(player->position());
 		}
 	}
 	void environment::update(perception & view, double time)
@@ -101,7 +111,8 @@ namespace px {
 	void environment::turn_begin()
 	{
 		m_notifications.clear();
-		m_visuals.clear();
+
+		m_vfx->clear();
 		for (auto & unit : m_units) {
 			auto * transform = unit->transform();
 			if (transform) transform->store_position();
@@ -110,7 +121,7 @@ namespace px {
 	void environment::turn_end()
 	{
 		m_factory->npc()->fixed_update(1);
-		for (auto & vfx : m_visuals) {
+		for (auto & vfx : *m_vfx) {
 			if (vfx.link) {
 				vfx.transform.place(vfx.link->position());
 			}
@@ -139,15 +150,15 @@ namespace px {
 
 		point2 destination = m_player->position() + direction;
 
-		if (!m_terrain.traversable(destination)) return;
+		if (!m_terrain->traversable(destination)) return;
 
 		transform_component * blocking = find_any(destination);
 
 		if (!blocking) {
 			turn_begin();
 
-			m_terrain.wait();
-			m_terrain.focus(destination);
+			m_terrain->wait();
+			m_terrain->focus(destination);
 			m_player->place(destination);
 			//m_terrain.dump();
 
@@ -196,9 +207,6 @@ namespace px {
 
 	void environment::start()
 	{
-		// terrain
-		m_terrain.assigns_sprites(m_factory->sprites());
-
 		// units
 
 		spawn(create_dummy("m_snail", { 0, 9 }));
@@ -250,8 +258,8 @@ namespace px {
 
 	void environment::visual(std::string const& tag, point2 start, point2 destination, transform_component const* follow)
 	{
-		m_visuals.push_back({ m_factory->sprites()->make_unique(tag),{ destination, start }, follow });
-		auto & vfx = m_visuals.back();
+		m_vfx->push_back({ m_factory->sprites()->make_unique(tag),{ destination, start }, follow });
+		auto & vfx = m_vfx->back();
 
 		vfx.sprite->connect(&vfx.transform);
 		vfx.sprite->activate();
@@ -284,6 +292,7 @@ namespace px {
 		auto sprite = builder.add_sprite(name);
 		auto container = builder.add_container();
 		auto storage = builder.add_storage();
+		auto deposit = builder.add_deposit();
 		auto character = builder.add_character();
 
 		if (name == "m_gnome") builder.add_player();
@@ -297,7 +306,7 @@ namespace px {
 		body->set_description("mobile template");
 		for (int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
-			itm->set_name("mossairum");
+			itm->set_name("iron");
 			itm->make_stacking();
 			itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, 1));
 			itm->add(rl::item::enhancement_type::integer(rl::effect::essence, 1024));
@@ -323,6 +332,15 @@ namespace px {
 
 	environment::terrain_type & environment::terrain()
 	{
-		return m_terrain;
+		return *m_terrain;
+	}
+
+	void environment::loot(body_component * user, container_component * inventory)
+	{
+		container_component * bag = user->linked<container_component>();
+
+		if (inventory && bag) {
+			inventory->transfer(*bag);
+		}
 	}
 }

@@ -11,6 +11,8 @@
 #include <string>
 #include <tuple>
 
+#include "rl/tile_terrain.hpp"
+
 namespace px {
 
 	class script_environment

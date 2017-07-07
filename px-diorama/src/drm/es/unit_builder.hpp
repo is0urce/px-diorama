@@ -49,6 +49,10 @@ namespace px {
 		{
 			return m_npc = m_factory->make_npc();
 		}
+		auto add_deposit()
+		{
+			return m_deposit = m_factory->make_deposit();
+		}
 
 		// combine
 		std::shared_ptr<unit> assemble()
@@ -94,26 +98,30 @@ namespace px {
 		void link_components()
 		{
 			if (m_transform) {
-				if (m_body)			m_transform->connect(m_body.get());
+				if (m_body)					m_transform->connect(m_body.get());
 			}
 
 			if (m_sprite) {
-				if (m_transform)	m_sprite->connect(m_transform.get());
+				if (m_transform)			m_sprite->connect(m_transform.get());
 			}
 
 			if (m_body) {
-				if (m_transform)	m_body->connect(m_transform.get());
-				if (m_container)	m_body->connect(m_container.get());
-				if (m_character)	m_body->connect(m_character.get());
-				if (m_storage)		m_body->assign_useable(m_storage.get()); // assign extra polymorphic links
-			}
+				if (m_transform)			m_body->connect(m_transform.get());
+				if (m_container)			m_body->connect(m_container.get());
+				if (m_character)			m_body->connect(m_character.get());
 
-			if (m_storage && m_container)	m_storage->connect(m_container.get());
+				// assign extra polymorphic links
+				if (m_storage)				m_body->assign_useable(m_storage.get());
+				if (m_deposit)				m_body->assign_useable(m_deposit.get());
+			}
 			if (m_container && m_transform) m_container->connect(m_transform.get());
 
+			if (m_storage && m_container)	m_storage->connect(m_container.get());
+			if (m_deposit && m_container)	m_deposit->connect(m_container.get());
+
 			if (m_npc) {
-				if (m_transform)	m_npc->connect(m_transform.get());
-				if (m_character)	m_npc->connect(m_character.get());
+				if (m_transform)			m_npc->connect(m_transform.get());
+				if (m_character)			m_npc->connect(m_character.get());
 			}
 		}
 		template <typename Container>
@@ -127,6 +135,7 @@ namespace px {
 			if (m_player)		product.add(m_player);
 			if (m_character)	product.add(m_character);
 			if (m_npc)			product.add(m_npc);
+			if (m_deposit)		product.add(m_deposit);
 		}
 
 	private:
@@ -140,5 +149,6 @@ namespace px {
 		shared_ptr<storage_component>		m_storage;
 		shared_ptr<player_component>		m_player;
 		shared_ptr<npc_component>			m_npc;
+		shared_ptr<deposit_component>		m_deposit;
 	};
 }

@@ -9,6 +9,7 @@
 
 #include "body_component.hpp"
 #include "container_component.hpp"
+#include "transform_component.hpp"
 
 namespace px {
 

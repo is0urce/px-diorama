@@ -20,10 +20,13 @@ namespace px {
 		body		= 'B',
 		container	= 'I',
 		character	= 'C',
+		light		= 'L',
+		sound		= 'W',
 
 		// useables
 		storage		= 's',
 		workshop	= 'w',
+		deposit		= 'd',
 
 		// controls
 		player		= 'P',

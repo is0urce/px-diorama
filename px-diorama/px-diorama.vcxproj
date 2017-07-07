@@ -178,6 +178,7 @@
   <ItemGroup>
     <ClCompile Include="src\drm\environment-io.cpp" />
     <ClCompile Include="src\drm\environment-main.cpp" />
+    <ClCompile Include="src\drm\es\deposit_component.cpp" />
     <ClCompile Include="src\drm\es\sprite_system.cpp" />
     <ClCompile Include="src\drm\es\storage_component.cpp" />
     <ClCompile Include="src\drm\main.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="src\drm\es\character_component.hpp" />
     <ClInclude Include="src\drm\es\character_system.hpp" />
     <ClInclude Include="src\drm\es\container_system.hpp" />
+    <ClInclude Include="src\drm\es\deposit_component.hpp" />
     <ClInclude Include="src\drm\es\npc_component.hpp" />
     <ClInclude Include="src\drm\es\npc_system.hpp" />
     <ClInclude Include="src\drm\es\player_component.hpp" />

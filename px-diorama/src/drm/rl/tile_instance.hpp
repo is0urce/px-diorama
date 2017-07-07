@@ -23,5 +23,4 @@ namespace px {
 		es::sprite_system::unique_ptr	ground;		// background of composite sprite
 		es::sprite_system::unique_ptr	wall;		// foreground of composite sprite
 	};
-
 }

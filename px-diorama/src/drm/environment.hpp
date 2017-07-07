@@ -8,11 +8,9 @@
 #pragma once
 
 #include "rl/notification.hpp"
-#include "rl/tile_terrain.hpp"
 #include "repository.hpp"
 
 #include "ui/menu.hpp"
-#include "vfx.hpp"
 
 #include <px/common/coordinate.hpp>
 #include <px/common/coordinate_ext.hpp> // lex_less
@@ -32,6 +30,11 @@ namespace px {
 	class body_component;
 	class transform_component;
 	class unit;
+
+	template <typename Tile>
+	class tile_terrain;
+	struct tile_instance;
+	struct vfx;
 
 	class environment
 	{
@@ -64,6 +67,7 @@ namespace px {
 		// interaction
 
 		void expose_inventory(container_component * inventory);
+		void loot(body_component * user, container_component * inventory);
 		void open_workshop(unsigned int workshop);
 		void popup(point2 location, std::string text, color tint, float size);
 		void visual(std::string const& tag, point2 from, point2 destination, transform_component const* follow);
@@ -111,23 +115,24 @@ namespace px {
 		void restore_scene(point2 const& cell); // restore scene from repository
 
 	private:
-		std::unique_ptr<factory>	m_factory;			// for assembling units, release last
+		std::unique_ptr<factory>		m_factory;			// for assembling units, release last
+		std::unique_ptr<terrain_type>	m_terrain;			// terrain
 
-		bool						m_run;				// if engine is working
-		unsigned int				m_turn;				// current turn
-		unsigned int				m_last_turn;		// last updated turn
-		double						m_last_time;		// last time of update
+		bool							m_run;				// if engine is working
+		unsigned int					m_turn;				// current turn
+		unsigned int					m_last_turn;		// last updated turn
+		double							m_last_time;		// last time of update
 
-		repository					m_base;				// repository of base game setup
-		repository					m_repository;		// save directory of current game
+		repository						m_base;				// repository of base game setup
+		repository						m_repository;		// save directory of current game
 
-		terrain_type				m_terrain;			// terrain
-		std::vector<unit_ptr>		m_units;			// scene
+		std::vector<unit_ptr>			m_units;			// scene
 
-		transform_component *		m_player;			// player transform
-		point2						m_hover;			// current hovered tile
-		ui::menu					m_ui;				// user interface
-		std::vector<vfx>			m_visuals;			// visual effects container
-		std::map<point2, std::vector<notification>, lex_less> m_notifications;	// popups container
+		transform_component *			m_player;			// player transform
+		point2							m_hover;			// current hovered tile
+		ui::menu						m_ui;				// user interface
+
+		std::unique_ptr<std::vector<vfx>>						m_vfx;				// visual effects container
+		std::map<point2, std::vector<notification>, lex_less>	m_notifications;	// popups container
 	};
 }

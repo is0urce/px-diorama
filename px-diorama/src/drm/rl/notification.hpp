@@ -1,9 +1,11 @@
 // name: notification.hpp
+// type: c++
+// auth: is0urce
+// desc: struct
 
 #pragma once
 
 #include <px/common/color.hpp>
-#include <px/common/point.hpp>
 
 #include <string>
 

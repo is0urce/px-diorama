@@ -13,14 +13,15 @@
 #include "sprite_system.hpp"
 #include "body_system.hpp"
 #include "container_system.hpp"
-
 #include "character_system.hpp"
+
+#include "npc_system.hpp"
 
 #include "storage_component.hpp"
 #include "player_component.hpp"
 #include "workshop_component.hpp"
 #include "character_component.hpp"
-#include "npc_system.hpp"
+#include "deposit_component.hpp"
 
 #include <string>
 
@@ -64,6 +65,10 @@ namespace px {
 		auto make_npc()
 		{
 			return m_npc.make_shared();
+		}
+		auto make_deposit()
+		{
+			return px::make_shared<deposit_component>();
 		}
 
 		auto sprites()
