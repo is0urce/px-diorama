@@ -41,6 +41,7 @@ namespace px {
 		// factory
 		m_factory->sprites()->set_cropping(crop_far);
 		m_factory->characters()->provide_environment(this);
+		m_factory->npc()->provide_environment(this);
 
 		// terrain
 		m_terrain->assigns_sprites(m_factory->sprites());
@@ -48,6 +49,20 @@ namespace px {
 		start();
 
 		m_repository.reset();
+	}
+
+	unsigned int environment::distance(point2 const& a, point2 const& b) const noexcept
+	{
+		return a.king_distance(b);
+	}
+
+	bool environment::traversable(point2 const& position) const
+	{
+		transform_component * blocking = nullptr;
+		auto world = m_player ? m_player->world() : nullptr;
+		if (world) world->find(position.x(), position.y(), [&blocking](int /* x */, int /* y */, transform_component * obj) { blocking = obj; });
+
+		return !blocking && m_terrain->traversable(position);
 	}
 
 	bool environment::running() const noexcept
@@ -301,6 +316,8 @@ namespace px {
 
 		if (name == "m_gnome") builder.add_player();
 		if (name == "m_snail") builder.add_npc();
+
+		if (name == "m_gnome") body->join_faction(1);
 
 		// setup
 		transform->store_position();

@@ -66,6 +66,8 @@ namespace px {
 
 		// interaction
 
+		unsigned int distance(point2 const& a, point2 const& b) const noexcept;
+		bool traversable(point2 const& location) const;
 		void expose_inventory(container_component * inventory);
 		void loot(body_component * user, container_component * inventory);
 		void open_workshop(unsigned int workshop);

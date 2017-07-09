@@ -20,7 +20,7 @@ namespace px {
 	public:
 		int distance(point2 const& a, point2 const& b)
 		{
-			return a.king_distance(b);
+			return m_environment->distance(a, b);
 		}
 
 		void popup(point2 location, std::string text, int rgba, float size)
