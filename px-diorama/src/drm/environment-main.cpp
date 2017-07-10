@@ -49,6 +49,9 @@ namespace px {
 		start();
 
 		m_repository.reset();
+
+		std::random_device rd;
+		m_rng = std::mt19937(rd());
 	}
 
 	unsigned int environment::distance(point2 const& a, point2 const& b) const noexcept
@@ -243,12 +246,10 @@ namespace px {
 		// units
 
 		spawn(create_dummy("m_snail", { 0, 9 }));
-		spawn(create_dummy("m_mermaid", { 7, 8 }));
-		spawn(create_dummy("p_bookshelf", { 1, 3 }));
-		spawn(create_dummy("p_box", { 8, 2 }));
+		spawn(create_dummy("m_rat", { 5, 5 }));
 
 		// player
-		auto player = create_dummy("m_gnome", { 5, 5 });
+		auto player = create_dummy("m_gnome", { 3, 3 });
 		spawn(player);
 
 		impersonate(player->transform());
@@ -297,7 +298,7 @@ namespace px {
 		vfx.sprite->connect(&vfx.transform);
 		vfx.sprite->activate();
 	}
-	std::tuple<int, int, bool, bool> environment::hit(body_component const& attacker, body_component const& /* versus */) const
+	std::tuple<int, int, bool, bool> environment::hit(body_component const& attacker, body_component const& /* versus */)
 	{
 		int magnitude = 0;
 		int variant = 0;
@@ -310,7 +311,7 @@ namespace px {
 			magnitude = damage_enhancement.value0;
 			variant = damage_enhancement.subtype;
 			is_hit = true;
-			is_critical = false;
+			is_critical = std::uniform_int_distribution<int>{ 1, 20 }(m_rng) == 20;
 		}
 
 		return { magnitude, variant, is_hit, is_critical };
@@ -326,18 +327,31 @@ namespace px {
 		auto container = builder.add_container();
 		auto character = builder.add_character();
 
-		if (name == "m_gnome") builder.add_player();
-		if (name == "m_snail") builder.add_npc();
+		if (name == "m_gnome") {
+			body->join_faction(1);
+			builder.add_player();
+			character->learn_skill("sk_v_melee");
+			character->learn_skill("sk_s_smite");
+			character->learn_skill("sk_s_rend");
+			character->learn_skill("sk_s_flurry");
+			character->learn_skill("sk_i_pain");
+			character->learn_skill("sk_v_teleport");
+			character->learn_skill("sk_o_export");
+			character->learn_skill("sk_o_import");
+		}
+		else {
+			builder.add_npc();
 
-		if (name == "m_gnome") body->join_faction(1);
+			character->learn_skill("sk_v_melee");
+		}
 
 		// setup
 		transform->store_position();
-		body->health()->set(100);
+		body->health().create(100);
 		body->set_name(name);
 		body->set_tag(name);
 		body->traverse().make_traversable<rl::traverse::floor>();
-		for (int i = 0; i != 10; ++i) {
+		for (unsigned int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("iron");
 			itm->make_stacking();
@@ -345,14 +359,6 @@ namespace px {
 			itm->add(rl::item::enhancement_type::integer(rl::effect::essence, 1024));
 			container->add(itm);
 		}
-		character->learn_skill("sk_v_melee");
-		character->learn_skill("sk_s_smite");
-		character->learn_skill("sk_s_rend");
-		character->learn_skill("sk_s_flurry");
-		character->learn_skill("sk_i_pain");
-		character->learn_skill("sk_v_teleport");
-		character->learn_skill("sk_o_export");
-		character->learn_skill("sk_o_import");
 
 		rl::item weapon;
 		weapon.set_name("weapon");

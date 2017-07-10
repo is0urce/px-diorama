@@ -51,6 +51,15 @@ namespace px {
 			{
 				return m_mp;
 			}
+			
+			bool dead() const noexcept
+			{
+				return m_hp && m_hp->empty();
+			}
+			bool alive() const noexcept
+			{
+				return m_hp && !m_hp->empty();
+			}
 
 			mass_type const& mass() const noexcept
 			{

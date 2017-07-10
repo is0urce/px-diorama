@@ -30,11 +30,15 @@ namespace px {
 
 		// resources
 
-		bool dead() const
+		bool dead() const noexcept
 		{
-			return m_body && m_body->health() && m_body->health()->empty();
+			return m_body && m_body->dead();
 		}
-		bool valid() const
+		bool alive() const noexcept
+		{
+			return m_body && m_body->alive();
+		}
+		bool valid() const noexcept
 		{
 			return m_body != nullptr;
 		}

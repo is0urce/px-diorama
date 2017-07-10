@@ -19,6 +19,7 @@
 
 #include <map>
 #include <memory>
+#include <random>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -77,7 +78,7 @@ namespace px {
 		void open_workshop(unsigned int workshop);
 		void popup(point2 location, std::string text, color tint, float size);
 		void visual(std::string const& tag, point2 from, point2 destination, transform_component const* follow);
-		std::tuple<int, int, bool, bool> hit(body_component const&, body_component const&) const;
+		std::tuple<int, int, bool, bool> hit(body_component const&, body_component const&);
 
 		// serialization
 
@@ -136,6 +137,7 @@ namespace px {
 		std::vector<unit_ptr>			m_units;			// scene
 
 		transform_component *			m_player;			// player transform
+		std::mt19937					m_rng;
 		point2							m_hover;			// current hovered tile
 		ui::menu						m_ui;				// user interface
 

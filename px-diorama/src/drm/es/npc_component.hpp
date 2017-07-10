@@ -30,6 +30,9 @@ namespace px {
 		{
 			auto * pawn = linked<transform_component>();
 			auto * body = pawn->linked<body_component>();
+
+			if (!body->alive()) return;
+
 			px_assert(pawn);
 			if (pawn) {
 

@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <px/common/assert.hpp>
 #include <px/rl/bar.hpp>
 
 namespace px
@@ -21,6 +22,11 @@ namespace px
 			void create() noexcept
 			{
 				m_enabled = true;
+			}
+			void create(T value) noexcept
+			{
+				m_enabled = true;
+				m_bar.set(value);
 			}
 			void remove() noexcept
 			{
