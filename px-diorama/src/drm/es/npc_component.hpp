@@ -36,22 +36,21 @@ namespace px {
 			px_assert(pawn);
 			if (pawn) {
 
-				m_fov.recursive([&](point2 const& location) { return shell.transparent(location); }, pawn->position());
-
-				m_target = select_target(shell);
-				if (m_target) {
-					m_alert = true;
-					m_destination = m_target->position();
-				}
+				lock_target(shell);
 
 				if (m_alert) {
 
-					auto path = a_star::find(pawn->position(), m_destination, [&](point2 const& location) { return shell.traversable(location, body->traverse()); }, 50);
+					auto path = a_star::find(pawn->position(), m_destination, [&](point2 const& location) { return shell.traversable(location, body->traverse()); }, 150);
 
 					if (path.size() != 0) {
 						point2 & next = path.front();
-						if (next != m_destination) {
+						if (shell.traversable(next, body->traverse())) {
 							pawn->place(next);
+
+							// found
+							if (!m_target) {
+								lock_target(shell);
+							}
 						}
 					}
 				}
@@ -60,9 +59,9 @@ namespace px {
 	public:
 		npc_component()
 			: m_alert(false)
-			, m_perception_radius(10)
+			, m_radius(10)
 			, m_target(nullptr)
-			, m_fov(m_perception_radius)
+			, m_fov(m_radius)
 		{
 		}
 		virtual ~npc_component()
@@ -84,16 +83,17 @@ namespace px {
 			if (body && space) {
 
 				point2 position = pawn->position();
-				unsigned int distance = m_perception_radius;
+				unsigned int distance = m_radius;
 
-				space->find(position.x(), position.y(), m_perception_radius, [&](int /*x*/, int /*y*/, transform_component * element) {
-					auto * target_body = element->linked<body_component>();
+				space->find(position.x(), position.y(), m_radius, [&](int /*x*/, int /*y*/, transform_component * element) {
+					if (element) {
+						if (m_fov.in_sight(element->position())) {
+							auto * target_body = element->linked<body_component>();
+							if (target_body && target_body->hostile(*body)) {
 
-					if (m_fov.in_sight(element->position())) {
-						if (target_body->hostile(*body)) {
-
-							if (shell.distance(position, element->position()) < distance) {
-								target = element;
+								if (shell.distance(position, element->position()) < distance) {
+									target = element;
+								}
 							}
 						}
 					}
@@ -102,10 +102,25 @@ namespace px {
 
 			return target;
 		}
+		void lock_target(environment & shell)
+		{
+			auto * pawn = linked<transform_component>();
+			if (pawn) {
+
+				m_fov.reset();
+				m_fov.recursive([&](point2 const& location) { return shell.transparent(location); }, pawn->position());
+
+				m_target = select_target(shell);
+				if (m_target) {
+					m_alert = true;
+					m_destination = m_target->position();
+				}
+			}
+		}
 
 	private:
 		bool m_alert;
-		unsigned int m_perception_radius;
+		unsigned int m_radius;
 		transform_component * m_target;
 		point2 m_destination;
 		shadowcasting m_fov;

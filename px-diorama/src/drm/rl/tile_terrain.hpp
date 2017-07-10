@@ -36,9 +36,9 @@ namespace px {
 		typedef tile_surface<tile_type, cell_width, cell_height, 1> surface_type;
 
 	public:
-		bool traversable(point2 const& absolute) const noexcept
+		bool traversable(point2 const& absolute, rl::traverse_options<rl::traverse> traverse) const noexcept
 		{
-			return m_surface.get_or(absolute, m_border).mass.traversable();
+			return m_surface.get_or(absolute, m_border).mass.traversable(traverse);
 		}
 		bool transparent(point2 const& absolute) const noexcept
 		{
@@ -118,6 +118,8 @@ namespace px {
 			: m_sprites(nullptr)
 		{
 			m_library.load(depot::load_document(tiles_path)["tiles"]);
+			m_border.mass.make_opaque();
+			m_border.mass.make_blocking();
 		}
 
 	private:

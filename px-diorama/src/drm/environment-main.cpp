@@ -68,7 +68,7 @@ namespace px {
 			block |= body && !body->mass().traversable(traverse);
 		});
 
-		return !block && m_terrain->traversable(position);
+		return !block && m_terrain->traversable(position, traverse);
 	}
 	bool environment::transparent(point2 const& position) const
 	{
@@ -148,6 +148,8 @@ namespace px {
 			transform_component * transform = unit->transform();
 			if (transform) transform->store_position();
 		}
+
+		m_terrain->wait();
 	}
 	void environment::turn_end()
 	{
@@ -156,6 +158,8 @@ namespace px {
 				vfx.transform.place(vfx.link->position());
 			}
 		}
+
+		//m_terrain.dump();
 	}
 	void environment::turn_pass(unsigned int pass_turns)
 	{
@@ -189,13 +193,12 @@ namespace px {
 
 		turn_begin();
 
-		m_terrain->wait();
-		m_terrain->focus(destination);
 		m_player->place(destination);
-		//m_terrain.dump();
 
 		turn_end();
 		turn_pass(1);
+
+		m_terrain->focus(destination);
 	}
 	void environment::use(unsigned int action_index)
 	{
@@ -245,8 +248,8 @@ namespace px {
 	{
 		// units
 
-		spawn(create_dummy("m_snail", { 0, 9 }));
-		spawn(create_dummy("m_rat", { 5, 5 }));
+		//spawn(create_dummy("m_snail", { 0, 9 }));
+		spawn(create_dummy("m_rat", { 3, 3 }));
 
 		// player
 		auto player = create_dummy("m_gnome", { 3, 3 });

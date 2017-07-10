@@ -31,30 +31,31 @@ namespace px {
 	public:
 		typedef std::function<bool(point2 const& position)> map_fn;
 
+		void reset()
+		{
+			m_fov.assign(m_width * m_width, false);
+		}
 		void radius(unsigned int radius_size)
 		{
 			m_radius = radius_size;
 			m_width = m_radius * 2 + 1;
-			m_fov.assign(m_width * m_width, false);
+			reset();
 		}
-		bool in_range(point2 absolute) const noexcept
+		bool in_range(point2 const& absolute) const noexcept
 		{
-			auto position = translate(absolute);
-			return (position.x() < 0 || position.y() < 0 || position.x() >= static_cast<int>(m_width) || position.y() >= static_cast<int>(m_width));
+			return contains(translate(absolute));
 		}
 		bool in_sight(point2 absolute) const noexcept
 		{
 			auto position = translate(absolute);
-			if (position.x() < 0 || position.y() < 0 || position.x() >= static_cast<int>(m_width) || position.y() >= static_cast<int>(m_width)) return false;
-
-			return m_fov[position.y() * m_width + position.x()];
+			return contains(position) && m_fov[position.y() * m_width + position.x()];
 		}
 		void light(point2 absolute)
 		{
 			auto position = translate(absolute);
-			if (position.x() < 0 || position.y() < 0 || position.x() >= static_cast<int>(m_width) || position.y() >= static_cast<int>(m_width)) return;
-
-			m_fov[static_cast<size_t>(position.y() * m_width + position.x())] = true;
+			if (contains(position)) {
+				m_fov[static_cast<size_t>(position.y() * m_width + position.x())] = true;
+			}
 		}
 
 		template <typename Predicate>
@@ -90,6 +91,10 @@ namespace px {
 		}
 
 	private:
+		bool contains(point2 const& position) const noexcept
+		{
+			return position.x() >= 0 && position.y() >= 0 && position.x() < static_cast<int>(m_width) && position.y() < static_cast<int>(m_width);
+		}
 		point2 translate(point2 absolute) const noexcept
 		{
 			return absolute + point2(m_radius, m_radius) - m_offset;
