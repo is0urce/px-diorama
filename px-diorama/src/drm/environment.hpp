@@ -14,6 +14,8 @@
 
 #include <px/common/coordinate.hpp>
 #include <px/common/coordinate_ext.hpp> // lex_less
+#include <px/rl/traverse_options.hpp>
+#include <px/rl/traverse.hpp>
 
 #include <map>
 #include <memory>
@@ -41,6 +43,7 @@ namespace px {
 	public:
 		typedef std::shared_ptr<unit> unit_ptr;
 		typedef tile_terrain<tile_instance> terrain_type;
+		typedef rl::traverse_options<rl::traverse> traverse_type;
 
 	public:
 
@@ -67,7 +70,8 @@ namespace px {
 		// interaction
 
 		unsigned int distance(point2 const& a, point2 const& b) const noexcept;
-		bool traversable(point2 const& location) const;
+		bool traversable(point2 const& location, traverse_type traverse) const;
+		bool transparent(point2 const& location) const;
 		void expose_inventory(container_component * inventory);
 		void loot(body_component * user, container_component * inventory);
 		void open_workshop(unsigned int workshop);

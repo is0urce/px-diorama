@@ -40,6 +40,10 @@ namespace px {
 		{
 			return m_surface.get_or(absolute, m_border).mass.traversable();
 		}
+		bool transparent(point2 const& absolute) const noexcept
+		{
+			return m_surface.get_or(absolute, m_border).mass.transparent();
+		}
 		tile_type const& operator[](point2 const& absolute) const
 		{
 			return m_surface.get_or(absolute, m_border);

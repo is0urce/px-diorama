@@ -58,6 +58,8 @@ namespace px
 
 	public:
 		// Predicate - traversable predicate : bool(point)
+		// start not included in path
+		// finish always inclided (even if traversable predicate returns false)
 		template <typename Predicate>
 		static auto find(point2 start, point2 finish, Predicate && traversable, unsigned int steps)
 		{

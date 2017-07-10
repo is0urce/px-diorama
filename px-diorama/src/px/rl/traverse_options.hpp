@@ -48,6 +48,9 @@ namespace px
 				}
 			}
 
+			template <E Layer>
+			void make_traversable() { m_traversable.set(static_cast<size_t>(Layer)); }
+
 			template <typename Archive>
 			void serialize(Archive & archive)
 			{

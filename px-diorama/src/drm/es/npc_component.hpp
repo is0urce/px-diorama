@@ -29,10 +29,11 @@ namespace px {
 		void act(environment & shell)
 		{
 			auto * pawn = linked<transform_component>();
+			auto * body = pawn->linked<body_component>();
 			px_assert(pawn);
 			if (pawn) {
 
-				m_fov.recursive([&](point2 const& location) { return shell.traversable(location); }, pawn->position());
+				m_fov.recursive([&](point2 const& location) { return shell.transparent(location); }, pawn->position());
 
 				m_target = select_target(shell);
 				if (m_target) {
@@ -42,10 +43,13 @@ namespace px {
 
 				if (m_alert) {
 
-					auto path = a_star::find(pawn->position(), m_destination, [&](point2 const& location) { return shell.traversable(location); }, 50);
+					auto path = a_star::find(pawn->position(), m_destination, [&](point2 const& location) { return shell.traversable(location, body->traverse()); }, 50);
 
 					if (path.size() != 0) {
-						pawn->place(path.front());
+						point2 & next = path.front();
+						if (next != m_destination) {
+							pawn->place(next);
+						}
 					}
 				}
 			}

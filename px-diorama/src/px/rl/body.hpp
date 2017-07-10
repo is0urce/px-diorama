@@ -17,6 +17,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 
 namespace px {
 	namespace rl {
@@ -67,6 +68,14 @@ namespace px {
 			{
 				return m_traverse;
 			}
+			std::string blood() const noexcept
+			{
+				return m_blood;
+			}
+			void set_blood(std::string blood_tag)
+			{
+				m_blood = blood_tag;
+			}
 
 			void clear_body()
 			{
@@ -85,13 +94,15 @@ namespace px {
 				archive(static_cast<equipment &>(*this));
 				archive(m_mass);
 				archive(m_traverse);
+				archive(m_blood);
 			}
 
 		private:
-			resource_type m_hp;
-			resource_type m_mp;
-			rl::mass<rl::traverse> m_mass;
-			rl::traverse_options<rl::traverse> m_traverse;
+			resource_type	m_hp;
+			resource_type	m_mp;
+			mass_type		m_mass;
+			traverse_type	m_traverse;
+			std::string		m_blood;
 		};
 	}
 }

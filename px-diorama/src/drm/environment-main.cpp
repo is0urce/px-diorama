@@ -56,13 +56,27 @@ namespace px {
 		return a.king_distance(b);
 	}
 
-	bool environment::traversable(point2 const& position) const
+	bool environment::traversable(point2 const& position, traverse_type traverse) const
 	{
-		transform_component * blocking = nullptr;
+		bool block = false;
 		auto world = m_player ? m_player->world() : nullptr;
-		if (world) world->find(position.x(), position.y(), [&blocking](int /* x */, int /* y */, transform_component * obj) { blocking = obj; });
+		if (world) world->find(position.x(), position.y(), [&](int /* x */, int /* y */, transform_component * obj) {
+			body_component * body = obj ? obj->linked<body_component>() : nullptr;
+			block |= body && !body->mass().traversable(traverse);
+		});
 
-		return !blocking && m_terrain->traversable(position);
+		return !block && m_terrain->traversable(position);
+	}
+	bool environment::transparent(point2 const& position) const
+	{
+		bool block = false;
+		auto world = m_player ? m_player->world() : nullptr;
+		if (world) world->find(position.x(), position.y(), [&](int /* x */, int /* y */, transform_component * obj) {
+			body_component * body = obj ? obj->linked<body_component>() : nullptr;
+			block |= body && !body->mass().transparent();
+		});
+
+		return !block && m_terrain->transparent(position);
 	}
 
 	bool environment::running() const noexcept
@@ -165,22 +179,20 @@ namespace px {
 		if (!m_player) return;
 
 		point2 destination = m_player->position() + direction;
+		body_component * body = m_player->linked<body_component>();
 
-		if (!m_terrain->traversable(destination)) return;
+		if (!body) return;
+		if (!traversable(destination, body->traverse())) return;
 
-		transform_component * blocking = find_any(destination);
+		turn_begin();
 
-		if (!blocking) {
-			turn_begin();
+		m_terrain->wait();
+		m_terrain->focus(destination);
+		m_player->place(destination);
+		//m_terrain.dump();
 
-			m_terrain->wait();
-			m_terrain->focus(destination);
-			m_player->place(destination);
-			//m_terrain.dump();
-
-			turn_end();
-			turn_pass(1);
-		}
+		turn_end();
+		turn_pass(1);
 	}
 	void environment::use(unsigned int action_index)
 	{
@@ -231,9 +243,9 @@ namespace px {
 		// units
 
 		spawn(create_dummy("m_snail", { 0, 9 }));
-		spawn(create_dummy("m_mermaid", { 12, 8 }));
-		spawn(create_dummy("p_bookshelf", { 1, 1 }));
-		spawn(create_dummy("p_box", { 8, 0 }));
+		spawn(create_dummy("m_mermaid", { 7, 8 }));
+		spawn(create_dummy("p_bookshelf", { 1, 3 }));
+		spawn(create_dummy("p_box", { 8, 2 }));
 
 		// player
 		auto player = create_dummy("m_gnome", { 5, 5 });
@@ -324,6 +336,7 @@ namespace px {
 		body->health()->set(100);
 		body->set_name(name);
 		body->set_tag(name);
+		body->traverse().make_traversable<rl::traverse::floor>();
 		for (int i = 0; i != 10; ++i) {
 			auto itm = std::make_shared<rl::item>();
 			itm->set_name("iron");
