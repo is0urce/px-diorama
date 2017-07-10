@@ -30,15 +30,32 @@ namespace px {
 		{
 			auto * pawn = linked<transform_component>();
 			auto * body = pawn->linked<body_component>();
+			auto * character = linked<character_component>();
 
 			if (!body->alive()) return;
 
 			px_assert(pawn);
-			if (pawn) {
+			px_assert(character);
+			if (pawn && character) {
 
 				lock_target(shell);
 
-				if (m_alert) {
+				size_t skill_count = character->count_skills();
+
+				bool cast = false;
+				if (m_target) {
+					auto * target_body = m_target->linked<body_component>();
+					for (size_t slot = 0; slot != skill_count; ++slot) {
+						auto * skill = character->get_skill(slot);
+						if (skill->targeted() && skill->useable(body, target_body)) {
+							skill->use(body, target_body);
+							cast = true;
+							break;
+						}
+					 }
+				}
+
+				if (m_alert && !cast) {
 
 					auto path = a_star::find(pawn->position(), m_destination, [&](point2 const& location) { return shell.traversable(location, body->traverse()); }, 150);
 
@@ -89,7 +106,7 @@ namespace px {
 					if (element) {
 						if (m_fov.in_sight(element->position())) {
 							auto * target_body = element->linked<body_component>();
-							if (target_body && target_body->hostile(*body)) {
+							if (target_body && target_body->alive() && target_body->hostile(*body)) {
 
 								if (shell.distance(position, element->position()) < distance) {
 									target = element;

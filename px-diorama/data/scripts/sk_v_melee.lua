@@ -34,8 +34,7 @@ action = function(user, target)
 	local result_damage = math.floor(weapon_damage * 1.0)
 
 	if hit then
-		target:damage(result_damage)
-		game:popup(target:position(), weapon_damage, 0xffcc00, result_damage)
-		game:vfx(target:position(), "e_slash")
+		game:damage(target, weapon_damage)
+		game:vfx_decal(target, "e_slash")
 	end
 end

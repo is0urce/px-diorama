@@ -39,6 +39,10 @@ namespace px {
 		{
 			m_environment->visual(tag, start, target.position(), target.transform());
 		}
+		void emit_decal(script_unit & target, std::string const& tag)
+		{
+			m_environment->visual(tag, target.last_position(), target.position(), target.transform());
+		}
 
 		std::tuple<int, int, bool, bool> hit(script_unit const& attacker, script_unit const& versus)
 		{
@@ -75,6 +79,13 @@ namespace px {
 		void pset(uint32_t tile_index, point2 const& location)
 		{
 			m_environment->terrain().pset(location, tile_index);
+		}
+		
+		void damage(script_unit & mob, int damage)
+		{
+			mob.damage(damage);
+			bool hostile = m_environment->player() != mob.transform();
+			popup(mob.position(), std::to_string(damage), hostile ? 0xffcc00 : 0xff0000, 1.0);
 		}
 
 	public:

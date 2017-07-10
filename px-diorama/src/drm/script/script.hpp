@@ -146,11 +146,13 @@ namespace px {
 					);
 				m_lua.new_usertype<script_environment>("environment"
 					, "hit", &script_environment::hit
+					, "damage", &script_environment::damage
 					, "distance", &script_environment::distance
 					, "popup", &script_environment::popup
 					, "vfx", &script_environment::emit_vfx
 					, "vfx_projectile", &script_environment::emit_projectile
 					, "vfx_missile", &script_environment::emit_missile
+					, "vfx_decal", &script_environment::emit_decal
 					, "mass_export", &script_environment::mass_export
 					, "spawn", &script_environment::spawn
 					, "pset", &script_environment::pset

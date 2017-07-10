@@ -109,6 +109,10 @@ namespace px {
 			m_terrain->focus(player->position());
 		}
 	}
+	transform_component const* environment::player() const noexcept
+	{
+		return m_player;
+	}
 	void environment::update(perception & view, double time)
 	{
 		// track timestamp from last turn update

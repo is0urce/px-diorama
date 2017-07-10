@@ -27,6 +27,11 @@ namespace px {
 			auto * pawn = transform();
 			return pawn ? pawn->position() : point2(0, 0);
 		}
+		point2 last_position()
+		{
+			auto * pawn = transform();
+			return pawn ? pawn->last_position() : point2(0, 0);
+		}
 
 		// resources
 

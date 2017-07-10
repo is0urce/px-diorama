@@ -95,6 +95,7 @@ namespace px {
 		unit_ptr import_unit(std::string const& blueprint_name);
 		unit_ptr import_unit(std::string const& blueprint_name, point2 location);
 		size_t mass_export(point2 const& location);
+		transform_component const* player() const noexcept;
 
 		// terrain
 
