@@ -48,6 +48,12 @@ namespace px
 				}
 			}
 
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(m_traversable);
+			}
+
 		public:
 			traverse_options()
 			{

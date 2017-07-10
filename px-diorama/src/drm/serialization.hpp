@@ -23,6 +23,7 @@
 #endif
 
 #include SAVE_INCLUDE_ARCHIVE
+#include <cereal/types/bitset.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/vector.hpp>
 #include <cereal/types/map.hpp>

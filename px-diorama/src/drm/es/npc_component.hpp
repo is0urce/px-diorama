@@ -12,6 +12,7 @@
 #include <px/es/link_dispatcher.hpp>
 
 #include <px/space/a_star.hpp>
+#include <px/space/shadowcasting.hpp>
 
 namespace px {
 
@@ -28,38 +29,33 @@ namespace px {
 		void act(environment & shell)
 		{
 			auto * pawn = linked<transform_component>();
-			auto * body = pawn ? pawn->linked<body_component>() : nullptr;
-			auto * space = pawn ? pawn->world() : nullptr;
-
 			px_assert(pawn);
-			px_assert(space);
+			if (pawn) {
 
-			point2 position = pawn->position();
-			transform_component * target = nullptr;
+				m_fov.recursive([&](point2 const& location) { return shell.traversable(location); }, pawn->position());
 
-			space->find(position.x(), position.y(), 10, [&](int /*x*/, int /*y*/, transform_component * element) {
-				auto * target_body = element->linked<body_component>();
-
-				if (target_body->hostile(*body)) {
-					target = element;
+				m_target = select_target(shell);
+				if (m_target) {
+					m_alert = true;
+					m_destination = m_target->position();
 				}
-			});
 
-			if (target) {
+				if (m_alert) {
 
-				point2 destination = target->position();
+					auto path = a_star::find(pawn->position(), m_destination, [&](point2 const& location) { return shell.traversable(location); }, 50);
 
-				auto list = a_star::find(position, destination, [&](point2 const& location) { return shell.traversable(location); }, 50);
-
-				if (list.size() != 0) {
-					pawn->place(list.front());
+					if (path.size() != 0) {
+						pawn->place(path.front());
+					}
 				}
 			}
 		}
-
 	public:
 		npc_component()
 			: m_alert(false)
+			, m_perception_radius(10)
+			, m_target(nullptr)
+			, m_fov(m_perception_radius)
 		{
 		}
 		virtual ~npc_component()
@@ -67,6 +63,44 @@ namespace px {
 		}
 
 	private:
+		transform_component * select_target(environment & shell) const
+		{
+			transform_component * target = nullptr;
+
+			auto * pawn = linked<transform_component>();
+			auto * body = pawn ? pawn->linked<body_component>() : nullptr;
+			auto * space = pawn ? pawn->world() : nullptr;
+
+			px_assert(body);
+			px_assert(space);
+
+			if (body && space) {
+
+				point2 position = pawn->position();
+				unsigned int distance = m_perception_radius;
+
+				space->find(position.x(), position.y(), m_perception_radius, [&](int /*x*/, int /*y*/, transform_component * element) {
+					auto * target_body = element->linked<body_component>();
+
+					if (m_fov.in_sight(element->position())) {
+						if (target_body->hostile(*body)) {
+
+							if (shell.distance(position, element->position()) < distance) {
+								target = element;
+							}
+						}
+					}
+				});
+			}
+
+			return target;
+		}
+
+	private:
 		bool m_alert;
+		unsigned int m_perception_radius;
+		transform_component * m_target;
+		point2 m_destination;
+		shadowcasting m_fov;
 	};
 }

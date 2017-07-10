@@ -28,6 +28,13 @@ namespace px
 			void make_wall() { make_blocking(); make_opaque(); }
 			void make_ground() { make_traversable(); make_transparent(); }
 
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(static_cast<traverse_options<E, Size> &>(*this));
+				archive(m_transparent);
+			}
+
 		public:
 			mass()
 				: m_transparent(true)

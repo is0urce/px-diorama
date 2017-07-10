@@ -11,7 +11,6 @@
 #include "drm/environment.hpp"
 
 namespace px {
-
 	namespace es {
 
 		class npc_system final

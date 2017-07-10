@@ -11,6 +11,9 @@
 #include <px/rl/loot/item.hpp>
 #include <px/rl/resource.hpp>
 #include <px/rl/reputation_subject.hpp>
+#include <px/rl/mass.hpp>
+#include <px/rl/traverse.hpp>
+#include <px/rl/traverse_options.hpp>
 
 #include <cstdint>
 #include <memory>
@@ -25,6 +28,8 @@ namespace px {
 		{
 		public:
 			typedef resource<int32_t> resource_type;
+			typedef rl::mass<rl::traverse> mass_type;
+			typedef rl::traverse_options<rl::traverse> traverse_type;
 
 		public:
 
@@ -46,6 +51,23 @@ namespace px {
 				return m_mp;
 			}
 
+			mass_type const& mass() const noexcept
+			{
+				return m_mass;
+			}
+			mass_type & mass() noexcept
+			{
+				return m_mass;
+			}
+			traverse_type const& traverse() const noexcept
+			{
+				return m_traverse;
+			}
+			traverse_type & traverse() noexcept
+			{
+				return m_traverse;
+			}
+
 			void clear_body()
 			{
 				m_hp.remove();
@@ -61,11 +83,15 @@ namespace px {
 				archive(static_cast<reputation_subject &>(*this));
 				archive(m_hp, m_mp);
 				archive(static_cast<equipment &>(*this));
+				archive(m_mass);
+				archive(m_traverse);
 			}
 
 		private:
 			resource_type m_hp;
 			resource_type m_mp;
+			rl::mass<rl::traverse> m_mass;
+			rl::traverse_options<rl::traverse> m_traverse;
 		};
 	}
 }
