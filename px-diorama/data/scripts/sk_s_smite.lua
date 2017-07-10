@@ -35,8 +35,7 @@ action = function(user, target)
 	local result_damage = math.floor(weapon_damage * 2.0)
 
 	if hit then
-		target:damage(result_damage)
-		game:popup(target:position(), result_damage, 0xffcc00, 1.0)
+		game:damage(target, result_damage)
 		game:vfx(target:position(), "e_swipe")
 	end
 end

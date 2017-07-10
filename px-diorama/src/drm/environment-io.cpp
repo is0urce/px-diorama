@@ -89,6 +89,10 @@ namespace px {
 				else if (auto player = dynamic_cast<player_component const*>(part.get())) {
 					archive(unit_component::player);
 				}
+				else if (auto npc = dynamic_cast<npc_component const*>(part.get())) {
+					archive(unit_component::npc);
+					archive(*npc);
+				}
 				else {
 					archive(unit_component::undefined);
 				}
@@ -136,6 +140,10 @@ namespace px {
 				}
 				case unit_component::player: {
 					builder.add_player();
+					break;
+				}
+				case unit_component::npc: {
+					archive(*builder.add_npc());
 					break;
 				}
 				case unit_component::undefined: {

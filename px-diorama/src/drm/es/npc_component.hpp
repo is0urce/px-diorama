@@ -73,6 +73,14 @@ namespace px {
 				}
 			}
 		}
+
+		template <typename Archive>
+		void serialize(Archive & archive)
+		{
+			archive(m_alert);
+			archive(m_destination);
+		}
+
 	public:
 		npc_component()
 			: m_alert(false)
@@ -86,7 +94,7 @@ namespace px {
 		}
 
 	private:
-		transform_component * select_target(environment & shell) const
+		transform_component * select_target(environment const& shell) const
 		{
 			transform_component * target = nullptr;
 
@@ -119,7 +127,7 @@ namespace px {
 
 			return target;
 		}
-		void lock_target(environment & shell)
+		void lock_target(environment const& shell)
 		{
 			auto * pawn = linked<transform_component>();
 			if (pawn) {

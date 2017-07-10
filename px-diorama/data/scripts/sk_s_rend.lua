@@ -35,9 +35,8 @@ action = function(user, target)
 	local result_damage = math.floor(weapon_damage * 3.0)
 
 	if hit then
-		target:damage(result_damage)
+		game:damage(target, result_damage)
 
-		game:popup(target:position(), result_damage, 0xffcc00, 1.0)
 		local visual = "e_swoosh_positive"
 		local tx = target:position():x()
 		local mx = user:position():x()

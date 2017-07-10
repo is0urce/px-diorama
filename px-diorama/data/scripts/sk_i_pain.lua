@@ -32,8 +32,7 @@ action = function(user, target)
 	local result_damage = math.floor(weapon_damage * 5.0)
 
 	if hit then
-		target:damage(result_damage)
-		game:popup(target:position(), result_damage, 0xffcc00, 1.0)
+		game:damage(target, result_damage)
 		game:vfx_missile(user:position(), target, "e_zap")
 	end
 end
