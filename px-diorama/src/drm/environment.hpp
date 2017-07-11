@@ -132,6 +132,7 @@ namespace px {
 		unsigned int					m_last_turn;		// last updated turn
 		double							m_last_time;		// last time of update
 
+		bool							m_editor;			// editor mode
 		repository						m_base;				// repository of base game setup
 		repository						m_repository;		// save directory of current game
 

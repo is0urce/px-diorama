@@ -27,6 +27,8 @@
 
 namespace px {
 
+	class environment;
+
 	class factory
 	{
 	public:
@@ -71,21 +73,40 @@ namespace px {
 			return px::make_shared<deposit_component>();
 		}
 
-		auto sprites()
-		{
-			return &m_sprites;
-		}
-		auto transforms()
+		es::transform_system * transforms() noexcept
 		{
 			return &m_transforms;
 		}
-		auto characters()
+		es::sprite_system * sprites() noexcept
+		{
+			return &m_sprites;
+		}
+		es::body_system * bodies() noexcept
+		{
+			return &m_bodies;
+		}
+		es::character_system * characters() noexcept
 		{
 			return &m_characters;
 		}
-		auto npc()
+		es::npc_system * npc() noexcept
 		{
 			return &m_npc;
+		}
+
+		void update(double delta)
+		{
+			m_sprites.update(delta);
+		}
+		void fixed_update(unsigned int delta)
+		{
+			m_npc.fixed_update(delta);
+		}
+		void provide_environment(environment * shell)
+		{
+			m_bodies.provide_environment(shell);
+			m_characters.provide_environment(shell);
+			m_npc.provide_environment(shell);
 		}
 
 	public:

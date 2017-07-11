@@ -35,7 +35,7 @@ namespace px {
 		typedef Tile tile_type;
 		typedef tile_prototype<rl::mass<rl::traverse>> blueprint_type;
 		typedef tile_surface<tile_type, cell_width, cell_height, 1> surface_type;
-		typedef typename surface_type::callback_type callback_fn;
+		typedef std::function<void(point2 const&)> callback_fn;
 
 	public:
 		bool traversable(point2 const& absolute, rl::traverse_options<rl::traverse> traverse) const noexcept
@@ -57,7 +57,7 @@ namespace px {
 				setup(tile, id);
 			}
 		}
-		void assigns_sprites(es::sprite_system * sprites) px_noexcept
+		void provide_sprites(es::sprite_system * sprites) px_noexcept
 		{
 			px_assert(sprites);
 			m_sprites = sprites;

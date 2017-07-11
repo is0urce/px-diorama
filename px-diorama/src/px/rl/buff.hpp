@@ -13,7 +13,9 @@ namespace px
 	namespace rl
 	{
 		template <typename Effect, typename EventOperator>
-		class buff : public rl::enhancement_collection<Effect>, public entity
+		class buff
+			: public entity
+			, public rl::enhancement_collection<Effect>
 		{
 		public:
 			typedef Effect effect_type;
@@ -24,49 +26,83 @@ namespace px
 			{
 				return !m_permanent && m_time == 0;
 			}
-			template <typename... Args>
-			void apply(Args &&... args)
+			unsigned int total_duration() const noexcept
 			{
-				if (m_apply)
-				{
-					m_apply(std::forward<Args>(args)...);
-				}
+				return m_duration;
 			}
-			template <typename... Args>
-			void expire(Args &&... args)
+			unsigned int timer() const noexcept
 			{
-				if (m_expire)
-				{
-					m_expire(std::forward<Args>(args)...);
-				}
+				return m_time;
 			}
+
 			template <typename... Args>
 			void tick(Args &&... args)
 			{
-				if (!m_permanent)
-				{
-					--m_time;
+				if (m_time == m_duration) on_apply(args...);
+				if (m_time != 0) on_tick(args...);
+				if (m_time != 0 && !m_permanent) --m_time;
+				if (m_time == 0) on_expire(args...);
+			}
+
+			template <typename Archive>
+			void serialize(Archive & archive)
+			{
+				archive(static_cast<entity &>(*this));
+				archive(static_cast<rl::enhancement_collection<Effect> &>(*this));
+
+				archive(m_permanent);
+				archive(m_duration);
+				archive(m_time);
+			}
+
+		public:
+			buff(unsigned int duration) noexcept
+				: m_permanent(false)
+				, m_time(duration)
+				, m_duration(duration)
+			{
+			}
+
+			buff() noexcept
+				: m_permanent(true)
+				, m_time(1)
+				, m_duration(2)
+			{
+				// different no-zero timers to avoid unlimited on_apply / on_expire
+			}
+
+		private:
+			template <typename... Args>
+			void on_apply(Args &&... args)
+			{
+				if (m_apply) {
+					m_apply(std::forward<Args>(args)...);
 				}
-				if (m_tick)
-				{
+			}
+
+			template <typename... Args>
+			void on_expire(Args &&... args)
+			{
+				if (m_expire) {
+					m_expire(std::forward<Args>(args)...);
+				}
+			}
+
+			template <typename... Args>
+			void on_tick(Args &&... args)
+			{
+				if (m_tick) {
 					m_tick(std::forward<Args>(args)...);
 				}
 			}
 
-		public:
-			buff(unsigned int duration) noexcept : m_permanent(false), m_time(duration)
-			{
-			}
-			buff() noexcept : m_permanent(true), m_time(0)
-			{
-			}
-
 		private:
-			bool m_permanent;
-			int m_time;
-			event_type m_tick;
-			event_type m_apply;
-			event_type m_expire;
+			bool		m_permanent;
+			int			m_time;
+			int			m_duration;
+			event_type	m_tick;
+			event_type	m_apply;
+			event_type	m_expire;
 		};
 	}
 }

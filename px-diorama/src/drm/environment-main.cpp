@@ -30,6 +30,7 @@ namespace px {
 		: m_factory(std::make_unique<factory>())
 		, m_terrain(std::make_unique<terrain_type>())
 		, m_vfx(std::make_unique<std::vector<vfx>>())
+		, m_editor(false)
 		, m_player(nullptr)
 		, m_run(true)
 		, m_turn(1)
@@ -40,11 +41,10 @@ namespace px {
 	{
 		// factory
 		m_factory->sprites()->set_cropping(crop_far);
-		m_factory->characters()->provide_environment(this);
-		m_factory->npc()->provide_environment(this);
+		m_factory->provide_environment(this);
 
 		// terrain
-		m_terrain->assigns_sprites(m_factory->sprites());
+		m_terrain->provide_sprites(m_factory->sprites());
 		m_terrain->on_leave([&](point2 const& cell) { archive_scene(cell); });
 		m_terrain->on_enter([&](point2 const& cell) { restore_scene(cell); });
 
@@ -54,6 +54,66 @@ namespace px {
 
 		std::random_device rd;
 		m_rng = std::mt19937(rd());
+	}
+	void environment::update(perception & view, double time)
+	{
+		// track timestamp from last turn update
+		if (m_turn != m_last_turn) {
+			m_last_turn = m_turn;
+			m_last_time = time;
+		}
+		double span = time - m_last_time;
+		double delta_time = std::min(span * movement_speed, 1.0);
+
+		// notifications
+		vector2 camera = m_player ? m_player->interpolate(delta_time) : vector2(0, 0);
+		view.clear_popups();
+		for (auto const& kv_list : m_notifications) {
+			vector2 position = vector2(kv_list.first) - camera;
+			for (auto const& note : kv_list.second) {
+				float x = static_cast<float>(position.x());
+				float y = static_cast<float>(position.y() + span);
+				view.emplace_popup(x, y, note.text, note.tint.dissolved(std::min(span * popup_speed, 1.0)));
+			}
+		}
+
+		// sprite batches
+		m_factory->update(delta_time);
+		view.assign_batches(&m_factory->sprites()->batches());
+
+		// compose user interface
+		view.canvas().cls();
+		m_ui.main()->layout(view.canvas().range());
+		m_ui.main()->draw(view.canvas());
+	}
+	void environment::turn_begin()
+	{
+		m_notifications.clear();
+		m_vfx->clear();
+
+		for (auto & unit : m_units) {
+			transform_component * transform = unit->transform();
+			if (transform) transform->store_position();
+		}
+
+		m_terrain->wait();
+	}
+	void environment::turn_pass(unsigned int pass_turns)
+	{
+		m_factory->fixed_update(pass_turns);
+		m_turn += pass_turns;
+	}
+	void environment::turn_end()
+	{
+		for (auto & vfx : *m_vfx) {
+			if (vfx.link) {
+				vfx.transform.place(vfx.link->position());
+			}
+		}
+
+		if (m_editor) {
+			m_terrain->dump();
+		}
 	}
 
 	unsigned int environment::distance(point2 const& a, point2 const& b) const noexcept
@@ -115,70 +175,14 @@ namespace px {
 	{
 		return m_player;
 	}
-	void environment::update(perception & view, double time)
-	{
-		// track timestamp from last turn update
-		if (m_turn != m_last_turn) {
-			m_last_turn = m_turn;
-			m_last_time = time;
-		}
-		double span = time - m_last_time;
-		double delta_time = std::min(span * movement_speed, 1.0);
 
-		// notifications
-		vector2 camera = m_player ? m_player->interpolate(delta_time) : vector2(0, 0);
-		view.clear_popups();
-		for (auto const& kv_list : m_notifications) {
-			vector2 position = vector2(kv_list.first) - camera;
-			for (auto const& note : kv_list.second) {
-				float x = static_cast<float>(position.x());
-				float y = static_cast<float>(position.y() + span);
-				view.emplace_popup(x, y, note.text, note.tint.dissolved(std::min(span * popup_speed, 1.0)));
-			}
-		}
-
-		// sprite batches
-		m_factory->sprites()->update(delta_time);
-		view.assign_batches(&m_factory->sprites()->batches());
-
-		// compose user interface
-		view.canvas().cls();
-		m_ui.main()->layout(view.canvas().range());
-		m_ui.main()->draw(view.canvas());
-	}
-	void environment::turn_begin()
-	{
-		m_notifications.clear();
-		m_vfx->clear();
-		for (auto & unit : m_units) {
-			transform_component * transform = unit->transform();
-			if (transform) transform->store_position();
-		}
-
-		m_terrain->wait();
-	}
-	void environment::turn_end()
-	{
-		for (auto & vfx : *m_vfx) {
-			if (vfx.link) {
-				vfx.transform.place(vfx.link->position());
-			}
-		}
-
-		//m_terrain.dump();
-	}
-	void environment::turn_pass(unsigned int pass_turns)
-	{
-		m_factory->npc()->fixed_update(pass_turns);
-		m_turn += pass_turns;
-	}
 	template <typename Action>
 	void environment::turn(Action && intent_action, int duration)
 	{
 		turn_begin();
 		intent_action();
-		turn_end();
 		turn_pass(duration);
+		turn_end();
 	}
 	void environment::target(point2 relative_world_coordinates)
 	{
@@ -201,8 +205,8 @@ namespace px {
 
 		m_player->place(destination);
 
-		turn_end();
 		turn_pass(1);
+		turn_end();
 
 		m_terrain->focus(destination);
 	}
