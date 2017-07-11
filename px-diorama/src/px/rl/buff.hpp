@@ -35,13 +35,26 @@ namespace px
 				return m_time;
 			}
 
+			void on_apply(event_type apply_event)
+			{
+				m_apply = apply_event;
+			}
+			void on_expire(event_type expire_event)
+			{
+				m_expire = expire_event;
+			}
+			void on_tick(event_type tick_event)
+			{
+				m_tick = tick_event;
+			}
+
 			template <typename... Args>
 			void tick(Args &&... args)
 			{
-				if (m_time == m_duration) on_apply(args...);
-				if (m_time != 0) on_tick(args...);
+				if (m_time == m_duration) do_apply(args...);
+				if (m_time != 0) do_tick(args...);
 				if (m_time != 0 && !m_permanent) --m_time;
-				if (m_time == 0) on_expire(args...);
+				if (m_time == 0) do_expire(args...);
 			}
 
 			template <typename Archive>
@@ -73,7 +86,7 @@ namespace px
 
 		private:
 			template <typename... Args>
-			void on_apply(Args &&... args)
+			void do_apply(Args &&... args)
 			{
 				if (m_apply) {
 					m_apply(std::forward<Args>(args)...);
@@ -81,7 +94,7 @@ namespace px
 			}
 
 			template <typename... Args>
-			void on_expire(Args &&... args)
+			void do_expire(Args &&... args)
 			{
 				if (m_expire) {
 					m_expire(std::forward<Args>(args)...);
@@ -89,7 +102,7 @@ namespace px
 			}
 
 			template <typename... Args>
-			void on_tick(Args &&... args)
+			void do_tick(Args &&... args)
 			{
 				if (m_tick) {
 					m_tick(std::forward<Args>(args)...);

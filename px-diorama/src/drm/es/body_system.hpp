@@ -29,12 +29,18 @@ namespace px {
 				if (m_environment) {
 					for (unsigned int i = 0; i != ticks; ++i) {
 						enumerate([this](body_component & component) {
+							int periodic_damage = 0;
+
 							auto & buffs = component.buffs();
 							for (auto & buff : component.buffs()) {
 								buff.tick(component, *m_environment);
+								periodic_damage += buff.value<rl::effect::periodic_damage>();
 							}
-
 							buffs.erase(std::remove_if(buffs.begin(), buffs.end(), [](auto const& b) { return b.expired(); }), buffs.end());
+
+							if (periodic_damage != 0) {
+								m_environment->damage(component, periodic_damage);
+							}
 						});
 					}
 				}

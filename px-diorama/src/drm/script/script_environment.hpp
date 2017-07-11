@@ -73,19 +73,26 @@ namespace px {
 		}
 		void mass_export(point2 const& location)
 		{
+			px_assert(m_environment);
 			m_environment->mass_export(location);
 		}
 
 		void pset(uint32_t tile_index, point2 const& location)
 		{
+			px_assert(m_environment);
 			m_environment->terrain().pset(location, tile_index);
 		}
 		
 		void damage(script_unit & mob, int damage)
 		{
-			mob.damage(damage);
-			bool hostile = m_environment->player() != mob.transform();
-			popup(mob.position(), std::to_string(damage), hostile ? 0xffcc00 : 0xff0000, 1.0);
+			auto * body = mob.body();
+
+			px_assert(m_environment);
+			px_assert(body);
+
+			if (body && m_environment) {
+				m_environment->damage(*body, damage);
+			}
 		}
 
 	public:

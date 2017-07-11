@@ -334,6 +334,18 @@ namespace px {
 
 		return { magnitude, variant, is_hit, is_critical };
 	}
+	void environment::damage(body_component & body, int damage)
+	{
+		auto & hp = body.health();
+
+		if (hp) {
+			hp->damage(damage);
+	
+			if (transform_component * transform = body.linked<transform_component>()) {
+				popup(transform->position(), std::to_string(damage), color(m_player != transform ? 0xffcc00 : 0xff0000), 1.0f);
+			}
+		}
+	}
 
 	std::shared_ptr<unit> environment::create_dummy(std::string const& name, point2 location)
 	{
@@ -379,6 +391,14 @@ namespace px {
 		body->set_tag(name);
 		body->health().create(100);
 		body->traverse().make_traversable<rl::traverse::floor>();
+
+		body_component::buff_type intrinsic;
+		intrinsic.set_name("intrinsic");
+		intrinsic.set_tag("default");
+		intrinsic.add(rl::enhancement<rl::effect>::integer(rl::effect::accuracy, 85));
+		intrinsic.add(rl::enhancement<rl::effect>::integer(rl::effect::dodge, 5));
+		intrinsic.add(rl::enhancement<rl::effect>::integer(rl::effect::hp_bonus, 100));
+		body->buffs().push_back(intrinsic);
 
 		rl::item weapon;
 		weapon.set_name("weapon");

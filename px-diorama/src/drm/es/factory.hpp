@@ -100,6 +100,7 @@ namespace px {
 		}
 		void fixed_update(unsigned int delta)
 		{
+			m_bodies.fixed_update(delta);
 			m_npc.fixed_update(delta);
 		}
 		void provide_environment(environment * shell)

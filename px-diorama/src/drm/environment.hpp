@@ -79,6 +79,7 @@ namespace px {
 		void popup(point2 location, std::string text, color tint, float size);
 		void visual(std::string const& tag, point2 from, point2 destination, transform_component const* follow);
 		std::tuple<int, int, bool, bool> hit(body_component const&, body_component const&);
+		void damage(body_component & body, int damage); // damage with popup
 
 		// serialization
 
