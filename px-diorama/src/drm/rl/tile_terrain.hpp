@@ -22,6 +22,7 @@
 #include <px/rl/traverse.hpp>
 
 #include <fstream>
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -34,6 +35,7 @@ namespace px {
 		typedef Tile tile_type;
 		typedef tile_prototype<rl::mass<rl::traverse>> blueprint_type;
 		typedef tile_surface<tile_type, cell_width, cell_height, 1> surface_type;
+		typedef typename surface_type::callback_type callback_fn;
 
 	public:
 		bool traversable(point2 const& absolute, rl::traverse_options<rl::traverse> traverse) const noexcept
@@ -113,6 +115,15 @@ namespace px {
 			}
 		}
 
+		void on_enter(callback_fn && load_fn)
+		{
+			m_surface.on_enter(std::forward<callback_fn>(load_fn));
+		}
+		void on_leave(callback_fn && leave_fn)
+		{
+			m_surface.on_leave(std::forward<callback_fn>(leave_fn));
+		}
+
 	public:
 		tile_terrain()
 			: m_sprites(nullptr)
@@ -176,9 +187,9 @@ namespace px {
 		}
 
 	private:
-		tile_type											m_border;
-		tile_library<blueprint_type>						m_library;
-		tile_surface<tile_type, cell_width, cell_height, 1>	m_surface;
-		es::sprite_system *									m_sprites;
+		tile_surface<tile_type, cell_width, cell_height, 1>	m_surface;		// surface data streams
+		tile_type											m_border;		// fallback value
+		tile_library<blueprint_type>						m_library;		// tile protorypes
+		es::sprite_system *									m_sprites;		// sprite factory
 	};
 }

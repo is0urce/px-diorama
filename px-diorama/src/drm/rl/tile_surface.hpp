@@ -163,15 +163,15 @@ namespace px {
 			});
 		}
 
-		void on_enter(callback_type load_fn)
+		void on_enter(callback_type && load_fn)
 		{
-			m_load_event = load_fn;
+			m_enter_event = load_fn;
 		}
-		void on_leave(callback_type unload_fn)
+		void on_leave(callback_type && unload_fn)
 		{
-			m_unload_event = unload_fn;
+			m_leave_event = unload_fn;
 		}
-		void on_loading(callback_type loading_fn)
+		void on_loading(callback_type && loading_fn)
 		{
 			m_loading_event = loading_fn;
 		}

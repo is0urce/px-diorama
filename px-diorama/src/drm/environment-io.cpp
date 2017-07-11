@@ -287,9 +287,12 @@ namespace px {
 	}
 	void environment::restore_scene(point2 const& cell)
 	{
-		load_units(m_repository.depot_scene(cell), *m_factory, [&](auto & builder) {
-			spawn(builder.assemble());
-		});
+		std::string path = m_repository.depot_scene(cell);
+		if (m_repository.has_scene(path)) {
+			load_units(path, *m_factory, [&](auto & builder) {
+				spawn(builder.assemble());
+			});
+		}
 	}
 
 	// UNIT EXPORT-IMPORT

@@ -45,6 +45,8 @@ namespace px {
 
 		// terrain
 		m_terrain->assigns_sprites(m_factory->sprites());
+		m_terrain->on_leave([&](point2 const& cell) { archive_scene(cell); });
+		m_terrain->on_enter([&](point2 const& cell) { restore_scene(cell); });
 
 		start();
 

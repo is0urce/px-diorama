@@ -21,22 +21,35 @@ namespace px {
 	class repository final
 	{
 	public:
+		static const int coordinate_bias = 500;
+
+	public:
+		bool exists() const
+		{
+			return fs::exists(m_directory);
+		}
 		void remove()
 		{
 			fs::remove_all(m_directory);
 		}
 		void create()
 		{
-			fs::create_directory(m_directory);
+			if (!exists()) {
+				fs::create_directory(m_directory);
+			}
 		}
 		void reset()
 		{
-			remove();
-			create();
-		}
-		bool exists() const
-		{
-			return fs::exists(m_directory);
+			// fs::create_directory sometime fails after fs::remove_all
+
+			if (!exists()) {
+				fs::create_directory(m_directory);
+			}
+			else {
+				for (auto const& entry : fs::directory_iterator(m_directory)) {
+					fs::remove_all(entry.path());
+				}
+			}
 		}
 
 		void save(repository & destination) const
@@ -143,7 +156,7 @@ namespace px {
 			destination.reset();
 
 			for (auto const& entry : fs::directory_iterator(source.m_directory)) {
-				fs::path path = entry.path();
+				fs::path const& path = entry.path();
 				fs::rename(path, destination.m_directory / path.filename());
 			}
 		}
@@ -152,9 +165,13 @@ namespace px {
 			destination.reset();
 
 			for (auto const& entry : fs::directory_iterator(source.m_directory)) {
-				fs::path path = entry.path();
+				fs::path const& path = entry.path();
 				fs::copy_file(path, destination.m_directory / path.filename(), fs::copy_options::overwrite_existing);
 			}
+		}
+		static std::string to_string(point2 const& location)
+		{
+			return std::to_string(location.x() + coordinate_bias) + "_" + std::to_string(location.y() + coordinate_bias);
 		}
 
 	private:
