@@ -35,24 +35,23 @@ namespace px {
 			if (!body->alive()) return;
 
 			px_assert(pawn);
+			px_assert(body);
 			px_assert(character);
-			if (pawn && character) {
+
+			if (pawn && body && character) {
 
 				lock_target(shell);
-
-				size_t skill_count = character->count_skills();
 
 				bool cast = false;
 				if (m_target) {
 					auto * target_body = m_target->linked<body_component>();
-					for (size_t slot = 0; slot != skill_count; ++slot) {
-						auto * skill = character->get_skill(slot);
-						if (skill->targeted() && skill->useable(body, target_body)) {
-							skill->use(body, target_body);
-							cast = true;
-							break;
+					for (size_t i = 0, size = character->count_skills(); !cast && i != size; ++i) {
+						auto * skill = character->get_skill(i);
+						px_assert(skill);
+						if (skill) {
+							cast = skill->targeted() && skill->try_use(body, target_body);
 						}
-					 }
+					}
 				}
 
 				if (m_alert && !cast) {

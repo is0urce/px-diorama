@@ -23,6 +23,6 @@ end
 -- action taken if skill is used
 
 action = function(user, location)
-	game:spawn("m_snail", location)
+	game:spawn("p_bag", location)
 	game:pset(3, location)
 end

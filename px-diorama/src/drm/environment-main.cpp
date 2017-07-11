@@ -244,6 +244,10 @@ namespace px {
 
 	void environment::spawn(unit_ptr mobile)
 	{
+		px_assert(mobile);
+		px_assert(mobile->transform());
+
+		mobile->transform()->store_position();
 		mobile->enable();
 		m_units.push_back(mobile);
 	}
@@ -252,11 +256,12 @@ namespace px {
 	{
 		// units
 
-		//spawn(create_dummy("m_snail", { 0, 9 }));
+		spawn(create_dummy("p_vein", { 0, 5 }));
 		spawn(create_dummy("m_rat", { 3, 3 }));
+		spawn(create_dummy("p_bag", { 0, 3 }));
 
 		// player
-		auto player = create_dummy("m_gnome", { 3, 3 });
+		auto player = create_dummy("m_gnome", { 2, 2 });
 		spawn(player);
 
 		impersonate(player->transform());
@@ -335,8 +340,10 @@ namespace px {
 		auto character = builder.add_character();
 
 		if (name == "m_gnome") {
-			body->join_faction(1);
 			builder.add_player();
+
+			body->join_faction(1);
+
 			character->learn_skill("sk_v_melee");
 			character->learn_skill("sk_s_smite");
 			character->learn_skill("sk_s_rend");
@@ -345,6 +352,15 @@ namespace px {
 			character->learn_skill("sk_v_teleport");
 			character->learn_skill("sk_o_export");
 			character->learn_skill("sk_o_import");
+
+			for (unsigned int i = 0; i != 10; ++i) {
+				auto itm = std::make_shared<rl::item>();
+				itm->set_name("iron");
+				itm->make_stacking();
+				itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, 1));
+				itm->add(rl::item::enhancement_type::integer(rl::effect::essence, 1024));
+				container->add(itm);
+			}
 		}
 		else {
 			builder.add_npc();
@@ -353,19 +369,10 @@ namespace px {
 		}
 
 		// setup
-		transform->store_position();
-		body->health().create(100);
 		body->set_name(name);
 		body->set_tag(name);
+		body->health().create(100);
 		body->traverse().make_traversable<rl::traverse::floor>();
-		for (unsigned int i = 0; i != 10; ++i) {
-			auto itm = std::make_shared<rl::item>();
-			itm->set_name("iron");
-			itm->make_stacking();
-			itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, 1));
-			itm->add(rl::item::enhancement_type::integer(rl::effect::essence, 1024));
-			container->add(itm);
-		}
 
 		rl::item weapon;
 		weapon.set_name("weapon");
