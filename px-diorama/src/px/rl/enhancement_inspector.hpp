@@ -29,6 +29,18 @@ namespace px {
 			typedef std::tuple<std::string, value_fn, status_fn> grinder_type;
 
 		public:
+			void expose_hidden() noexcept
+			{
+				m_honor = false;
+			}
+			void hide_hidden() noexcept
+			{
+				m_honor = false;
+			}
+			void set_honor(bool honor) noexcept
+			{
+				m_honor = honor;
+			}
 			void add(effect_type main_type, std::string name, value_fn value, status_fn status)
 			{
 				m_map[main_type] = { name, value, status };
@@ -37,7 +49,7 @@ namespace px {
 			{
 				std::optional<rl::enhancement_description> result;
 
-				if (!enhance.hidden) {
+				if (!enhance.hidden && !m_honor) {
 					auto it = m_map.find(enhance.main_type);
 					if (it != m_map.end()) {
 
@@ -52,8 +64,15 @@ namespace px {
 				return result;
 			}
 
+		public:
+			enhancement_inspector()
+				: m_honor(true)
+			{
+			}
+
 		private:
 			std::map<effect_type, grinder_type> m_map;
+			bool m_honor; // do not show hidden enhancements (alternative for debug etc)
 		};
 	}
 }
