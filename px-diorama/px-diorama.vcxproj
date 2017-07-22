@@ -91,6 +91,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -112,6 +113,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,6 +138,7 @@
       <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,6 +165,7 @@
       <AdditionalIncludeDirectories>include;src</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -202,6 +206,7 @@
     <ClInclude Include="src\drm\es\npc_system.hpp" />
     <ClInclude Include="src\drm\es\player_component.hpp" />
     <ClInclude Include="src\drm\repository.hpp" />
+    <ClInclude Include="src\drm\rl\enhancement_inspector.hpp" />
     <ClInclude Include="src\drm\script\script.hpp" />
     <ClInclude Include="src\drm\script\script_environment.hpp" />
     <ClInclude Include="src\drm\es\storage_component.hpp" />
@@ -239,6 +244,8 @@
     <ClInclude Include="src\px\common\enumerator.hpp" />
     <ClInclude Include="src\px\fn\room.hpp" />
     <ClInclude Include="src\px\fn\surface.hpp" />
+    <ClInclude Include="src\px\rl\enhancement_description.hpp" />
+    <ClInclude Include="src\px\rl\enhancement_status.hpp" />
     <ClInclude Include="src\px\ui\bar.hpp" />
     <ClInclude Include="src\px\ui\list.hpp" />
     <ClInclude Include="src\drm\ui\menu.hpp" />
