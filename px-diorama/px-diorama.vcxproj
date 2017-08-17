@@ -223,7 +223,7 @@
     <ClInclude Include="src\drm\rl\craft\recipe.hpp" />
     <ClInclude Include="src\drm\rl\terrain_generator.hpp" />
     <ClInclude Include="src\drm\rl\tile_surface.hpp" />
-    <ClInclude Include="src\drm\ui\inspector_panel.hpp" />
+    <ClInclude Include="src\drm\ui\item_panel.hpp" />
     <ClInclude Include="src\px\common\stream.hpp" />
     <ClInclude Include="src\drm\rl\tile_library.hpp" />
     <ClInclude Include="src\drm\rl\tile_prototype.hpp" />

@@ -45,6 +45,10 @@ namespace px {
 			{
 				m_map[main_type] = { name, value, status };
 			}
+			void add(effect_type main_type, std::string name, value_fn value, enhancement_status status)
+			{
+				m_map[main_type] = { name, value, [status](int /* v0 */, int /* v1 */, double, double) { return status; } };
+			}
 			std::optional<rl::enhancement_description> inspect(rl::enhancement<effect_type> const& enhance) const
 			{
 				std::optional<rl::enhancement_description> result;

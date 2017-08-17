@@ -12,11 +12,12 @@ namespace px {
 
 		enum class enhancement_status : unsigned char
 		{
-			neutral = 0,	// base stat
-			positive,		// plus stat
-			negative,		// minus stat
-			modified,		// both positive and negative, or unspecified
-			descriptive,	// informative
+			neutral = 0,	// base stat (white)
+			positive,		// plus stat (green/blue)
+			negative,		// minus stat (red)
+			modified,		// both positive and negative, or unspecified (blue/red)
+			general,		// (bold)
+			descriptive,	// informative (italic)
 			special,		// out of classification
 
 			not_valid,

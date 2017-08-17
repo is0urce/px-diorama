@@ -516,10 +516,10 @@
     <ClInclude Include="src\px\rl\enhancement_description.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\drm\ui\inspector_panel.hpp">
+    <ClInclude Include="src\px\rl\enhancement_inspector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\px\rl\enhancement_inspector.hpp">
+    <ClInclude Include="src\drm\ui\item_panel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

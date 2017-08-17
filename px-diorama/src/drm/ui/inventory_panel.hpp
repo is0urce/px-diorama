@@ -8,6 +8,8 @@
 #include "../es/body_component.hpp"
 #include "../es/container_component.hpp"
 
+#include "item_panel.hpp"
+
 #include "item_functional.hpp"
 
 #include <px/rl/loot/inventory.hpp>
@@ -47,8 +49,10 @@ namespace px {
 			{
 			}
 			inventory_panel()
-				: m_equipment(nullptr)
+				: m_inventory(nullptr)
+				, m_equipment(nullptr)
 				, m_container(nullptr)
+				, m_inspector(nullptr)
 			{
 				// inventory panel block
 				auto inventory_block = make<panel>({ { 0.5, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.5, 1.0 } });
@@ -89,9 +93,10 @@ namespace px {
 			}
 
 		private:
-			list<rl::inventory> * m_inventory;
-			body_component * m_equipment;
-			container_component * m_container;
+			list<rl::inventory> *	m_inventory;
+			body_component *		m_equipment;
+			container_component *	m_container;
+			item_panel *			m_inspector;
 		};
 	}
 }
