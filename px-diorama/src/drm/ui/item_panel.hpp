@@ -40,25 +40,25 @@ namespace px {
 					auto result = m_inspector.inspect(enhancement);
 					if (result) {
 
-						auto prop = m_properties->make<text>({ { 0.0, 0.0 },{ 0, 1 },{ 0, 0 },{ 1.0, 1.0 } }, "xxx");
+						auto description = m_properties->make<text>({ { 0.0, 0.0 },{ 0, 1 },{ 0, 0 },{ 1.0, 1.0 } }, "xxx");
 						switch (result->status)
 						{
 						case rl::enhancement_status::positive:
-							prop->set_color({ 0.0, 1.0, 0.0 });
-							prop->set_text(result->value + " " + result->name);
+							description->set_color({ 0.0, 1.0, 0.0 });
+							description->set_text(result->value + " " + result->name);
 							break;
 						case rl::enhancement_status::negative:
-							prop->set_color({ 0.0, 1.0, 0.0 });
-							prop->set_text(result->value + " " + result->name);
+							description->set_color({ 0.0, 1.0, 0.0 });
+							description->set_text(result->value + " " + result->name);
 						case rl::enhancement_status::neutral:
-							prop->set_color({ 0.0, 0.0, 0.0 });
-							prop->set_text(result->value + " " + result->name);
+							description->set_color({ 0.0, 0.0, 0.0 });
+							description->set_text(result->value + " " + result->name);
 						case rl::enhancement_status::general:
-							prop->set_color({ 0.0, 0.0, 0.0 });
-							prop->set_text(result->name + " " + result->value);
+							description->set_color({ 0.0, 0.0, 0.0 });
+							description->set_text(result->name + " " + result->value);
 						default:
-							prop->set_color({ 0.0, 0.0, 0.0 });
-							prop->set_text(result->name + ": " + result->value);
+							description->set_color({ 0.0, 0.0, 0.0 });
+							description->set_text(result->name + ": " + result->value);
 							break;
 						}
 					}

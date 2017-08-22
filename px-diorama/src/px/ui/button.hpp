@@ -19,11 +19,16 @@ namespace px {
 		{
 		public:
 			typedef std::function<void(int)> click_fn;
+			typedef std::function<void()> hover_fn;
 
 		public:
 			void on_click(click_fn click)
 			{
 				m_click = click;
+			}
+			void on_hover(hover_fn hover_action)
+			{
+				m_hover = hover_action;
 			}
 			void register_shortcut(unsigned int code)
 			{
@@ -48,6 +53,11 @@ namespace px {
 				press_button(button);
 				return true;
 			}
+			virtual bool hover_panel(point2 const& /*position*/) override
+			{
+				hover_button();
+				return true;
+			}
 			virtual bool press_panel(unsigned int code) override
 			{
 				for (auto shortcut : m_shortcuts) {
@@ -66,10 +76,17 @@ namespace px {
 					m_click(button);
 				}
 			}
+			void hover_button()
+			{
+				if (m_hover) {
+					m_hover();
+				}
+			}
 
 		private:
-			click_fn m_click;
-			std::vector<unsigned int> m_shortcuts;
+			click_fn					m_click;
+			hover_fn					m_hover;
+			std::vector<unsigned int>	m_shortcuts;
 		};
 	}
 }

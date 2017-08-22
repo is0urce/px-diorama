@@ -94,13 +94,19 @@ namespace px {
 		private:
 			void make_slot(alignment subpanel_alignment, rl::equipment_slot equipment_slot, std::string unequipped_text)
 			{
-				auto slot = make<panel>(subpanel_alignment);
+				auto slot = make<panel>(subpanel_alignment).get();
 				slot->make<board>(fill, color{ 1, 1, 1, 0.5 });
 				slot->make<text>(fill, [this, equipment_slot, unequipped_text]() -> std::string {
 					return (m_equipment && m_equipment->equipped(equipment_slot)) ? m_equipment->at(equipment_slot).name() : unequipped_text;
 				});
-				slot->make<button>(fill, [this, equipment_slot](int /* mouse_button */) {
+				auto btn = slot->make<button>(fill).get();
+				btn->on_click([this, equipment_slot](int /* mouse_button */) {
 					if (m_equipment && m_container) m_equipment->unequip(*m_container, equipment_slot);
+				});
+				btn->on_hover([this, equipment_slot]() {
+					if (m_equipment && m_equipment->equipped(equipment_slot)) {
+						m_inspector->inspect(m_equipment->at(equipment_slot));
+					}
 				});
 			}
 
