@@ -87,8 +87,8 @@ namespace px {
 
 				// item inspector
 				auto inspector_block = make<item_panel>({ { 0.67, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.33, 1.0 } });
-				//inspector_block->make<board>(fill, color{ 1.0, 1.0, 1.0, 0.5 });
-				m_inspector = inspector_block.get();
+				inspector_block->make<board>(fill, color{ 1.0, 1.0, 0.0, 0.5 });
+				m_inspector = inspector_block->make<item_panel>({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } }).get();
 			}
 
 		private:

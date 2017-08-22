@@ -36,21 +36,33 @@ namespace px {
 				clear();
 
 				m_name->set_text(item.name());
-				//item.enumerate([&](auto const& enhancement) {
-				//	auto result = m_inspector.inspect(enhancement);
-				//	if (result) {
+				item.enumerate([&](auto const& enhancement) {
+					auto result = m_inspector.inspect(enhancement);
+					if (result) {
 
-				//		auto prop = m_properties->make<text>({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } }, "");
-				//		//switch (result->status)
-				//		//{
-				//		//case rl::enhancement_status::general:
-				//		//default:
-				//		//	break;
-				//		//}
-
-				//		//prop->set_text(result->name + ": " + result->value);
-				//	}
-				//});
+						auto prop = m_properties->make<text>({ { 0.0, 0.0 },{ 0, 1 },{ 0, 0 },{ 1.0, 1.0 } }, "xxx");
+						switch (result->status)
+						{
+						case rl::enhancement_status::positive:
+							prop->set_color({ 0.0, 1.0, 0.0 });
+							prop->set_text(result->value + " " + result->name);
+							break;
+						case rl::enhancement_status::negative:
+							prop->set_color({ 0.0, 1.0, 0.0 });
+							prop->set_text(result->value + " " + result->name);
+						case rl::enhancement_status::neutral:
+							prop->set_color({ 0.0, 0.0, 0.0 });
+							prop->set_text(result->value + " " + result->name);
+						case rl::enhancement_status::general:
+							prop->set_color({ 0.0, 0.0, 0.0 });
+							prop->set_text(result->name + " " + result->value);
+						default:
+							prop->set_color({ 0.0, 0.0, 0.0 });
+							prop->set_text(result->name + ": " + result->value);
+							break;
+						}
+					}
+				});
 			}
 
 		public:
@@ -65,9 +77,8 @@ namespace px {
 
 				// setup ui layout
 
-				auto properties_block = make<panel>({ { 0.33, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.33, 0.5 } });
-				properties_block->make<board>(fill, color{ 1.0, 1.0, 0.0, 0.5 });
 				auto name_block = make<text>({ { 0.0, 0.0 },{ 0, 0 },{ 0, 0 },{ 1.0, 1.0 } }, "");
+				auto properties_block = make<panel>({ { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 1.0, 1.0 } });
 
 				m_properties = properties_block.get();
 				m_name = name_block.get();

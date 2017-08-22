@@ -53,15 +53,14 @@ namespace px {
 			{
 				std::optional<rl::enhancement_description> result;
 
-				if (!enhance.hidden && !m_honor) {
+				if (!enhance.hidden || !m_honor) {
 					auto it = m_map.find(enhance.main_type);
 					if (it != m_map.end()) {
 
 						result.emplace();
-
-						result->name = std::get<0>(*it);
-						result->value = std::get<1>(*it)(enhance.value0, enhance.value1, enhance.magnitude0, enhance.magnitude1);
-						result->status = std::get<1>(*it)(enhance.value0, enhance.value1, enhance.magnitude0, enhance.magnitude1);
+						result->name = std::get<0>(it->second);
+						result->value = std::get<1>(it->second)(enhance.value0, enhance.value1, enhance.magnitude0, enhance.magnitude1);
+						result->status = std::get<2>(it->second)(enhance.value0, enhance.value1, enhance.magnitude0, enhance.magnitude1);
 					}
 				}
 
