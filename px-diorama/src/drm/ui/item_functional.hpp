@@ -27,8 +27,9 @@ namespace px {
 			List destination;
 		};
 
-		struct item_name
+		class item_name
 		{
+		public:
 			template <typename Item>
 			std::string operator()(Item && item)
 			{

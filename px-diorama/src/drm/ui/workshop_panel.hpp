@@ -22,6 +22,8 @@
 #include <memory>
 #include <vector>
 
+// crafting panel
+
 namespace px {
 	namespace ui {
 

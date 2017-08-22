@@ -5,6 +5,7 @@
 
 #pragma once
 
+// maps vkodes to actions calls
 // traslation of px::key actiont to call step, action or activate via CRTP
 
 #include "key.hpp"

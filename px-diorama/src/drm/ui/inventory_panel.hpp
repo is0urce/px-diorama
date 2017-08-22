@@ -55,7 +55,7 @@ namespace px {
 				, m_inspector(nullptr)
 			{
 				// inventory panel block
-				auto inventory_block = make<panel>({ { 0.5, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.5, 1.0 } });
+				auto inventory_block = make<panel>({ { 0.33, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.33, 1.0 } });
 				inventory_block->make<board>(fill, color{ 1.0, 1.0, 1.0, 0.5 });
 				inventory_block->make<text>({ { 0.0, 0.0 },{ 0, 0 },{ 0, 1 },{ 1.0, 0.0 } }, "Inventory");
 				m_inventory = inventory_block->make<list<rl::inventory>>({ { 0.0, 0.0 },{ 0, 1 },{ 0, -1 },{ 1.0, 1.0 } }).get();
@@ -72,11 +72,23 @@ namespace px {
 					}
 				});
 
-				make_slot({ { 0.0, 0.0 },{ 0, 0 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::weapon_main, "!weapon");
-				make_slot({ { 0.0, 0.0 },{ 0, 2 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::armor_helmet, "!helmet");
-				make_slot({ { 0.0, 0.0 },{ 0, 4 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::armor_chest, "!armor");
-				make_slot({ { 0.0, 0.0 },{ 0, 6 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::armor_greaves, "!pants");
-				make_slot({ { 0.0, 0.0 },{ 0, 8 },{ -1, 1 },{ 0.5, 0.0 } }, rl::equipment_slot::accessory_bell, "!bell");
+				m_inventory->on_hover([this](auto const& item) {
+					if (item) {
+						m_inspector->inspect(*item);
+					}
+				});
+
+				// equipment
+				make_slot({ { 0.0, 0.0 },{ 0, 0 },{ -1, 1 },{ 0.33, 0.0 } }, rl::equipment_slot::weapon_main, "!weapon");
+				make_slot({ { 0.0, 0.0 },{ 0, 2 },{ -1, 1 },{ 0.33, 0.0 } }, rl::equipment_slot::armor_helmet, "!helmet");
+				make_slot({ { 0.0, 0.0 },{ 0, 4 },{ -1, 1 },{ 0.33, 0.0 } }, rl::equipment_slot::armor_chest, "!armor");
+				make_slot({ { 0.0, 0.0 },{ 0, 6 },{ -1, 1 },{ 0.33, 0.0 } }, rl::equipment_slot::armor_greaves, "!pants");
+				make_slot({ { 0.0, 0.0 },{ 0, 8 },{ -1, 1 },{ 0.33, 0.0 } }, rl::equipment_slot::accessory_bell, "!bell");
+
+				// item inspector
+				auto inspector_block = make<item_panel>({ { 0.67, 0.0 },{ 0, 0 },{ 0, 0 },{ 0.33, 1.0 } });
+				//inspector_block->make<board>(fill, color{ 1.0, 1.0, 1.0, 0.5 });
+				m_inspector = inspector_block.get();
 			}
 
 		private:

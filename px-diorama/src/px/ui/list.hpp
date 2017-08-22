@@ -22,7 +22,7 @@ namespace px {
 		public:
 			typedef Container container_type;
 			typedef typename Container::value_type element_type;
-			typedef std::function<void(element_type &)> click_fn;
+			typedef std::function<void(element_type &)> event_fn;
 			typedef std::function<std::string(element_type const&)> format_fn;
 			typedef std::function<bool(element_type const&)> filter_fn;
 
@@ -57,9 +57,13 @@ namespace px {
 			{
 				m_color = text_color;
 			}
-			void on_click(click_fn click_action)
+			void on_click(event_fn click_action)
 			{
 				m_click = click_action;
+			}
+			void on_hover(event_fn hover_action)
+			{
+				m_hover = hover_action;
 			}
 			container_type * assigned_container()
 			{
@@ -117,20 +121,20 @@ namespace px {
 			}
 			virtual bool click_panel(point2 const& position, int mouse_button) override
 			{
-				if (m_container && mouse_button == 0 && m_click)
-				{
-					element_type * found = nullptr;
-					int selected = position.y();
-
-					int index = 0 - m_scroll;
-					m_container->enumerate([&](auto & item) {
-						if (m_filter(item)) {
-							if (selected == index) found = std::addressof(item);
-							++index;
-						}
-					});
+				if (m_click && mouse_button == 0) {
+					element_type * found = find(position.y());
 
 					if (found) m_click(*found);
+				}
+
+				return true; // event processed
+			}
+			virtual bool hover_panel(point2 const& position) override
+			{
+				if (m_hover) {
+					element_type * found = find(position.y());
+
+					if (found) m_hover(*found);
 				}
 
 				return true; // event processed
@@ -156,6 +160,22 @@ namespace px {
 				}
 				return counter;
 			}
+			element_type * find(int selected) const
+			{
+				element_type * found = nullptr;
+
+				if (m_container) {
+					int index = 0 - m_scroll;
+					m_container->enumerate([&](auto & item) {
+						if (m_filter(item)) {
+							if (selected == index) found = std::addressof(item);
+							++index;
+						}
+					});
+				}
+
+				return found;
+			}
 
 			void scroll_list(int scroll)
 			{
@@ -178,7 +198,8 @@ namespace px {
 
 			filter_fn			m_filter;
 			format_fn			m_format;	// item to string
-			click_fn			m_click;	// on click event callback
+			event_fn			m_click;	// on click event callback
+			event_fn			m_hover;	// on hover event callback
 		};
 	}
 }

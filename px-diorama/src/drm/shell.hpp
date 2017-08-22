@@ -37,10 +37,11 @@ namespace px {
 		}
 		void hover(int x, int y)
 		{
+			m_hover = { x, y };
 			bool processed = ui()->hover(translate_gui(m_hover));
 
 			if (!processed) {
-				target(translate_world(m_hover = { x, y }));
+				target(translate_world(m_hover));
 			}	
 		}
 		void click(int button)

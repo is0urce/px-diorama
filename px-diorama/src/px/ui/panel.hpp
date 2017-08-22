@@ -63,6 +63,10 @@ namespace px {
 			{
 				return m_focus;
 			}
+			bool contains(point2 const& absolute) const noexcept
+			{
+				return m_bounds.contains(absolute);
+			}
 
 			// creation
 			void add(name_type name, panel_ptr child)
@@ -174,13 +178,11 @@ namespace px {
 			}
 			bool hover(point2 absolute)
 			{
-				m_focus = m_bounds.contains(absolute);
+				m_focus = contains(absolute);
 
 				bool processed = false;
 
 				if (m_focus) {
-
-					point2 relative = absolute - m_bounds.start();
 
 					// childrens
 					action([&](auto & subpanel) {
@@ -189,7 +191,7 @@ namespace px {
 
 					// this one
 					if (!processed) {
-						processed = hover_panel(relative); // call this virtual overload
+						processed = hover_panel(absolute - m_bounds.start()); // call this virtual overload
 					}
 				}
 
@@ -197,18 +199,18 @@ namespace px {
 			}
 
 			// returns true if event dispatched by subpanels
-			bool click(point2 const& position, int button)
+			bool click(point2 const& absolute, int button)
 			{
 				bool processed = false;
 
 				// childrens
 				action([&](auto & subpanel) {
-					processed |= subpanel->click(position, button); // call recursive
+					processed |= subpanel->click(absolute, button); // call recursive
 				});
 
 				// this one
-				if (!processed && m_bounds.contains(position)) {
-					processed = click_panel(position - m_bounds.start(), button); // call this virtual overload
+				if (!processed && contains(absolute)) {
+					processed = click_panel(absolute - m_bounds.start(), button); // call this virtual overload
 				}
 
 				return processed;
