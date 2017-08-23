@@ -174,16 +174,14 @@ namespace px {
 
 			void request_input_focus() noexcept
 			{
-				m_input_route = this;
-				if (m_parent) {
-					m_parent->m_input_route = this;
+				for (auto * route = this; route != nullptr; route = route->m_parent) {
+					route->m_input_route = this;
 				}
 			}
 			void release_input_focus() noexcept
 			{
-				m_input_route = nullptr;
-				if (m_parent) {
-					m_parent->release_input_focus();
+				for (auto * route = this; route != nullptr; route = route->m_parent) {
+					route->m_input_route = nullptr;
 				}
 			}
 

@@ -11,8 +11,7 @@
     {
       "action": 3,
       "keys": [ 323 ]
-    }
-    ,
+    },
     {
       "action": 4,
       "keys": [ 65, 263, 324 ]
@@ -45,52 +44,52 @@
     {
       "action": 11,
       "keys": [ 49 ],
-      "comment" : "slot 1"
+      "comment": "slot 1"
     },
     {
       "action": 12,
       "keys": [ 50 ],
-      "comment" : "slot 2"
+      "comment": "slot 2"
     },
     {
       "action": 13,
       "keys": [ 51 ],
-      "comment" : "slot 3"
+      "comment": "slot 3"
     },
     {
       "action": 14,
       "keys": [ 52 ],
-      "comment" : "slot 4"
+      "comment": "slot 4"
     },
     {
       "action": 15,
       "keys": [ 53 ],
-      "comment" : "slot 5"
+      "comment": "slot 5"
     },
     {
       "action": 16,
       "keys": [ 54 ],
-      "comment" : "slot 6"
+      "comment": "slot 6"
     },
     {
       "action": 17,
       "keys": [ 55 ],
-      "comment" : "slot 7"
+      "comment": "slot 7"
     },
     {
       "action": 18,
       "keys": [ 56 ],
-      "comment" : "slot 8"
+      "comment": "slot 8"
     },
     {
       "action": 19,
       "keys": [ 57 ],
-      "comment" : "slot 9"
+      "comment": "slot 9"
     },
     {
       "action": 105,
       "keys": [ 294 ],
-      "comment" : "quicksave"
+      "comment": "quicksave"
     },
     {
       "action": 109,
@@ -100,7 +99,17 @@
     {
       "action": 502,
       "keys": [ 73 ],
-      "comment" : "i for inventory"
+      "comment": "i for inventory"
+    },
+    {
+      "action": 50,
+      "keys": [ 257 ],
+      "comment": "command ok (enter)"
+    },
+    {
+      "action": 51,
+      "keys": [ 256 ],
+      "comment": "command cancel (escape)"
     }
   ]
 }

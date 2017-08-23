@@ -12,6 +12,7 @@ namespace px {
 	enum class key : unsigned int
 	{
 		not_valid = 0,
+
 		move_southwest = 1,
 		move_south = 2,
 		move_southeast = 3,
@@ -36,20 +37,20 @@ namespace px {
 		action_use = 20,
 		action_alt = 21,
 
+		command_ok			= 50,
+		command_cancel		= 51,
+
+		navigate_next		= 52,
+		navigate_previous	= 53,
+
 		quick_save = 105,
 		quick_load = 109,
-
-		navigate_next,
-		navigate_previous,
 
 		panel_character = 500,
 		panel_craft = 501,
 		panel_inventory = 502,
 		panel_journal = 503,
 		panel_map = 504,
-		panel_options = 505,
-
-		command_ok,
-		command_cancel,
+		panel_options = 505
 	};
 }

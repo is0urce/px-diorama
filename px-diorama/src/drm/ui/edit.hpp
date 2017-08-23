@@ -20,7 +20,7 @@ namespace px {
 		{
 		public:
 			edit()
-				: text([]() { return ""; }, { 0, 0, 0, 1 }, text_alignment::left)
+				: text("")
 			{
 			}
 			virtual ~edit()
@@ -31,9 +31,11 @@ namespace px {
 			virtual bool print_panel(unsigned int codepoint) override
 			{
 				if (input_focused()) {
-					auto str = m_text();
-					set_text(str + string::code_to_utf8(codepoint));
+					set_text(current() + string::code_to_utf8(codepoint));
+					return true;
 				}
+
+				return false;
 			}
 			virtual bool press_panel(unsigned int action_code) override
 			{
@@ -54,11 +56,6 @@ namespace px {
 
 				return false;
 			}
-
-		private:
-			color m_color;
-			text_alignment m_alignment;
-			text_fn m_text;
 		};
 	}
 }

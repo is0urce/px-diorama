@@ -158,6 +158,11 @@ namespace px {
 			auto k_button = k_block->make<button>(fill);
 			k_button->on_click([this](int /* mouse_button */) { open_workshop(m_container); });
 
+			// console
+			auto console_block = m_main->make<board>({ { 0.0, 0.0 },{ 3,1 },{ 20,1 },{ 0, 0 } }, color{ 0.5, 0.5, 0, 1 });
+			auto console_text = console_block->make<edit>(fill);
+			console_text->set_text("hey");
+
 			// end setup
 			close_sheets();
 		}
