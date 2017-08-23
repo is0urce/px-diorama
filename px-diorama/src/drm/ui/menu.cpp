@@ -11,6 +11,7 @@
 #include "target_panel.hpp"
 #include "workshop_panel.hpp"
 #include "performance_panel.hpp"
+#include "edit.hpp"
 
 #include "item_functional.hpp"
 

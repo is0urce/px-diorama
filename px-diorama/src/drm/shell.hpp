@@ -26,14 +26,17 @@ namespace px {
 	public:
 		void press(key action)
 		{
-			bool processed = ui()->press(static_cast<unsigned int>(action));
-
-			if (!processed) {
-				translate_key(action);
+			if (!ui()->input_focused() || action == key::command_ok || action == key::command_cancel) {
+				if (!ui()->press(static_cast<unsigned int>(action))) {
+					translate_key(action);
+				}
 			}
 		}
-		void text(unsigned int /* codepoint */)
+		void text(unsigned int codepoint)
 		{
+			if (ui()->input_focused()) {
+				ui()->print(codepoint);
+			}
 		}
 		void hover(int x, int y)
 		{

@@ -44,6 +44,18 @@ namespace px {
 			{
 				return m_align;
 			}
+			bool contains(point2 const& absolute) const noexcept
+			{
+				return m_bounds.contains(absolute);
+			}
+			bool focused() const noexcept
+			{
+				return m_focus;
+			}
+			bool input_focused() const noexcept
+			{
+				return m_input_route != nullptr;
+			}
 			void layout(rectangle const& parent_bounds)
 			{
 				m_bounds = layout_panel(parent_bounds);
@@ -58,14 +70,6 @@ namespace px {
 				if (m_parent) {
 					layout(m_parent->m_bounds);
 				}
-			}
-			bool focused() const noexcept
-			{
-				return m_focus;
-			}
-			bool contains(point2 const& absolute) const noexcept
-			{
-				return m_bounds.contains(absolute);
 			}
 
 			// creation
@@ -154,7 +158,8 @@ namespace px {
 				inflate(-right, -bottom, -left, -top);
 			}
 
-			// input
+			// draw
+
 			void draw(canvas & cnv) const
 			{
 				display window(&cnv, m_bounds);
@@ -164,17 +169,43 @@ namespace px {
 					subpanel->draw(cnv);
 				});
 			}
-			bool press(unsigned int code)
+
+			// input
+
+			void request_input_focus() noexcept
+			{
+				m_input_route = this;
+				if (m_parent) {
+					m_parent->m_input_route = this;
+				}
+			}
+			void release_input_focus() noexcept
+			{
+				m_input_route = nullptr;
+				if (m_parent) {
+					m_parent->release_input_focus();
+				}
+			}
+
+			bool press(unsigned int action_code)
 			{
 				bool processed = false;
 
 				// childrens
 				action([&](auto & subpanel) {
-					processed |= subpanel->press(code);
+					processed |= subpanel->press(action_code);
 				});
 
 				// this one
-				return processed || press_panel(code);
+				if (!processed) {
+					processed = press_panel(action_code);
+				}
+
+				return processed;
+			}
+			bool print(unsigned int codepoint)
+			{
+				return m_input_route != nullptr && m_input_route->print_panel(codepoint);
 			}
 			bool hover(point2 absolute)
 			{
@@ -257,6 +288,7 @@ namespace px {
 				: m_name(tag)
 				, m_align(align)
 				, m_parent(nullptr)
+				, m_input_route(nullptr)
 				, m_focus(false)
 			{
 			}
@@ -272,7 +304,11 @@ namespace px {
 			{
 				return false;
 			}
-			virtual bool press_panel(unsigned int /* code */)
+			virtual bool press_panel(unsigned int /* action_code */)
+			{
+				return false;
+			}
+			virtual bool print_panel(unsigned int /* codepoint */)
 			{
 				return false;
 			}
@@ -332,9 +368,12 @@ namespace px {
 
 		private:
 			name_type	m_name;
+
 			alignment	m_align;
 			rectangle	m_bounds;
+
 			panel *		m_parent;
+			panel *		m_input_route;	// key codepoint routed to this element
 
 			bool		m_focus;
 
