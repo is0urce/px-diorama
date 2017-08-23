@@ -26,7 +26,7 @@ namespace px {
 	public:
 		void press(key action)
 		{
-			if (!ui()->input_focused() || action == key::command_ok || action == key::command_cancel) {
+			if (!ui()->input_focused() || action == key::command_ok || action == key::command_cancel || action == key::command_backspace) {
 				if (!ui()->press(static_cast<unsigned int>(action))) {
 					translate_key(action);
 				}

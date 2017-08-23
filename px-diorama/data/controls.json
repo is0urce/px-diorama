@@ -110,6 +110,11 @@
       "action": 51,
       "keys": [ 256 ],
       "comment": "command cancel (escape)"
+    },
+    {
+      "action": 52,
+      "keys": [ 259 ],
+      "comment": "command backspace"
     }
   ]
 }

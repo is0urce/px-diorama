@@ -19,11 +19,11 @@ namespace px {
 			: public text
 		{
 		public:
-			edit()
-				: text("_")
+			virtual ~edit()
 			{
 			}
-			virtual ~edit()
+			edit()
+				: text("")
 			{
 			}
 
@@ -39,12 +39,21 @@ namespace px {
 			}
 			virtual bool press_panel(unsigned int action_code) override
 			{
-				key action = static_cast<key>(action_code);
-				if (action == key::command_cancel || action == key::command_ok) {
-					release_input_focus();
+				if (input_focused()) {
+					switch (static_cast<key>(action_code)) {
+					case key::command_cancel:
+					case key::command_ok:
+						release_input_focus();
+						break;
+					case key::command_backspace: {
+						auto str = current();
+						auto len = str.length();
+						set_text(len > 0 ? str.substr(0, len - 1) : "");
+					}
+						break;
+					}
 					return true;
 				}
-
 				return false;
 			}
 			virtual bool click_panel(point2 const& /* position */, int button) override

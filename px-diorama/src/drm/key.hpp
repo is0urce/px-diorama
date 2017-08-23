@@ -37,11 +37,12 @@ namespace px {
 		action_use = 20,
 		action_alt = 21,
 
-		command_ok			= 50,
-		command_cancel		= 51,
+		command_ok			= 50,	// enter
+		command_cancel		= 51,	// escape
+		command_backspace	= 52,	// backspace
 
-		navigate_next		= 52,
-		navigate_previous	= 53,
+		navigate_next		= 60,
+		navigate_previous	= 61,
 
 		quick_save = 105,
 		quick_load = 109,
