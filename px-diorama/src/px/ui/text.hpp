@@ -54,7 +54,7 @@ namespace px {
 			}
 
 		public:
-			auto current()
+			std::string current() const
 			{
 				return m_text();
 			}
@@ -78,7 +78,7 @@ namespace px {
 		protected:
 			virtual void draw_panel(display & window) const override
 			{
-				auto str = m_text();
+				auto str = format_text();
 				int len = static_cast<int>(str.length());
 				int width = bounds().width();
 
@@ -93,6 +93,10 @@ namespace px {
 				}
 
 				window.print({ offset, 0 }, m_color, str);
+			}
+			virtual std::string format_text() const
+			{
+				return current();
 			}
 
 		private:

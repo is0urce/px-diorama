@@ -20,7 +20,7 @@ namespace px {
 		{
 		public:
 			edit()
-				: text("")
+				: text("_")
 			{
 			}
 			virtual ~edit()
@@ -55,6 +55,13 @@ namespace px {
 				}
 
 				return false;
+			}
+			virtual std::string format_text() const override
+			{
+				if (input_focused()) {
+					return text::format_text() + "_";
+				}
+				return text::format_text();
 			}
 		};
 	}
