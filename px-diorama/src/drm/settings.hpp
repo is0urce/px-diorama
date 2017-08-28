@@ -22,6 +22,8 @@ namespace px {
 
 		char const* const blueprint_directory = "data/blueprints/";
 		char const* const blueprint_extension = ".dat";
+		char const* const scheme_directory = "data/blueprints";
+		char const* const scheme_extension = ".json";
 		char const* const terrain_directory = "data/terrain/";
 		char const* const terrain_extension = ".dat";
 

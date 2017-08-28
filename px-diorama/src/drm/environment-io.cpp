@@ -26,6 +26,10 @@ namespace px {
 		{
 			return std::string(blueprint_directory) + blueprint_tag + std::string(blueprint_extension);
 		}
+		std::string depot_scheme(std::string const& scheme_tag)
+		{
+			return std::string(scheme_directory) + scheme_tag + std::string(scheme_extension);
+		}
 
 		// returns true if mobile in cell bound and have required persistency
 		// not const, so it uses faster proxy querying of type
@@ -324,6 +328,31 @@ namespace px {
 
 		return result;
 	}
+	environment::unit_ptr environment::compile_unit(std::string const& scheme_name, point2 location)
+	{
+		unit_builder builder(*m_factory);
+
+		auto document = depot::load_document(depot_scheme(scheme_name));
+
+		auto body_node = document.find("body");
+		if (body_node != document.end()) {
+			auto body = builder.add_body();
+			auto hp_node = body_node->find("hp");
+			if (hp_node != body_node->end()) {
+				body->health().create(hp_node.value());
+			}
+		}
+
+		auto result = builder.assemble();
+
+		// setup target location
+		if (auto transform = result->transform()) {
+			transform->place(location);
+			transform->store_position();
+		}
+
+		return result;
+	}
 	size_t environment::mass_export(point2 const& position)
 	{
 		size_t exported = 0;
@@ -338,24 +367,5 @@ namespace px {
 			}
 		}
 		return exported;
-	}
-
-	void environment::remove_sprite(unit & mobile)
-	{
-		unit_builder builder(m_factory.get(), mobile);
-
-		builder.remove_sprite();
-		builder.compile();
-	}
-	void environment::add_sprite(unit & mobile, std::string const& tag)
-	{
-		unit_builder builder(m_factory.get(), mobile);
-
-		auto sprite = builder.add_sprite(tag);
-		builder.compile();
-
-		if (sprite) {
-			sprite->activate();
-		}
 	}
 }
