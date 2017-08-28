@@ -30,7 +30,7 @@ namespace px {
 		: m_factory(std::make_unique<factory>())
 		, m_terrain(std::make_unique<terrain_type>())
 		, m_vfx(std::make_unique<std::vector<vfx>>())
-		, m_editor(false)
+		, m_editor(editor_mode)
 		, m_player(nullptr)
 		, m_run(true)
 		, m_turn(1)
@@ -154,6 +154,11 @@ namespace px {
 		m_run = false;
 	}
 
+	bool environment::editor() const noexcept
+	{
+		return m_editor;
+	}
+
 	void environment::end()
 	{
 		m_ui.close_transactions();
@@ -248,14 +253,27 @@ namespace px {
 		}
 	}
 
-	void environment::spawn(unit_ptr mobile)
+	void environment::enable(unit_ptr & mobile)
 	{
 		px_assert(mobile);
 		px_assert(mobile->transform());
 
 		mobile->transform()->store_position();
 		mobile->enable();
+	}
+	void environment::spawn(unit_ptr mobile)
+	{
+		enable(mobile);
 		m_units.push_back(mobile);
+	}
+	void environment::edit(unit_ptr mobile)
+	{
+		enable(mobile);
+		m_edited = mobile;
+	}
+	environment::unit_ptr environment::edited()
+	{
+		return m_edited;
 	}
 
 	void environment::start()
@@ -347,7 +365,22 @@ namespace px {
 		}
 	}
 
-	std::shared_ptr<unit> environment::create_dummy(std::string const& name, point2 location)
+	environment::unit_ptr environment::create_empty(std::string const& tag, point2 location)
+	{
+		unit_builder builder(m_factory.get());
+
+		auto transform = builder.add_transform(location);
+		auto sprite = builder.add_sprite("e_dummy");
+		auto body = builder.add_body();
+
+		body->set_name(tag);
+		body->set_tag(tag);
+
+		auto result = builder.assemble();
+
+		return result;
+	}
+	environment::unit_ptr environment::create_dummy(std::string const& name, point2 location)
 	{
 		// create
 		unit_builder builder(m_factory.get());

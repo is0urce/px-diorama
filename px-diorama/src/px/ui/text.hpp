@@ -23,6 +23,9 @@ namespace px {
 			typedef std::function<std::string()> text_fn;
 
 		public:
+			virtual ~text()
+			{
+			}
 			text(char const* c_str)
 				: text([str = std::string(c_str)]() { return str; }, { 0, 0, 0, 1 }, text_alignment::left)
 			{
@@ -47,9 +50,6 @@ namespace px {
 				: m_text(txt)
 				, m_color(front)
 				, m_alignment(align)
-			{
-			}
-			virtual ~text()
 			{
 			}
 

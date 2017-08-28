@@ -118,12 +118,12 @@ namespace px {
 		}
 
 	private:
-		perception m_perception;
+		perception	m_perception;
 
 		// ui transforms
-		point2 m_hover;
-		vector2 m_screen;
-		point2 m_cells;
-		int m_pixel_zoom;
+		point2		m_hover;
+		vector2		m_screen;
+		point2		m_cells;
+		int			m_pixel_zoom;
 	};
 }

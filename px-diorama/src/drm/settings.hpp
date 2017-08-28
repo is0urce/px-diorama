@@ -9,6 +9,10 @@ namespace px {
 
 	namespace {
 
+		// editor
+
+		const bool editor_mode = true;
+
 		// config
 
 		char const* const configuration_path = "data/config.json";

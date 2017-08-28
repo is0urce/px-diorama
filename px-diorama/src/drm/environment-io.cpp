@@ -14,7 +14,6 @@
 #include <memory>
 
 namespace px {
-
 	namespace {
 
 		// returns bounds of a cell
@@ -28,13 +27,15 @@ namespace px {
 			return std::string(blueprint_directory) + blueprint_tag + std::string(blueprint_extension);
 		}
 
+		// returns true if mobile in cell bound and have required persistency
+		// not const, so it uses faster proxy querying of type
 		template <unit_persistency Persistency, typename Pointer>
-		bool scene_predicate(Pointer & mobile_ptr, rectangle const& bounds) {
+		bool scene_predicate(Pointer & mobile, rectangle const& bounds) {
 
-			px_assert(mobile_ptr);
+			px_assert(mobile);
 
-			if (mobile_ptr->persistency() == Persistency) {
-				transform_component * transform = mobile_ptr->transform();
+			if (mobile->persistency() == Persistency) {
+				transform_component * transform = mobile->transform();
 				px_assert(transform);
 				return transform && bounds.contains(transform->position());
 			}
@@ -101,11 +102,11 @@ namespace px {
 		template <typename Archive>
 		inline void load_unit(unit_builder & builder, Archive & archive)
 		{
-			size_t total_components;
-			unit_component variant;
+			size_t size;			// total components in unit
+			unit_component variant;	// current component type
 
-			archive(total_components);
-			for (size_t i = 0; i != total_components; ++i) {
+			archive(size);
+			for (size_t i = 0; i != size; ++i) {
 				archive(variant);
 				switch (variant) {
 				case unit_component::transform: {
@@ -305,16 +306,6 @@ namespace px {
 
 		save_unit(mobile, archive);
 	}
-	environment::unit_ptr environment::import_unit(std::string const& blueprint_name)
-	{
-		auto input = input_stream(depot_blueprint(blueprint_name));
-		SAVE_INPUT_ARCHIVE archive(input);
-
-		unit_builder builder(*m_factory);
-		load_unit(builder, archive);
-
-		return builder.assemble();
-	}
 	environment::unit_ptr environment::import_unit(std::string const& blueprint_name, point2 location)
 	{
 		auto input = input_stream(depot_blueprint(blueprint_name));
@@ -323,12 +314,15 @@ namespace px {
 		unit_builder builder(*m_factory);
 		load_unit(builder, archive);
 
-		if (auto transform = builder.transform()) {
+		auto result = builder.assemble();
+
+		// setup target location
+		if (auto transform = result->transform()) {
 			transform->place(location);
 			transform->store_position();
 		}
 
-		return builder.assemble();
+		return result;
 	}
 	size_t environment::mass_export(point2 const& position)
 	{

@@ -42,7 +42,8 @@ namespace px {
 	class environment
 	{
 	public:
-		typedef std::shared_ptr<unit> unit_ptr;
+		typedef unit unit_type;
+		typedef std::shared_ptr<unit_type> unit_ptr;
 		typedef tile_terrain<tile_instance> terrain_type;
 		typedef rl::traverse_options<rl::traverse> traverse_type;
 
@@ -83,6 +84,7 @@ namespace px {
 
 		// serialization
 
+		bool editor() const noexcept;
 		void save();
 		void load();
 		void save(std::string const& save_name);
@@ -90,13 +92,16 @@ namespace px {
 
 		// units
 
-		void spawn(unit_ptr unit);
-		unit_ptr create_dummy(std::string const& unit_name, point2 location);
-		void export_unit(unit const& mobile, std::string const& blueprint_name) const;
-		unit_ptr import_unit(std::string const& blueprint_name);
-		unit_ptr import_unit(std::string const& blueprint_name, point2 location);
-		size_t mass_export(point2 const& location);
 		transform_component const* player() const noexcept;
+		void enable(unit_ptr & unit);
+		void spawn(unit_ptr unit);
+		void edit(unit_ptr unit);
+		unit_ptr edited();
+		unit_ptr create_empty(std::string const& tag, point2 location);
+		unit_ptr import_unit(std::string const& blueprint_name, point2 location);
+		void export_unit(unit const& mobile, std::string const& blueprint_name) const;
+		size_t mass_export(point2 const& location);
+		unit_ptr create_dummy(std::string const& tag, point2 location);
 
 		// terrain
 
@@ -137,7 +142,8 @@ namespace px {
 		repository						m_base;				// repository of base game setup
 		repository						m_repository;		// save directory of current game
 
-		std::vector<unit_ptr>			m_units;			// scene
+		std::vector<unit_ptr>			m_units;			// units on scene
+		unit_ptr						m_edited;			// current edited unit
 
 		transform_component *			m_player;			// player transform
 		std::mt19937					m_rng;
