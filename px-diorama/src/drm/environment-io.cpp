@@ -334,6 +334,20 @@ namespace px {
 
 		auto document = depot::load_document(depot_scheme(scheme_name));
 
+		auto transform_node = document.find("transform");
+		if (transform_node != document.end()) {
+			point2 position;
+			position.set<0>(transform_node->at("x"));
+			position.set<1>(transform_node->at("y"));
+			builder.add_transform(position);
+		}
+
+		auto sprite_node = document.find("sprite");
+		if (sprite_node != document.end()) {
+			std::string url = sprite_node->at("url");
+			builder.add_sprite(url);
+		}
+
 		auto body_node = document.find("body");
 		if (body_node != document.end()) {
 			auto body = builder.add_body();
