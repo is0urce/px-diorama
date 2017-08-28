@@ -17,6 +17,10 @@ namespace px {
 	class unit_builder final
 	{
 	public:
+		typedef unit unit_type;
+		typedef std::shared_ptr<unit_type> unit_ptr;
+
+	public:
 		auto add_transform(point2 location)
 		{
 			return m_transform = m_factory->make_transform(location);
@@ -53,16 +57,23 @@ namespace px {
 		{
 			return m_deposit = m_factory->make_deposit();
 		}
+		void remove_sprite()
+		{
+			m_sprite.reset();
+		}
 
 		// combine
-		std::shared_ptr<unit> assemble()
+		unit_ptr assemble()
 		{
-			auto result = std::make_shared<unit>();
+			m_unit = std::make_shared<unit>();
 
-			link_components();
-			compose_unit(*result);
+			compile();
 
-			return result;
+			return m_unit;
+		}
+		void compile()
+		{
+			compile(*m_unit);
 		}
 
 		// fetch part status
@@ -82,19 +93,29 @@ namespace px {
 		}
 
 	public:
-		unit_builder(factory & builder)
-			: m_factory(&builder)
-		{
-		}
 		unit_builder(factory * builder)
 			: m_factory(builder)
 		{
 			if (!builder) throw std::runtime_error("px::unit_builder::ctor() - factory is null");
 		}
+		unit_builder(factory & builder)
+			: unit_builder(&builder)
+		{
+		}
+		unit_builder(factory * builder, unit & source)
+			: unit_builder(builder)
+		{
+			disassemble(source);
+		}
 		unit_builder(unit_builder const&) = delete;
 		unit_builder& operator=(unit_builder const&) = delete;
 
 	private:
+		void compile(unit & product)
+		{
+			link_components();
+			compose(product);
+		}
 		void link_components()
 		{
 			if (m_transform) {
@@ -124,9 +145,10 @@ namespace px {
 				if (m_character)			m_npc->connect(m_character.get());
 			}
 		}
-		template <typename Container>
-		void compose_unit(Container & product)
+		void compose(unit & product)
 		{
+			product.clear();
+
 			if (m_transform)	product.add(m_transform);
 			if (m_sprite)		product.add(m_sprite);
 			if (m_body)			product.add(m_body);
@@ -137,9 +159,24 @@ namespace px {
 			if (m_npc)			product.add(m_npc);
 			if (m_deposit)		product.add(m_deposit);
 		}
+		void disassemble(unit & source)
+		{
+			m_transform = source.component<transform_component>();
+			m_sprite = source.component<sprite_component>();
+			m_body = source.component<body_component>();
+			m_character = source.component<character_component>();
+			m_container = source.component<container_component>();
+			m_storage = source.component<storage_component>();
+			m_player = source.component<player_component>();
+			m_npc = source.component<npc_component>();
+			m_deposit = source.component<deposit_component>();
+
+			source.clear();
+		}
 
 	private:
 		factory *							m_factory;
+		unit_ptr							m_unit;
 
 		shared_ptr<transform_component>		m_transform;
 		shared_ptr<sprite_component>		m_sprite;

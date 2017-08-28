@@ -271,9 +271,9 @@ namespace px {
 		enable(mobile);
 		m_edited = mobile;
 	}
-	environment::unit_ptr environment::edited()
+	environment::unit_type * environment::edited()
 	{
-		return m_edited;
+		return m_edited.get();
 	}
 
 	void environment::start()

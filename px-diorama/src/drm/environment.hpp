@@ -96,12 +96,14 @@ namespace px {
 		void enable(unit_ptr & unit);
 		void spawn(unit_ptr unit);
 		void edit(unit_ptr unit);
-		unit_ptr edited();
+		unit * edited();
 		unit_ptr create_empty(std::string const& tag, point2 location);
 		unit_ptr import_unit(std::string const& blueprint_name, point2 location);
 		void export_unit(unit const& mobile, std::string const& blueprint_name) const;
 		size_t mass_export(point2 const& location);
 		unit_ptr create_dummy(std::string const& tag, point2 location);
+		void add_sprite(unit & mobile, std::string const& name);
+		void remove_sprite(unit & mobile);
 
 		// terrain
 

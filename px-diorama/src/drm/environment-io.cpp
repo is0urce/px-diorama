@@ -339,4 +339,23 @@ namespace px {
 		}
 		return exported;
 	}
+
+	void environment::remove_sprite(unit & mobile)
+	{
+		unit_builder builder(m_factory.get(), mobile);
+
+		builder.remove_sprite();
+		builder.compile();
+	}
+	void environment::add_sprite(unit & mobile, std::string const& tag)
+	{
+		unit_builder builder(m_factory.get(), mobile);
+
+		auto sprite = builder.add_sprite(tag);
+		builder.compile();
+
+		if (sprite) {
+			sprite->activate();
+		}
+	}
 }
