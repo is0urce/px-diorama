@@ -61,10 +61,10 @@ namespace px {
 			px_assert(m_environment);
 
 			try {
-				auto unit_ptr = m_environment->import_unit(blueprint_tag, location);
+				auto unit_ptr = m_environment->import_unit(blueprint_tag);
 				transform = unit_ptr ? unit_ptr->transform() : nullptr;
 				body = transform ? transform->linked<body_component>() : nullptr;
-				m_environment->spawn(unit_ptr);
+				m_environment->spawn(unit_ptr, location);
 			}
 			catch (...)
 			{

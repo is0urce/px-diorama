@@ -253,22 +253,35 @@ namespace px {
 		}
 	}
 
-	void environment::enable(unit_ptr & mobile)
-	{
-		px_assert(mobile);
-		px_assert(mobile->transform());
-
-		mobile->transform()->store_position();
-		mobile->enable();
-	}
 	void environment::spawn(unit_ptr mobile)
 	{
-		enable(mobile);
+		px_assert(mobile);
+		transform_component * transform = mobile->transform();
+		px_assert(transform);
+
+		if (transform) {
+			transform->store_position();
+		}
+
+		mobile->enable();
+		m_units.push_back(mobile);
+	}
+	void environment::spawn(unit_ptr mobile, point2 location)
+	{
+		px_assert(mobile);
+		transform_component * transform = mobile->transform();
+		px_assert(transform);
+		
+		if (transform) {
+			transform->place(location);
+			transform->store_position();
+		}
+
+		mobile->enable();
 		m_units.push_back(mobile);
 	}
 	void environment::edit(unit_ptr mobile)
 	{
-		enable(mobile);
 		m_edited = mobile;
 	}
 	environment::unit_type * environment::edited()

@@ -310,7 +310,7 @@ namespace px {
 
 		save_unit(mobile, archive);
 	}
-	environment::unit_ptr environment::import_unit(std::string const& blueprint_name, point2 location)
+	environment::unit_ptr environment::import_unit(std::string const& blueprint_name)
 	{
 		auto input = input_stream(depot_blueprint(blueprint_name));
 		SAVE_INPUT_ARCHIVE archive(input);
@@ -318,17 +318,9 @@ namespace px {
 		unit_builder builder(*m_factory);
 		load_unit(builder, archive);
 
-		auto result = builder.assemble();
-
-		// setup target location
-		if (auto transform = result->transform()) {
-			transform->place(location);
-			transform->store_position();
-		}
-
-		return result;
+		return builder.assemble();
 	}
-	environment::unit_ptr environment::compile_unit(std::string const& scheme_name, point2 location)
+	environment::unit_ptr environment::compile_unit(std::string const& scheme_name)
 	{
 		unit_builder builder(*m_factory);
 
@@ -357,15 +349,7 @@ namespace px {
 			}
 		}
 
-		auto result = builder.assemble();
-
-		// setup target location
-		if (auto transform = result->transform()) {
-			transform->place(location);
-			transform->store_position();
-		}
-
-		return result;
+		return builder.assemble();
 	}
 	size_t environment::mass_export(point2 const& position)
 	{
