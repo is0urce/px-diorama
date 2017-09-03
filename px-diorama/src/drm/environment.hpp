@@ -116,10 +116,10 @@ namespace px {
 
 	private:
 		template <typename Action>
-		void turn(Action && intent_action, int time);
+		void turn(Action && action, int duration);
 		void turn_begin();
 		void turn_end();
-		void turn_pass(unsigned int turns);
+		void turn_pass(unsigned int duration);
 		void impersonate(transform_component * player);
 		transform_component * find_any(point2 const& position);
 

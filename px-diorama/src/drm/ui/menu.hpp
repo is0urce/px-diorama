@@ -13,6 +13,8 @@
 #include <memory>
 
 namespace px {
+	
+	class environment;
 
 	class transform_component;
 	class body_component;
@@ -25,6 +27,7 @@ namespace px {
 		class inventory_panel;
 		class storage_panel;
 		class workshop_panel;
+		class editor_panel;
 
 		class menu final
 		{
@@ -32,6 +35,7 @@ namespace px {
 			panel * main() px_noexcept;
 			panel const* main() const px_noexcept;
 
+			void assign_environment(environment * env) noexcept;
 			void assign_incarnation(transform_component * pawn) noexcept;
 			void assign_target(transform_component * pawn, point2 absolute) noexcept;
 
@@ -67,6 +71,7 @@ namespace px {
 			inventory_panel *		m_inventory;	// inventory panel
 			storage_panel *			m_storage;		// storage panel for inspecting containers
 			workshop_panel *		m_workshop;		// workshop crafting
+			editor_panel *			m_editor;		// ingame editor
 		};
 	}
 }

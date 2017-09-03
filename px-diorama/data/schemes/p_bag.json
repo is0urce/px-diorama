@@ -1,0 +1,16 @@
+{
+  "comment" : "bag for dropped items",
+  "version": "0.0",
+  "type": "placeable",
+  "body": {
+    "tag": "p_bag",
+    "name": "Bag"
+  },
+  "sprite": {
+    "url": "p_bag"
+  },
+  "transform": {
+    "x": 0,
+    "y": 0
+  }
+}

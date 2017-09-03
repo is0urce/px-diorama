@@ -11,7 +11,7 @@
 #include "target_panel.hpp"
 #include "workshop_panel.hpp"
 #include "performance_panel.hpp"
-#include "edit.hpp"
+#include "editor_panel.hpp"
 
 #include "item_functional.hpp"
 
@@ -44,6 +44,7 @@ namespace px {
 			, m_target(nullptr)
 			, m_inventory(nullptr)
 			, m_storage(nullptr)
+			, m_editor(nullptr)
 		{
 			initialize();
 		}
@@ -57,6 +58,11 @@ namespace px {
 		{
 			px_assert(m_main);
 			return m_main.get();
+		}
+		void menu::assign_environment(environment * env) noexcept
+		{
+			px_assert(m_editor);
+			m_editor->assign_environment(env);
 		}
 		void menu::assign_incarnation(transform_component * pawn) noexcept
 		{
@@ -158,10 +164,8 @@ namespace px {
 			auto k_button = k_block->make<button>(fill);
 			k_button->on_click([this](int /* mouse_button */) { open_workshop(m_container); });
 
-			// console
-			auto console_block = m_main->make<board>({ { 0.0, 0.0 },{ 3,1 },{ 20,1 },{ 0, 0 } }, color{ 0.5, 0.5, 0, 1 });
-			auto console_text = console_block->make<edit>(fill);
-			console_text->set_text("hey");
+			// editor
+			m_editor = m_main->make<editor_panel>({ { 0.75, 0.0 },{ 0,1 },{ -1,0 },{ 0.25, 0.5 } }).get();
 
 			// end setup
 			close_sheets();

@@ -370,6 +370,7 @@
     <None Include="data\img\m_snake32.json" />
     <None Include="data\img\taurus32.json" />
     <None Include="data\img\wall32.json" />
+    <None Include="data\schemes\p_bag.json" />
     <None Include="data\scripts\sk_d_ambush.lua" />
     <None Include="data\scripts\sk_i_blink.lua" />
     <None Include="data\scripts\i_damage.lua" />

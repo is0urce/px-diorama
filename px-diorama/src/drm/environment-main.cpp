@@ -54,6 +54,8 @@ namespace px {
 
 		std::random_device rd;
 		m_rng = std::mt19937(rd());
+
+		m_ui.assign_environment(this);
 	}
 	void environment::update(perception & view, double time)
 	{

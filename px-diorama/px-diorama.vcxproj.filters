@@ -592,6 +592,7 @@
     <None Include="data\tiles.json" />
     <None Include="data\scripts\sk_o_export.lua" />
     <None Include="data\scripts\sk_o_import.lua" />
+    <None Include="data\schemes\p_bag.json" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\terrain\readme.txt" />
