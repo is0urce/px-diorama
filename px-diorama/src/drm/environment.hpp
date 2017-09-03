@@ -98,11 +98,11 @@ namespace px {
 		void edit(unit_ptr unit);
 		unit_type * edited();
 		unit_ptr create_empty(std::string const& tag, point2 location);
+		unit_ptr create_player(std::string const& tag, point2 location);
 		unit_ptr import_unit(std::string const& blueprint_name);
 		unit_ptr compile_unit(std::string const& scheme_name);
 		void export_unit(unit const& mobile, std::string const& blueprint_name) const;
 		size_t mass_export(point2 const& location);
-		unit_ptr create_dummy(std::string const& tag, point2 location);
 
 		// terrain
 

@@ -4,7 +4,8 @@
   "type": "placeable",
   "body": {
     "tag": "p_bag",
-    "name": "Bag"
+    "name": "Bag",
+    "hp" : 5
   },
   "sprite": {
     "url": "p_bag"

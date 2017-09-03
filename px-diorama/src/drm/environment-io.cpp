@@ -343,9 +343,34 @@ namespace px {
 		auto body_node = document.find("body");
 		if (body_node != document.end()) {
 			auto body = builder.add_body();
+
+			// entity
+
+			auto tag_node = body_node->find("tag");
+			if (tag_node != body_node->end()) {
+				body->set_tag(tag_node.value());
+			}
+
+			auto name_node = body_node->find("name");
+			if (name_node != body_node->end()) {
+				body->set_name(name_node.value());
+			}
+
+			auto description_node = body_node->find("description");
+			if (description_node != body_node->end()) {
+				body->set_description(description_node.value());
+			}
+
+			// resources
+
 			auto hp_node = body_node->find("hp");
 			if (hp_node != body_node->end()) {
 				body->health().create(hp_node.value());
+			}
+
+			auto mp_node = body_node->find("mp");
+			if (mp_node != body_node->end()) {
+				body->energy().create(mp_node.value());
 			}
 		}
 

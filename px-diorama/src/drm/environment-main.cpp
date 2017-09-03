@@ -273,7 +273,7 @@ namespace px {
 		px_assert(mobile);
 		transform_component * transform = mobile->transform();
 		px_assert(transform);
-		
+
 		if (transform) {
 			transform->place(location);
 			transform->store_position();
@@ -295,12 +295,12 @@ namespace px {
 	{
 		// units
 
-		spawn(create_dummy("p_vein", { 0, 5 }));
-		spawn(create_dummy("m_rat", { 3, 3 }));
-		spawn(create_dummy("p_bag", { 0, 3 }));
+		//spawn(create_dummy("p_vein", { 0, 5 }));
+		//spawn(create_dummy("m_rat", { 3, 3 }));
+		//spawn(create_dummy("p_bag", { 0, 3 }));
 
 		// player
-		auto player = create_dummy("m_gnome", { 2, 2 });
+		auto player = create_player("m_gnome", { 2, 2 });
 		spawn(player);
 
 		impersonate(player->transform());
@@ -373,7 +373,7 @@ namespace px {
 
 		if (hp) {
 			hp->damage(damage);
-	
+
 			if (transform_component * transform = body.linked<transform_component>()) {
 				popup(transform->position(), std::to_string(damage), color(m_player != transform ? 0xffcc00 : 0xff0000), 1.0f);
 			}
@@ -395,7 +395,7 @@ namespace px {
 
 		return result;
 	}
-	environment::unit_ptr environment::create_dummy(std::string const& name, point2 location)
+	environment::unit_ptr environment::create_player(std::string const& name, point2 location)
 	{
 		// create
 		unit_builder builder(m_factory.get());
@@ -405,33 +405,26 @@ namespace px {
 		auto container = builder.add_container();
 		auto character = builder.add_character();
 
-		if (name == "m_gnome") {
-			builder.add_player();
+		builder.add_player();
 
-			body->join_faction(1);
+		body->join_faction(1);
 
-			character->learn_skill("sk_v_melee");
-			character->learn_skill("sk_s_smite");
-			character->learn_skill("sk_s_rend");
-			character->learn_skill("sk_s_flurry");
-			character->learn_skill("sk_i_pain");
-			character->learn_skill("sk_v_teleport");
-			character->learn_skill("sk_o_export");
-			character->learn_skill("sk_o_import");
+		character->learn_skill("sk_v_melee");
+		character->learn_skill("sk_s_smite");
+		character->learn_skill("sk_s_rend");
+		character->learn_skill("sk_s_flurry");
+		character->learn_skill("sk_i_pain");
+		character->learn_skill("sk_v_teleport");
+		character->learn_skill("sk_o_export");
+		character->learn_skill("sk_o_import");
 
-			for (unsigned int i = 0; i != 10; ++i) {
-				auto itm = std::make_shared<rl::item>();
-				itm->set_name("iron");
-				itm->make_stacking();
-				itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, 1));
-				itm->add(rl::item::enhancement_type::integer(rl::effect::essence, 1024));
-				container->add(itm);
-			}
-		}
-		else {
-			builder.add_npc();
-
-			character->learn_skill("sk_v_melee");
+		for (unsigned int i = 0; i != 10; ++i) {
+			auto itm = std::make_shared<rl::item>();
+			itm->set_name("iron");
+			itm->make_stacking();
+			itm->add(rl::item::enhancement_type::integer(rl::effect::ore_power, 1));
+			itm->add(rl::item::enhancement_type::integer(rl::effect::essence, 1024));
+			container->add(itm);
 		}
 
 		// setup
