@@ -1,0 +1,42 @@
+{
+  "comment": "monster scheme",
+  "version": "0.0",
+  "type": "unit",
+
+  "transform": {
+    "x": 0,
+    "y": 0
+  },
+
+  "body": {
+    "tag": "m_goblin",
+    "name": "goblin",
+
+    "transparent": true,
+    "traversable": [],
+    "traverse" : [ 0 ],
+
+    "faction": 0,
+    "hp": 5,
+    "mp": 0,
+
+    "equipment": {
+      "main": {
+        "name": "weapon",
+        "enchancements": []
+      }
+    }
+  },
+
+  "sprite": {
+    "url": "m_goblin"
+  },
+
+  "character": {
+    "skills": [ "sk_v_melee" ]
+  },
+
+  "ai": {
+    "state": 0
+  }
+}

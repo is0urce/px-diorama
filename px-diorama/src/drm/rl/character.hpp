@@ -44,7 +44,7 @@ namespace px {
 			{
 				return m_panel.size();
 			}
-			void learn_skill(std::string tag)
+			void learn_skill(std::string const& tag)
 			{
 				m_panel.learn_skill(tag);
 			}

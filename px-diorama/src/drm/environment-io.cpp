@@ -322,9 +322,10 @@ namespace px {
 	}
 	environment::unit_ptr environment::compile_unit(std::string const& scheme_name)
 	{
+		auto document = depot::load_document(depot_scheme(scheme_name));
 		unit_builder builder(*m_factory);
 
-		auto document = depot::load_document(depot_scheme(scheme_name));
+		// transform position
 
 		auto transform_node = document.find("transform");
 		if (transform_node != document.end()) {
@@ -334,11 +335,15 @@ namespace px {
 			builder.add_transform(position);
 		}
 
+		// sprite appearance
+
 		auto sprite_node = document.find("sprite");
 		if (sprite_node != document.end()) {
 			std::string url = sprite_node->at("url");
 			builder.add_sprite(url);
 		}
+
+		// body
 
 		auto body_node = document.find("body");
 		if (body_node != document.end()) {
@@ -348,17 +353,45 @@ namespace px {
 
 			auto tag_node = body_node->find("tag");
 			if (tag_node != body_node->end()) {
-				body->set_tag(tag_node.value());
+				body->set_tag(*tag_node);
 			}
 
 			auto name_node = body_node->find("name");
 			if (name_node != body_node->end()) {
-				body->set_name(name_node.value());
+				body->set_name(*name_node);
 			}
 
 			auto description_node = body_node->find("description");
 			if (description_node != body_node->end()) {
 				body->set_description(description_node.value());
+			}
+
+			// mass
+
+			auto transperency_node = body_node->find("transparent");
+			if (transperency_node != body_node->end()) {
+				body->mass().make_transparent(*transperency_node);
+			}
+
+			auto traversable_node = body_node->find("traversable");
+			if (traversable_node != body_node->end()) {
+				for (unsigned int layer : *traversable_node) {
+					body->mass().make_traversable(static_cast<rl::traverse>(layer));
+				}
+			}
+
+			auto traverse_node = body_node->find("traverse");
+			if (traverse_node != body_node->end()) {
+				for (unsigned int layer : *traverse_node) {
+					body->traverse().make_traversable(static_cast<rl::traverse>(layer));
+				}
+			}
+
+			// faction
+
+			auto faction_node = body_node->find("faction");
+			if (faction_node != body_node->end()) {
+				body->join_faction(faction_node.value());
 			}
 
 			// resources
@@ -373,6 +406,29 @@ namespace px {
 				body->energy().create(mp_node.value());
 			}
 		}
+
+		// character
+
+		auto character_node = document.find("character");
+		if (character_node != document.end()) {
+			auto character = builder.add_character();
+
+			auto skills_node = character_node->find("skills");
+			if (skills_node != character_node->end()) {
+				for (auto const& skill_node : *skills_node) {
+					character->learn_skill(skill_node);
+				}
+			}
+		}
+
+		// npc component
+
+		auto npc_node = document.find("ai");
+		if (npc_node != document.end()) {
+			auto npc = builder.add_npc();
+		}
+
+		// build and return
 
 		return builder.assemble();
 	}

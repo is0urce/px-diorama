@@ -1,7 +1,8 @@
 {
   "comment" : "bag for dropped items",
   "version": "0.0",
-  "type": "placeable",
+  "type": "unit",
+
   "body": {
     "tag": "p_bag",
     "name": "Bag",

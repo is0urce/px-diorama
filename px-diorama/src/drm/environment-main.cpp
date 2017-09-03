@@ -13,13 +13,20 @@
 
 #include <px/ui/panel.hpp>
 
-namespace {
-	const float popup_speed = 0.2f;
-	const float movement_speed = 5.0f;
-	const float crop_far = 15.0f;
-}
-
 namespace px {
+
+	namespace {
+		const float popup_speed = 0.2f;
+		const float movement_speed = 5.0f;
+		const float crop_far = 15.0f;
+
+		template <typename Document>
+		std::shared_ptr<rl::item> create_item(Document && document)
+		{
+			auto result = std::make_shared<rl::item>();
+			return result;
+		}
+	}
 
 	environment::~environment()
 	{
@@ -293,12 +300,6 @@ namespace px {
 
 	void environment::start()
 	{
-		// units
-
-		//spawn(create_dummy("p_vein", { 0, 5 }));
-		//spawn(create_dummy("m_rat", { 3, 3 }));
-		//spawn(create_dummy("p_bag", { 0, 3 }));
-
 		// player
 		auto player = create_player("m_gnome", { 2, 2 });
 		spawn(player);
