@@ -7,10 +7,9 @@
 
 #pragma once
 
-namespace px
-{
-	namespace rl
-	{
+namespace px {
+	namespace rl {
+
 		enum class traverse : unsigned int
 		{
 			floor = 0,

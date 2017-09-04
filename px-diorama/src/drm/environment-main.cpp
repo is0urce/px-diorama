@@ -19,13 +19,6 @@ namespace px {
 		const float popup_speed = 0.2f;
 		const float movement_speed = 5.0f;
 		const float crop_far = 15.0f;
-
-		template <typename Document>
-		std::shared_ptr<rl::item> create_item(Document && document)
-		{
-			auto result = std::make_shared<rl::item>();
-			return result;
-		}
 	}
 
 	environment::~environment()

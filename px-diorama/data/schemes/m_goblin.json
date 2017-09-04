@@ -20,12 +20,19 @@
     "hp": 5,
     "mp": 0,
 
-    "equipment": {
-      "main": {
-        "name": "weapon",
-        "enchancements": []
+    "equipment": [
+      {
+        "slot": "weapon_main",
+        "item": {
+          "enhancements": [
+            {
+              "effect": "weapon_damage",
+              "value0": 1
+            }
+          ]
+        }
       }
-    }
+    ]
   },
 
   "sprite": {

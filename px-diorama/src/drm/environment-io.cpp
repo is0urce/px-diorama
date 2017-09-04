@@ -9,6 +9,9 @@
 #include "es/unit_builder.hpp"
 #include "es/unit_component.hpp"
 
+#include <px/rl/equipment_slot_ext.hpp>
+#include <px/rl/effect_ext.hpp>
+
 #include <algorithm>
 #include <fstream>
 #include <memory>
@@ -16,16 +19,46 @@
 namespace px {
 	namespace {
 
+		// setup item properties from document
+		template <typename Document>
+		void init_item(Document const& document, rl::item & i)
+		{
+			auto name = document.find("name");
+			if (name != document.end()) {
+				i.set_name(*name);
+			}
+
+			auto enhancements_node = document.at("enhancements");
+			for (auto const& enhancement_node : enhancements_node) {
+				auto type_node = enhancement_node.at("effect");
+				auto v0_node = enhancement_node.find("value0");
+				auto v1_node = enhancement_node.find("value1");
+
+				uint32_t v0 = 0;
+				uint32_t v1 = 0;
+
+				if (v0_node != enhancement_node.end()) v0 = *v0_node;
+				if (v1_node != enhancement_node.end()) v1 = *v1_node;
+
+				rl::effect efx = rl::to_effect(type_node);
+
+				i.add(rl::enhancement<rl::effect>(efx, 0, v0, v1));
+			}
+		}
+
 		// returns bounds of a cell
 		rectangle cell_bounds(point2 const& cell)
 		{
 			return rectangle(cell * point2(cell_width, cell_height), point2(cell_width, cell_height));
 		}
 
+		// returns path to binary blueprints directory
 		std::string depot_blueprint(std::string const& blueprint_tag)
 		{
 			return std::string(blueprint_directory) + blueprint_tag + std::string(blueprint_extension);
 		}
+
+		// returns path to json schemes directory
 		std::string depot_scheme(std::string const& scheme_tag)
 		{
 			return std::string(scheme_directory) + scheme_tag + std::string(scheme_extension);
@@ -405,6 +438,23 @@ namespace px {
 			if (mp_node != body_node->end()) {
 				body->energy().create(mp_node.value());
 			}
+
+			// equipment
+			auto equipment_node = body_node->find("equipment");
+			if (equipment_node != body_node->end()) {
+				for (auto const& slot_node : *equipment_node) {
+					auto type_node = slot_node.at("slot");
+					auto item_node = slot_node.at("item");
+
+					//rl::equipment_slot slot = ;
+					rl::item i;
+
+					init_item(item_node, i);
+
+					body->equip(rl::to_equipment_slot(type_node), i);
+				}
+			}
+
 		}
 
 		// character

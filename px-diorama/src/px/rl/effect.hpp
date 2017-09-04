@@ -14,13 +14,13 @@ namespace px {
 
 		enum class effect : uint32_t
 		{
-			no_effect,
+			no_effect = 0,
 
 			// main character props
 
-			str_bonus,
-			dex_bonus,
-			int_bonus,
+			str_bonus = 1,
+			dex_bonus = 2,
+			int_bonus = 3,
 
 			// secondary character attributes
 
