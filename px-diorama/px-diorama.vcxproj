@@ -207,6 +207,10 @@
     <ClInclude Include="src\drm\es\player_component.hpp" />
     <ClInclude Include="src\drm\repository.hpp" />
     <ClInclude Include="src\drm\ui\editor_panel.hpp" />
+    <ClInclude Include="src\px\memory\delete_release_block.hpp" />
+    <ClInclude Include="src\px\memory\memory.hpp" />
+    <ClInclude Include="src\px\memory\poly_release_block.hpp" />
+    <ClInclude Include="src\px\memory\uq_ptr.hpp" />
     <ClInclude Include="src\px\rl\effect_ext.hpp" />
     <ClInclude Include="src\px\rl\enhancement_inspector.hpp" />
     <ClInclude Include="src\drm\script\script.hpp" />
